@@ -121,7 +121,7 @@ const UserDashboard: React.FC = () => {
                                             {t('dash.benefit.desc')}
                                         </p>
                                         <button
-                                            onClick={() => navigate('/catalog')}
+                                            onClick={() => navigate('/')}
                                             className="bg-[#C5A065] text-black px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white transition-all shadow-xl shadow-black/40"
                                         >
                                             {t('dash.benefit.cta')}
@@ -224,7 +224,7 @@ const UserDashboard: React.FC = () => {
                                             {t('dash.orders.empty')}
                                         </p>
                                         <button
-                                            onClick={() => navigate('/catalog')}
+                                            onClick={() => navigate('/')}
                                             className="border border-[#C5A065] text-[#C5A065] px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-[#C5A065] hover:text-black transition-all"
                                         >
                                             {t('dash.orders.cta')}

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Link } from 'react-router-dom';
+import { Cookie, X, ShieldCheck, ChevronRight } from 'lucide-react';
 
 const CookieBanner: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const { language } = useLanguage();
 
     useEffect(() => {
-        // Verificar si ya se aceptaron las cookies
         const consent = localStorage.getItem('cookieConsent');
         if (!consent) {
-            // Mostrar banner después de un pequeño delay para no ser invasivo de inmediato
-            const timer = setTimeout(() => setIsVisible(true), 1500);
+            const timer = setTimeout(() => setIsVisible(true), 2000);
             return () => clearTimeout(timer);
         }
     }, []);
@@ -27,65 +27,77 @@ const CookieBanner: React.FC = () => {
 
     if (!isVisible) return null;
 
-    // Traducciones simples inline por ahora (idealmente mover a LanguageContext)
     const texts = {
         es: {
-            title: 'Respetamos tu Privacidad',
-            message: 'Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación, analizar el tráfico y personalizar contenido. Al continuar navegando, aceptas nuestra Política de Cookies.',
-            accept: 'ACEPTAR TODAS',
-            decline: 'SOLO NECESARIAS',
-            policy: 'Ver Política de Cookies'
+            title: 'Respeto por tu rastro digital',
+            message: 'Al igual que cuidamos el origen de nuestro café, protegemos tu navegación. Usamos cookies para que tu experiencia sea tan fluida como un buen filtrado.',
+            accept: 'Aceptar Experiencia Completa',
+            decline: 'Solo lo esencial',
+            policy: 'Tu privacidad en detalle'
         },
         en: {
-            title: 'We Respect Your Privacy',
-            message: 'We use our own and third-party cookies to improve your browsing experience, analyze traffic, and personalize content. By continuing to browse, you accept our Cookie Policy.',
-            accept: 'ACCEPT ALL',
-            decline: 'ESSENTIAL ONLY',
-            policy: 'View Cookie Policy'
+            title: 'Respect for your digital footprint',
+            message: 'Just as we care for the origin of our coffee, we protect your browsing. We use cookies to make your experience as smooth as a good pour-over.',
+            accept: 'Accept Full Experience',
+            decline: 'Essential only',
+            policy: 'Your privacy in detail'
         }
     };
 
     const t = language === 'es' ? texts.es : texts.en;
 
     return (
-        <div className="fixed bottom-0 left-0 w-full z-50 p-4 md:p-6 animate-fade-in-up">
-            <div className="max-w-7xl mx-auto bg-[#0B120D]/95 backdrop-blur-md border border-[#C5A065]/30 rounded-xl shadow-[0_-10px_40px_rgba(0,0,0,0.8)] p-6 md:flex md:items-center md:justify-between gap-6 relative">
-                {/* Dev Close Button */}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl z-[100] animate-fade-in-up">
+            <div className="bg-[#050806]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
+                {/* DECORATIVE ELEMENT */}
+                <div className="absolute top-0 left-0 w-1 h-full bg-[#C8AA6E]"></div>
+
                 <button
                     onClick={() => setIsVisible(false)}
-                    className="absolute top-2 right-2 text-gray-500 hover:text-white transition-colors"
-                    title="Cerrar sin acción (Dev)"
+                    className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
                 >
-                    <span className="material-icons-outlined text-sm">close</span>
+                    <X size={18} />
                 </button>
 
-                <div className="flex-1 mb-4 md:mb-0">
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="material-icons-outlined text-[#C5A065]">cookie</span>
-                        <h3 className="text-white font-display text-lg tracking-wide">{t.title}</h3>
-                    </div>
-                    <p className="text-gray-400 text-xs leading-relaxed max-w-3xl">
-                        {t.message}
-                        <br className="hidden md:block" />
-                        <a href="#" className="text-[#C5A065] underline hover:text-white transition-colors mt-1 inline-block">{t.policy}</a>
-                    </p>
+                <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-[#C8AA6E]/10 text-[#C8AA6E] shrink-0">
+                    <Cookie size={32} />
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 min-w-fit">
+                <div className="flex-1 space-y-4 text-center md:text-left">
+                    <div>
+                        <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                            <ShieldCheck size={14} className="text-[#C8AA6E]" />
+                            <h3 className="text-white font-bold uppercase tracking-widest text-sm">{t.title}</h3>
+                        </div>
+                        <p className="text-gray-400 text-sm leading-relaxed">
+                            {t.message}
+                        </p>
+                    </div>
+
+                    <Link
+                        to="/privacy"
+                        onClick={() => setIsVisible(false)}
+                        className="inline-flex items-center gap-2 text-[#C8AA6E] text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors group"
+                    >
+                        {t.policy}
+                        <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto shrink-0">
                     <button
                         onClick={handleDecline}
-                        className="px-6 py-2.5 rounded border border-white/10 text-white/60 text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
+                        className="px-6 py-3 rounded-full border border-white/10 text-gray-400 text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all order-2 sm:order-1"
                     >
                         {t.decline}
                     </button>
                     <button
                         onClick={handleAccept}
-                        className="px-6 py-2.5 rounded bg-[#C5A065] text-black text-xs font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)] transition-all"
+                        className="px-8 py-3 rounded-full bg-[#C8AA6E] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-[#C8AA6E]/20 order-1 sm:order-2"
                     >
                         {t.accept}
                     </button>
                 </div>
-
             </div>
         </div>
     );

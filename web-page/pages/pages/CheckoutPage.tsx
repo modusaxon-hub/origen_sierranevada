@@ -7,10 +7,35 @@ import { supabase } from '../services/supabaseClient';
 import { emailService } from '../services/emailService';
 import { paymentService } from '../services/paymentService';
 import { shippingService } from '../services/shippingService';
+import { orderService } from '../services/orderService';
 import { useLanguage } from '../contexts/LanguageContext';
+import TransferInstructions from '../components/TransferInstructions';
+
+// Lista de departamentos colombianos
+const DEPARTAMENTOS_COLOMBIA = [
+    'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bolívar', 'Boyacá',
+    'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó',
+    'Córdoba', 'Cundinamarca', 'Guainía', 'Guaviare', 'Huila',
+    'La Guajira', 'Magdalena', 'Meta', 'Nariño', 'Norte de Santander',
+    'Putumayo', 'Quindío', 'Risaralda', 'San Andrés y Providencia',
+    'Santander', 'Sucre', 'Tolima', 'Valle del Cauca', 'Vaupés', 'Vichada'
+];
+
+// Tipos de documento para facturación colombiana
+const TIPOS_DOCUMENTO = [
+    { value: 'CC', label: 'Cédula de Ciudadanía' },
+    { value: 'CE', label: 'Cédula de Extranjería' },
+    { value: 'NIT', label: 'NIT' },
+    { value: 'PASAPORTE', label: 'Pasaporte' }
+];
+
+// Constantes de facturación colombiana
+const IVA_RATE = 0.19; // 19% IVA Colombia
 
 interface CheckoutForm {
     fullName: string;
+    docType: string;
+    docNumber: string;
     email: string;
     phone: string;
     address: string;
@@ -22,13 +47,18 @@ interface CheckoutForm {
 const CheckoutPage: React.FC = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
     const { user } = useAuth();
-    const { formatPrice } = useLanguage();
+    const { language, formatPrice } = useLanguage();
+    const lang = (language as 'es' | 'en') || 'es';
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [lastOrderId, setLastOrderId] = useState<string | null>(null);
+    const [lastOrderTotal, setLastOrderTotal] = useState<number>(0);
 
     const [form, setForm] = useState<CheckoutForm>({
         fullName: user?.user_metadata?.full_name || '',
+        docType: 'CC',
+        docNumber: '',
         email: user?.email || '',
         phone: user?.user_metadata?.phone || '',
         address: '',
@@ -39,9 +69,26 @@ const CheckoutPage: React.FC = () => {
 
     const [shippingCost, setShippingCost] = useState(0);
 
-    // Descuento del 10% para miembros
-    const discount = user ? cartTotal * 0.1 : 0;
-    const finalTotal = cartTotal - discount + shippingCost;
+    // =====================================================
+    // CÁLCULOS DE FACTURACIÓN COLOMBIANA
+    // El precio exhibido YA INCLUYE EL IVA
+    // Solo desglosamos para la factura, no sumamos adicional
+    // =====================================================
+
+    // El cliente paga EXACTAMENTE lo que vio en el estante
+    const precioExhibido = cartTotal; // Este precio YA tiene IVA incluido
+
+    // Desglose para la factura (extracción del IVA incluido)
+    // Fórmula: Base = Precio / (1 + IVA_RATE)
+    const baseGravable = Math.round(precioExhibido / (1 + IVA_RATE));
+    const ivaIncluido = precioExhibido - baseGravable;
+
+    // Descuento del 10% para miembros (aplica sobre el precio exhibido)
+    const discount = user ? precioExhibido * 0.1 : 0;
+
+    // Total a pagar = Precio exhibido - Descuento + Envío
+    // (NO sumamos IVA porque ya está incluido en el precio)
+    const finalTotal = precioExhibido - discount + shippingCost;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -76,6 +123,11 @@ const CheckoutPage: React.FC = () => {
                     metadata: {
                         notes: form.notes,
                         discount_applied: discount > 0,
+                        items_details: cartItems.map(i => ({
+                            id: i.id,
+                            name: i.name,
+                            variant: i.variant || 'Standard'
+                        }))
                     }
                 })
                 .select()
@@ -113,52 +165,44 @@ const CheckoutPage: React.FC = () => {
                 }
             }
 
-            // 3. Iniciar Pasarela de Pago (PoliPay/Integra)
-            const payment = await paymentService.initiatePayment({
-                orderId: order.id,
-                amount: finalTotal,
-                currency: 'USD',
-                customerName: form.fullName,
-                customerEmail: form.email
-            });
+            // 3. Flujo TRANSFERENCIA MANUAL (Wompi en Standby)
+            console.log('Procesando orden para transferencia manual');
 
-            if (!payment.success) throw new Error('Error en la pasarela de pago');
-
-            // 4. Actualizar estado del pedido a 'paid' si el pago fue exitoso (Simulado)
+            // Actualizar orden como pendiente de transferencia
             await supabase
                 .from('orders')
                 .update({
-                    status: 'paid',
-                    payment_id: payment.transactionId,
-                    payment_method: payment.provider
+                    status: 'pending_payment', // Mantenemos estado pendiente
+                    payment_id: 'MANUAL_TRANSFER',
+                    payment_method: 'transfer'
                 })
                 .eq('id', order.id);
 
-            // 5. Notificar al admin
+            // 4. Notificar al admin (Nuevo Pedido Pendiente)
             await emailService.sendOrderNotification('cafemalusm@gmail.com', {
-                type: 'NUEVO_PEDIDO_PAGADO',
+                type: 'NUEVO_PEDIDO', // Ajustar tipo si es necesario en emailService
                 orderId: order.id,
-                transactionId: payment.transactionId,
+                transactionId: 'PENDIENTE_TRANSFERENCIA',
                 customer: form.fullName,
                 total: finalTotal,
                 items: cartItems.map(i => `${i.qty}x ${i.name}`).join(', ')
             });
 
-            // 5.5 Notificar al Cliente
+            // 5. Notificar al Cliente con instrucciones (Idealmente el email debería tener las instrucciones también)
             await emailService.sendCustomerOrderEmail(form.email, form.fullName, {
                 orderId: order.id,
                 total: finalTotal,
                 itemsSummary: cartItems.map(i => `<div class="item"><span>${i.qty}x ${i.name}</span> <span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('')
             });
 
-            // 6. Éxito
+            // 6. Éxito local
+            setLastOrderId(order.id);
+            setLastOrderTotal(finalTotal);
             setOrderSuccess(true);
             clearCart();
-
-            // Redirigir después de unos segundos
-            setTimeout(() => {
-                navigate('/account');
-            }, 5000);
+            // No redirigimos automáticamente para dar tiempo a ver las instrucciones
+            // scroll al top para ver el mensaje
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error) {
             console.error('Error procesando pedido:', error);
@@ -171,24 +215,76 @@ const CheckoutPage: React.FC = () => {
     if (orderSuccess) {
         return (
             <div className="min-h-screen bg-[#0B120D] flex items-center justify-center p-6 pt-24">
-                <div className="max-w-md w-full bg-[#1A261D] border border-[#C5A065]/30 rounded-2xl p-8 text-center animate-fade-in">
-                    <div className="w-20 h-20 bg-[#C5A065]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span className="material-icons-outlined text-[#C5A065] text-4xl">check_circle</span>
+                <div className="w-full max-w-3xl">
+                    <div className="text-center mb-8 animate-fade-in">
+                        <div className="w-20 h-20 bg-[#C5A065]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span className="material-icons-outlined text-[#C5A065] text-4xl">check_circle</span>
+                        </div>
+                        <h1 className="font-serif text-3xl text-white mb-2">¡Pedido Registrado!</h1>
+                        <p className="text-gray-400">
+                            Tu orden ha sido creada exitosamente. Para completarla, por favor realiza la transferencia y sube tu comprobante.
+                        </p>
                     </div>
-                    <h1 className="font-serif text-3xl text-white mb-4">¡Pedido Recibido!</h1>
-                    <p className="text-gray-400 mb-8">
-                        Tu ritual ha sido registrado. Estamos preparando tu selección de la Sierra para que llegue a tu puerta lo antes posible.
-                    </p>
-                    <div className="bg-black/20 rounded-lg p-4 mb-8 text-left border border-white/5">
-                        <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold mb-1">Nota importante</p>
-                        <p className="text-xs text-gray-400">Te hemos enviado un correo con los detalles del pedido y los pasos para el pago (Simulado: Integra/PoliPay).</p>
+
+                    <TransferInstructions orderId={lastOrderId || ""} total={lastOrderTotal} />
+
+                    {/* Subida de Comprobante */}
+                    <div className="mt-8 bg-white/5 border border-[#C5A065]/30 rounded-2xl p-8 animate-slide-up">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-[#C5A065]/10 rounded-xl flex items-center justify-center text-[#C5A065]">
+                                <span className="material-icons-outlined">receipt_long</span>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-serif text-white">Sube tu Comprobante</h3>
+                                <p className="text-xs text-gray-500">Agiliza la confirmación de tu pedido adjuntando la captura.</p>
+                            </div>
+                        </div>
+
+                        <div className="relative group">
+                            <input
+                                type="file"
+                                accept="image/*,application/pdf"
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file || !lastOrderId) return;
+
+                                    setLoading(true);
+                                    const { url, error } = await orderService.uploadPaymentProof(lastOrderId, file);
+                                    setLoading(false);
+
+                                    if (!error) {
+                                        alert("¡Comprobante subido con éxito! Tu pedido pasará a revisión.");
+                                        // Podemos marcar algo visualmente como completado o redirigir
+                                        navigate('/account');
+                                    } else {
+                                        alert("Error al subir comprobante. Por favor intenta de nuevo.");
+                                        console.error(error);
+                                    }
+                                }}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            />
+                            <div className="bg-black/40 border-2 border-dashed border-white/10 rounded-xl p-10 flex flex-col items-center justify-center gap-3 group-hover:bg-white/5 group-hover:border-[#C5A065]/50 transition-all">
+                                <span className="material-icons-outlined text-[#C5A065] text-4xl mb-2">cloud_upload</span>
+                                <span className="text-sm text-white font-bold">Seleccionar archivo</span>
+                                <span className="text-[10px] text-gray-500 uppercase tracking-widest text-center">Formatos aceptados: JPG, PNG, PDF (Máx 5MB)</span>
+                            </div>
+                        </div>
                     </div>
-                    <button
-                        onClick={() => navigate('/account')}
-                        className="w-full bg-[#C5A065] text-black font-bold py-4 rounded-xl uppercase tracking-widest hover:bg-[#D4B075] transition-all"
-                    >
-                        Ir a Mi Cuenta
-                    </button>
+
+                    <div className="mt-8 text-center flex justify-center gap-8">
+                        <button
+                            onClick={() => navigate('/account')}
+                            className="text-gray-500 hover:text-white underline transition-colors text-xs uppercase tracking-widest"
+                        >
+                            Ver mis pedidos
+                        </button>
+                        <button
+                            onClick={() => navigate('/')}
+                            className="text-[#C5A065] hover:text-white underline transition-colors text-xs uppercase tracking-widest"
+                        >
+                            Volver al inicio
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -207,24 +303,80 @@ const CheckoutPage: React.FC = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Nombre Completo</label>
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Nombre Completo' : 'Full Name'} *
+                                    </label>
                                     <input
                                         required
                                         name="fullName"
                                         value={form.fullName}
                                         onChange={handleInputChange}
                                         type="text"
+                                        placeholder="Juan Pérez"
                                         className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Teléfono de Contacto</label>
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Correo Electrónico' : 'Email'} *
+                                    </label>
+                                    <input
+                                        required
+                                        name="email"
+                                        value={form.email}
+                                        onChange={handleInputChange}
+                                        type="email"
+                                        placeholder="correo@ejemplo.com"
+                                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Datos de Facturación - Documento */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Tipo Documento' : 'Doc Type'} *
+                                    </label>
+                                    <select
+                                        required
+                                        name="docType"
+                                        value={form.docType}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none appearance-none"
+                                    >
+                                        {TIPOS_DOCUMENTO.map(tipo => (
+                                            <option key={tipo.value} value={tipo.value} className="bg-[#1a1a1a]">
+                                                {tipo.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Número Documento' : 'Doc Number'} *
+                                    </label>
+                                    <input
+                                        required
+                                        name="docNumber"
+                                        value={form.docNumber}
+                                        onChange={handleInputChange}
+                                        type="text"
+                                        placeholder="1234567890"
+                                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Teléfono' : 'Phone'} *
+                                    </label>
                                     <input
                                         required
                                         name="phone"
                                         value={form.phone}
                                         onChange={handleInputChange}
                                         type="tel"
+                                        placeholder="+57 300 123 4567"
                                         className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
                                     />
                                 </div>
@@ -245,24 +397,37 @@ const CheckoutPage: React.FC = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Ciudad</label>
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Departamento' : 'State/Province'} *
+                                    </label>
+                                    <select
+                                        required
+                                        name="department"
+                                        value={form.department}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none appearance-none"
+                                    >
+                                        <option value="" className="bg-[#1a1a1a]">
+                                            {lang === 'es' ? 'Seleccionar...' : 'Select...'}
+                                        </option>
+                                        {DEPARTAMENTOS_COLOMBIA.map(dpto => (
+                                            <option key={dpto} value={dpto} className="bg-[#1a1a1a]">
+                                                {dpto}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">
+                                        {lang === 'es' ? 'Ciudad' : 'City'} *
+                                    </label>
                                     <input
                                         required
                                         name="city"
                                         value={form.city}
                                         onChange={handleInputChange}
                                         type="text"
-                                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Departamento</label>
-                                    <input
-                                        required
-                                        name="department"
-                                        value={form.department}
-                                        onChange={handleInputChange}
-                                        type="text"
+                                        placeholder={lang === 'es' ? 'Bogotá' : 'City name'}
                                         className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors"
                                     />
                                 </div>
@@ -323,26 +488,50 @@ const CheckoutPage: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-3 border-t border-white/10 pt-6">
+                                    {/* Precio que el cliente vio (YA incluye IVA) */}
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-400">Subtotal</span>
-                                        <span>{formatPrice(cartTotal)}</span>
+                                        <span className="text-gray-400">
+                                            {lang === 'es' ? 'Productos' : 'Products'}
+                                        </span>
+                                        <span>{formatPrice(precioExhibido)}</span>
                                     </div>
+
+                                    {/* Desglose informativo del IVA (ya incluido en el precio) */}
+                                    <div className="bg-white/5 rounded-lg p-3 space-y-2">
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">
+                                            {lang === 'es' ? 'Desglose fiscal (IVA incluido)' : 'Tax breakdown (VAT included)'}
+                                        </p>
+                                        <div className="flex justify-between text-xs text-gray-500">
+                                            <span>{lang === 'es' ? 'Base gravable' : 'Taxable base'}</span>
+                                            <span>{formatPrice(baseGravable)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs text-gray-500">
+                                            <span>IVA (19%)</span>
+                                            <span>{formatPrice(ivaIncluido)}</span>
+                                        </div>
+                                    </div>
+
                                     {discount > 0 && (
                                         <div className="flex justify-between text-sm text-green-400">
-                                            <span>Descuento Miembro (10%)</span>
+                                            <span>{lang === 'es' ? 'Descuento Miembro (10%)' : 'Member Discount (10%)'}</span>
                                             <span>-{formatPrice(discount)}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-400">Envío</span>
+                                        <span className="text-gray-400">{lang === 'es' ? 'Envío' : 'Shipping'}</span>
                                         <span className={shippingCost === 0 && form.city ? "text-green-400 font-bold text-xs" : "text-white"}>
-                                            {form.city ? (shippingCost === 0 ? '¡GRATIS!' : formatPrice(shippingCost)) : 'Calculado en checkout'}
+                                            {form.city ? (shippingCost === 0 ? (lang === 'es' ? '¡GRATIS!' : 'FREE!') : formatPrice(shippingCost)) : (lang === 'es' ? 'Según destino' : 'Based on location')}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-xl font-serif pt-4 border-t border-white/10">
-                                        <span className="text-white">Total</span>
+                                        <span className="text-white">{lang === 'es' ? 'Total a Pagar' : 'Total to Pay'}</span>
                                         <span className="text-[#C5A065]">{formatPrice(finalTotal)}</span>
                                     </div>
+                                    <p className="text-[10px] text-gray-500 text-center italic">
+                                        {lang === 'es'
+                                            ? 'Los precios exhibidos ya incluyen IVA'
+                                            : 'Displayed prices already include VAT'}
+                                    </p>
                                 </div>
 
                                 <button

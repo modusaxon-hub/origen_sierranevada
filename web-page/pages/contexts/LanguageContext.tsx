@@ -123,6 +123,10 @@ const translations: Record<string, Record<Language, string>> = {
     'footer.enter_email': { es: 'Ingresa tu correo', en: 'Enter your email address' },
     'footer.sub_btn': { es: 'Suscribirse', en: 'Subscribe' },
     'footer.sub_success': { es: '¡Suscrito!', en: 'Subscribed!' },
+    'footer.check_email_hint': { es: 'Por favor revisa tu bandeja de entrada para confirmar.', en: 'Please check your inbox to confirm.' },
+    'footer.brand_desc': { es: 'Trayendo el espíritu de la montaña a tu ritual matutino. Cultivado de manera sostenible, de origen ético y tostado a la perfección.', en: 'Bringing the spirit of the mountain to your morning ritual. Sustainably grown, ethically sourced, and roasted to perfection.' },
+    'footer.privacy_note': { es: '* Respetamos tu privacidad. Sin spam, solo café.', en: '* We respect your privacy. No spam, just coffee.' },
+    'footer.habeas_data_label': { es: 'Acepto recibir información y el tratamiento de mis datos según la Política de Privacidad.', en: 'I agree to receive information and the processing of my data according to the Privacy Policy.' },
 
     // Common
     'common.loading': { es: 'Cargando...', en: 'Loading...' },
@@ -145,32 +149,35 @@ const translations: Record<string, Record<Language, string>> = {
     'dash.status.paid': { es: 'Confirmado', en: 'Confirmed' },
     'dash.status.shipped': { es: 'En camino', en: 'Shipped' },
     'dash.status.delivered': { es: 'Entregado', en: 'Delivered' },
-    'dash.status.cancelled': { es: 'Cancelado', en: 'Cancelled' }
+    'dash.status.cancelled': { es: 'Cancelado', en: 'Cancelled' },
+    'register.consent_label': { es: 'He leído y acepto los Términos y Condiciones y la Política de Privacidad de Origen Sierra Nevada.', en: 'I have read and accept the Terms and Conditions and the Privacy Policy of Origen Sierra Nevada.' },
+    'register.terms_link_text': { es: 'Términos y Condiciones', en: 'Terms and Conditions' },
+    'register.privacy_link_text': { es: 'Política de Privacidad', en: 'Privacy Policy' }
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [language, setLanguage] = useState<Language>('es');
-    const [currency, setCurrency] = useState<Currency>('COP');
+
+    // Currency is derived directly from language - no separate state needed
+    const currency: Currency = language === 'es' ? 'COP' : 'USD';
 
     const toggleLanguage = () => {
-        setLanguage(prev => {
-            const newLang = prev === 'es' ? 'en' : 'es';
-            setCurrency(newLang === 'es' ? 'COP' : 'USD');
-            return newLang;
-        });
+        setLanguage(prev => (prev === 'es' ? 'en' : 'es'));
     };
 
     const t = (key: string, defaultText: string = '') => {
         return translations[key]?.[language] || defaultText || key;
     };
 
-    const formatPrice = (priceUSD: number) => {
-        if (currency === 'COP') {
-            const priceCOP = priceUSD * 4000;
+    const formatPrice = (priceCOP: number) => {
+        if (language === 'es') {
+            // Español = mostrar en COP (moneda base)
             return `$${priceCOP.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
         } else {
+            // English = mostrar en USD (convertir desde COP)
+            const priceUSD = priceCOP / 4000;
             return `USD ${priceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
     };

@@ -19,10 +19,13 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const ProductManager = lazy(() => import('./pages/ProductManager'));
 const UserManager = lazy(() => import('./pages/UserManager'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
-const Catalog = lazy(() => import('./pages/Catalog'));
+
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const OrderManager = lazy(() => import('./pages/OrderManager'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
+const MyOrdersPage = lazy(() => import('./pages/MyOrdersPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 
 // Loading Placeholder
 const PageLoader = () => (
@@ -58,10 +61,16 @@ const App: React.FC = () => {
                                     <Route path="/ai-lab" element={<AiLabPage />} />
                                     <Route path="/login" element={<LoginPage />} />
                                     <Route path="/register" element={<RegisterPage />} />
-                                    <Route path="/catalog" element={<Catalog />} />
                                     <Route path="/checkout" element={<CheckoutPage />} />
+                                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                                    <Route path="/terms" element={<TermsPage />} />
 
-                                    {/* Customer Route */}
+                                    {/* Customer Routes */}
+                                    <Route path="/my-orders" element={
+                                        <ProtectedRoute requireAdmin={false}>
+                                            <MyOrdersPage />
+                                        </ProtectedRoute>
+                                    } />
                                     <Route path="/account" element={
                                         <ProtectedRoute requireAdmin={false}>
                                             <UserDashboard />

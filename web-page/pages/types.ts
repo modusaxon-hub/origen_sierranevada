@@ -29,6 +29,9 @@ export interface AuthState {
 export type Multilingual = Record<LanguageCode, string>;
 export type MultilingualTags = Record<LanguageCode, string[]>;
 
+// Categorías personalizadas del proyecto
+export type ProductCategory = 'cafetal' | 'accesorios' | 'antojitos';
+
 export interface ProductVariant {
     id: string;
     name: string; // e.g. "250g", "500g", "1kg" or "Small", "Large"
@@ -36,11 +39,20 @@ export interface ProductVariant {
     stock: number;
 }
 
+// Campos intrínsecos de personalidad del producto
+export interface ProductPersonality {
+    character?: Multilingual;      // Carácter del producto (ej: "Audaz y directo", "Suave y contemplativo")
+    personality?: Multilingual;    // Personalidad (ej: "Aventurero", "Reflexivo", "Elegante")
+    mood?: Multilingual;           // Estado de ánimo que evoca (ej: "Energizante", "Relajante")
+    archetype?: Multilingual;      // Arquetipo asociado (ej: "El Explorador", "El Sabio")
+    grind_options?: string[];      // Opciones de molienda disponibles (ej: ["En Grano", "Molido Medio"])
+}
+
 export interface Product {
     id: string;
-    category: 'coffee' | 'accessories' | 'derivatives';
+    category: ProductCategory;
     name: Multilingual;
-    price: number; // Base price (Starting at)
+    price: number; // Base price in COP (Colombian Pesos)
     image_url: string;
     stock: number; // General stock or aggregate
     description: Multilingual;
@@ -53,6 +65,12 @@ export interface Product {
     overlay_url?: string;
     variants?: ProductVariant[];
     created_at?: string;
+    weight: number; // Peso en gramos
+    origin: string; // Origen del café
+    available: boolean; // Disponible para venta
+
+    // Campos de personalidad y carácter
+    intrinsics?: ProductPersonality;
 }
 
 export interface ProductInput {

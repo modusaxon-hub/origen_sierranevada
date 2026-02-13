@@ -220,5 +220,55 @@ export const emailService = {
         } catch (error) {
             return { success: false, error };
         }
+    },
+
+    sendNewsletterWelcome: async (email: string) => {
+        try {
+            const { data, error } = await supabase.functions.invoke('send-email', {
+                body: {
+                    to: email,
+                    subject: '🌿 Bienvenido al Ritual de Origen Sierra Nevada',
+                    html: `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="utf-8">
+                            <style>
+                                body { margin: 0; padding: 0; background-color: #050806; font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #ffffff; }
+                                .container { max-width: 600px; margin: 40px auto; background-color: #050806; border: 1px solid #C5A065; border-radius: 16px; overflow: hidden; text-align: center; }
+                                .header { background-color: #C5A065; padding: 40px 20px; color: #050806; }
+                                .content { padding: 48px 32px; }
+                                h1 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal; color: #C5A065; }
+                                p { font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 24px; }
+                                .btn { display: inline-block; background-color: #C5A065; color: #050806; text-decoration: none; padding: 16px 32px; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 16px; }
+                                .footer { padding: 24px; background-color: #0a0e0c; color: rgba(255,255,255,0.4); font-size: 12px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div style="padding: 40px 0;">
+                                    <img src="${LOGO_URL}" width="100" alt="Origen Logo">
+                                </div>
+                                <div class="content">
+                                    <h1>El ciclo comienza</h1>
+                                    <p>Gracias por unirte a nuestra comunidad. Has dado el primer paso para descubrir el verdadero espíritu de la Sierra Nevada.</p>
+                                    <p>A partir de ahora, serás el primero en recibir consejos de preparación, acceso a cosechas exclusivas y noticias de nuestro laboratorio de IA.</p>
+                                    <a href="${BASE_URL}/#/subscription" class="btn">Explorar Suscripciones</a>
+                                </div>
+                                <div class="footer">
+                                    <p>© 2026 Origen Sierra Nevada. Todos los derechos reservados.</p>
+                                    <p>Respetamos tu privacidad y tu tiempo. Solo contenido de calidad.</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `
+                }
+            });
+            return { success: !error, data };
+        } catch (error) {
+            console.error('Error sending newsletter email:', error);
+            return { success: false, error };
+        }
     }
 };

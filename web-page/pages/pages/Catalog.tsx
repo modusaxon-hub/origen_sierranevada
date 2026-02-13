@@ -8,6 +8,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import ProductDetailsModal from '../components/ProductDetailsModal';
+
 
 const Catalog: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -22,6 +24,11 @@ const Catalog: React.FC = () => {
 
     // Dynamic state for selected variants in the catalog
     const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
+
+    // Detail Modal State
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -147,8 +154,15 @@ const Catalog: React.FC = () => {
                                         <h3 className="text-4xl font-serif text-white group-hover:text-[#C5A065] transition-colors duration-500 tracking-tight">
                                             {product.name[lang]}
                                         </h3>
-                                        <p className="text-white/40 text-xs leading-relaxed line-clamp-2 italic font-light">
+                                        <p className="text-white/40 text-[11px] leading-relaxed line-clamp-2 italic font-light">
                                             {product.description[lang]}
+                                            <button
+                                                onClick={() => { setSelectedProduct(product); setIsDetailsOpen(true); }}
+                                                className="ml-1 text-[#C5A065] hover:text-white transition-colors font-bold uppercase text-[9px] tracking-widest inline-flex items-center gap-0.5 group/link"
+                                            >
+                                                {lang === 'es' ? 'Conoce más' : 'Detail'}
+                                                <span className="material-icons-outlined text-[10px] group-hover/link:translate-x-0.5 transition-transform">east</span>
+                                            </button>
                                         </p>
                                     </div>
 
@@ -202,6 +216,15 @@ const Catalog: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Product Details Modal */}
+            {selectedProduct && (
+                <ProductDetailsModal
+                    product={selectedProduct}
+                    isOpen={isDetailsOpen}
+                    onClose={() => setIsDetailsOpen(false)}
+                />
+            )}
             <Footer />
         </div>
     );

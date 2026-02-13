@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { FlavorProfile, CoffeeFormat } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
 import SEO from '../components/SEO';
 
 const SubscriptionPage: React.FC = () => {
     const navigate = useNavigate();
     const { t, formatPrice, language } = useLanguage();
+    const { addItem } = useCart();
     const [flavorId, setFlavorId] = useState('chocolate');
     const [formatId, setFormatId] = useState('wholebean');
     const [frequencyId, setFrequencyId] = useState('biweekly');
@@ -60,7 +62,29 @@ const SubscriptionPage: React.FC = () => {
     const selectedFrequency = frequencies.find(f => f.id === frequencyId) || frequencies[1];
 
     const handleSubscribe = () => {
-        setShowSuccess(true);
+        const subscriptionProduct = {
+            id: '20',
+            category: 'coffee' as any,
+            name: {
+                es: `Suscripción: ${selectedFlavor.title} (${selectedFrequency.title})`,
+                en: `Subscription: ${selectedFlavor.title} (${selectedFrequency.title})`
+            },
+            price: 86400,
+            image_url: selectedFlavor.icon,
+            stock: 999,
+            description: { es: selectedFrequency.desc, en: selectedFrequency.desc },
+            story: { es: '', en: '' },
+            tags: { es: [], en: [] },
+            color: '#C5A065',
+            mask_type: 'static' as any,
+            weight: 340,
+            origin: 'Sierra Nevada',
+            available: true,
+            variants: []
+        };
+
+        addItem(subscriptionProduct, 1, selectedFormat.title);
+        navigate('/checkout');
     };
 
     return (
@@ -202,8 +226,8 @@ const SubscriptionPage: React.FC = () => {
                         </div>
                         <div className="text-center md:text-right flex flex-col items-center md:items-end">
                             <div className="flex items-baseline mb-4">
-                                <span className="text-sm text-gray-500 line-through mr-3">{formatPrice(24.00)}</span>
-                                <span className="text-4xl font-display font-bold text-gray-900 dark:text-white">{formatPrice(21.60)}</span>
+                                <span className="text-sm text-gray-500 line-through mr-3">{formatPrice(96000)}</span>
+                                <span className="text-4xl font-display font-bold text-gray-900 dark:text-white">{formatPrice(86400)}</span>
                                 <span className="text-sm text-gray-500 ml-1">{t('sub.shipment')}</span>
                             </div>
                             <button

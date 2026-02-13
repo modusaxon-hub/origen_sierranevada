@@ -1,0 +1,27 @@
+Análisis
+Planeación
+Maqueta y prototipo
+Repositorio: Diseño
+Backend : Supabase - Cliente
+servidor : Cliente
+base de datos supabase: cafemalusm@gmail.com - @-@UYpG29kf.K3Y
+
+Organization: Manuel Pertuz-Eng's Org
+Project Name: Origen Sierra Nevada SM
+Database Password: @M@nuel345116
+
+===========================================================================
+		ORIGEN SIERRA NEVADA
+===========================================================================
+
+Origen Sierra Nevada
+instrucciones de apertura.
+correr vite react.
+cd /d "G:\Mi unidad\GitHub\origen_sierranevada\web-page\pages"
+npm run dev
+
+en otra terminar correr
+C:\zrok_1.1.10\zrok.exe share reserved origen2025
+
+
+labs.google.com/pomelli

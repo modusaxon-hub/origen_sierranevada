@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origen Sierra Nevada - Premium Coffee Experience</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="public/favicon-light.svg">
+    <link rel="apple-touch-icon" href="public/favicon-light.svg">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C8AA6E", // Dorado Sierra (Unified Gold)
+                        "primary-hover": "#B6965A",
+                        "background-light": "#F9F8F6", // Mist White
+                        "background-dark": "#141E16", // Verde Origen Profundo (Deep Forest)
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1C2923", // Lighter Forest Green
+                        "text-main-light": "#1A1A1A",
+                        "text-main-dark": "#EAEAEA",
+                        "text-muted": "#8A8A8A",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        accent: ["Cinzel", "serif"],
+                        body: ["'Lato'", "'Montserrat'", "sans-serif"],
+                        organic: ["'Papyrus'", "fantasy"],
+                    },
+                    backgroundImage: {
+                        'mountain-pattern': "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')",
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'spin-slow': 'spin 400s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-up': 'fadeUp 1s ease-out forwards',
+                        'swipe-in-right': 'swipe-in-right 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                        'swipe-in-left': 'swipe-in-left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'swipe-in-right': {
+                            '0%': { opacity: '0', transform: 'translateX(-60px) scale(0.98)', filter: 'blur(10px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0) scale(1)', filter: 'blur(0)' },
+                        },
+                        'swipe-in-left': {
+                            '0%': { opacity: '0', transform: 'translateX(60px) scale(0.98)', filter: 'blur(10px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0) scale(1)', filter: 'blur(0)' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        /* Custom Utilities */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0B120D;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C5A065;
+            border-radius: 4px;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .gold-ring-metallic {
+            border: 4px solid #FFD700;
+            box-shadow:
+                0 0 20px rgba(255, 215, 0, 0.4),
+                inset 0 0 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 8px rgba(255, 255, 255, 0.5);
+            background: transparent;
+            /* No more yellow reflection */
+            z-index: 10;
+        }
+
+        /* 
+           Image-specific mask: Created a soft fade at the very bottom 
+           to ensure no straight edges are visible when floating.
+        */
+        .soft-bottom-edge {
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+        }
+
+        /*
+           Strict Circle Mask: Hides everything outside the gold ring.
+        */
+        .portal-mask-circle {
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, black 48%, transparent 51%);
+            mask-image: radial-gradient(circle at 50% 50%, black 48%, transparent 51%);
+        }
+
+        /*
+           Pop-out Mask: Allows the top of the image to exceed the ring
+           while keeping the bottom clipped.
+        */
+        .portal-mask-pop {
+            -webkit-mask-image:
+                linear-gradient(to bottom, black 45%, transparent 55%),
+                radial-gradient(circle at 50% 50%, black 48%, transparent 52%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to bottom, black 45%, transparent 55%),
+                radial-gradient(circle at 50% 50%, black 48%, transparent 52%);
+            mask-composite: add;
+        }
+
+        .fade-bottom-mask {
+            mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+        }
+
+        @keyframes float-hero-pop {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        .animate-float-hero-pop {
+            animation: float-hero-pop 5s ease-in-out infinite;
+        }
+
+        /* Premium Glow/Rim Light for the Bag */
+        .bag-rim-light {
+            filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 15px rgba(200, 170, 110, 0.4));
+            mix-blend-mode: plus-lighter;
+            pointer-events: none;
+        }
+
+        .gold-flare {
+            background: radial-gradient(circle at 50% 50%, rgba(200, 170, 110, 0.4) 0%, transparent 70%);
+            mix-blend-mode: color-dodge;
+        }
+
+        /* Shine Effect for Premium Buttons */
+        .btn-shine-container {
+            position: relative;
+            overflow: hidden !important;
+        }
+
+        .btn-shine-effect::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 25%;
+            height: 200%;
+            background: linear-gradient(to right,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.5) 50%,
+                    transparent 100%);
+            transform: rotate(30deg);
+            animation: shine-scan 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes shine-scan {
+            0% {
+                left: -60%;
+            }
+
+            15% {
+                left: 140%;
+            }
+
+            100% {
+                left: 140%;
+            }
+        }
+
+        /* Refined Golden Electric Glow for Login Button */
+        .electric-glow {
+            color: #C8AA6E;
+            filter: drop-shadow(0 0 2px rgba(200, 170, 110, 0.4));
+            animation: elegant-pulse 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes elegant-pulse {
+            0% {
+                filter: brightness(1) drop-shadow(0 0 2px rgba(200, 170, 110, 0.2));
+            }
+
+            100% {
+                filter: brightness(1.3) drop-shadow(0 0 8px rgba(200, 170, 110, 0.6));
+            }
+        }
+
+        /* Precise Magnetic Underline Effect */
+        .magnetic-line {
+            position: absolute;
+            bottom: 0px;
+            height: 1.5px;
+            background: #C8AA6E;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            box-shadow: 0 0 8px rgba(200, 170, 110, 0.3);
+        }
+
+        /* Dashboard & Auth Styles */
+        .glass-panel {
+            background: rgba(22, 32, 26, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(200, 170, 110, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-gradient {
+            background: radial-gradient(circle at top right, rgba(200, 170, 110, 0.1), transparent),
+                radial-gradient(circle at bottom left, rgba(20, 30, 22, 0.8), #0B120D);
+        }
+
+        .sidebar-item-active {
+            background: linear-gradient(to right, rgba(200, 170, 110, 0.2), transparent);
+            border-left: 3px solid #C8AA6E;
+            color: #C8AA6E;
+        }
+
+        .stat-card-glow {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(200, 170, 110, 0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+    </style>
+    <!-- React & ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+
+    <!-- React Router (UMD) -->
+    <script crossorigin src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-body transition-colors duration-300">
+    <div id="root"></div>
+    <!-- Load index.tsx as Babel script -->
+    <script type="text/babel" src="./index.tsx"></script>
+</body>
+
+</html>

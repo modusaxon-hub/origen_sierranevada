@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especificaciones Técnicas - Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2.5cm 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: white;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 70px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-top: 45px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            color: var(--origen-black);
+        }
+
+        .req-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+        }
+
+        .req-table th,
+        .req-table td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .req-table th {
+            background: #fafafa;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            letter-spacing: 0.1em;
+        }
+
+        .tag {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .tag-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .uc-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+        .uc-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--origen-gold);
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.75em;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Origen Sierra Nevada - Requirements & Use Cases</span>
+            <h1>Especificaciones del Sistema</h1>
+        </header>
+
+        <section>
+            <h2>🟢 Requisitos Funcionales</h2>
+            <table class="req-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Módulo</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RF-01</td>
+                        <td>Catálogo</td>
+                        <td>Soporte i18n dinámico (ES/EN).</td>
+                        <td><span class="tag tag-success">Logrado</span></td>
+                    </tr>
+                    <tr>
+                        <td>RF-02</td>
+                        <td>Gobernanza</td>
+                        <td>Aprobación manual de miembros.</td>
+                        <td><span class="tag tag-success">Logrado</span></td>
+                    </tr>
+                    <tr>
+                        <td>RF-03</td>
+                        <td>Checkout</td>
+                        <td>Guest Checkout y cálculo DIAN.</td>
+                        <td><span class="tag tag-success">Logrado</span></td>
+                    </tr>
+                    <tr>
+                        <td>RF-04</td>
+                        <td>Brandbook</td>
+                        <td>Sistema visual reactivo con exportación PDF.</td>
+                        <td><span class="tag tag-success">Logrado</span></td>
+                    </tr>
+                    <tr>
+                        <td>RF-05</td>
+                        <td>Pagos</td>
+                        <td>Sistema de carga de comprobantes (Proof of Payment).</td>
+                        <td><span class="tag tag-success">Logrado</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section>
+            <h2>👥 Casos de Uso Quirúrgicos</h2>
+
+            <div class="uc-card">
+                <div class="uc-title">UC-ADMIN-01: Aprobación del Círculo Interno</div>
+                <p><strong>Actor:</strong> Administrador</p>
+                <p><strong>Tensión:</strong> La exclusividad de la marca depende de este filtro manual. Si falla, el
+                    Brandbook queda expuesto a terceros.</p>
+                <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 15px 0;">
+                <p><small>1. Localización de usuario en "Pendientes" → 2. Validación de mérito → 3. Concesión de acceso
+                        → 4. Activación de Welcome Email.</small></p>
+            </div>
+
+            <div class="uc-card">
+                <div class="uc-title">UC-ADMIN-02: Configuración de Esencia (Intrinsics)</div>
+                <p><strong>Actor:</strong> Curador de Marca</p>
+                <p><strong>Tensión:</strong> Sin arquetipos definidos, el producto pierde su valor narrativo
+                    diferencial.</p>
+                <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 15px 0;">
+                <p><small>1. Elección de café → 2. Asignación de Arquetipo/Mood → 3. Publicación instantánea en
+                        Despensa.</small></p>
+            </div>
+
+            <div class="uc-card">
+                <div class="uc-title">UC-CLIENT-03: Validación de Pago Manual</div>
+                <p><strong>Actor:</strong> Cliente</p>
+                <p><strong>Tensión:</strong> La confianza en la transferencia depende de la capacidad de reportar el
+                    pago rápidamente.</p>
+                <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 15px 0;">
+                <p><small>1. Finalización de pedido → 2. Captura de comprobante → 3. Subida a Supabase Storage → 4.
+                        Notificación automática a Admin.</small></p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            Documentador Técnico Pro | v2.1.0 | Origen Sierra Nevada SM
+        </footer>
+    </div>
+</body>
+
+</html>

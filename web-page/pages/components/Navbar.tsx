@@ -34,6 +34,7 @@ const Navbar: React.FC = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
     // Close menus on route change
     useEffect(() => {
@@ -52,6 +53,19 @@ const Navbar: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (isUserDropdownOpen && !target.closest('.user-dropdown')) {
+                setIsUserDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [isUserDropdownOpen]);
+
 
     // ... (rest of search/cart logic)
     const searchResults: any[] = [];
@@ -69,7 +83,7 @@ const Navbar: React.FC = () => {
                     {/* Tier 1: Logo Throne (Centered) */}
                     <div className="w-full flex justify-center py-5 border-b border-white/5 cursor-pointer" onClick={() => navigate('/')}>
                         <Logo
-                            className="h-9 sm:h-11 md:h-14 w-auto object-contain drop-shadow-xl brightness-110"
+                            className="h-[28px] sm:h-[36px] md:h-[46px] w-auto object-contain drop-shadow-xl brightness-110"
                         />
                     </div>
 
@@ -124,18 +138,15 @@ const Navbar: React.FC = () => {
                         onClick={() => navigate('/')}
                     >
                         <Logo
-                            className={`transition-all duration-500 ${isScrolled ? 'h-9 xl:h-10' : 'h-14 xl:h-16'} w-auto drop-shadow-2xl brightness-110 group-hover:scale-105 transform`}
+                            className={`transition-all duration-500 ${isScrolled ? 'h-[28px] xl:h-[34px]' : 'h-[46px] xl:h-[52px]'} w-auto drop-shadow-2xl brightness-110 group-hover:scale-105 transform`}
                         />
                     </div>
 
 
-                    {/* Desktop Menu - Conditional or Simplified */}
-                    <div className="flex items-center space-x-8 font-display text-sm tracking-widest text-white">
-                        {!isHome && (
-                            <Link to="/catalog" className="hover:text-primary transition-colors text-[10px] font-bold uppercase tracking-[0.3em]">Catálogo Completo</Link>
-                        )}
+                    {/* Desktop Menu - Simplified for Single Page Concept */}
+                    <div className="flex items-center space-x-10 font-display text-sm tracking-[0.2em] text-white/90">
                         {isAdmin && (
-                            <Link to="/admin" className="hover:text-white transition-colors text-[#C5A065] border border-[#C5A065]/50 px-3 py-1 rounded-full bg-[#C5A065]/5 flex items-center gap-2 hover:bg-[#C5A065] hover:border-[#C5A065] hover:text-black transition-all">
+                            <Link to="/admin" className="hover:text-white transition-colors text-primary border border-primary/40 px-3 py-1 rounded-full bg-primary/10 flex items-center gap-2 hover:bg-primary shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all">
                                 <span className="material-icons-outlined text-sm">admin_panel_settings</span>
                                 ADMIN
                             </Link>
@@ -146,41 +157,81 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center space-x-4 text-white">
                         {user ? (
                             <div className="flex items-center gap-3">
-                                <div
-                                    className="hidden xl:block text-right cursor-pointer hover:opacity-80 transition-opacity"
-                                    onClick={() => navigate(isAdmin ? '/admin' : '/account')}
-                                    title={isAdmin ? "Ir al Panel Admin" : "Ir a mi cuenta"}
-                                >
-                                    <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{isAdmin ? 'MODO' : 'HOLA'}</p>
-                                    <p className="text-xs text-white max-w-[100px] truncate">{isAdmin ? 'ADMIN' : user.email?.split('@')[0]}</p>
+                                {/* User Dropdown */}
+                                <div className="relative user-dropdown">
+                                    <div
+                                        onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                                        className="hidden xl:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-lg hover:bg-white/5"
+                                        title="Mi cuenta"
+                                    >
+                                        <div className="text-right">
+                                            <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{isAdmin ? 'MODO' : 'HOLA'}</p>
+                                            <p className="text-xs text-white max-w-[100px] truncate">{isAdmin ? 'ADMIN' : user.email?.split('@')[0]}</p>
+                                        </div>
+                                        <span className={`material-icons-outlined text-white/60 text-sm transition-transform ${isUserDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                                    </div>
+
+                                    {/* Dropdown Menu */}
+                                    {isUserDropdownOpen && (
+                                        <div className="absolute right-0 top-full mt-2 w-56 bg-[#0A0C0B] border border-white/10 rounded-lg shadow-2xl overflow-hidden z-50 animate-fade-in">
+                                            <div className="p-2 border-b border-white/10">
+                                                <p className="text-xs text-white/40 uppercase tracking-wider px-3 py-2">Mi Cuenta</p>
+                                            </div>
+
+                                            {!isAdmin && (
+                                                <Link
+                                                    to="/my-orders"
+                                                    onClick={() => setIsUserDropdownOpen(false)}
+                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group/item"
+                                                >
+                                                    <span className="material-icons-outlined text-[#C8AA6E] group-hover/item:scale-110 transition-transform">receipt_long</span>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm text-white font-medium">Mis Pedidos</p>
+                                                        <p className="text-xs text-white/40">Historial de compras</p>
+                                                    </div>
+                                                </Link>
+                                            )}
+
+                                            <Link
+                                                to={isAdmin ? '/admin' : '/account'}
+                                                onClick={() => setIsUserDropdownOpen(false)}
+                                                className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group/item"
+                                            >
+                                                <span className="material-icons-outlined text-[#C8AA6E] group-hover/item:scale-110 transition-transform">
+                                                    {isAdmin ? 'admin_panel_settings' : 'person'}
+                                                </span>
+                                                <div className="flex-1">
+                                                    <p className="text-sm text-white font-medium">{isAdmin ? 'Panel Admin' : 'Mi Perfil'}</p>
+                                                    <p className="text-xs text-white/40">{isAdmin ? 'Gestión total' : 'Configuración'}</p>
+                                                </div>
+                                            </Link>
+
+                                            <div className="border-t border-white/10 p-2">
+                                                <button
+                                                    onClick={async () => {
+                                                        setIsUserDropdownOpen(false);
+                                                        await import('../services/authService').then(m => m.authService.signOut());
+                                                        window.location.href = '/';
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors rounded-lg group/item"
+                                                >
+                                                    <span className="material-icons-outlined text-red-400 group-hover/item:scale-110 transition-transform">logout</span>
+                                                    <p className="text-sm text-red-400 font-medium">Cerrar Sesión</p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                <button
-                                    onClick={async () => {
-                                        await import('../services/authService').then(m => m.authService.signOut());
-                                        window.location.href = '/';
-                                    }}
-                                    className="p-2 rounded-full hover:bg-white/10 hover:text-red-400 transition-colors"
-                                    title="Cerrar Sesión"
-                                >
-                                    <span className="material-icons-outlined">logout</span>
-                                </button>
                             </div>
                         ) : (
                             <button
                                 onClick={() => navigate('/login')}
-                                className="p-2 rounded-full hover:bg-white/10 hover:text-primary transition-colors"
+                                className="p-2 rounded-full hover:bg-white/10 hover:text-primary transition-colors electric-glow"
                                 title="Iniciar Sesión"
                             >
                                 <span className="material-icons-outlined">login</span>
                             </button>
                         )}
-                        <button
-                            onClick={() => navigate('/ai-lab')}
-                            className="p-2 rounded-full hover:bg-white/10 hover:text-primary transition-colors"
-                            title={t('nav.ai')}
-                        >
-                            <span className="material-icons-outlined">science</span>
-                        </button>
                         <button
                             onClick={() => setIsSearchOpen(true)}
                             className="p-2 rounded-full hover:bg-white/10 hover:text-primary transition-colors"
@@ -250,8 +301,12 @@ const Navbar: React.FC = () => {
                     )}
 
                     <Link to="/" className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.home')}</Link>
-                    {!isHome && (
-                        <Link to="/catalog" className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3" onClick={() => setIsMobileMenuOpen(false)}>CATÁLOGO</Link>
+
+                    {user && !isAdmin && (
+                        <Link to="/my-orders" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3 flex items-center justify-between">
+                            Mis Pedidos
+                            <span className="material-icons-outlined text-[#C5A065]">receipt_long</span>
+                        </Link>
                     )}
 
                     {isAdmin && (

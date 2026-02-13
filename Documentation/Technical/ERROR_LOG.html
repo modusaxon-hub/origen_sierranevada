@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora de Errores - Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+            --bg-paper: #ffffff;
+            --success: #2e7d32;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: var(--bg-paper);
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 70px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-top: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            color: var(--origen-black);
+        }
+
+        .error-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+            position: relative;
+        }
+
+        .error-status {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #e8f5e9;
+            color: var(--success);
+        }
+
+        .error-card strong {
+            color: var(--origen-gold);
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .error-title {
+            font-family: 'Playfair Display', serif;
+            display: block;
+            margin: 10px 0;
+            font-size: 1.4em;
+            color: var(--origen-black);
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.75em;
+            color: #999;
+        }
+
+        .no-print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--origen-gold);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="no-print-btn no-print" onclick="window.print()">🖨️ Imprimir Bitácora</button>
+
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Origen Sierra Nevada - Syslog</span>
+            <h1>Bitácora de Errores (Error Log)</h1>
+        </header>
+
+        <section>
+            <div class="error-card">
+                <span class="error-status">Resuelto</span>
+                <strong>[2026-02-12] Infraestructura / Red</strong>
+                <span class="error-title">Error 404 en Túnel zrok</span>
+                <p>Resolución mediante reserva manual del share permanente <code>origen2025</code> y actualización de
+                    rutas de acceso.</p>
+            </div>
+
+            <div class="error-card">
+                <span class="error-status">Resuelto</span>
+                <strong>[2026-02-06] Lógica de Negocio</strong>
+                <span class="error-title">IVA Sumado al Precio (Incorrecto)</span>
+                <p>El sistema sumaba el 19% de IVA al precio exhibido. Se corrigió para que el total coincida con el
+                    precio en estante, desglosando base e impuesto según norma DIAN.</p>
+            </div>
+
+            <div class="error-card">
+                <span class="error-status">Resuelto</span>
+                <strong>[2026-02-04] Frontend / Assets</strong>
+                <span class="error-title">Pérdida de Diéresis en Logo (ü)</span>
+                <p>Sustitución de asset PNG defectuoso por vector SVG limpio (6KB), mejorando resolución y corrección
+                    ortográfica en "Malu".</p>
+            </div>
+
+            <p><em>(Bitácora completa disponible en el repositorio central)</em></p>
+        </section>
+
+        <footer class="footer">
+            Documento generado por Agente Documentador Técnico Pro | v2.2.0 | Origen Sierra Nevada SM
+        </footer>
+    </div>
+</body>
+
+</html>

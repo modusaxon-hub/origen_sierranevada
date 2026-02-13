@@ -11,7 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&amp;family=Papyrus&amp;family=Manrope:wght@400;500;700&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;600;700&family=Manrope:wght@400;500;700&display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -30,9 +30,10 @@
                         "background-dark": "#171b18",
                     },
                     fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
+                        "display": ["Playfair Display", "serif"],
                         "serif": ["Playfair Display", "serif"],
-                        "sans": ["Papyrus", "fantasy"]
+                        "sans": ["Montserrat", "sans-serif"],
+                        "organic": ["Papyrus", "fantasy"]
                     },
                     borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
                 },
@@ -910,19 +911,46 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- Sans -->
+                            <!-- Sans - Montserrat -->
                             <div>
-                                <div class="flex flex-col items-center justify-center text-center p-8">
-                                    <h3 class="font-sans text-xl text-white">Papyrus</h3>
-                                    <p class="text-gold/60 mt-2">Secundaria - SIERRA NEVADA</p>
-                                    <div class="mt-6 space-y-2">
-                                        <p class="font-sans text-4xl text-gold">Aa Bb Cc Dd</p>
-                                        <p class="font-sans text-white/70">Regular, 400</p>
-                                    </div>
-                                    <p class="font-sans text-sm text-white/50 mt-4">
-                                        Tipografía distintiva para subtítulo del logo
-                                    </p>
+                                <div class="flex items-baseline gap-4 mb-6">
+                                    <span class="text-xs uppercase tracking-[0.3em] text-white/40 font-bold">Secondary
+                                        Font</span>
+                                    <h3 class="font-sans text-2xl text-gold">Montserrat</h3>
                                 </div>
+                                <div class="space-y-6">
+                                    <p class="font-sans text-5xl md:text-7xl leading-none">Aa Bb Cc</p>
+                                    <p class="font-sans text-lg text-white/80 leading-relaxed font-light">
+                                        Nuestra fuente de <strong>cuerpo y funcionalidad</strong>. Elegida por su
+                                        extrema legibilidad en pantallas y su equilibrio con la ornamentación de la
+                                        fuente primaria.
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div class="space-y-1">
+                                            <p class="text-[10px] text-gold uppercase tracking-widest font-bold">Cuerpo
+                                                de Texto</p>
+                                            <p class="font-sans font-light">Light 300 / Regular 400</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p class="text-[10px] text-gold uppercase tracking-widest font-bold">Botones
+                                                / Nav</p>
+                                            <p class="font-sans font-bold">Semibold 600 / Bold 700</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accent - Papyrus -->
+                            <div>
+                                <div class="flex items-baseline gap-4 mb-6">
+                                    <span class="text-xs uppercase tracking-[0.3em] text-white/40 font-bold">Accent
+                                        Font</span>
+                                    <h3 class="text-2xl text-gold" style="font-family: 'Papyrus', fantasy;">Papyrus</h3>
+                                </div>
+                                <p class="text-sm text-white/50 italic leading-relaxed"
+                                    style="font-family: 'Papyrus', fantasy;">
+                                    Utilizada exclusivamente para elementos orgánicos y el subtítulo del logotipo.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -931,9 +959,9 @@
                             <p class="text-[10px] uppercase tracking-widest text-gold mb-8 font-bold">Ejemplos de
                                 Jerarquía</p>
                             <h1 class="font-serif text-5xl text-white mb-4">El Origen del Sabor</h1>
-                            <h2 class="font-sans text-xs uppercase tracking-[0.4em] text-white/40 mb-8">Capítulo I: El
-                                Terroir</h2>
-                            <p class="font-sans text-base text-white/70 leading-relaxed">
+                            <h2 class="font-sans text-xs uppercase tracking-[0.4em] text-white/40 mb-8 font-semibold">
+                                Capítulo I: El Terroir</h2>
+                            <p class="font-sans text-base text-white/70 leading-relaxed font-light">
                                 Cultivado a más de 1,800 metros sobre el nivel del mar, nuestro grano desarrolla notas
                                 complejas de chocolate negro y frutos rojos que solo el microclima de la Sierra Nevada
                                 puede otorgar.
@@ -942,11 +970,11 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="p-6 border border-white/10 rounded-lg">
                                 <p class="font-serif text-3xl mb-2 italic">Bold Italic</p>
-                                <p class="text-[10px] text-white/30 uppercase">Uso en citas</p>
+                                <p class="text-[10px] text-white/30 uppercase">Uso en citas (Playfair)</p>
                             </div>
                             <div class="p-6 border border-white/10 rounded-lg">
-                                <p class="font-sans font-semibold text-xl mb-2">Semibold 600</p>
-                                <p class="text-[10px] text-white/30 uppercase">Subtitulares</p>
+                                <p class="font-sans font-bold text-xl mb-2 uppercase tracking-widest">BOTÓN</p>
+                                <p class="text-[10px] text-white/30 uppercase">Interacción (Montserrat)</p>
                             </div>
                         </div>
                     </div>
