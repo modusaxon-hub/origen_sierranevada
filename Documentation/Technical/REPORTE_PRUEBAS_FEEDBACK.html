@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Pruebas y Feedback - Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+            --bg-paper: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: var(--bg-paper);
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 70px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            margin-top: 30px;
+            color: var(--origen-black);
+            border-left: 4px solid var(--origen-gold);
+            padding-left: 15px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pass {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-feedback {
+            background: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f9f9f9;
+            width: 30%;
+        }
+
+        .comment-box {
+            background: #fcfcfc;
+            border: 1px dashed var(--origen-gold);
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 80px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .feature-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        button.print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--origen-gold);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <button class="print-btn no-print" onclick="window.print()">📥 Imprimir a PDF</button>
+
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Quality Assurance - Origen Sierra Nevada</span>
+            <h1>Reporte de Pruebas y Retroalimentación</h1>
+            <p><small>Fecha de Evaluación: 13 de Febrero, 2026 | Responsable: Antigravity AI</small></p>
+        </header>
+
+        <section>
+            <h2>1. Resumen de Smoke Test (Prueba de Humo)</h2>
+            <p>Se ejecutó un ciclo completo de compra desde el catálogo hasta el registro final en base de datos.</p>
+
+            <table>
+                <tr>
+                    <th>Caso de Prueba</th>
+                    <th>Estado</th>
+                    <th>Resultado Técnico</th>
+                </tr>
+                <tr>
+                    <td>Carga de Catálogo</td>
+                    <td><span class="status-badge status-pass">PASÓ</span></td>
+                    <td>Renderizado correcto de productos y variantes (Grano/Molido).</td>
+                </tr>
+                <tr>
+                    <td>Flujo de Carrito</td>
+                    <td><span class="status-badge status-pass">PASÓ</span></td>
+                    <td>Persistencia de items y cálculo dinámico de subtotales.</td>
+                </tr>
+                <tr>
+                    <td>Checkout & Envío</td>
+                    <td><span class="status-badge status-pass">PASÓ</span></td>
+                    <td>Validación de campos DIAN y cálculo de envío exitoso.</td>
+                </tr>
+                <tr>
+                    <td>Integración Supabase</td>
+                    <td><span class="status-badge status-pass">PASÓ</span></td>
+                    <td>Orden registrada con ID único en tabla 'orders'.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>2. Mejoras Implementadas (Fase 11)</h2>
+            <div class="feature-card">
+                <strong>📸 Módulo de Comprobantes:</strong>
+                <p>Se activó la carga de archivos (JPG, PNG, PDF) tras la compra. Se optimizó el feedback visual para
+                    eliminar alertas del navegador.</p>
+                <div class="comment-box">
+                    [INSERTAR COMENTARIOS DEL USUARIO AQUÍ SOBRE LA CARGA DE COMPROBANTES]
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <strong>🏛️ Panel de Usuario (Dashboard):</strong>
+                <p>Unificación de colores y estados de pedido (Esperando Pago, Pagado, Enviado) con el panel
+                    administrativo.</p>
+                <div class="comment-box">
+                    [INSERTAR COMENTARIOS DEL USUARIO AQUÍ SOBRE EL DASHBOARD]
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Espacio para Retroalimentación Técnica</h2>
+            <p>Por favor, inserta aquí cualquier observación adicional sobre el comportamiento de la app o ajustes de
+                diseño necesarios.</p>
+            <div class="comment-box" style="min-height: 200px;">
+                [ESPACIO LIBRE PARA COMENTARIOS GENERALES Y DECISIONES PENDIENTES]
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Próximos Pasos</h2>
+            <ul>
+                <li>Validación de notificaciones por correo (Resend).</li>
+                <li>Pruebas de concurrencia en inventario.</li>
+                <li>Revisión de responsive en dispositivos móviles específicos.</li>
+            </ul>
+        </section>
+
+        <footer>
+            Origen Sierra Nevada - Documento de Control de Calidad v1.0
+        </footer>
+    </div>
+</body>
+
+</html>

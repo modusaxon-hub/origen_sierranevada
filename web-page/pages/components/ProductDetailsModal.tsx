@@ -104,23 +104,57 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                             <div className="space-y-8 md:space-y-12 animate-fade-in text-left">
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                                     {[
-                                        { label: lang === 'es' ? 'Origen' : 'Origin', val: 'Sierra Nevada' },
-                                        { label: lang === 'es' ? 'Altitud' : 'Altitude', val: '1,800 msnm' },
-                                        { label: lang === 'es' ? 'Procesamiento' : 'Processing', val: 'Lavado' },
-                                        { label: lang === 'es' ? 'Puntaje SCA' : 'SCA Score', val: product.score || '86+' }
+                                        { label: lang === 'es' ? 'Origen' : 'Origin', val: product.origin || 'Sierra Nevada' },
+                                        { label: lang === 'es' ? 'Altitud' : 'Altitude', val: '1,500 - 1,900 msnm' },
+                                        { label: lang === 'es' ? 'Procesamiento' : 'Processing', val: 'Lavado / Proceso Natural' },
+                                        { label: lang === 'es' ? 'Tipo' : 'Type', val: product.intrinsics?.grind_options?.join(', ') || (lang === 'es' ? 'En Grano' : 'Whole Bean') }
                                     ].map((item, i) => (
                                         <div key={i} className="space-y-2">
                                             <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest">{item.label}</p>
-                                            <p className="text-lg md:text-xl text-white font-serif">{item.val}</p>
+                                            <p className="text-sm md:text-base text-white font-serif">{item.val}</p>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="p-6 md:p-8 border border-white/5 rounded-xl md:rounded-2xl bg-white/[0.01]">
-                                    <p className="text-xs md:text-sm text-white/40 italic leading-relaxed">
-                                        {lang === 'es'
-                                            ? "Cada grano ha sido seleccionado bajo la supervisión de expertos tostadores para asegurar que la frecuencia de la montaña llegue intacta a su taza."
-                                            : "Each bean has been selected under the supervision of expert roasters to ensure the mountain's frequency reaches your cup intact."}
-                                    </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                                    <div className="space-y-4">
+                                        <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-[0.3em]">{lang === 'es' ? 'Perfiles de Molienda' : 'Grind Profiles'}</p>
+                                        <div className="space-y-4">
+                                            <div className="flex gap-4 items-start">
+                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">settings_input_component</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Fina' : 'Fine'}</p>
+                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Espresso o Greca. Extrae la máxima intensidad.' : 'Ideal for Espresso or Moka pot. Extracts maximum intensity.'}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-4 items-start">
+                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">coffee_maker</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Media' : 'Medium'}</p>
+                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Filtrados, Chemex o V60. Equilibrio perfecto.' : 'Ideal for Filtered, Chemex or V60. Perfect balance.'}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-4 items-start">
+                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">filter_vintage</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Gruesa' : 'Coarse'}</p>
+                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Prensa Francesa o Cold Brew. Dulzura prolongada.' : 'Ideal for French Press or Cold Brew. Lingering sweetness.'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="p-6 md:p-8 border border-white/5 rounded-xl md:rounded-2xl bg-white/[0.01] flex flex-col justify-center">
+                                        <p className="text-xs md:text-sm text-white/40 italic leading-relaxed text-center">
+                                            {lang === 'es'
+                                                ? "Cada grano ha sido seleccionado bajo la supervisión de expertos tostadores para asegurar que la frecuencia de la montaña llegue intacta a su taza."
+                                                : "Each bean has been selected under the supervision of expert roasters to ensure the mountain's frequency reaches your cup intact."}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -140,7 +174,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

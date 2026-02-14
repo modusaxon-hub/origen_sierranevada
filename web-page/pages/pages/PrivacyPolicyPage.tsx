@@ -40,7 +40,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 }
             ],
             footerContact: '¿Dudas sobre tus datos?',
-            footerAction: 'Escríbenos a cafemalusm@gmail.com',
+            footerAction: 'Escríbenos a origensierranevadasm@gmail.com',
             legalNotice: 'Origen Sierra Nevada S.A.S. actúa como responsable del tratamiento de datos personales.'
         },
         en: {
@@ -76,7 +76,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 }
             ],
             footerContact: 'Questions about your data?',
-            footerAction: 'Email us at cafemalusm@gmail.com',
+            footerAction: 'Email us at origensierranevadasm@gmail.com',
             legalNotice: 'Origen Sierra Nevada S.A.S. is the controller of your personal data.'
         }
     };

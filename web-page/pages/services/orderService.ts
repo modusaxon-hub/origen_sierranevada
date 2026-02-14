@@ -20,6 +20,7 @@ export interface Order {
     shipping_address: any;
     payment_method?: string;
     order_items: OrderItem[];
+    metadata?: any;
 }
 
 export const orderService = {
@@ -27,7 +28,7 @@ export const orderService = {
      * Obtiene todos los pedidos del usuario autenticado
      * RLS se encarga automáticamente del filtrado por user_id
      */
-    getUserOrders: async () => {
+    getUserOrders: async (userId: string) => {
         const { data, error } = await supabase
             .from('orders')
             .select(`
@@ -40,6 +41,7 @@ export const orderService = {
                     )
                 )
             `)
+            .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
         return { data: data as Order[] | null, error };
@@ -144,8 +146,13 @@ export const orderService = {
             .eq('id', orderId)
             .single();
 
+        // Parseamos los metadatos actuales por si vienen como string
+        const currentMetadata = typeof order?.metadata === 'string'
+            ? JSON.parse(order.metadata)
+            : (order?.metadata || {});
+
         const updatedMetadata = {
-            ...order?.metadata,
+            ...currentMetadata,
             payment_proof_url: publicUrl,
             proof_uploaded_at: new Date().toISOString()
         };

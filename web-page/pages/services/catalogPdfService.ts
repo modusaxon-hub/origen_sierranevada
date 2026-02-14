@@ -326,7 +326,7 @@ story and distinctive character.`;
         pdf.setTextColor(245, 245, 245);
 
         const contacts = [
-            'Email: cafemalusm@gmail.com',
+            'Email: origensierranevadasm@gmail.com',
             'WhatsApp: +57 300 123 4567',
             'Instagram: @origensierranevada',
             '',

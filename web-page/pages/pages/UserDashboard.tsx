@@ -34,15 +34,8 @@ const UserDashboard: React.FC = () => {
         navigate('/');
     };
 
-    const getStatusConfig = (status: Order['status']) => {
-        switch (status) {
-            case 'pending': return { icon: 'hourglass_empty', color: 'text-amber-400', label: t('dash.status.pending') };
-            case 'paid': return { icon: 'check_circle', color: 'text-green-400', label: t('dash.status.paid') };
-            case 'shipped': return { icon: 'local_shipping', color: 'text-blue-400', label: t('dash.status.shipped') };
-            case 'delivered': return { icon: 'verified', color: 'text-[#C5A065]', label: t('dash.status.delivered') };
-            case 'cancelled': return { icon: 'cancel', color: 'text-red-400', label: t('dash.status.cancelled') };
-            default: return { icon: 'help_outline', color: 'text-gray-400', label: status };
-        }
+    const getStatusConfig = (status: string) => {
+        return orderService.getStatusConfig(status);
     };
 
     return (
@@ -181,7 +174,7 @@ const UserDashboard: React.FC = () => {
                                                 <div key={order.id} className="group bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden hover:border-[#C5A065]/30 transition-all duration-500">
                                                     <div className="p-8 flex flex-col md:flex-row gap-8 items-center">
                                                         {/* Status Icon Area */}
-                                                        <div className={`w-20 h-20 rounded-2xl bg-black/40 border border-white/5 flex flex-col items-center justify-center ${status.color}`}>
+                                                        <div className={`w-20 h-20 rounded-2xl ${status.bgColor} border border-white/5 flex flex-col items-center justify-center ${status.color}`}>
                                                             <span className="material-icons-outlined text-3xl mb-1">{status.icon}</span>
                                                             <span className="text-[8px] font-bold uppercase tracking-widest">{status.label}</span>
                                                         </div>
@@ -206,10 +199,23 @@ const UserDashboard: React.FC = () => {
                                                             <p className="text-2xl font-serif text-[#C5A065]">{formatPrice(order.total_amount)}</p>
                                                         </div>
 
-                                                        {/* Action */}
-                                                        <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all">
-                                                            <span className="material-icons-outlined">chevron_right</span>
-                                                        </button>
+                                                        {/* Action & Proof */}
+                                                        <div className="flex flex-col items-center gap-3">
+                                                            {order.metadata?.payment_proof_url && (
+                                                                <a
+                                                                    href={order.metadata.payment_proof_url}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-white/40 font-bold uppercase tracking-widest hover:bg-[#C5A065]/10 hover:text-[#C5A065] transition-all"
+                                                                >
+                                                                    <span className="material-icons-outlined text-xs">receipt</span>
+                                                                    Comprobante
+                                                                </a>
+                                                            )}
+                                                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all">
+                                                                <span className="material-icons-outlined">chevron_right</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );

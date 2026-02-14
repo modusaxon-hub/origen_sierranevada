@@ -225,6 +225,25 @@ const ivaIncluido = precioExhibido - baseGravable;
             </ul>
         </section>
 
+        <p>El flujo se refuerza con la carga de comprobantes en tiempo real para agilizar la bitácora
+            administrativa.</p>
+        </section>
+
+        <section>
+            <h2>📦 Logística y Seguimiento Público</h2>
+            <div class="decision-badge" style="background: #e8f5e9; border-color: #4caf50; color: #2e7d32;">✓
+                ESTRATEGIA: Seguimiento Sin Sesión</div>
+            <p>Para mejorar la retención de usuarios invitados (no registrados), se ha implementado un sistema de
+                seguimiento público basado en <code>orderId</code>.</p>
+            <ul>
+                <li><strong>Seguridad por Ofuscación:</strong> El ID de la orden actúa como llave única de acceso.</li>
+                <li><strong>Flujo de Despacho:</strong> El estado <code>shipped</code> es bloqueante y requiere que el
+                    administrador adjunte nota de guía y comprobante visual.</li>
+                <li><strong>Notificaciones:</strong> Disparo automático de correos transaccionales con metadatos de
+                    logística (guía + imagen).</li>
+            </ul>
+        </section>
+
         <footer class="footer">
             Documento generado por Agente Documentador Técnico Pro | v2.2.0 | Origen Sierra Nevada SM
         </footer>

@@ -270,5 +270,69 @@ export const emailService = {
             console.error('Error sending newsletter email:', error);
             return { success: false, error };
         }
+    },
+
+    sendStatusUpdateEmail: async (email: string, fullName: string, orderId: string, newStatus: string, shippingDetails?: { note?: string, receiptUrl?: string }) => {
+        const statuses: any = {
+            'pending_payment': { label: 'Esperando Pago', emoji: '⏳', color: '#FF7043' },
+            'pending': { label: 'Por Confirmar', emoji: '🧐', color: '#FFB74D' },
+            'paid': { label: 'Pago Confirmado', emoji: '✅', color: '#66BB6A' },
+            'processing': { label: 'Preparando tu Café', emoji: '☕', color: '#C5A065' },
+            'shipped': { label: 'Pedido Enviado', emoji: '🚚', color: '#42A5F5' },
+            'delivered': { label: 'Entregado', emoji: '🏠', color: '#AB47BC' },
+            'cancelled': { label: 'Pedido Cancelado', emoji: '❌', color: '#EF5350' }
+        };
+
+        const current = statuses[newStatus] || { label: newStatus, emoji: '🔔', color: '#C5A065' };
+
+        try {
+            const { data, error } = await supabase.functions.invoke('send-email', {
+                body: {
+                    to: email,
+                    subject: `${current.emoji} Actualización: Pedido #${orderId.slice(0, 8)} - ${current.label}`,
+                    html: `
+                        <div style="background-color: #050806; padding: 40px; font-family: sans-serif; color: white; text-align: center; border: 1px solid #C5A065; border-radius: 20px;">
+                            <img src="${LOGO_URL}" width="70" style="margin-bottom: 24px;">
+                            <h2 style="color: #C5A065;">Hola ${fullName},</h2>
+                            <p style="color: rgba(255,255,255,0.7);">Tu pedido tiene una nueva actualización en su ritual de entrega:</p>
+                            
+                            <div style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 16px; margin: 30px 0; border: 1px solid ${current.color}44;">
+                                <span style="font-size: 40px; display: block; margin-bottom: 10px;">${current.emoji}</span>
+                                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: ${current.color}; font-weight: bold;">Nuevo Estado</span>
+                                <h1 style="color: ${current.color}; margin-top: 10px; font-size: 24px;">${current.label}</h1>
+                            </div>
+
+                            ${newStatus === 'shipped' && shippingDetails ? `
+                                <div style="background: rgba(66, 165, 245, 0.1); border: 1px dashed #42A5F5; border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 30px;">
+                                    <h4 style="color: #42A5F5; margin-top: 0; text-transform: uppercase; font-size: 11px;">Información de Guía / Envío:</h4>
+                                    <p style="color: white; font-size: 14px; margin-bottom: 15px;">${shippingDetails.note || 'Tu pedido ya está en manos de la transportadora.'}</p>
+                                    ${shippingDetails.receiptUrl ? `
+                                        <div style="text-align: center;">
+                                            <p style="color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; margin-bottom: 10px;">Comprobante de despacho:</p>
+                                            <img src="${shippingDetails.receiptUrl}" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+
+                            <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.6);">
+                                Estamos trabajando para que disfrutes la esencia de la Sierra Nevada lo antes posible.
+                            </p>
+                            
+                            <div style="margin-top: 40px;">
+                                <a href="${BASE_URL}/#/track/${orderId}" style="background: #C5A065; color: black; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Ver Detalles del Pedido</a>
+                            </div>
+                            
+                            <p style="margin-top: 50px; font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 2px;">
+                                ORIGEN SIERRA NEVADA SM • TRANSMITIENDO EL RITUAL DEL CAFÉ
+                            </p>
+                        </div>
+                    `
+                }
+            });
+            return { success: !error, data };
+        } catch (error) {
+            return { success: false, error };
+        }
     }
 };

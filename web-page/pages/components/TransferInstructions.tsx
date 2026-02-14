@@ -20,15 +20,18 @@ const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ or
 
             <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
                 {/* QR Code Section */}
-                <div className="flex flex-col items-center justify-center bg-black/20 p-6 rounded-xl border border-white/5">
-                    <div className="bg-white p-2 rounded-lg mb-4 shadow-lg shadow-[#C5A065]/5">
+                <div className="flex flex-col items-center justify-center bg-white/5 p-8 rounded-2xl border border-white/10 shadow-2xl">
+                    <div className="bg-white p-4 rounded-xl mb-4 shadow-[0_0_30px_rgba(255,255,255,0.1)] group transition-transform hover:scale-105 duration-500">
                         <img
-                            src="/assets/payment-qr.png"
+                            src="/assets/payment-qr.jpeg"
                             alt="Scan to Pay"
-                            className="w-48 h-48 object-contain"
+                            className="w-48 h-48 object-contain contrast-[1.1] brightness-[1.05]"
                         />
                     </div>
-                    <span className="text-xs font-bold text-white/50 tracking-widest uppercase">Escanear para pagar</span>
+                    <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5A065] animate-pulse"></span>
+                        <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Escaneo de Alta Fidelidad</span>
+                    </div>
                 </div>
 
                 {/* Account Details Section */}
@@ -54,7 +57,7 @@ const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ or
                         <div className="group">
                             <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1 group-hover:text-[#C5A065] transition-colors">Nequi</p>
                             <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg border border-white/5 group-hover:border-[#C5A065]/30 transition-all">
-                                <span className="font-mono text-lg text-white tracking-wider">300-000-0000</span>
+                                <span className="font-mono text-lg text-white tracking-wider">310 740 5154</span>
                                 <button className="text-gray-500 hover:text-white transition-colors" title="Copiar">
                                     <span className="material-icons-outlined text-sm">content_copy</span>
                                 </button>
@@ -69,7 +72,7 @@ const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ or
                     Una vez realizado el pago, envía el comprobante a nuestro WhatsApp indicando tu número de pedido: <strong className="text-[#C5A065]">#{orderId}</strong>
                 </p>
                 <a
-                    href={`https://wa.me/573000000000?text=Hola,%20adjunto%20comprobante%20del%20pedido%20%23${orderId}`}
+                    href={`https://wa.me/573107405154?text=Hola,%20adjunto%20comprobante%20del%20pedido%20%23${orderId}`}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 text-[#C5A065] hover:text-white transition-colors font-bold text-sm uppercase tracking-wider mt-2 border border-[#C5A065]/30 px-6 py-3 rounded-full hover:bg-[#C5A065] hover:text-black hover:border-transparent"

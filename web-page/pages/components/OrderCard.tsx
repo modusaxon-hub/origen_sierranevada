@@ -90,27 +90,38 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                         <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider">
                             Productos
                         </h3>
-                        {order.order_items.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
-                                <img
-                                    src={item.products?.image_url || '/placeholder-product.png'}
-                                    alt=""
-                                    className="w-16 h-16 object-contain bg-white/10 rounded"
-                                />
-                                <div className="flex-1">
-                                    <div className="text-white font-medium">
-                                        {item.products?.name?.[lang] || item.products?.name?.es || 'Producto'}
+                        {order.order_items.map((item, idx) => {
+                            const detail = order.metadata?.items_details?.find((d: any) => d.id.toString().startsWith(item.product_id.toString()));
+                            return (
+                                <div key={idx} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
+                                    <img
+                                        src={item.products?.image_url || '/placeholder-product.png'}
+                                        alt=""
+                                        className="w-16 h-16 object-contain bg-white/10 rounded"
+                                    />
+                                    <div className="flex-1">
+                                        <div className="text-white font-medium">
+                                            {detail?.name || item.products?.name?.[lang] || item.products?.name?.es || 'Producto'}
+                                        </div>
+                                        <div className="flex gap-2 items-center text-[10px]">
+                                            <span className="text-white/40 uppercase tracking-widest">{lang === 'es' ? 'Cantidad' : 'Qty'}: {item.quantity}</span>
+                                            {detail?.sub && (
+                                                <>
+                                                    <span className="text-white/10">•</span>
+                                                    <span className="text-[#C5A065] font-bold uppercase tracking-widest">
+                                                        {detail.sub}
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="text-white/40 text-sm">
-                                        Cantidad: {item.quantity}
+                                    <div className="text-right">
+                                        <div className="text-white/60 text-sm">Precio unitario</div>
+                                        <div className="text-[#C8AA6E] font-medium">{formatPrice(item.price_at_time)}</div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-white/60 text-sm">Precio unitario</div>
-                                    <div className="text-[#C8AA6E] font-medium">{formatPrice(item.price_at_time)}</div>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     {/* Shipping Address */}
@@ -120,7 +131,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                                 Dirección de Envío
                             </h3>
                             <div className="p-3 bg-white/5 rounded-lg text-white/80 text-sm space-y-1">
-                                <div>{order.shipping_address.address}</div>
+                                <div>{order.shipping_address.fullName || order.shipping_address.address}</div>
+                                {order.shipping_address.fullName && <div>{order.shipping_address.address}</div>}
                                 <div>{order.shipping_address.city}, {order.shipping_address.department}</div>
                                 {order.shipping_address.notes && (
                                     <div className="text-white/50 italic text-xs mt-2">

@@ -170,16 +170,19 @@
 
         <section class="change-section">
             <div class="version-badge">[2026-02-13]</div>
-            <h2>Migración de Brandbook y Gestión de Pagos</h2>
+            <h2>Logística Predictiva y Estabilización Administrativa</h2>
             <ul>
-                <li><strong>Brandbook:</strong> Migración completa de HTML a componente React Premium interactivo con
-                    soporte de impresión A4.</li>
-                <li><strong>Pagos:</strong> Sistema de carga de comprobantes para transferencias bancarias (Nequi/PSE)
-                    integrado en el checkout.</li>
-                <li><strong>Admin:</strong> Mejora en OrderManager para visualización de comprobantes y validación
-                    manual de pagos.</li>
-                <li><strong>Seguridad:</strong> Refuerzo de rutas protegidas para el Brandbook y panel administrativo.
-                </li>
+                <li><strong>Seguimiento Público:</strong> Creación de la página <code>TrackOrderPage</code> para rastreo
+                    de pedidos sin necesidad de inicio de sesión (Ideal para invitados).</li>
+                <li><strong>Flujo de Despacho:</strong> Implementación de modal de evidencia obligatoria para estado
+                    "Enviado" (Nota de guía + Imagen de colilla).</li>
+                <li><strong>Notificaciones:</strong> Automatización de correos transaccionales enriquecidos con datos
+                    logísticos y visuales.</li>
+                <li><strong>Estabilización Auth:</strong> Refuerzo de <code>ProtectedRoute</code> y
+                    <code>AuthContext</code> con validación determinista para evitar bloqueos accidentales a
+                    administradores.</li>
+                <li><strong>Gestión:</strong> Mejora en <code>OrderManager</code> con previsualización de comprobantes
+                    de pago mediante modales integrados (sin pestañas externas).</li>
             </ul>
         </section>
 
