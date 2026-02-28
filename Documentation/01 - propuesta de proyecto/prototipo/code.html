@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origen Sierra Nevada - Premium Coffee Experience</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../images/logo-Origen/La-firma-de-la-tierra.svg">
+    <link rel="apple-touch-icon" href="../images/logo-Origen/La-firma-de-la-tierra.svg">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C5A065", // Unified Gold
+                        "primary-hover": "#B08D55",
+                        "background-light": "#F9F8F6",
+                        "background-dark": "#0B120D", // Deep Forest/Charcoal
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#16201A", // Lighter Forest Green
+                        "text-main-light": "#1A1A1A",
+                        "text-main-dark": "#EAEAEA",
+                        "text-muted": "#8A8A8A",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        accent: ["Cinzel", "serif"],
+                        body: ["'Lato'", "'Montserrat'", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'mountain-pattern': "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')",
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 60s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+
+    <!-- React Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <style>
+        /* Custom Utilities */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0B120D;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C5A065;
+            border-radius: 4px;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-body transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const DarkModeToggle = () => {
+            const toggleTheme = () => {
+                document.documentElement.classList.toggle('dark');
+            };
+
+            return (
+                <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-surface-dark transition-colors"
+                >
+                    <span className="material-icons-outlined block dark:hidden">dark_mode</span>
+                    <span className="material-icons-outlined hidden dark:block text-primary">light_mode</span>
+                </button>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="bg-surface-dark text-white pt-20 pb-10 border-t border-primary/30">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex flex-col items-center mb-16">
+                        <span className="font-accent text-xs tracking-[0.3em] text-primary mb-2">EST. 2023</span>
+                        <h2 className="font-display text-3xl font-bold tracking-wider mb-8">ORIGEN SIERRA NEVADA</h2>
+                        <div className="flex space-x-8">
+                            <a className="text-gray-400 hover:text-primary transition-colors" href="#"><i className="material-icons-outlined">facebook</i></a>
+                            <a className="text-gray-400 hover:text-primary transition-colors" href="#"><i className="material-icons-outlined">photo_camera</i></a>
+                            <a className="text-gray-400 hover:text-primary transition-colors" href="#"><i className="material-icons-outlined">alternate_email</i></a>
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row justify-between items-center border-t border-gray-800 pt-10 text-xs text-gray-500 font-body">
+                        <p>© 2023 Origen Sierra Nevada. All rights reserved.</p>
+                        <div className="flex space-x-6 mt-4 md:mt-0">
+                            <a className="hover:text-white transition-colors" href="#">Privacy Policy</a>
+                            <a className="hover:text-white transition-colors" href="#">Terms of Service</a>
+                            <a className="hover:text-white transition-colors" href="#">Shipping</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Pages ---
+
+        // Screen 1: Home Page
+        const HomePage = () => {
+            const navigate = useNavigate();
+            const [purchaseType, setPurchaseType] = useState('subscribe');
+
+            return (
+                <div className="min-h-screen">
+                    {/* Navigation */}
+                    <nav className="fixed w-full z-50 top-0 transition-all duration-300 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-primary/20">
+                        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                            <button className="lg:hidden text-gray-800 dark:text-white">
+                                <span className="material-icons-outlined">menu</span>
+                            </button>
+                            <div className="flex flex-col items-center group cursor-pointer">
+                                <span className="font-accent text-xs tracking-[0.3em] text-primary mb-1 group-hover:text-amber-300 transition-colors">ORIGEN</span>
+                                <h1 className="font-display text-2xl font-bold tracking-wider text-gray-900 dark:text-white group-hover:text-primary transition-colors">SIERRA NEVADA</h1>
+                            </div>
+                            <div className="flex items-center space-x-6 text-gray-800 dark:text-white">
+                                <button className="hidden lg:block hover:text-primary transition-colors"><span className="material-icons-outlined">search</span></button>
+                                <div className="relative cursor-pointer hover:text-primary transition-colors">
+                                    <span className="material-icons-outlined">shopping_bag</span>
+                                    <span className="absolute -top-1 -right-2 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                                </div>
+                                <DarkModeToggle />
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="relative pt-32 pb-20 min-h-screen flex items-center overflow-hidden">
+                        <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20 pointer-events-none">
+                            <img alt="Coffee texture background" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAetcaf45v-4SGtm1agWKBkRAv1cm287VvB2k6ZVSKxKXZb1iPMpsi1MIbahd20gt-pdnUt1tM0uBGDS2ueIA5qGHdxoULS_ZZlE8ers04TVVjmm4-LabFijS2J2l3NalRgb82yzuHcd3e3liJN48f_0gNgAP35OgKf3HiXmYpnqpyyLBMWCqtgGb0skh-1RlC72BrfYWoULoFqq4lTOu1BP88tq6YhTmeB1j9dnYuBBm4pYxKdaI8D3e2TGCSOi1fwcaJRNXhX2y42" />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-light/50 to-background-light dark:via-background-dark/50 dark:to-background-dark z-0"></div>
+                        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+
+                            {/* Product Image */}
+                            <div className="relative flex justify-center order-2 lg:order-1">
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] border border-primary/30 rounded-full"></div>
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] lg:w-[480px] lg:h-[480px] border border-dashed border-primary/20 rounded-full animate-spin-slow"></div>
+                                <img alt="Cafe Malu Coffee Bag" className="w-64 md:w-80 lg:w-96 drop-shadow-2xl animate-float relative z-10 rounded-lg filter sepia-[.2] contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJmaqNUGIz6xE4QdGma3lIMlJ-DuyxXb3OOX5zNG9SOcSd5OYp3e-cAhgVRiTXsMHqb09G_OuAdnJN-iUu6DBV67iDtXxJtit_tFJeVSpnVGYIkHZ5GiWKqaPjtsVD8uBR6wK7CT4aH8T-zXsWJvvF0GkTVqHWDCcdMMYPlwogER_cbbGAJ1wHdBmV_D0IxsKmqgczIR3AtplPoCTmoCxRUcm5-f5GWw1Z8eZQ5X-U2ziM1KOfK4CrF-B3QGT-C9FmrR4KWav9ymMf" />
+                                <div className="absolute top-10 right-10 lg:right-20 z-20 bg-surface-dark/90 backdrop-blur border border-primary text-primary w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-lg transform rotate-12">
+                                    <span className="text-[10px] font-accent tracking-widest uppercase">SCAA</span>
+                                    <span className="text-2xl font-display font-bold text-white">88</span>
+                                    <span className="text-[10px] font-accent tracking-widest uppercase">PTS</span>
+                                </div>
+                            </div>
+
+                            {/* Product Details */}
+                            <div className="order-1 lg:order-2 space-y-8 text-center lg:text-left">
+                                <div>
+                                    <span className="font-accent text-primary tracking-[0.2em] text-sm uppercase block mb-2">Single Origin Specialty</span>
+                                    <h1 className="font-display text-5xl lg:text-7xl text-gray-900 dark:text-white mb-4 leading-tight">
+                                        Café <span className="text-primary italic">Malu</span>
+                                    </h1>
+                                    <div className="flex items-center justify-center lg:justify-start space-x-1 text-primary text-sm mb-6">
+                                        {[1, 2, 3, 4, 5].map(i => <span key={i} className="material-icons-outlined text-base">star</span>)}
+                                        <span className="ml-2 text-gray-500 dark:text-gray-400 font-sans text-xs tracking-wide">(124 Reviews)</span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+                                    {['Fruity', 'Chocolate', 'Citrus'].map(tag => (
+                                        <span key={tag} className="px-4 py-1.5 border border-primary/40 text-primary text-xs font-bold uppercase tracking-widest rounded-full">{tag}</span>
+                                    ))}
+                                </div>
+                                <p className="font-body text-gray-600 dark:text-gray-300 leading-relaxed text-lg max-w-xl mx-auto lg:mx-0">
+                                    Grown in the mystical elevations of Sierra Nevada, Café Malu offers a rare balance of acidity and body. Experience the heritage of generations in every cup.
+                                </p>
+
+                                {/* Purchase Selection */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
+                                    <label className="relative cursor-pointer group" onClick={() => setPurchaseType('subscribe')}>
+                                        <input type="radio" name="purchase_type" className="peer sr-only" checked={purchaseType === 'subscribe'} readOnly />
+                                        <div className={`p-5 rounded-lg border-2 ${purchaseType === 'subscribe' ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-transparent'} transition-all shadow-md h-full flex flex-col justify-between`}>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <span className="font-accent text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Subscribe & Save</span>
+                                                <span className="bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">Best Value</span>
+                                            </div>
+                                            <div>
+                                                <span className="block text-3xl font-display text-primary">$18.00</span>
+                                                <span className="text-xs text-gray-500">per 12oz bag • Delivered monthly</span>
+                                            </div>
+                                            <div className={`absolute top-4 right-4 text-primary transition-opacity ${purchaseType === 'subscribe' ? 'opacity-100' : 'opacity-0'}`}>
+                                                <span className="material-icons-outlined">check_circle</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <label className="relative cursor-pointer group" onClick={() => setPurchaseType('onetime')}>
+                                        <input type="radio" name="purchase_type" className="peer sr-only" checked={purchaseType === 'onetime'} readOnly />
+                                        <div className={`p-5 rounded-lg border hover:border-primary/50 ${purchaseType === 'onetime' ? 'border-primary' : 'border-gray-300 dark:border-gray-700'} bg-white dark:bg-transparent transition-all h-full flex flex-col justify-between opacity-80 hover:opacity-100`}>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <span className="font-accent text-sm font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">One-time</span>
+                                            </div>
+                                            <div>
+                                                <span className="block text-3xl font-display text-gray-700 dark:text-gray-400">$22.00</span>
+                                                <span className="text-xs text-gray-500">Single purchase</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
+                                    <button
+                                        onClick={() => navigate('/subscription')}
+                                        className="bg-primary hover:bg-yellow-600 text-black font-accent font-bold text-sm tracking-widest uppercase px-8 py-4 rounded shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-1 w-full sm:w-auto"
+                                    >
+                                        Add to Cart
+                                    </button>
+                                    <button
+                                        onClick={() => navigate('/guide')}
+                                        className="border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white font-accent font-bold text-sm tracking-widest uppercase px-8 py-4 rounded hover:bg-gray-100 dark:hover:bg-white/5 transition-all w-full sm:w-auto"
+                                    >
+                                        Learn More
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SVG Separator */}
+                        <div className="absolute bottom-0 w-full overflow-hidden leading-[0]">
+                            <svg className="relative block w-[calc(100%+1.3px)] h-[80px] text-surface-light dark:text-surface-dark fill-current" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+                                <path className="fill-background-light dark:fill-background-dark" d="M1200 120L0 16.48 0 0 1200 0 1200 120z"></path>
+                                <path className="fill-surface-light dark:fill-surface-dark opacity-100" d="M0,60 L50,80 L100,50 L150,90 L200,60 L250,100 L300,70 L350,90 L400,60 L450,100 L500,70 L550,90 L600,60 L650,100 L700,70 L750,90 L800,60 L850,100 L900,70 L950,90 L1000,60 L1050,100 L1100,70 L1150,90 L1200,60 V120 H0 V60 Z"></path>
+                            </svg>
+                        </div>
+                    </section>
+
+                    {/* Story Section */}
+                    <section className="py-24 bg-surface-light dark:bg-surface-dark relative">
+                        <div className="max-w-4xl mx-auto px-6 text-center">
+                            <div className="w-16 h-1 bg-primary mx-auto mb-8"></div>
+                            <h2 className="font-display text-4xl lg:text-5xl text-gray-900 dark:text-white mb-10">The Story Behind Each Bean</h2>
+                            <div className="relative">
+                                <span className="absolute -top-12 -left-8 font-display text-9xl text-primary/10 select-none z-0">“</span>
+                                <p className="font-display italic text-xl lg:text-2xl text-gray-600 dark:text-gray-300 leading-loose relative z-10">
+                                    High in the misty peaks of the Sierra Nevada, where the clouds touch the soil, lies the origin of Café Malu. Cultivated by hands that have known these lands for centuries, our beans are shade-grown under a canopy of native trees, preserving the biodiversity of the rainforest.
+                                </p>
+                                <span className="absolute -bottom-24 -right-4 font-display text-9xl text-primary/10 select-none z-0 rotate-180">”</span>
+                            </div>
+                            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                                <div className="flex flex-col items-center group">
+                                    <div className="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+                                        <span className="material-icons-outlined text-3xl">landscape</span>
+                                    </div>
+                                    <h3 className="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">High Altitude</h3>
+                                    <p className="text-xs text-gray-500">1,800m above sea level</p>
+                                </div>
+                                <div className="flex flex-col items-center group">
+                                    <div className="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+                                        <span className="material-icons-outlined text-3xl">water_drop</span>
+                                    </div>
+                                    <h3 className="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">Washed Process</h3>
+                                    <p className="text-xs text-gray-500">Clean, bright finish</p>
+                                </div>
+                                <div className="flex flex-col items-center group">
+                                    <div className="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+                                        <span className="material-icons-outlined text-3xl">eco</span>
+                                    </div>
+                                    <h3 className="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">Sustainable</h3>
+                                    <p className="text-xs text-gray-500">Bird-friendly farming</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Traceability Section */}
+                    <section className="py-24 bg-background-light dark:bg-background-dark relative border-t border-primary/20">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                                <div className="lg:col-span-4">
+                                    <h2 className="font-display text-4xl text-gray-900 dark:text-white mb-6">Traceability</h2>
+                                    <p className="font-body text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
+                                        We believe in full transparency. Knowing exactly where your coffee comes from connects you to the journey and the people behind every cup.
+                                    </p>
+                                    <img alt="Coffee Map" className="w-full rounded-lg opacity-80 filter sepia grayscale hover:grayscale-0 transition-all duration-500 shadow-xl border border-gray-200 dark:border-gray-800" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO5Q1YykryEvYoIHTpXI7jpv2OrcvGw4-J2vABWKMo6aSE5H6muzX7eBmpkE36f9yXBODbF-85LO2AbBB-Qw1iyOgWtjOK0FW16Vfo5uN0xWn8tHSAms_Rb-MoSZM3-hhX1P6ijvYh6JPtbLlSAYOtLJpnVmrDePvopUPIqzfc7eiuP4J40jxnUxVUMNHE3wTfDrmapj3Ko9msvwaPD2RrUw4oz10YE_Y1CMSv8clYJvxmzwjzM76zDzliifEFBbrVkardtyl1B1Wn" />
+                                </div>
+                                <div className="lg:col-span-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-primary/20 bg-surface-light dark:bg-surface-dark shadow-2xl">
+                                        <div className="p-8 border-b md:border-b-0 md:border-r border-primary/20 hover:bg-primary/5 transition-colors">
+                                            <h4 className="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Producer</h4>
+                                            <p className="font-display text-2xl text-gray-900 dark:text-white">Luis Rodriguez</p>
+                                        </div>
+                                        <div className="p-8 border-b border-primary/20 hover:bg-primary/5 transition-colors">
+                                            <h4 className="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Region</h4>
+                                            <p className="font-display text-2xl text-gray-900 dark:text-white">Minca, Sierra Nevada</p>
+                                        </div>
+                                        <div className="p-8 border-b md:border-b-0 md:border-r border-primary/20 hover:bg-primary/5 transition-colors">
+                                            <h4 className="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Altitude</h4>
+                                            <p className="font-display text-2xl text-gray-900 dark:text-white">1,850 MASL</p>
+                                        </div>
+                                        <div className="p-8 border-b border-primary/20 hover:bg-primary/5 transition-colors">
+                                            <h4 className="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Roast Date</h4>
+                                            <p className="font-display text-2xl text-gray-900 dark:text-white">Oct 24, 2023</p>
+                                        </div>
+                                        <div className="p-8 md:col-span-2 hover:bg-primary/5 transition-colors">
+                                            <h4 className="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Variety</h4>
+                                            <p className="font-display text-2xl text-gray-900 dark:text-white">Castillo, Caturra</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <Footer />
+                </div>
+            );
+        };
+
+        // Screen 2: Subscription Flow
+        const SubscriptionPage = () => {
+            const [flavor, setFlavor] = useState('chocolate');
+            const [format, setFormat] = useState('wholebean');
+            const [frequency, setFrequency] = useState('2weeks');
+
+            const flavors = [
+                { id: 'chocolate', title: 'Dark Chocolate & Nuts', desc: 'Deep, comforting tones of cacao, toasted almonds, and caramel.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDtKzJaQPx9f8PmDmCilO1DeDJrZYpF-ct6zIKPMyL1awczZUsOpTy1jOdZCSHcMOY6kE28iRAZvPaeO9gI3hoUmjYusIPNAK-FybrXmwEPJI281TXdirZ8-nfcwfjijphU5i87gDEAMqZxPZ65o0kmITM-2QuAMaIZ_A9-R-ISVH8uzFiRZ60ByxL9v-VEbjEXNrGUTFgHWJy1I7Fkh5I8gEYUZ-P_ol-O8ERH3I1okPyuVCO4hzqizvPJvgYnxySUy9Hd9plkvOwX' },
+                { id: 'fruity', title: 'Floral & Red Berries', desc: 'Bright and lively with hints of jasmine, wild strawberries, and citrus zest.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGpvAGMakntpimb1DZDp8_vel0YXIjSIicXSmM743lT-YmHWrls1Ioit-6X5VG-bqv8WtLTZ98nyj6cOhXgnbN2RYqnyfFTdFcR60hFxsih-uOoZHDrJ1tM0GMXH9T1SOwJg1mimtL4Xc3ucbaH44egDFRVEHu2L_hfnWYHtL-fkQuFm4XIr6v1YxkbOScsEvxN5PHPgBiH-NEarB7KpBcrP7va90x0GRyAT_pgBgCJYHDlnLhnIPMU09ieYiPVjyB5es_mEa9j8ri' }
+            ];
+
+            const formats = [
+                { id: 'wholebean', title: 'Whole Bean', desc: 'Maximum freshness', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJx8Et4HVW3XszhYo2FMkfFtOFIikw5gNxHBy11rrl6So9Tiz17P_1j6_81lwG1TcisB43pMoLHGfncypIsxoSVTUdOTG9xr2EmyREOu23Io9BXcUCVk4VRNGtBLaWbXN7NYuquxxMNaQcEJ0eyAZssyKP2qqjM5yp5W6Hb4UxE_ExQOMbIEvtlyA45QZD5xQ0xx2m8-8D-3-R1gP_KYteT2rCrjyvTabkI-VnThwWfet9o1ddOl31NV26NQmcgHfzjpG6bMvrvf2s' },
+                { id: 'ground', title: 'Ground', desc: 'Perfect for drip', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2bY8lFrg2cg3H258mcqZHKtLGC1tTrXRMOcs2mnvRTEfdFIOjmi1qeqakfduZiGQom7VukTsD3ALlTANQljj-onP0bxnSiYK4JVMcyyDYP8nNIbMLOiZ0jcSWuR44K6dk4VcDWWvlqSKQNtdfPbd_Y3HbMdNseqMbXySVVndr-ZG5N_8zLjLM0uSAOAftQZCntXV0GndxxlJqIYrVn9MrRZQzu0_ifFSCh4Bd3GbJhMR3aV1150ha42M9HBNyUeWbd0rSkMsmy6Lv' },
+                { id: 'capsules', title: 'Eco Capsules', desc: 'Nespresso® Compatible', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-6scBBpQeR9q5CRlRJUac3X4Yni9tAmZKpgVY4by95o9sKATtPjIUozMp2smlDnmlsCeo0rGq7a3o5wkijfGmBaGLVceWE15q5IAtSnuG2T0Rc0V7G1pa7b4FuXzSinSOJXb2nRzPq18vIKb7QkaORrIgY9fn_dKxibuqe14bCelel4ymxQ2DjWBUUdeWko23ZKylI8_jZp-sgCY6nKJdFevE8oVmZJf4YjU_lmVhtxSHLvvfZdy8X_nBvHujd0QO7UK6pzjUez0f' }
+            ];
+
+            return (
+                <div className="bg-background-light dark:bg-background-dark min-h-screen pb-24">
+                    {/* Subscription Header */}
+                    <nav className="fixed w-full z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between items-center h-24">
+                                <Link to="/" className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer">
+                                    <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center mb-1">
+                                        <span className="font-display font-bold text-2xl text-primary">O</span>
+                                    </div>
+                                    <span className="font-display text-sm tracking-widest text-gray-900 dark:text-white uppercase">Origen Sierra Nevada</span>
+                                </Link>
+                                <div className="flex items-center space-x-4">
+                                    <DarkModeToggle />
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div className="pt-32 pb-16 text-center px-4 relative">
+                        <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20 pointer-events-none">
+                            <img alt="Sierra Nevada Mountains" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLAqP7g-Ab101rA1carCS5LuycVStXSH47IZPy6ecdhKeG7sItcjqo7-tacKn_U-oIFQUjBbPoDeQWaMswZsDyVjU6VqaZyCg-mxg8Mrj1vg9dWDkbsmNoOyMam7lIeHnCM--ybM8bg9SgSGUfnSqLCd40oxH6_zVxTJvWUhdAiksKlcZVr_tt1INCvt9Q5RPX2CYjRNR6pYIkOQ3FsWfSp_fl31PtBn5aba2ypbUSgZOyfAaSkxoEAqw0-_rgHSHjNKOQlkxd5kPS" />
+                        </div>
+                        <div className="relative z-10">
+                            <span className="block text-primary font-display tracking-[0.2em] text-sm mb-4 uppercase">More Than Rare. Unique.</span>
+                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-medium text-gray-900 dark:text-white mb-6">Build Your Personal Coffee Ritual</h1>
+                        </div>
+                    </div>
+
+                    {/* Stepper */}
+                    <div className="max-w-5xl mx-auto px-4 mb-12">
+                        <div className="flex justify-between items-center relative">
+                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-800 -z-10"></div>
+                            {['Profile', 'Format', 'Frequency', 'Summary'].map((step, idx) => (
+                                <div key={step} className="flex flex-col items-center bg-background-light dark:bg-background-dark px-2">
+                                    <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-display font-bold shadow-lg transition-colors ${idx === 0 ? 'border-primary bg-primary text-white' : 'border-gray-300 dark:border-gray-600 text-gray-400'}`}>
+                                        {idx + 1}
+                                    </div>
+                                    <span className="mt-3 text-xs font-bold tracking-widest text-primary uppercase">{step}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <main className="max-w-5xl mx-auto px-4">
+                        {/* Flavor */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-display text-center text-gray-900 dark:text-white mb-2">Select Your Flavor Profile</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+                                {flavors.map(f => (
+                                    <div
+                                        key={f.id}
+                                        onClick={() => setFlavor(f.id)}
+                                        className={`cursor-pointer h-full p-8 border rounded-sm flex flex-col items-center text-center relative overflow-hidden transition-all ${flavor === f.id ? 'border-primary bg-primary/5 dark:bg-surface-dark' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark hover:border-primary/50'}`}
+                                    >
+                                        {flavor === f.id && <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center"><span className="material-icons-outlined text-sm">check</span></div>}
+                                        <div className="w-24 h-24 mb-6 rounded-full bg-amber-900/10 flex items-center justify-center">
+                                            <img src={f.icon} className="w-14 h-14 opacity-80 filter sepia brightness-50 contrast-125" />
+                                        </div>
+                                        <h3 className="text-xl font-display text-gray-900 dark:text-white mb-2">{f.title}</h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{f.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Format */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-display text-center text-gray-900 dark:text-white mb-10">Choose Your Format</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                {formats.map(fmt => (
+                                    <div
+                                        key={fmt.id}
+                                        onClick={() => setFormat(fmt.id)}
+                                        className={`cursor-pointer p-6 border rounded-sm flex flex-col items-center text-center relative transition-all ${format === fmt.id ? 'border-primary bg-primary/5 dark:bg-surface-dark' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark hover:border-primary/50'}`}
+                                    >
+                                        {format === fmt.id && <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center"><span className="material-icons-outlined text-[10px]">check</span></div>}
+                                        <img src={fmt.img} className="w-full h-32 object-cover mb-4 rounded-sm filter sepia-[.2] contrast-125 brightness-90" />
+                                        <h3 className="font-display text-lg text-gray-900 dark:text-white">{fmt.title}</h3>
+                                        <p className="text-xs text-gray-500 mt-2">{fmt.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Summary Block */}
+                        <section className="bg-white dark:bg-surface-dark border-t-4 border-primary p-8 md:p-12 shadow-2xl relative overflow-hidden rounded-sm">
+                            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+                            <div className="flex flex-col md:flex-row items-center justify-between relative z-10">
+                                <div className="mb-8 md:mb-0 text-center md:text-left">
+                                    <span className="text-primary font-bold tracking-widest text-xs uppercase mb-2 block">Your Selection</span>
+                                    <h3 className="text-2xl md:text-3xl font-display text-gray-900 dark:text-white mb-2">Sierra Nevada Signature Blend</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 capitalize">{flavor.replace('chocolate', 'Dark Choc').replace('fruity', 'Fruity')} • {format} • {frequency}</p>
+                                </div>
+                                <div className="text-center md:text-right flex flex-col items-center md:items-end">
+                                    <div className="flex items-baseline mb-4">
+                                        <span className="text-sm text-gray-500 line-through mr-3">$24.00</span>
+                                        <span className="text-4xl font-display font-bold text-gray-900 dark:text-white">$21.60</span>
+                                        <span className="text-sm text-gray-500 ml-1">/ shipment</span>
+                                    </div>
+                                    <button className="bg-primary hover:bg-primary-hover text-white font-bold py-4 px-10 rounded-sm shadow-lg shadow-primary/30 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
+                                        <span>START SUBSCRIPTION</span>
+                                        <span className="material-icons-outlined text-sm">arrow_forward</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                    <Footer />
+                </div>
+            );
+        };
+
+        // Screen 3: Brewing Guide
+        const BrewingGuidePage = () => {
+            const [activeTab, setActiveTab] = useState('v60');
+
+            const methods = {
+                french: { title: 'French Press', time: '4:00 min', texture: 'Coarse Sea Salt', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZv5nOjp7zmCZWGky4raehhN3mKOLVPfk7eSBc9HNBjO5_kEG1uLCwIfoV2zizjbqLyiS1aAl43qdi4ZMZ3OVO59JxWHZp6TgX6Sw11WEvi_-nzkn5hoEVagZgtxAfYnZgN-h8LhD3zDWvYUSqSYDSFQCQSutsQeJpn7hZcVzpF1vXFP9OjLupDWW_HSc7b0YfZAOUNk9jSQA6kohzyMdBLFhCICbYLZlzToOGgmQZufO0hnnEcHt2CHFGM_tqMBUlTY4q109L_afn', desc: 'Full immersion brewing allows for a heavy body and rich flavor profile.' },
+                v60: { title: 'V60 Pour Over', time: '2:30 - 3:00 min', texture: 'Kosher Salt', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZv5nOjp7zmCZWGky4raehhN3mKOLVPfk7eSBc9HNBjO5_kEG1uLCwIfoV2zizjbqLyiS1aAl43qdi4ZMZ3OVO59JxWHZp6TgX6Sw11WEvi_-nzkn5hoEVagZgtxAfYnZgN-h8LhD3zDWvYUSqSYDSFQCQSutsQeJpn7hZcVzpF1vXFP9OjLupDWW_HSc7b0YfZAOUNk9jSQA6kohzyMdBLFhCICbYLZlzToOGgmQZufO0hnnEcHt2CHFGM_tqMBUlTY4q109L_afn', desc: 'For a V60 pour over, you are looking for a texture similar to Sea Salt. Bright, clean, and highlights acidity.' },
+                aero: { title: 'AeroPress', time: '1:30 min', texture: 'Table Salt', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZv5nOjp7zmCZWGky4raehhN3mKOLVPfk7eSBc9HNBjO5_kEG1uLCwIfoV2zizjbqLyiS1aAl43qdi4ZMZ3OVO59JxWHZp6TgX6Sw11WEvi_-nzkn5hoEVagZgtxAfYnZgN-h8LhD3zDWvYUSqSYDSFQCQSutsQeJpn7hZcVzpF1vXFP9OjLupDWW_HSc7b0YfZAOUNk9jSQA6kohzyMdBLFhCICbYLZlzToOGgmQZufO0hnnEcHt2CHFGM_tqMBUlTY4q109L_afn', desc: 'Versatile and forgiving. Produces a cup somewhere between drip and espresso.' },
+                espresso: { title: 'Espresso', time: '25-30 sec', texture: 'Fine Flour', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZv5nOjp7zmCZWGky4raehhN3mKOLVPfk7eSBc9HNBjO5_kEG1uLCwIfoV2zizjbqLyiS1aAl43qdi4ZMZ3OVO59JxWHZp6TgX6Sw11WEvi_-nzkn5hoEVagZgtxAfYnZgN-h8LhD3zDWvYUSqSYDSFQCQSutsQeJpn7hZcVzpF1vXFP9OjLupDWW_HSc7b0YfZAOUNk9jSQA6kohzyMdBLFhCICbYLZlzToOGgmQZufO0hnnEcHt2CHFGM_tqMBUlTY4q109L_afn', desc: 'High pressure extraction creating a concentrated, syrupy shot with crema.' }
+            };
+
+            const current = methods[activeTab];
+
+            return (
+                <div className="bg-background-light dark:bg-background-dark min-h-screen">
+                    <nav className="fixed w-full z-50 top-0 py-6 px-8 flex justify-between items-center mix-blend-difference text-white">
+                        <Link to="/" className="text-center cursor-pointer">
+                            <h1 className="font-display font-bold text-2xl tracking-widest text-primary">ORIGEN</h1>
+                            <p className="text-[10px] tracking-[0.3em] uppercase opacity-80">Sierra Nevada</p>
+                        </Link>
+                        <div className="flex items-center gap-6">
+                            <DarkModeToggle />
+                        </div>
+                    </nav>
+
+                    <header className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 bg-mountain-pattern bg-cover bg-center bg-fixed"></div>
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-background-light dark:to-background-dark"></div>
+                        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-12">
+                            <div className="mb-4 flex justify-center">
+                                <div className="w-16 h-16 border border-primary rounded-full flex items-center justify-center mb-6 bg-black/30 backdrop-blur-sm">
+                                    <i className="fa-solid fa-mortar-pestle text-primary text-2xl"></i>
+                                </div>
+                            </div>
+                            <h2 className="font-display text-4xl md:text-6xl text-white mb-4 tracking-wide text-shadow">The Art of Extraction</h2>
+                            <p className="font-body text-gray-200 text-lg md:text-xl tracking-widest uppercase mb-8 opacity-90">Mastering the Grind & Brew</p>
+                            <div className="w-24 h-0.5 bg-primary mx-auto"></div>
+                        </div>
+                        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-primary">
+                            <i className="fa-solid fa-chevron-down text-2xl"></i>
+                        </div>
+                    </header>
+
+                    <section className="relative py-24 px-6 md:px-12 lg:px-24">
+                        <div className="text-center mb-16">
+                            <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase block mb-3">Interactive Guide</span>
+                            <h3 className="font-display text-3xl md:text-5xl text-gray-900 dark:text-white mb-6">Grind Selector</h3>
+                        </div>
+
+                        <div className="max-w-6xl mx-auto bg-surface-light dark:bg-surface-dark shadow-2xl rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+                            {/* Tabs */}
+                            <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-800">
+                                {Object.keys(methods).map(key => (
+                                    <button
+                                        key={key}
+                                        onClick={() => setActiveTab(key)}
+                                        className={`flex-1 py-6 px-4 flex flex-col items-center justify-center gap-3 transition-colors group border-b-2 ${activeTab === key ? 'bg-primary/5 dark:bg-primary/10 border-primary' : 'border-transparent hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                    >
+                                        <i className={`fa-solid ${key === 'french' ? 'fa-mug-hot' : key === 'v60' ? 'fa-filter' : key === 'aero' ? 'fa-syringe' : 'fa-mug-saucer'} text-2xl ${activeTab === key ? 'text-primary' : 'text-gray-400 group-hover:text-primary'}`}></i>
+                                        <span className={`text-xs uppercase tracking-widest font-bold ${activeTab === key ? 'text-primary' : 'text-gray-500 group-hover:text-primary dark:text-gray-400'}`}>{methods[key].title}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-12 fade-in">
+                                <div className="w-full md:w-1/2 space-y-6">
+                                    <div>
+                                        <h4 className="font-display text-2xl text-gray-900 dark:text-white mb-2">{current.title}</h4>
+                                        <div className="h-1 w-12 bg-primary"></div>
+                                    </div>
+                                    <p className="text-gray-600 dark:text-gray-300 font-light leading-relaxed">{current.desc}</p>
+                                    <div className="grid grid-cols-2 gap-4 pt-4">
+                                        <div className="bg-background-light dark:bg-background-dark p-4 rounded border border-gray-100 dark:border-gray-800">
+                                            <span className="block text-xs text-primary uppercase tracking-wider mb-1">Time</span>
+                                            <span className="font-display text-lg dark:text-white">{current.time}</span>
+                                        </div>
+                                        <div className="bg-background-light dark:bg-background-dark p-4 rounded border border-gray-100 dark:border-gray-800">
+                                            <span className="block text-xs text-primary uppercase tracking-wider mb-1">Texture</span>
+                                            <span className="font-display text-lg dark:text-white">{current.texture}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-full md:w-1/2 relative">
+                                    <div className="relative overflow-hidden rounded-lg shadow-xl aspect-video md:aspect-square">
+                                        <img src={current.img} className="w-full h-full object-cover" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="py-24 px-6 md:px-12 lg:px-24 bg-surface-dark text-white border-t border-gray-800">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+                            <div className="w-full md:w-1/3 sticky top-24">
+                                <h2 className="font-display text-4xl md:text-5xl mb-2 text-primary">The Ritual</h2>
+                                <h3 className="font-body text-xl font-light tracking-widest uppercase mb-8 text-gray-400">V60 Preparation</h3>
+                                <div className="relative rounded-lg overflow-hidden aspect-[3/4] shadow-2xl border border-gray-800">
+                                    <img alt="V60 Pouring Process" className="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD66j_rBptVx41SzxJd2lEMDjmK8FI0bxqbctK-Si--3vWmvLvRFMcNNpLSYR9pCUhUfrrzn9Qrmk2fcjTzXLYKu1BjjzkTXqHl4946JLQf2CipHDousNffpxSH7VmKbxmCXLzmEAwOlzjagPJGsrK5B1UICECmJJNcf02r8sqPit45AALTY-uf5eWkfqcXIIR8rUC4F3CrNDsP6miTP0ucSQvXLiuPOtuGRrLKEwqCHodm2vKwuaJKS0ChHuaFsJ4to-IRFRT1p8hV" />
+                                </div>
+                            </div>
+                            <div className="w-full md:w-2/3 pt-4">
+                                {[
+                                    { step: 1, title: 'Rinse & Warm', desc: 'Fold the filter paper and place it in the dripper. Rinse thoroughly with hot water.' },
+                                    { step: 2, title: 'The Bloom', desc: 'Add 20g coffee. Pour 40-50g water. Wait 30-45 seconds.' },
+                                    { step: 3, title: 'Steady Pour', desc: 'Pour in a steady spiral motion. Aim to reach 300g total weight by 2:00.' },
+                                    { step: 4, title: 'Draw Down', desc: 'Allow water to drip through completely. Serve immediately.' }
+                                ].map((s) => (
+                                    <div key={s.step} className="flex gap-6 mb-12 group">
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-12 h-12 rounded-full border border-primary text-primary flex items-center justify-center font-display text-xl group-hover:bg-primary group-hover:text-black transition-colors duration-300">{s.step}</div>
+                                            <div className="w-px h-full bg-gray-800 my-2 group-hover:bg-primary/30 transition-colors"></div>
+                                        </div>
+                                        <div className="pb-8 border-b border-gray-800 w-full group-hover:border-primary/30 transition-colors">
+                                            <h4 className="font-display text-2xl text-white mb-3">{s.title}</h4>
+                                            <p className="text-gray-400 font-light leading-relaxed">{s.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- App Wrapper ---
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/subscription" element={<SubscriptionPage />} />
+                        <Route path="/guide" element={<BrewingGuidePage />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

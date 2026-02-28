@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Origen Sierra Nevada | Café Malu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C5A065", // Gold color from reference
+                        "background-light": "#F9F8F6", // Off-white/Cream
+                        "background-dark": "#121816", // Deep Charcoal/Dark Greenish-Black
+                        "accent-dark": "#1A2220",
+                        "text-light": "#5A5A5A",
+                        "text-dark": "#DCDCDC"
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        serif: ["Cinzel", "serif"],
+                        sans: ["Lato", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "linear-gradient(to bottom, rgba(18, 24, 22, 0.4), rgba(18, 24, 22, 0)), url('https://images.unsplash.com/photo-1511516412963-801b050c92aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+                        'mist-texture': "url('https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80')",
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(197, 160, 101, 0.3)',
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }@keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s ease-out forwards;
+        }@keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .delay-100 { animation-delay: 1s; }
+        .delay-200 { animation-delay: 2s; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-sans transition-colors duration-300">
+<nav class="fixed w-full z-50 top-0 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent pt-4 pb-12">
+<div class="max-w-7xl mx-auto px-6 flex justify-between items-start">
+<button class="text-white hover:text-primary transition-colors">
+<span class="material-icons-outlined text-3xl">menu</span>
+</button>
+<div class="flex flex-col items-center">
+<div class="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center bg-black/50 backdrop-blur-sm shadow-glow mb-2">
+<span class="font-serif text-primary text-2xl font-bold">OS</span>
+</div>
+<h1 class="font-serif text-primary text-xs tracking-[0.3em] uppercase hidden sm:block">Origen Sierra Nevada</h1>
+</div>
+<div class="flex gap-4">
+<button class="text-white hover:text-primary transition-colors text-xs font-bold tracking-widest">EN</button>
+<button class="text-white hover:text-primary transition-colors">
+<span class="material-icons-outlined text-2xl">search</span>
+</button>
+</div>
+</div>
+</nav>
+<header class="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center">
+<div class="absolute inset-0 z-0">
+<img alt="Misty Sierra Nevada Mountains" class="w-full h-full object-cover opacity-80 dark:opacity-60 filter brightness-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcfAtXK3rO0DtljnnG98PWskBu0QIToFPcvB-G_wdSE1gYPoRefQj9wBEQwIF1hyVZEJIeb9EX1GyHYkuUrgDl3yDsLWABFaFGrYkdWG0MuXBAnm-uy7guEIXcwo1KUzQBE78bHQOH32lkwEQYosLe-sT-OvYBvUKE9XCyXSRjb-jsEVJAc4qcVT6dcVDtct1NHtwEezMsCd_rOzArG4Nd6VvlZ6HsfdzvFmMQ728789xZkrYQn6BZWo_kNRNpp5E6D5h2tQv6Lqep"/>
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark/30 via-transparent to-background-light dark:to-background-dark h-full"></div>
+</div>
+<div class="relative z-10 text-center px-4 mt-20">
+<h2 class="font-serif text-primary text-sm sm:text-base tracking-[0.4em] mb-2 uppercase animate-fade-up">More Than Rare. Unique.</h2>
+<p class="font-display text-white/90 text-lg tracking-widest uppercase mb-12 animate-fade-up" style="animation-delay: 0.2s;">Sierra Nevada Single Origin</p>
+<div class="relative w-full max-w-lg mx-auto h-[500px] flex justify-center items-end animate-fade-up" style="animation-delay: 0.4s;">
+<div class="relative z-20 transform translate-y-10 hover:-translate-y-2 transition-transform duration-700">
+<img alt="Café Malu White Coffee Bag" class="w-64 sm:w-80 drop-shadow-2xl filter brightness-110 contrast-125 mx-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3iGZ0hWCLqwG_64kGl1l3wZLTMoAor7pSnDhrMG8_2RSP5OwRh-QglM4iPPDUHC_uOMn5PvPA_RVZmx6joXFuswzp8vUyf5WZl-SnXoypqlYWc6vpg9gjzA3QBB1G4quI1DZruKHpwggc6dJez-AZJW7pXa-wON2wrJYNexrB6PIRocBRbcMDWWVPr_-i839dpX88o-Tp933eVMgPt30An40XrE_ArQK_vBSHa5kGin1Nqy_OtEu2R7dfnuotgOJ3DfPE-dfg7l51"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent mix-blend-overlay pointer-events-none"></div>
+</div>
+<img alt="Coffee Bean" class="absolute left-10 bottom-20 w-8 h-8 rounded-full object-cover animate-float opacity-80 z-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxdNE5Lw7PwQbbLiuKE5mBs8sRlKARl0xLuPDFcSFO_3iJd_fw6ftUBi9912J1jHP2Bp6ZEglcdWNazZyJUYQtVip3Tat-DZdffdFQyfF9Vdgmbz4CI3ZHHVm-uBFU5SLF2ShIeTBfATn9Uq0rfvTNcRevpao4r1SwMyqfgRklhEB11oBWIDxFAxWe64WFpZ7LC8JgHFYybcX2NwjsrUOsgmGhyL7y5VflBMaCEXNbFcwKvogQTHghxCS66y7LRMDRLT7SUB_aaj_0"/>
+<img alt="Coffee Bean" class="absolute right-12 bottom-32 w-6 h-6 rounded-full object-cover animate-float delay-100 opacity-80 z-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-sMWhPS5fR6X0EDCxu15_aOZGIndRIKAttzQPsbe7Gs5Ic5P_BoXox1Gb8R-fKJk4F3y0YULB4PBvldjtir6Xd6ur1LIxWYLGoWd9RpvTzMwwidpZ3_FsUR95iUmreGta1U6TEX5K8cnA_gLCaU54C_QlajcJJVPdgc5At9SojDUIx-8XIPWvgjyeO3Uot3w3hl3pr_mRejZlKFpNj3vwD2MlE1UHHDWky9ddDuu4Tt42Km-cI9e43zYVAn2o1LsCuIKI5f66nlm"/>
+</div>
+</div>
+</header>
+<section class="relative bg-background-light dark:bg-zinc-900 py-24 px-6 overflow-hidden">
+<div class="max-w-4xl mx-auto text-center relative z-10">
+<span class="block text-primary font-serif tracking-[0.2em] text-xs mb-4">OUR</span>
+<h2 class="text-4xl sm:text-5xl font-display text-gray-800 dark:text-gray-100 mb-8 tracking-wide">
+                C O F F E E
+            </h2>
+<div class="w-12 h-0.5 bg-primary mx-auto mb-10"></div>
+<p class="font-sans text-gray-600 dark:text-gray-400 leading-relaxed mb-12 text-sm sm:text-base max-w-2xl mx-auto">
+                In the majestic Sierra Nevada mountains grows the world's finest organic coffee. 
+                At elevations higher than 2,000 feet above sea level, the rich soil and continuous rainfall 
+                combine to create conditions perfect for cultivating a brew of unparalleled distinction.
+                <br/><br/>
+<strong class="text-gray-900 dark:text-white font-serif">Origen Sierra Nevada® Café Malu.</strong>
+</p>
+<button class="border border-gray-400 dark:border-gray-600 px-8 py-3 text-xs tracking-[0.2em] text-gray-800 dark:text-gray-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
+                LEARN MORE
+            </button>
+</div>
+<div class="max-w-6xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+<div class="flex flex-col items-center group">
+<div class="w-24 h-24 mb-6 relative">
+<img alt="Map outline" class="w-full h-full object-contain opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJgdbguaUGSBvDSH9CmKxmnqoSE41JjWoVOrTU2csVC7U2EYf1dX-ztkYI0-n-qhnvboGn4AjrnXUKXddY7Jyeusv3AAq6l_mLRoew63Tlp3Q60uQ5nqvjXa18E2Z84aZ6ctZTM9kvy6hBOb6KZjMiKbQ_iVcsRlVObVoUcUpeTNxmBmDMo01uXeKBEx7MRTBtqNdW8odbDlCGZCm6u3TnX9AbxngxPrbPkqRv8RyWu8edV_B-4CgcBQHIPyIAQFrWFf2OPjO3ladf"/>
+</div>
+<h4 class="font-serif text-xs tracking-[0.3em] text-gray-500 dark:text-gray-400 uppercase">Sierra Origin</h4>
+</div>
+<div class="flex flex-col items-center group">
+<div class="w-24 h-24 mb-6 relative">
+<img alt="Selection process" class="w-full h-full object-contain opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs_468HEYrCnYUqVDLUV382lFtTQ-8kFGA42x_m2yZ65okM3tr3td6dSdHBcTgLPJVVUnJ8RBsh7G5FC-MmTdyoi-k1S2kfvsT6pm5AZkqyRSv5sMp5R9LoL7UsIz9bhFr5B2slFr6oLXVb_7dUReSlVc8ynKKhfy7hjFFmFr2eu_YKlD_NUt3HBFiWmdDLa1o2UNa7SNku4kyCsMpDnqzAZD8cnTVLFF3sDT88LGWqs7IGXotJKDkqNDvLN1zM7BFn3BONy1PsyPT"/>
+</div>
+<h4 class="font-serif text-xs tracking-[0.3em] text-gray-500 dark:text-gray-400 uppercase">Rigorous Selection</h4>
+</div>
+<div class="flex flex-col items-center group">
+<div class="w-24 h-24 mb-6 relative">
+<img alt="Vacuum packing" class="w-full h-full object-contain opacity-50 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSjcjVZKAvDDHlFGUP3uu_S3OM57mhstvP6T5f0OlZMF64Oy4eBSaY11J6enL5OtJh_7jJrFGcE2fbZRTmelzo0gdUfwVHIgDFE2wrenRrh1AASaIfb2gYtfQVwPlf066Ujin8K19Sp69qWbmaKOqvFQykzHSMeVdS5mbdpI6iOreLIy4t3SP6qd9vZ8KvQAloYFJJGhkDGHGB1Juk8Kt12yf1TckUMKoHvxTMw-R7_8ETm-nnnC4gXy-PUSoAP4NryprnInAqKu41"/>
+</div>
+<h4 class="font-serif text-xs tracking-[0.3em] text-gray-500 dark:text-gray-400 uppercase">Vacuum Packing</h4>
+</div>
+</div>
+</section>
+<section class="relative bg-background-dark text-white py-32 overflow-hidden">
+<div class="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180 transform -translate-y-1">
+<svg class="relative block w-[calc(100%+1.3px)] h-[100px] sm:h-[150px]" data-name="Layer 1" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+<path class="fill-background-light dark:fill-zinc-900" d="M1200 120L0 16.48 0 0 1200 0 1200 120z"></path>
+</svg>
+</div>
+<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+<div class="order-2 lg:order-1 lg:pl-12">
+<span class="block text-primary font-serif tracking-[0.2em] text-xs mb-4">OUR</span>
+<h2 class="text-4xl sm:text-5xl font-display text-white mb-6 tracking-wide">
+                    P R O D U C T S
+                </h2>
+<div class="space-y-8 mt-12">
+<div>
+<h3 class="text-xl font-display text-primary mb-2">Blended Coffee</h3>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                            A harmonious mix of our finest beans, roasted to perfection to bring out chocolatey undertones and a smooth finish.
+                        </p>
+</div>
+<div>
+<h3 class="text-xl font-display text-gray-500 mb-2">Single Origin</h3>
+<p class="text-gray-600 text-sm leading-relaxed max-w-sm">
+                            Pure, unadulterated flavor from specific micro-lots on the mountain.
+                        </p>
+</div>
+</div>
+<div class="mt-12 flex items-center space-x-6">
+<button class="border border-primary/50 px-8 py-3 text-xs tracking-[0.2em] text-primary hover:bg-primary hover:text-background-dark transition-all duration-300 rounded-sm">
+                        SEE ALL
+                    </button>
+<div class="flex space-x-4 text-gray-500 text-xs font-serif">
+<span class="text-white">1</span>
+<span>—</span>
+<span>3</span>
+</div>
+</div>
+</div>
+<div class="order-1 lg:order-2 relative flex justify-center items-center h-[600px]">
+<div class="absolute inset-0 pointer-events-none">
+<img alt="bean" class="absolute top-10 left-10 w-12 opacity-60 blur-[1px] animate-float" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ9ixzztImcKXc5WIEXom4kiNECUjU7-qhJRyMnIaCvsPqghcinQjEI3Qr52zJSvfzWO4j78SBoY10npFkUD8enC7ZARKVqxXRQcgW08dBy8osDDKQogBcMPLCAih8BPcOq1xz9Hr7ZWISt0tHv71WCaODBJcL37MySmkuWStNYCjfmhIkIk2HS8Tn3KO8gBYg5XXAyhd9u-aLW6FBZMv_tC_7XPEdExaxOI9OYmoLyY_HD5ukH_Pyb9kjDAoTb3L45f-yaIqCXW-K"/>
+<img alt="bean" class="absolute top-40 right-20 w-8 opacity-80 animate-float delay-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZJrR260X_wXsLS0I-B0uoc_sU1oCYavraAXoXkIFz6CjQMKYbmQ6N5NNMh82tZM5KAvHPH9FwvXa40D_gH9K9zM-o0BDOMdQ3Pu5BjsoCbBaCWuCLW8wEr__9D2tDg53VFRROs1E0CQGoMrhMYzGBocNrtKCr-FHKoY02spfn-sT_bgL66sz9iPnOKPMYrNvLudojaLSvloNyjxGmIiceh-7YaiooFHwE-eMvK7VbGCajAGvAFq5nLATCNNpaBGQTvp9PdC0h_Uvy"/>
+<img alt="bean" class="absolute bottom-20 left-20 w-16 opacity-70 blur-[2px] animate-float delay-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU5V49aiRkkP658jjYbBSk3R7PycKiNipfTvW5x2ep80lELP-z1QwCvpMF3y2mJQezvqpPAKxl69x7rF7gM09Jic4ec-klTLrZRTB7-hytc-xL0lgXhC3Fz0JJ2bzX4Guy5VBJLEr9YOPv-_KVJP_xkZArtWk44KzM6pKN6ZAfvTbql3o3zGJPZUkVy74l2vTuUKdN7Y_5T46jsUsLOOTDC3KiYzCnV22wSj2uw3KX5N7Boaz2DqONmTpynrNJETNJRrRCkQOxayqO"/>
+</div>
+<div class="relative z-10 transform hover:scale-105 transition-transform duration-500">
+<img alt="Premium Dark Roast Coffee Bag" class="w-72 sm:w-80 drop-shadow-2xl brightness-90 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq27lrFtoSDsFVNk3U5_VHWYjWqWDA5j0P2049jTOA4EwuTWMr-gymtU1ztQ4nUlhTb5RV2POXgjBVauloAqvsw2ZNmC1C1_xbLL1zycOwZkRZjIAgPqQcD4XgeEEXJ7tV9RF4c9Oyv9RnKdxVGEUhIAnTcMWG4r3oD7nsRtp3rBvXPYM1j5_R452uzXHOPb1hQJI6Ti66WSgqSwzh6Q4eap9WXIYlbbspa70W3KqTEIeKEU90MlFxeyziswF92G_CzbDrLiQFy1ch"/>
+<div class="absolute top-24 left-1/2 transform -translate-x-1/2 w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+<span class="text-primary font-serif text-2xl font-bold">OS</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-gradient-to-r from-[#967845] to-[#C5A065] py-24 px-6 relative overflow-hidden">
+<div class="absolute inset-0 bg-black/10"></div>
+<div class="max-w-3xl mx-auto text-center relative z-10">
+<div class="relative -mt-40 mb-10 w-48 h-48 mx-auto rounded-full shadow-2xl overflow-hidden border-4 border-white/10">
+<img alt="Top down coffee cup" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0qJ0CngJ1W06IQw6bWBoNJIKtOtFsbGx4ps-5MR-tqR2hKN3WqEJct0CUfPX80fbKPU8T0dFR9iuSSiBo0upTQw-pDCFXCKKO8mSB3ZDfLn9KYdQeiMmJ9EUVYfJkTOhxF4i48Zx7S2_YRq9ITIS-t46HyJXHEamxlEWcQOfVwAVs542j5VOlw0UXN8Nj22Ho1yH_4ApQiLR6_VhoOXAj2do0UkwlXHOjeU2e_bDae3w4AfybSs7BrRgoV5zY146TrssnFXQtjpVR"/>
+</div>
+<h3 class="font-serif text-white text-lg tracking-[0.2em] mb-4 uppercase text-shadow-sm">More than Rare. Unique.</h3>
+<p class="font-sans text-white/80 text-xs tracking-widest uppercase mb-8">
+                Coffee with an intense aroma and perfect balance of acidity and body.
+            </p>
+<button class="border border-white/40 px-6 py-2 text-[10px] tracking-[0.3em] text-white hover:bg-white hover:text-primary transition-colors duration-300 uppercase">
+                Subscribe Us
+            </button>
+</div>
+</section>
+<section class="bg-background-light dark:bg-zinc-800 py-24 px-6">
+<div class="max-w-4xl mx-auto text-center">
+<span class="block text-primary font-serif tracking-[0.2em] text-xs mb-4">WHAT</span>
+<h2 class="text-3xl sm:text-4xl font-display text-gray-800 dark:text-gray-100 mb-8 tracking-wide">
+                P E O P L E   S A Y
+            </h2>
+<div class="w-8 h-px bg-gray-300 dark:bg-gray-600 mx-auto mb-10"></div>
+<blockquote class="font-serif italic text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">
+                "Vestibulum placerat dictum tempus. Nunc et sem ullamcorper, porttitor ex ornare, facilisis quam. The depth of flavor in Café Malu is simply unmatched by any other origin."
+            </blockquote>
+<cite class="block font-sans text-xs font-bold text-gray-900 dark:text-white tracking-widest not-italic">
+                ROBERT SMITH
+            </cite>
+<span class="block text-[10px] text-gray-500 dark:text-gray-400 mt-1 uppercase tracking-wider">Manager, Mandarin Oriental NYC</span>
+<div class="flex justify-center gap-2 mt-8">
+<button class="w-2 h-2 rounded-full bg-primary"></button>
+<button class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></button>
+<button class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></button>
+</div>
+</div>
+</section>
+<footer class="relative bg-background-dark text-gray-400 py-32 overflow-hidden">
+<div class="absolute inset-0 opacity-20 pointer-events-none grayscale mix-blend-overlay">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<pattern height="100" id="mapPattern" patternUnits="userSpaceOnUse" width="100" x="0" y="0">
+<path d="M10 10 L90 10 L90 90 L10 90 Z" fill="none" stroke="#333" stroke-width="0.5"></path>
+<path d="M30 0 L30 100 M60 0 L60 100 M0 30 L100 30 M0 60 L100 60" fill="none" stroke="#222" stroke-width="0.5"></path>
+</pattern>
+<rect fill="url(#mapPattern)" height="100%" width="100%" x="0" y="0"></rect>
+</svg>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+<div class="mb-12 flex justify-center">
+<div class="flex flex-col items-center">
+<div class="w-3 h-3 bg-primary rounded-full shadow-[0_0_15px_rgba(197,160,101,0.8)] animate-pulse"></div>
+<div class="w-px h-16 bg-gradient-to-b from-primary to-transparent"></div>
+</div>
+</div>
+<div class="mb-12">
+<p class="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-gray-500 mb-2">30 Marcus Garvey Drive - Kingston 11</p>
+<p class="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-gray-600">Jamaica, W.I.</p>
+</div>
+<div class="mb-8 flex justify-center">
+<div class="w-16 h-16 rounded-full border border-gray-700 flex items-center justify-center bg-background-dark">
+<span class="font-serif text-primary text-xl font-bold">OS</span>
+</div>
+</div>
+<div class="flex justify-center space-x-6 text-gray-600">
+<a class="hover:text-primary transition-colors" href="#"><i class="material-icons-outlined text-sm">facebook</i></a>
+<a class="hover:text-primary transition-colors" href="#"><i class="material-icons-outlined text-sm">smart_display</i></a>
+<a class="hover:text-primary transition-colors" href="#"><i class="material-icons-outlined text-sm">photo_camera</i></a>
+</div>
+<p class="mt-8 text-[10px] text-gray-700">© 2023 Origen Sierra Nevada. All Rights Reserved.</p>
+</div>
+</footer>
+
+</body></html>

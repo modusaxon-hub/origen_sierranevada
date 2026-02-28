@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Archive - Origen Sierra Nevada</title>
+    <!-- Mermaid.js para renderizar los diagramas -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#C5A065',
+                primaryTextColor: '#050806',
+                primaryBorderColor: '#050806',
+                lineColor: '#C5A065',
+                secondaryColor: '#f4f4f4',
+                tertiaryColor: '#fff'
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+            --bg-paper: #ffffff;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .mermaid {
+                max-width: 100% !important;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: var(--bg-paper);
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 60px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-top: 50px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            color: var(--origen-black);
+        }
+
+        .hook-box {
+            background: #fffafa;
+            border-left: 5px solid var(--origen-gold);
+            padding: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        .mermaid {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-container: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .detail-item strong {
+            color: var(--origen-gold);
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 0.8em;
+        }
+
+        pre {
+            background: #1a1a1a;
+            color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            overflow-x: auto;
+            page-break-inside: avoid;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.75em;
+            color: #999;
+        }
+
+        .no-print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--origen-gold);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="no-print-btn no-print" onclick="window.print()">🖨️ Descargar Archivo Visual (A4)</button>
+
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Origen Sierra Nevada - Technical Diagrams</span>
+            <h1>Estructura de Datos (ERD)</h1>
+        </header>
+
+        <div class="hook-box">
+            <strong>Propósito:</strong> Definir la persistencia y relaciones críticas del e-commerce. <br>
+            <strong>Riesgo:</strong> Sin este mapa, la integridad referencial en pedidos y stock es vulnerable.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            profiles ||--o{ orders : "coloca"
+            products ||--o{ order_items : "incluido_en"
+            orders ||--|{ order_items : "contiene"
+
+            profiles {
+            uuid id PK
+            string email UK
+            string full_name
+            string role
+            }
+
+            products {
+            bigint id PK
+            string category
+            jsonb name
+            numeric price
+            integer stock
+            }
+
+            orders {
+            uuid id PK
+            uuid user_id FK
+            string status
+            numeric total_amount
+            jsonb shipping_address
+            }
+
+            order_items {
+            bigint id PK
+            uuid order_id FK
+            bigint product_id FK
+            integer quantity
+            numeric price_at_time
+            }
+        </div>
+
+        <section>
+            <h2>🔍 Análisis de Nodos</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Polimorfismo i18n</strong>
+                    Los campos Name/Description usan JSONB permitir multilingüismo (ES/EN) sin duplicidad de registros.
+                </div>
+                <div class="detail-item">
+                    <strong>Integridad de Precios</strong>
+                    `price_at_time` en order_items congela el valor al momento de la compra para auditorías legales.
+                </div>
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <header style="margin-top: 50px;">
+            <span class="brand-label">Origen Sierra Nevada - Flow Rituals</span>
+            <h1>Ritual de Compra (Checkout)</h1>
+        </header>
+
+        <div class="mermaid">
+            graph TD
+            Start((Inicio)) --> Cart{¿Carrito?}
+            Cart -- No --> Catalog[Catálogo]
+            Cart -- Sí --> Form[Datos DIAN]
+            Form --> Shipping[Envío Dinámico]
+            Shipping --> Total[Cálculo IVA]
+            Total --> DB[Crear Orden Supabase]
+            DB --> Stock[Reducir Stock]
+            Stock --> Email[Notificar Admin/User]
+            Email --> End((Fin Ritual))
+        </div>
+
+        <section>
+            <h2>🌊 Lógica del Ritual</h2>
+            <p>El flujo garantiza que la orden solo se marque como exitosa si Supabase confirma la inserción y el email
+                de confirmación es encolado.</p>
+        </section>
+
+        <div class="page-break"></div>
+
+        <header style="margin-top: 50px;">
+            <span class="brand-label">Origen Sierra Nevada - Process Logic</span>
+            <h1>Mapas de Negocio</h1>
+        </header>
+
+        <div class="mermaid">
+            graph LR
+            A[Pedido] --> B{Pago?}
+            B -- Sí --> C[PAID]
+            C --> D[Preparación]
+            D --> E[SHIPPED]
+            E --> F[DELIVERED]
+
+            style C fill:#C5A065,color:#000
+            style E fill:#C5A065,color:#000
+        </div>
+
+        <footer class="footer">
+            Generado por Agente Documentador Técnico Pro | 2026 | Origen Sierra Nevada SM
+        </footer>
+    </div>
+</body>
+
+</html>

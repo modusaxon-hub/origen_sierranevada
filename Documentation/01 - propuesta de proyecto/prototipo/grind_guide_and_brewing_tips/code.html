@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Grind Guide &amp; Brewing Tips | Origen Sierra Nevada</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C5A065", // Antique Gold
+                        "background-light": "#F5F2EB", // Warm Cream
+                        "background-dark": "#0B1411", // Deep Jungle Green/Black
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#151F1B",
+                        "text-light": "#2D2D2D",
+                        "text-dark": "#EAEAEA",
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        body: ["Lato", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "4px",
+                    },
+                    letterSpacing: {
+                        widest: '.2em',
+                    },
+                    backgroundImage: {
+                        'mountain-pattern': "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+                        'coffee-texture': "url('https://www.transparenttextures.com/patterns/stardust.png')",
+                    }
+                },
+            },
+        };
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #151F1B; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C5A065; 
+            border-radius: 4px;
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }.fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-body transition-colors duration-300">
+<nav class="fixed w-full z-50 top-0 py-6 px-8 flex justify-between items-center mix-blend-difference text-white">
+<div class="flex items-center gap-4">
+<i class="fa-solid fa-bars text-xl cursor-pointer hover:text-primary transition-colors"></i>
+</div>
+<div class="text-center">
+<h1 class="font-display font-bold text-2xl tracking-widest text-primary">ORIGEN</h1>
+<p class="text-[10px] tracking-[0.3em] uppercase opacity-80">Sierra Nevada</p>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-bold">EN</span>
+<i class="fa-solid fa-magnifying-glass text-sm cursor-pointer hover:text-primary transition-colors"></i>
+</div>
+</nav>
+<header class="relative h-[80vh] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-mountain-pattern bg-cover bg-center bg-fixed"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-background-light dark:to-background-dark"></div>
+<div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-12">
+<div class="mb-4 flex justify-center">
+<div class="w-16 h-16 border border-primary rounded-full flex items-center justify-center mb-6 bg-black/30 backdrop-blur-sm">
+<i class="fa-solid fa-mortar-pestle text-primary text-2xl"></i>
+</div>
+</div>
+<h2 class="font-display text-4xl md:text-6xl text-white mb-4 tracking-wide text-shadow">
+                The Art of Extraction
+            </h2>
+<p class="font-body text-gray-200 text-lg md:text-xl tracking-widest uppercase mb-8 opacity-90">
+                Mastering the Grind &amp; Brew
+            </p>
+<div class="w-24 h-0.5 bg-primary mx-auto"></div>
+</div>
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-primary">
+<i class="fa-solid fa-chevron-down text-2xl"></i>
+</div>
+</header>
+<section class="relative py-24 px-6 md:px-12 lg:px-24 bg-background-light dark:bg-background-dark overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-background-light dark:to-background-dark opacity-20 pointer-events-none"></div>
+<div class="text-center mb-16">
+<span class="text-primary text-xs font-bold tracking-[0.2em] uppercase block mb-3">Interactive Guide</span>
+<h3 class="font-display text-3xl md:text-5xl text-gray-900 dark:text-white mb-6">Grind Selector</h3>
+<p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-400 font-light leading-relaxed">
+                The size of your coffee grounds controls the extraction rate. Select your brewing method below to discover the perfect consistency.
+            </p>
+</div>
+<div class="max-w-6xl mx-auto bg-surface-light dark:bg-surface-dark shadow-2xl rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+<div class="flex flex-wrap border-b border-gray-200 dark:border-gray-800">
+<button class="flex-1 py-6 px-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group border-b-2 border-transparent hover:border-primary/50">
+<img alt="French Press" class="w-8 h-8 opacity-60 group-hover:opacity-100 dark:invert transition-opacity filter grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0wkUWPV_4KHp6BdvRqYDtr3829Ma1xu94KEPpGo0FXan89Y5piALIoUEtrYd_IOvLzhkyzzWGDyJFujHTFV6OH3aFkSjGgseVSufKnWca7Z5hQuQ54eZYo20nCkEzGeIIjXrGhKAGKg5M-1gU2fs9wiaQcQSCSnkjdE1DmFxZp_FoykKWlcSgkmRDuO7lbypG0CFUqJzpYpYzemMSEd2Ey5NBrY-U-yRsRt4PpQKvoExIeeSvdoi_nWD3WG0rQQ6AB03O0tgvKU3K"/>
+<span class="text-xs uppercase tracking-widest font-bold text-gray-500 group-hover:text-primary dark:text-gray-400">French Press</span>
+</button>
+<button class="flex-1 py-6 px-4 flex flex-col items-center justify-center gap-3 bg-primary/5 dark:bg-primary/10 border-b-2 border-primary relative">
+<img alt="Pour Over" class="w-8 h-8 text-primary dark:invert transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpzm1HOhCKjfW1_7jiEI55jaE97Q4R8vV9eSpQUnKAjUUmvfHIr5jLCe5TGF4KgxQrSAC6QO8Gcb9ZF4we1FKxGYJjdns9JutJJ45NcyTN-dgLQ8qFhCvtAxEG9m49b_57csJmRf9GLr-kUL0DXiv25SlGa9rd3rw6nYHSQNA-jB09doAusaXBlDyuMHTQfH5Ht12MuCxn-ocyrKbtgZl9MVc_Fb240ombpjMQVl7An2WWcjtTRCyZhZNusLNKdIpoO3e-UthTu3yu"/>
+<span class="text-xs uppercase tracking-widest font-bold text-primary">V60 Pour Over</span>
+<div class="absolute -bottom-[9px] left-1/2 transform -translate-x-1/2 w-4 h-4 bg-surface-light dark:bg-surface-dark border-r border-b border-gray-200 dark:border-gray-800 rotate-45 z-10"></div>
+</button>
+<button class="flex-1 py-6 px-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group border-b-2 border-transparent hover:border-primary/50">
+<img alt="AeroPress" class="w-8 h-8 opacity-60 group-hover:opacity-100 dark:invert transition-opacity filter grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3gC80KyrnAFlrGLJOHrMoKrDMs3ODAGi3BAw-r63w1mO5dOMBmUUriZal6KWwZYQbexjxs8mXo17XGGTZ2wboyig3U6aDKYtYONb2D1l9hN_n2__aEvMT33gvWXbG3YjZ8s6rSy79_eYyjHreJDVU8DV0x17l31j5q0zNkr8x2DWPiraGPfaJPxOMW1mbwakPWLGGhI_5ZcnOwpGVdRkmgVKHquM92dUkALnAbj5r_moiv7VraHf9dAqeuwjxTs57ZoYQrl7mNxaV"/>
+<span class="text-xs uppercase tracking-widest font-bold text-gray-500 group-hover:text-primary dark:text-gray-400">AeroPress</span>
+</button>
+<button class="flex-1 py-6 px-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group border-b-2 border-transparent hover:border-primary/50">
+<img alt="Espresso" class="w-8 h-8 opacity-60 group-hover:opacity-100 dark:invert transition-opacity filter grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcLJM-NSvUClq7VkQUf8xoEzvB_RgOCSzrJOPQo30g7Layu0Ovg4u9CtzjgXSdy990H9dS0F-E7srhGd2_tOfWiNIeVYrUbReEXZL8ij5-3ZkmXpZtF2nL-iB6pavktEvaIIMN5y8F2wCtrn1vBpqG18bAcBcTOiFLaSO5f6TdvtfngbwiLdgbCjYQP8oKkfZp2-bgdouiGevct5iH4qIRRtu36mfTdhkJCaZnhIYPJG6I8O6YZNw2NTlbYtCxrV7ju92dH40EUAmj"/>
+<span class="text-xs uppercase tracking-widest font-bold text-gray-500 group-hover:text-primary dark:text-gray-400">Espresso</span>
+</button>
+</div>
+<div class="p-8 md:p-12 flex flex-col md:flex-row items-center gap-12 fade-in">
+<div class="w-full md:w-1/2 space-y-6">
+<div>
+<h4 class="font-display text-2xl text-gray-900 dark:text-white mb-2">Medium-Fine Grind</h4>
+<div class="h-1 w-12 bg-primary"></div>
+</div>
+<p class="text-gray-600 dark:text-gray-300 font-light leading-relaxed">
+                        For a V60 pour over, you are looking for a texture similar to <strong>Sea Salt</strong>. If the water drains too quickly, your grind is too coarse. If it chokes and pools, it's too fine.
+                    </p>
+<div class="grid grid-cols-2 gap-4 pt-4">
+<div class="bg-background-light dark:bg-background-dark p-4 rounded border border-gray-100 dark:border-gray-800">
+<span class="block text-xs text-primary uppercase tracking-wider mb-1">Extraction Time</span>
+<span class="font-display text-lg dark:text-white">2:30 - 3:00 min</span>
+</div>
+<div class="bg-background-light dark:bg-background-dark p-4 rounded border border-gray-100 dark:border-gray-800">
+<span class="block text-xs text-primary uppercase tracking-wider mb-1">Texture Ref</span>
+<span class="font-display text-lg dark:text-white">Kosher Salt</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2 relative group">
+<div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="relative overflow-hidden rounded-lg shadow-xl aspect-video md:aspect-square">
+<img alt="Medium Fine Coffee Grind Texture" class="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZv5nOjp7zmCZWGky4raehhN3mKOLVPfk7eSBc9HNBjO5_kEG1uLCwIfoV2zizjbqLyiS1aAl43qdi4ZMZ3OVO59JxWHZp6TgX6Sw11WEvi_-nzkn5hoEVagZgtxAfYnZgN-h8LhD3zDWvYUSqSYDSFQCQSutsQeJpn7hZcVzpF1vXFP9OjLupDWW_HSc7b0YfZAOUNk9jSQA6kohzyMdBLFhCICbYLZlzToOGgmQZufO0hnnEcHt2CHFGM_tqMBUlTY4q109L_afn"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+<span class="text-white text-xs font-bold tracking-widest uppercase">Visual Reference</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 md:px-12 lg:px-24 bg-surface-dark text-white border-t border-gray-800 relative">
+<div class="absolute top-10 right-10 opacity-10 pointer-events-none">
+<img alt="coffee bean pattern" class="w-64 h-64 rotate-12" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzYSRsiCtEMZnxwN-6-BknlXsYdlxCf_V1VRCkDwHt7tcxtoDK-OzZcakE4aRAsD6nBt4EGvRpBoUQNYXME0JEHgy3H5dR92ZHdOLWiJuEfNMHlbWDoMXBDJ2TX1dkxf61Q1Sw_v1yXU5vrvvBtffNvH3q26yfPG72ddOttYS_A4ShGxG7MrNXsoojI88WWD0pdn6UVElnO-_lqPrYtUQHYiwHzQWQiO-PMxBpcA8EpGHtLQKQ64VtuK4qdlFbV3WCLfQAYdEwvlO4"/>
+</div>
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row gap-16 items-start">
+<div class="w-full md:w-1/3 sticky top-24">
+<h2 class="font-display text-4xl md:text-5xl mb-2 text-primary">The Ritual</h2>
+<h3 class="font-body text-xl font-light tracking-widest uppercase mb-8 text-gray-400">V60 Preparation</h3>
+<div class="relative rounded-lg overflow-hidden aspect-[3/4] shadow-2xl border border-gray-800">
+<img alt="V60 Pouring Process" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD66j_rBptVx41SzxJd2lEMDjmK8FI0bxqbctK-Si--3vWmvLvRFMcNNpLSYR9pCUhUfrrzn9Qrmk2fcjTzXLYKu1BjjzkTXqHl4946JLQf2CipHDousNffpxSH7VmKbxmCXLzmEAwOlzjagPJGsrK5B1UICECmJJNcf02r8sqPit45AALTY-uf5eWkfqcXIIR8rUC4F3CrNDsP6miTP0ucSQvXLiuPOtuGRrLKEwqCHodm2vKwuaJKS0ChHuaFsJ4to-IRFRT1p8hV"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="text-sm font-light text-gray-300 italic">"Precision and patience are the keys to unlocking the floral notes of Sierra Nevada beans."</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<i class="fa-solid fa-scale-balanced"></i>
+</div>
+<div>
+<span class="block text-[10px] uppercase text-gray-500 tracking-widest">Dose</span>
+<span class="font-display text-lg">20g</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<i class="fa-solid fa-droplet"></i>
+</div>
+<div>
+<span class="block text-[10px] uppercase text-gray-500 tracking-widest">Water</span>
+<span class="font-display text-lg">300ml</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<i class="fa-solid fa-temperature-half"></i>
+</div>
+<div>
+<span class="block text-[10px] uppercase text-gray-500 tracking-widest">Temp</span>
+<span class="font-display text-lg">93°C</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<i class="fa-regular fa-clock"></i>
+</div>
+<div>
+<span class="block text-[10px] uppercase text-gray-500 tracking-widest">Total Time</span>
+<span class="font-display text-lg">3:00</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-2/3 pt-4">
+<div class="flex gap-6 mb-12 group">
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-primary text-primary flex items-center justify-center font-display text-xl group-hover:bg-primary group-hover:text-black transition-colors duration-300">1</div>
+<div class="w-px h-full bg-gray-800 my-2 group-hover:bg-primary/30 transition-colors"></div>
+</div>
+<div class="pb-8 border-b border-gray-800 w-full group-hover:border-primary/30 transition-colors">
+<h4 class="font-display text-2xl text-white mb-3">Rinse &amp; Warm</h4>
+<p class="text-gray-400 font-light leading-relaxed">
+                                Fold the filter paper and place it in the dripper. Rinse thoroughly with hot water to remove any paper taste and to warm your vessel. Discard the water.
+                            </p>
+</div>
+</div>
+<div class="flex gap-6 mb-12 group">
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-primary text-primary flex items-center justify-center font-display text-xl group-hover:bg-primary group-hover:text-black transition-colors duration-300">2</div>
+<div class="w-px h-full bg-gray-800 my-2 group-hover:bg-primary/30 transition-colors"></div>
+</div>
+<div class="pb-8 border-b border-gray-800 w-full group-hover:border-primary/30 transition-colors">
+<h4 class="font-display text-2xl text-white mb-3">The Bloom</h4>
+<p class="text-gray-400 font-light leading-relaxed">
+                                Add your 20g of medium-fine ground coffee. Pour 40-50g of water gently over the grounds. Watch them bubble and rise. Wait 30-45 seconds. This releases CO2.
+                            </p>
+</div>
+</div>
+<div class="flex gap-6 mb-12 group">
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-primary text-primary flex items-center justify-center font-display text-xl group-hover:bg-primary group-hover:text-black transition-colors duration-300">3</div>
+<div class="w-px h-full bg-gray-800 my-2 group-hover:bg-primary/30 transition-colors"></div>
+</div>
+<div class="pb-8 border-b border-gray-800 w-full group-hover:border-primary/30 transition-colors">
+<h4 class="font-display text-2xl text-white mb-3">Steady Pour</h4>
+<p class="text-gray-400 font-light leading-relaxed">
+                                Starting from the center, pour in a steady spiral motion towards the edge and back. Aim to reach 300g total weight by the 2:00 mark. Keep the water level consistent.
+                            </p>
+</div>
+</div>
+<div class="flex gap-6 group">
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-primary text-primary flex items-center justify-center font-display text-xl group-hover:bg-primary group-hover:text-black transition-colors duration-300">4</div>
+</div>
+<div class="pb-8 w-full">
+<h4 class="font-display text-2xl text-white mb-3">Draw Down &amp; Serve</h4>
+<p class="text-gray-400 font-light leading-relaxed">
+                                Allow the water to drip through completely. The bed of coffee grounds should look flat. Give the carafe a swirl to aerate and mix, then serve immediately.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="bg-black text-white pt-20 pb-10 border-t border-gray-900">
+<div class="max-w-7xl mx-auto px-6 text-center">
+<div class="w-16 h-16 mx-auto border border-gray-700 rounded-full flex items-center justify-center mb-8 hover:border-primary transition-colors cursor-pointer">
+<span class="font-display font-bold text-2xl text-primary">W</span>
+</div>
+<div class="flex justify-center gap-8 mb-12">
+<a class="text-xs uppercase tracking-widest text-gray-500 hover:text-primary transition-colors" href="#">Our Story</a>
+<a class="text-xs uppercase tracking-widest text-gray-500 hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-xs uppercase tracking-widest text-gray-500 hover:text-primary transition-colors" href="#">Wholesale</a>
+<a class="text-xs uppercase tracking-widest text-gray-500 hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<div class="flex justify-center gap-6 mb-12">
+<a class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors" href="#"><i class="fa-brands fa-facebook-f"></i></a>
+<a class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors" href="#"><i class="fa-brands fa-twitter"></i></a>
+<a class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors" href="#"><i class="fa-brands fa-instagram"></i></a>
+</div>
+<div class="border-t border-gray-900 pt-8">
+<p class="text-[10px] text-gray-600 uppercase tracking-widest">
+                    80 Marcus Garvey Drive · Kingston 11 · Jamaica, W.I.<br/>
+                    © 2023 Origen Sierra Nevada. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+<div class="fixed bottom-6 right-6 z-50">
+<button class="bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-white hover:text-primary transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<i class="fa-solid fa-moon dark:hidden"></i>
+<i class="fa-solid fa-sun hidden dark:inline"></i>
+</button>
+</div>
+
+</body></html>

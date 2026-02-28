@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Wompi - Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+            --bg-paper: #ffffff;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: var(--bg-paper);
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 70px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-top: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            color: var(--origen-black);
+        }
+
+        .setup-badge {
+            background: #fff3e0;
+            border: 1px solid #ffe0b2;
+            color: #e65100;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background: #1a1a1a;
+            color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            overflow-x: auto;
+            page-break-inside: avoid;
+            margin: 20px 0;
+        }
+
+        .test-card {
+            border: 1px dashed #ccc;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.75em;
+            color: #999;
+        }
+
+        .no-print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--origen-gold);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="no-print-btn no-print" onclick="window.print()">🖨️ Imprimir Guía Wompi</button>
+
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Origen Sierra Nevada - Payments Setup</span>
+            <h1>Pasarela de Pagos Wompi</h1>
+        </header>
+
+        <section>
+            <div class="setup-badge">⚠️ Estado: Código preparado, Credenciales pendientes</div>
+            <p>Guía para la activación de pagos electrónicos reales mediante Wompi Colombia.</p>
+
+            <h2>Paso 1: Credenciales Sandbox</h2>
+            <p>Accede al dashboard de Wompi y configura las variables en tu archivo <code>.env</code>:</p>
+            <pre>
+VITE_WOMPI_SANDBOX=true
+VITE_WOMPI_PUBLIC_KEY_TEST=pub_test_XXXX
+VITE_WOMPI_PRIVATE_KEY_TEST=prv_test_XXXX
+            </pre>
+        </section>
+
+        <section>
+            <h2>Paso 2: Tarjetas de Prueba</h2>
+            <div class="test-card">
+                <strong>💳 Transacción Exitosa:</strong><br>
+                Número: <code>4242 4242 4242 4242</code><br>
+                CVV: <code>123</code> | Fecha: Futura
+            </div>
+            <div class="test-card">
+                <strong>🚫 Transacción Rechazada:</strong><br>
+                Número: <code>4000 0000 0000 0002</code>
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section>
+            <h2>Paso 3: Webhooks de Supabase</h2>
+            <p>Configura la URL de notificación para cambios de estado automáticos:</p>
+            <pre>
+URL: https://{id}.supabase.co/functions/v1/wompi-webhook
+            </pre>
+        </section>
+
+        <footer class="footer">
+            Documento generado por Agente Documentador Técnico Pro | v2.2.0 | Origen Sierra Nevada SM
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Identidad Visual - Origen Sierra Nevada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #141E16;
+            --gold: #C8AA6E;
+            --white: #F5F5F5;
+            --red: #D32F2F;
+        }
+
+        body {
+            font-family: 'Papyrus', fantasy;
+            background: var(--primary);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(20, 31, 22, 0.95) 0%, rgba(20, 31, 22, 0.98) 100%);
+        }
+
+        .logo-display {
+            width: 400px;
+            max-width: 90%;
+            margin: 3rem 0;
+        }
+
+        .logo-display img {
+            width: 100%;
+            height: auto;
+        }
+
+        .hero-label {
+            color: var(--gold);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: rgba(200, 170, 110, 0.8);
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        /* Section */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            color: var(--gold);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: rgba(245, 245, 245, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(200, 170, 110, 0.03);
+            border: 1px solid rgba(200, 170, 110, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(200, 170, 110, 0.1);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: rgba(245, 245, 245, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Logo Showcase */
+        .logo-showcase {
+            background: rgba(200, 170, 110, 0.05);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .logo-showcase img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Color Display */
+        .color-box {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-code {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Spacing Demo */
+        .spacing-demo {
+            background: rgba(200, 170, 110, 0.05);
+            border: 2px dashed rgba(200, 170, 110, 0.3);
+            border-radius: 16px;
+            padding: 4rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spacing-guides {
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--gold);
+            margin: 2rem;
+            opacity: 0.3;
+        }
+
+        /* Do/Don't */
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .do-dont-item {
+            text-align: center;
+        }
+
+        .do-dont-box {
+            aspect-ratio: 1;
+            background: rgba(200, 170, 110, 0.05);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .do-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .dont-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--red);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Size Chart */
+        .size-chart {
+            background: rgba(200, 170, 110, 0.03);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .size-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(200, 170, 110, 0.1);
+        }
+
+        .size-row:last-child {
+            border-bottom: none;
+        }
+
+        .size-label {
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .size-value {
+            font-family: 'Courier New', monospace;
+            color: rgba(245, 245, 245, 0.8);
+        }
+
+        /* Mockup Section */
+        .mockup-section {
+            background: linear-gradient(135deg, rgba(20, 31, 22, 0.95) 0%, rgba(20, 31, 22, 0.8) 100%);
+            border: 1px solid rgba(200, 170, 110, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .mockup-image {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .mockup-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(200, 170, 110, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .mockup-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-label">Manual de Identidad Visual</p>
+        <h1 class="hero-title">La Firma de la Tierra</h1>
+        <p class="hero-subtitle">El Horizonte Áureo</p>
+        <div class="logo-display">
+            <img src="images/La-firma-de-la-tierra.svg" alt="Logo Origen Sierra Nevada">
+        </div>
+        <p style="color: rgba(248, 247, 245, 0.6); font-size: 1rem; max-width: 600px;">
+            Este manual establece las directrices para el uso correcto del logotipo de Origen Sierra Nevada,
+            garantizando la consistencia y reconocimiento de la marca en todas sus aplicaciones.
+        </p>
+    </section>
+
+    <!-- Logo Concept -->
+    <section>
+        <div class="section-header">
+            <p class="section-label">Concepto</p>
+            <h2 class="section-title">La Firma de la Tierra</h2>
+            <p class="section-description">
+                El logo representa la línea de horizonte de la Sierra Nevada vista al amanecer.
+                Simboliza la "Cota de Oro": esa línea de altitud específica (1.600-2.000 m.s.n.m.)
+                donde nace el mejor café del mundo.
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3 class="card-title">Topografía</h3>
+                <p class="card-text">
+                    Un trazo continuo y fluido que dibuja el perfil topográfico de los picos montañosos,
+                    creando una firma visual única e inconfundible.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Identidad</h3>
+                <p class="card-text">
+                    Transforma el empaque en un "souvenir" del lugar. Al ver la marca,
+                    el cliente no solo ve un producto, ve el paisaje de donde proviene.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Elegancia</h3>
+                <p class="card-text">
+                    Lujo silencioso. No necesita gritar "café". Asume que el consumidor
+                    sabe reconocer la calidad por sí mismo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Colores -->
+    <section style="background: rgba(0,0,0,0.2);">
+        <div class="section-header">
+            <p class="section-label">Paleta de Colores</p>
+            <h2 class="section-title">Especificaciones Cromáticas</h2>
+            <p class="section-description">
+                La paleta de colores ha sido cuidadosamente seleccionada para transmitir
+                elegancia, naturaleza y exclusividad.
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="color-box" style="background: #141E16;">
+                    <div class="color-code">#141E16</div>
+                </div>
+                <h3 class="card-title">Verde Origen Profundo</h3>
+                <p class="card-text" style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                    RGB: 20, 30, 22<br>
+                    CMYK: 60, 40, 60, 90<br>
+                    Pantone: 5605 C
+                </p>
+                <p class="card-text" style="margin-top: 1rem;">
+                    Color principal. Evoca la selva densa de la Sierra Nevada.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="color-box" style="background: #C8AA6E;">
+                    <div class="color-code" style="color: #141E16;">#C8AA6E</div>
+                </div>
+                <h3 class="card-title">Dorado Sierra</h3>
+                <p class="card-text" style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                    RGB: 200, 170, 110<br>
+                    CMYK: 20, 25, 50, 10<br>
+                    Pantone: 4515 C
+                </p>
+                <p class="card-text" style="margin-top: 1rem;">
+                    Color del logo. Metallic gold premium y exclusivo.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="color-box" style="background: #F5F5F5;">
+                    <div class="color-code" style="color: #141E16;">#F5F5F5</div>
+                </div>
+                <h3 class="card-title">Blanco Niebla</h3>
+                <p class="card-text" style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                    RGB: 245, 245, 245<br>
+                    CMYK: 0, 0, 0, 4<br>
+                    Pantone: Cool Gray 1 C
+                </p>
+                <p class="card-text" style="margin-top: 1rem;">
+                    Color neutro claro para textos y fondos.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tipografía -->
+    <section>
+        <div class="section-header">
+            <p class="section-label">Tipografía</p>
+            <h2 class="section-title">Fuentes Oficiales</h2>
+            <p class="section-description">
+                La combinación tipográfica refleja la dualidad entre tradición y carácter artesanal.
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3 class="card-title" style="font-family: 'Playfair Display', serif; font-size: 2.5rem;">ORIGEN</h3>
+                <p class="card-text">
+                    <strong>Fuente:</strong> Playfair Display<br>
+                    <strong>Peso:</strong> 900 (Black)<br>
+                    <strong>Uso:</strong> Nombre principal de la marca<br>
+                    <strong>Carácter:</strong> Elegancia y tradición
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title" style="font-family: 'Papyrus', fantasy; font-size: 1.8rem;">SIERRA NEVADA</h3>
+                <p class="card-text">
+                    <strong>Fuente:</strong> Papyrus<br>
+                    <strong>Peso:</strong> Regular (400)<br>
+                    <strong>Uso:</strong> Subtítulo del logo<br>
+                    <strong>Carácter:</strong> Orgánico y artesanal
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tamaños Mínimos -->
+    <section style="background: rgba(0,0,0,0.2);">
+        <div class="section-header">
+            <p class="section-label">Dimensiones</p>
+            <h2 class="section-title">Tamaños Mínimos</h2>
+            <p class="section-description">
+                Para garantizar la legibilidad y reconocimiento del logo,
+                se deben respetar estos tamaños mínimos en todas las aplicaciones.
+            </p>
+        </div>
+
+        <div class="size-chart">
+            <div class="size-row">
+                <span class="size-label">Impresión (horizontal)</span>
+                <span class="size-value">Mínimo 40mm de ancho</span>
+            </div>
+            <div class="size-row">
+                <span class="size-label">Digital (horizontal)</span>
+                <span class="size-value">Mínimo 200px de ancho</span>
+            </div>
+            <div class="size-row">
+                <span class="size-label">Favicon / Isotipo</span>
+                <span class="size-value">Mínimo 32x32px</span>
+            </div>
+            <div class="size-row">
+                <span class="size-label">Redes Sociales</span>
+                <span class="size-value">Mínimo 400x400px</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usos Correctos e Incorrectos -->
+    <section>
+        <div class="section-header">
+            <p class="section-label">Guías de Uso</p>
+            <h2 class="section-title">Usos Correctos e Incorrectos</h2>
+            <p class="section-description">
+                Para mantener la integridad de la marca, es fundamental seguir estas directrices.
+            </p>
+        </div>
+
+        <div class="do-dont-grid">
+            <!-- DO -->
+            <div class="do-dont-item">
+                <div class="do-dont-box" style="background: #141E16;">
+                    <div class="do-badge">✓ CORRECTO</div>
+                    <img src="images/La-firma-de-la-tierra.svg" alt="Correcto" style="max-width: 70%;">
+                </div>
+                <p class="card-text">Logo dorado sobre fondo oscuro</p>
+            </div>
+
+            <div class="do-dont-item">
+                <div class="do-dont-box" style="background: #F5F5F5;">
+                    <div class="do-badge">✓ CORRECTO</div>
+                    <img src="images/La-firma-de-la-tierra.svg" alt="Correcto"
+                        style="max-width: 70%; filter: brightness(0.4);">
+                </div>
+                <p class="card-text">Logo en verde sobre fondo claro</p>
+            </div>
+
+            <!-- DON'T -->
+            <div class="do-dont-item">
+                <div class="do-dont-box" style="background: linear-gradient(45deg, #ff00ff, #00ffff);">
+                    <div class="dont-badge">✗ INCORRECTO</div>
+                    <img src="images/La-firma-de-la-tierra.svg" alt="Incorrecto" style="max-width: 70%;">
+                </div>
+                <p class="card-text">No usar sobre fondos complejos o gradientes</p>
+            </div>
+
+            <div class="do-dont-item">
+                <div class="do-dont-box" style="background: #C8AA6E;">
+                    <div class="dont-badge">✗ INCORRECTO</div>
+                    <img src="images/La-firma-de-la-tierra.svg" alt="Incorrecto" style="max-width: 70%;">
+                </div>
+                <p class="card-text">No usar dorado sobre dorado (bajo contraste)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aplicaciones del Logo -->
+    <section style="background: rgba(0,0,0,0.2);">
+        <div class="section-header">
+            <p class="section-label">Uso Práctico</p>
+            <h2 class="section-title">Aplicaciones del Logo</h2>
+            <p class="section-description">
+                El logo se aplica en diversos medios manteniendo siempre su integridad visual.
+            </p>
+        </div>
+
+        <!-- Aplicación 1: Empaques -->
+        <div class="mockup-section">
+            <div class="mockup-grid">
+                <div>
+                    <span style="font-size: 3rem; color: var(--gold); display: block; margin-bottom: 1rem;">📦</span>
+                    <h3
+                        style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 1rem;">
+                        Empaques de Café
+                    </h3>
+                    <p style="color: rgba(245,245,245,0.7); line-height: 1.8; margin-bottom: 1.5rem;">
+                        Bolsas premium en negro mate con el logo completo en relieve dorado.
+                        El isotipo topográfico envuelve el empaque horizontalmente.
+                    </p>
+                    <div style="color: rgba(200,170,110,0.6); font-size: 0.85rem;">
+                        <strong>Aplicación:</strong> Relieve dorado + Hot stamping<br>
+                        <strong>Tamaño:</strong> Logo completo mínimo 80mm ancho
+                    </div>
+                </div>
+                <div class="mockup-image">
+                    <img src="Mockup´s/bolsa-cafe-fondo.png" alt="Bolsa de café">
+                </div>
+            </div>
+        </div>
+
+        <!-- Aplicación 2: Tarjetas -->
+        <div class="mockup-section">
+            <div class="mockup-grid">
+                <div>
+                    <span style="font-size: 3rem; color: var(--gold); display: block; margin-bottom: 1rem;">💼</span>
+                    <h3
+                        style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 1rem;">
+                        Tarjetas de Presentación
+                    </h3>
+                    <p style="color: rgba(245,245,245,0.7); line-height: 1.8; margin-bottom: 1.5rem;">
+                        Tarjetas en verde profundo con logo en dorado termográfico.
+                        La composición completa se ubica centrada manteniendo jerarquía visual.
+                    </p>
+                    <div style="color: rgba(200,170,110,0.6); font-size: 0.85rem;">
+                        <strong>Aplicación:</strong> Termografía dorada<br>
+                        <strong>Tamaño:</strong> 50mm ancho en tarjeta estándar
+                    </div>
+                </div>
+                <div class="mockup-image">
+                    <img src="Mockup´s/tarjeta-verde-fondo.png" alt="Tarjetas de presentación">
+                </div>
+            </div>
+        </div>
+
+        <!-- Aplicación 3: Papelería -->
+        <div class="mockup-section">
+            <div class="mockup-grid">
+                <div>
+                    <span style="font-size: 3rem; color: var(--gold); display: block; margin-bottom: 1rem;">📄</span>
+                    <h3
+                        style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 1rem;">
+                        Papelería Corporativa
+                    </h3>
+                    <p style="color: rgba(245,245,245,0.7); line-height: 1.8; margin-bottom: 1.5rem;">
+                        Membrete en la parte superior de hojas, sobres y documentos.
+                        El isotipo funciona como elemento decorativo separador.
+                    </p>
+                    <div style="color: rgba(200,170,110,0.6); font-size: 0.85rem;">
+                        <strong>Aplicación:</strong> Impresión offset<br>
+                        <strong>Tamaño:</strong> 60mm ancho en membrete A4
+                    </div>
+                </div>
+                <div class="mockup-image">
+                    <img src="Mockup´s/documento-institucional.png" alt="Papel membretado">
+                </div>
+            </div>
+        </div>
+
+        <!-- Aplicación 4: Indumentaria -->
+        <div class="mockup-section">
+            <div class="mockup-grid">
+                <div>
+                    <span style="font-size: 3rem; color: var(--gold); display: block; margin-bottom: 1rem;">👕</span>
+                    <h3
+                        style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 1rem;">
+                        Indumentaria
+                    </h3>
+                    <p style="color: rgba(245,245,245,0.7); line-height: 1.8; margin-bottom: 1.5rem;">
+                        Aplicación bordada o estampada en textiles. El logo se adapta
+                        perfectamente a camisetas, delantales y uniformes corporativos.
+                    </p>
+                    <div style="color: rgba(200,170,110,0.6); font-size: 0.85rem;">
+                        <strong>Aplicación:</strong> Bordado o serigrafía<br>
+                        <strong>Tamaño:</strong> Mínimo 80mm ancho
+                    </div>
+                </div>
+                <div class="mockup-image">
+                    <img src="Mockup´s/camiseta-verde-fondo.png" alt="Camiseta corporativa">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 1rem;">
+            Origen Sierra Nevada
+        </p>
+        <p>© 2024 Origen Sierra Nevada. Todos los derechos reservados.</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem;">
+            Manual de Identidad Visual - Documento Confidencial
+        </p>
+    </footer>
+
+</body>
+
+</html>

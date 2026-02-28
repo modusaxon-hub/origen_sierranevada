@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Café Malu - Origen Sierra Nevada</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&amp;family=Montserrat:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#D4AF37", // Metallic Gold
+                        secondary: "#8B735B", // Bronze/Brown
+                        "background-light": "#F9F7F2", // Warm Cream/Paper
+                        "background-dark": "#0B120D", // Deep Forest/Charcoal
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#16201A", // Lighter Forest Green
+                        "text-main-light": "#1A1A1A",
+                        "text-main-dark": "#EAEAEA",
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        accent: ["Cinzel", "serif"],
+                        body: ["Montserrat", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'mountain-pattern': "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')",
+                    }
+                },
+            },
+        };
+    </script>
+<style>.gold-gradient-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
+        }html { scroll-behavior: smooth; }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37; 
+            border-radius: 4px;
+        }@keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-body transition-colors duration-300">
+<nav class="fixed w-full z-50 top-0 transition-all duration-300 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-primary/20">
+<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<button class="lg:hidden text-gray-800 dark:text-white">
+<span class="material-icons-outlined">menu</span>
+</button>
+<div class="flex flex-col items-center group cursor-pointer">
+<span class="font-accent text-xs tracking-[0.3em] text-primary mb-1 group-hover:text-amber-300 transition-colors">ORIGEN</span>
+<h1 class="font-display text-2xl font-bold tracking-wider text-gray-900 dark:text-white group-hover:text-primary transition-colors">SIERRA NEVADA</h1>
+</div>
+<div class="flex items-center space-x-6 text-gray-800 dark:text-white">
+<button class="hidden lg:block hover:text-primary transition-colors"><span class="material-icons-outlined">search</span></button>
+<div class="relative cursor-pointer hover:text-primary transition-colors">
+<span class="material-icons-outlined">shopping_bag</span>
+<span class="absolute -top-1 -right-2 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+</div>
+<button class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-surface-dark transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-outlined block dark:hidden">dark_mode</span>
+<span class="material-icons-outlined hidden dark:block text-primary">light_mode</span>
+</button>
+</div>
+</div>
+</nav>
+<section class="relative pt-32 pb-20 min-h-screen flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-10 dark:opacity-20 pointer-events-none">
+<img alt="Coffee texture background" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAetcaf45v-4SGtm1agWKBkRAv1cm287VvB2k6ZVSKxKXZb1iPMpsi1MIbahd20gt-pdnUt1tM0uBGDS2ueIA5qGHdxoULS_ZZlE8ers04TVVjmm4-LabFijS2J2l3NalRgb82yzuHcd3e3liJN48f_0gNgAP35OgKf3HiXmYpnqpyyLBMWCqtgGb0skh-1RlC72BrfYWoULoFqq4lTOu1BP88tq6YhTmeB1j9dnYuBBm4pYxKdaI8D3e2TGCSOi1fwcaJRNXhX2y42"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background-light/50 to-background-light dark:via-background-dark/50 dark:to-background-dark z-0"></div>
+<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+<div class="relative flex justify-center order-2 lg:order-1">
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] border border-primary/30 rounded-full"></div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] lg:w-[480px] lg:h-[480px] border border-dashed border-primary/20 rounded-full animate-[spin_60s_linear_infinite]"></div>
+<img alt="Cafe Malu Coffee Bag" class="w-64 md:w-80 lg:w-96 drop-shadow-2xl animate-float relative z-10 rounded-lg filter sepia-[.2] contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJmaqNUGIz6xE4QdGma3lIMlJ-DuyxXb3OOX5zNG9SOcSd5OYp3e-cAhgVRiTXsMHqb09G_OuAdnJN-iUu6DBV67iDtXxJtit_tFJeVSpnVGYIkHZ5GiWKqaPjtsVD8uBR6wK7CT4aH8T-zXsWJvvF0GkTVqHWDCcdMMYPlwogER_cbbGAJ1wHdBmV_D0IxsKmqgczIR3AtplPoCTmoCxRUcm5-f5GWw1Z8eZQ5X-U2ziM1KOfK4CrF-B3QGT-C9FmrR4KWav9ymMf"/>
+<div class="absolute top-10 right-10 lg:right-20 z-20 bg-surface-dark/90 backdrop-blur border border-primary text-primary w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-lg transform rotate-12">
+<span class="text-[10px] font-accent tracking-widest uppercase">SCAA</span>
+<span class="text-2xl font-display font-bold text-white">88</span>
+<span class="text-[10px] font-accent tracking-widest uppercase">PTS</span>
+</div>
+</div>
+<div class="order-1 lg:order-2 space-y-8 text-center lg:text-left">
+<div>
+<span class="font-accent text-primary tracking-[0.2em] text-sm uppercase block mb-2">Single Origin Specialty</span>
+<h1 class="font-display text-5xl lg:text-7xl text-gray-900 dark:text-white mb-4 leading-tight">
+                        Café <span class="text-primary italic">Malu</span>
+</h1>
+<div class="flex items-center justify-center lg:justify-start space-x-1 text-primary text-sm mb-6">
+<span class="material-icons-outlined text-base">star</span>
+<span class="material-icons-outlined text-base">star</span>
+<span class="material-icons-outlined text-base">star</span>
+<span class="material-icons-outlined text-base">star</span>
+<span class="material-icons-outlined text-base">star</span>
+<span class="ml-2 text-gray-500 dark:text-gray-400 font-sans text-xs tracking-wide">(124 Reviews)</span>
+</div>
+</div>
+<div class="flex flex-wrap justify-center lg:justify-start gap-3">
+<span class="px-4 py-1.5 border border-primary/40 text-primary text-xs font-bold uppercase tracking-widest rounded-full">Fruity</span>
+<span class="px-4 py-1.5 border border-primary/40 text-primary text-xs font-bold uppercase tracking-widest rounded-full">Chocolate</span>
+<span class="px-4 py-1.5 border border-primary/40 text-primary text-xs font-bold uppercase tracking-widest rounded-full">Citrus</span>
+</div>
+<p class="font-body text-gray-600 dark:text-gray-300 leading-relaxed text-lg max-w-xl mx-auto lg:mx-0">
+                    Grown in the mystical elevations of Sierra Nevada, Café Malu offers a rare balance of acidity and body. Experience the heritage of generations in every cup.
+                </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="purchase_type" type="radio"/>
+<div class="p-5 rounded-lg border-2 border-primary bg-background-light dark:bg-surface-dark peer-checked:bg-primary/5 dark:peer-checked:bg-primary/10 transition-all shadow-md h-full flex flex-col justify-between">
+<div class="flex justify-between items-start mb-2">
+<span class="font-accent text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Subscribe &amp; Save</span>
+<span class="bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">Best Value</span>
+</div>
+<div>
+<span class="block text-3xl font-display text-primary">$18.00</span>
+<span class="text-xs text-gray-500">per 12oz bag • Delivered monthly</span>
+</div>
+<div class="absolute top-4 right-4 text-primary opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-icons-outlined">check_circle</span>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="purchase_type" type="radio"/>
+<div class="p-5 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-primary/50 bg-white dark:bg-transparent transition-all h-full flex flex-col justify-between opacity-80 hover:opacity-100">
+<div class="flex justify-between items-start mb-2">
+<span class="font-accent text-sm font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">One-time</span>
+</div>
+<div>
+<span class="block text-3xl font-display text-gray-700 dark:text-gray-400">$22.00</span>
+<span class="text-xs text-gray-500">Single purchase</span>
+</div>
+</div>
+</label>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
+<button class="bg-primary hover:bg-yellow-600 text-black font-accent font-bold text-sm tracking-widest uppercase px-8 py-4 rounded shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-1 w-full sm:w-auto">
+                        Add to Cart
+                    </button>
+<button class="border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white font-accent font-bold text-sm tracking-widest uppercase px-8 py-4 rounded hover:bg-gray-100 dark:hover:bg-white/5 transition-all w-full sm:w-auto">
+                        Learn More
+                    </button>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 w-full overflow-hidden leading-[0]">
+<svg class="relative block w-[calc(100%+1.3px)] h-[80px] text-surface-light dark:text-surface-dark fill-current" data-name="Layer 1" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+<path class="fill-background-light dark:fill-background-dark" d="M1200 120L0 16.48 0 0 1200 0 1200 120z"></path>
+<path class="fill-surface-light dark:fill-surface-dark opacity-100" d="M0,60 L50,80 L100,50 L150,90 L200,60 L250,100 L300,70 L350,90 L400,60 L450,100 L500,70 L550,90 L600,60 L650,100 L700,70 L750,90 L800,60 L850,100 L900,70 L950,90 L1000,60 L1050,100 L1100,70 L1150,90 L1200,60 V120 H0 V60 Z"></path>
+</svg>
+</div>
+</section>
+<section class="py-24 bg-surface-light dark:bg-surface-dark relative">
+<div class="max-w-4xl mx-auto px-6 text-center">
+<div class="w-16 h-1 bg-primary mx-auto mb-8"></div>
+<h2 class="font-display text-4xl lg:text-5xl text-gray-900 dark:text-white mb-10">The Story Behind Each Bean</h2>
+<div class="relative">
+<span class="absolute -top-12 -left-8 font-display text-9xl text-primary/10 select-none z-0">“</span>
+<p class="font-display italic text-xl lg:text-2xl text-gray-600 dark:text-gray-300 leading-loose relative z-10">
+                    High in the misty peaks of the Sierra Nevada, where the clouds touch the soil, lies the origin of Café Malu. Cultivated by hands that have known these lands for centuries, our beans are shade-grown under a canopy of native trees, preserving the biodiversity of the rainforest.
+                </p>
+<p class="font-body mt-8 text-gray-500 dark:text-gray-400 leading-relaxed">
+                    Every cherry is hand-picked at peak ripeness, fermented for 24 hours, and sun-dried on raised beds. This meticulous process unlocks the unique flavor profile that earned a score of 88 points from the Specialty Coffee Association.
+                </p>
+<span class="absolute -bottom-24 -right-4 font-display text-9xl text-primary/10 select-none z-0 rotate-180">“</span>
+</div>
+<div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+<div class="flex flex-col items-center group">
+<div class="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+<span class="material-icons-outlined text-3xl">landscape</span>
+</div>
+<h3 class="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">High Altitude</h3>
+<p class="text-xs text-gray-500">1,800m above sea level</p>
+</div>
+<div class="flex flex-col items-center group">
+<div class="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+<span class="material-icons-outlined text-3xl">water_drop</span>
+</div>
+<h3 class="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">Washed Process</h3>
+<p class="text-xs text-gray-500">Clean, bright finish</p>
+</div>
+<div class="flex flex-col items-center group">
+<div class="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-primary">
+<span class="material-icons-outlined text-3xl">eco</span>
+</div>
+<h3 class="font-accent font-bold text-sm uppercase tracking-widest mb-2 dark:text-white">Sustainable</h3>
+<p class="text-xs text-gray-500">Bird-friendly farming</p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 bg-background-light dark:bg-background-dark relative border-t border-primary/20">
+<div class="max-w-6xl mx-auto px-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-4">
+<h2 class="font-display text-4xl text-gray-900 dark:text-white mb-6">Traceability</h2>
+<p class="font-body text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
+                        We believe in full transparency. Knowing exactly where your coffee comes from connects you to the journey and the people behind every cup.
+                    </p>
+<img alt="Coffee Map" class="w-full rounded-lg opacity-80 filter sepia grayscale hover:grayscale-0 transition-all duration-500 shadow-xl border border-gray-200 dark:border-gray-800" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO5Q1YykryEvYoIHTpXI7jpv2OrcvGw4-J2vABWKMo6aSE5H6muzX7eBmpkE36f9yXBODbF-85LO2AbBB-Qw1iyOgWtjOK0FW16Vfo5uN0xWn8tHSAms_Rb-MoSZM3-hhX1P6ijvYh6JPtbLlSAYOtLJpnVmrDePvopUPIqzfc7eiuP4J40jxnUxVUMNHE3wTfDrmapj3Ko9msvwaPD2RrUw4oz10YE_Y1CMSv8clYJvxmzwjzM76zDzliifEFBbrVkardtyl1B1Wn"/>
+</div>
+<div class="lg:col-span-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-primary/20 bg-surface-light dark:bg-surface-dark shadow-2xl">
+<div class="p-8 border-b md:border-b-0 md:border-r border-primary/20 hover:bg-primary/5 transition-colors">
+<h4 class="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Producer</h4>
+<p class="font-display text-2xl text-gray-900 dark:text-white">Luis Rodriguez</p>
+</div>
+<div class="p-8 border-b border-primary/20 hover:bg-primary/5 transition-colors">
+<h4 class="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Region</h4>
+<p class="font-display text-2xl text-gray-900 dark:text-white">Minca, Sierra Nevada</p>
+</div>
+<div class="p-8 border-b md:border-b-0 md:border-r border-primary/20 hover:bg-primary/5 transition-colors">
+<h4 class="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Altitude</h4>
+<p class="font-display text-2xl text-gray-900 dark:text-white">1,850 MASL</p>
+</div>
+<div class="p-8 border-b border-primary/20 hover:bg-primary/5 transition-colors">
+<h4 class="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Roast Date</h4>
+<p class="font-display text-2xl text-gray-900 dark:text-white">Oct 24, 2023</p>
+</div>
+<div class="p-8 md:col-span-2 hover:bg-primary/5 transition-colors">
+<h4 class="font-accent text-xs font-bold text-primary uppercase tracking-widest mb-2">Variety</h4>
+<p class="font-display text-2xl text-gray-900 dark:text-white">Castillo, Caturra</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="bg-surface-dark text-white pt-20 pb-10 border-t border-primary/30">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col items-center mb-16">
+<span class="font-accent text-xs tracking-[0.3em] text-primary mb-2">EST. 2023</span>
+<h2 class="font-display text-3xl font-bold tracking-wider mb-8">ORIGEN SIERRA NEVADA</h2>
+<div class="flex space-x-8">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-outlined">facebook</i></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-outlined">photo_camera</i></a> 
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-outlined">alternate_email</i></a>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center border-t border-gray-800 pt-10 text-xs text-gray-500 font-body">
+<p>© 2023 Origen Sierra Nevada. All rights reserved.</p>
+<div class="flex space-x-6 mt-4 md:mt-0">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-white transition-colors" href="#">Shipping</a>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

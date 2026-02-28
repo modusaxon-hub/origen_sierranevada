@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instrucciones GitHub - Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --origen-gold: #C5A065;
+            --origen-black: #050806;
+            --text-main: #1a1a1a;
+            --bg-paper: #ffffff;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .paper-a4 {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .paper-a4 {
+            background: var(--bg-paper);
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 50px 70px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            min-height: 297mm;
+        }
+
+        header {
+            border-bottom: 2px solid var(--origen-black);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-label {
+            color: var(--origen-gold);
+            font-weight: bold;
+            font-size: 0.75em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin: 10px 0;
+            color: var(--origen-black);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-top: 40px;
+            color: var(--origen-black);
+            border-left: 4px solid var(--origen-gold);
+            padding-left: 15px;
+        }
+
+        .step-num {
+            background: var(--origen-gold);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        pre {
+            background: #1a1a1a;
+            color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            overflow-x: auto;
+            page-break-inside: avoid;
+            margin: 20px 0;
+        }
+
+        .alert-box {
+            background: #fff8eb;
+            border: 1px solid #ffe0b2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.75em;
+            color: #999;
+        }
+
+        .no-print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--origen-gold);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="no-print-btn no-print" onclick="window.print()">🖨️ Imprimir Guía de Setup</button>
+
+    <div class="paper-a4">
+        <header>
+            <span class="brand-label">Origen Sierra Nevada - Deployment</span>
+            <h1>Guía de Carga a GitHub</h1>
+        </header>
+
+        <section>
+            <h2>Paso 1: Crear del Repositorio</h2>
+            <p>Ve a <a href="https://github.com/new" style="color: var(--origen-gold);">github.com/new</a> y crea un
+                repositorio privado llamado <code>origen-sierra-nevada</code>.</p>
+            <div class="alert-box">
+                ⚠️ <strong>Nota:</strong> No inicialices con README, .gitignore o licencia, ya que el proyecto local ya
+                los tiene.
+            </div>
+        </section>
+
+        <section>
+            <h2>Paso 2: Conexión Local</h2>
+            <p>Ejecuta estos comandos en tu terminal de PowerShell:</p>
+            <pre>
+git remote add origin https://github.com/manuelpertuz624-eng/origen-sierra-nevada.git
+git branch -M main
+git push -u origin main
+            </pre>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section>
+            <h2>Paso 3: Seguridad de Credenciales</h2>
+            <div class="alert-box" style="border-color: #a5d6a7; background: #e8f5e9;">
+                ✅ <strong>Seguridad Garantizada:</strong> Tu archivo <code>.env</code> está en el
+                <code>.gitignore</code>, por lo que nunca se subirá a la nube pública.
+            </div>
+        </section>
+
+        <footer class="footer">
+            Generado por Agente Documentador Técnico Pro | Origen Sierra Nevada SM
+        </footer>
+    </div>
+</body>
+
+</html>

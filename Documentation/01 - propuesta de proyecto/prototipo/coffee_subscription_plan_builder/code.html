@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Origen Sierra Nevada - Coffee Subscription</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C5A065", // Gold color from reference
+                        "primary-hover": "#B08D55",
+                        "background-light": "#F9F8F6", // Creamy white
+                        "background-dark": "#0F1614", // Deep dark green/black
+                        "surface-dark": "#1A2220", // Slightly lighter dark for cards
+                        "surface-light": "#FFFFFF",
+                        "text-muted": "#8A8A8A",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        body: ["'Lato'", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "2px", // Sharp, premium corners
+                        'lg': "4px",
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=2561&auto=format&fit=crop')",
+                    }
+                },
+            },
+        };
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F1614; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C5A065; 
+        }
+        .gold-glow:hover {
+            box-shadow: 0 0 15px rgba(197, 160, 101, 0.3);
+            border-color: #C5A065;
+        }.step-content {
+            transition: all 0.4s ease-in-out;
+        }.selection-input:checked + .selection-card {
+            border-color: #C5A065;
+            background-color: rgba(197, 160, 101, 0.1);
+        }
+        .selection-input:checked + .selection-card .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 font-body transition-colors duration-300">
+<nav class="fixed w-full z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-24">
+<div class="flex items-center">
+<button class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none">
+<span class="material-icons-outlined">menu</span>
+</button>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center justify-center">
+<div class="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center mb-1">
+<span class="font-display font-bold text-2xl text-primary">O</span>
+</div>
+<span class="font-display text-sm tracking-widest text-gray-900 dark:text-white uppercase">Origen Sierra Nevada</span>
+</div>
+<div class="flex items-center space-x-4">
+<span class="text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400 cursor-pointer hover:text-primary">EN</span>
+<span class="material-icons-outlined text-gray-500 dark:text-gray-400 cursor-pointer hover:text-primary" style="font-size: 20px;">search</span>
+<span class="material-icons-outlined text-gray-500 dark:text-gray-400 cursor-pointer hover:text-primary" style="font-size: 20px;">shopping_bag</span>
+<button class="ml-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-outlined dark:hidden">dark_mode</span>
+<span class="material-icons-outlined hidden dark:block text-primary">light_mode</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<div class="relative pt-32 pb-16 sm:pt-40 sm:pb-24 overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-10 dark:opacity-20">
+<img alt="Sierra Nevada Mountains" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLAqP7g-Ab101rA1carCS5LuycVStXSH47IZPy6ecdhKeG7sItcjqo7-tacKn_U-oIFQUjBbPoDeQWaMswZsDyVjU6VqaZyCg-mxg8Mrj1vg9dWDkbsmNoOyMam7lIeHnCM--ybM8bg9SgSGUfnSqLCd40oxH6_zVxTJvWUhdAiksKlcZVr_tt1INCvt9Q5RPX2CYjRNR6pYIkOQ3FsWfSp_fl31PtBn5aba2ypbUSgZOyfAaSkxoEAqw0-_rgHSHjNKOQlkxd5kPS"/>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-light dark:to-background-dark"></div>
+</div>
+<div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+<span class="block text-primary font-display tracking-[0.2em] text-sm mb-4 uppercase">More Than Rare. Unique.</span>
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-display font-medium text-gray-900 dark:text-white mb-6">
+                Build Your Personal Coffee Ritual
+            </h1>
+<p class="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+                Experience the finest selection from the high peaks of Sierra Nevada. Customize every detail of your delivery, from roast profile to grind size.
+            </p>
+</div>
+</div>
+<div class="max-w-5xl mx-auto px-4 mb-12">
+<div class="flex justify-between items-center relative">
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-800 -z-10"></div>
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-primary bg-primary text-white flex items-center justify-center font-display font-bold shadow-lg shadow-primary/20">1</div>
+<span class="mt-3 text-xs font-bold tracking-widest text-primary uppercase">Profile</span>
+</div>
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark text-gray-400 flex items-center justify-center font-display font-bold group-hover:border-primary group-hover:text-primary transition-colors">2</div>
+<span class="mt-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase group-hover:text-primary transition-colors">Format</span>
+</div>
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark text-gray-400 flex items-center justify-center font-display font-bold group-hover:border-primary group-hover:text-primary transition-colors">3</div>
+<span class="mt-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase group-hover:text-primary transition-colors">Frequency</span>
+</div>
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark text-gray-400 flex items-center justify-center font-display font-bold group-hover:border-primary group-hover:text-primary transition-colors">4</div>
+<span class="mt-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase group-hover:text-primary transition-colors">Summary</span>
+</div>
+</div>
+</div>
+<main class="max-w-5xl mx-auto px-4 pb-24">
+<form onsubmit="event.preventDefault();">
+<section class="step-content mb-16">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-display text-gray-900 dark:text-white mb-2">Select Your Flavor Profile</h2>
+<div class="h-0.5 w-16 bg-primary mx-auto mb-4"></div>
+<p class="text-gray-600 dark:text-gray-400 font-light">Which notes resonate with your palate?</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="flavor" type="radio"/>
+<div class="selection-card h-full p-8 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark rounded-sm hover:border-primary/50 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-4 right-4 w-6 h-6 rounded-full border border-primary flex items-center justify-center opacity-0 check-icon transition-all duration-300 bg-primary text-white">
+<span class="material-icons-outlined text-sm">check</span>
+</div>
+<div class="w-24 h-24 mb-6 rounded-full bg-amber-900/10 flex items-center justify-center">
+<img alt="Chocolate Notes" class="w-14 h-14 opacity-80 filter sepia brightness-50 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtKzJaQPx9f8PmDmCilO1DeDJrZYpF-ct6zIKPMyL1awczZUsOpTy1jOdZCSHcMOY6kE28iRAZvPaeO9gI3hoUmjYusIPNAK-FybrXmwEPJI281TXdirZ8-nfcwfjijphU5i87gDEAMqZxPZ65o0kmITM-2QuAMaIZ_A9-R-ISVH8uzFiRZ60ByxL9v-VEbjEXNrGUTFgHWJy1I7Fkh5I8gEYUZ-P_ol-O8ERH3I1okPyuVCO4hzqizvPJvgYnxySUy9Hd9plkvOwX"/>
+</div>
+<h3 class="text-xl font-display text-gray-900 dark:text-white mb-2">Dark Chocolate &amp; Nuts</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Deep, comforting tones of cacao, toasted almonds, and caramel. Low acidity with a full, creamy body. Perfect for espresso.
+                            </p>
+<div class="mt-6 flex items-center gap-1">
+<span class="text-xs font-bold text-primary tracking-wider uppercase">Intensity</span>
+<div class="flex space-x-1 ml-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="flavor" type="radio"/>
+<div class="selection-card h-full p-8 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark rounded-sm hover:border-primary/50 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-4 right-4 w-6 h-6 rounded-full border border-primary flex items-center justify-center opacity-0 check-icon transition-all duration-300 bg-primary text-white">
+<span class="material-icons-outlined text-sm">check</span>
+</div>
+<div class="w-24 h-24 mb-6 rounded-full bg-red-900/10 flex items-center justify-center">
+<img alt="Fruity Notes" class="w-14 h-14 opacity-80 filter sepia brightness-50 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGpvAGMakntpimb1DZDp8_vel0YXIjSIicXSmM743lT-YmHWrls1Ioit-6X5VG-bqv8WtLTZ98nyj6cOhXgnbN2RYqnyfFTdFcR60hFxsih-uOoZHDrJ1tM0GMXH9T1SOwJg1mimtL4Xc3ucbaH44egDFRVEHu2L_hfnWYHtL-fkQuFm4XIr6v1YxkbOScsEvxN5PHPgBiH-NEarB7KpBcrP7va90x0GRyAT_pgBgCJYHDlnLhnIPMU09ieYiPVjyB5es_mEa9j8ri"/>
+</div>
+<h3 class="text-xl font-display text-gray-900 dark:text-white mb-2">Floral &amp; Red Berries</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Bright and lively with hints of jasmine, wild strawberries, and citrus zest. Higher acidity with a tea-like body. Ideal for pour-over.
+                            </p>
+<div class="mt-6 flex items-center gap-1">
+<span class="text-xs font-bold text-primary tracking-wider uppercase">Intensity</span>
+<div class="flex space-x-1 ml-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+<div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+<div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+</div>
+</div>
+</label>
+</div>
+</section>
+<section class="step-content mb-16">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-display text-gray-900 dark:text-white mb-2">Choose Your Format</h2>
+<div class="h-0.5 w-16 bg-primary mx-auto mb-4"></div>
+<p class="text-gray-600 dark:text-gray-400 font-light">How do you prepare your brew?</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only selection-input" name="format" type="radio"/>
+<div class="selection-card p-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark rounded-sm hover:border-primary/50 transition-all duration-300 flex flex-col items-center text-center">
+<div class="absolute top-3 right-3 w-5 h-5 rounded-full border border-primary flex items-center justify-center opacity-0 check-icon transition-all duration-300 bg-primary text-white">
+<span class="material-icons-outlined text-[10px]">check</span>
+</div>
+<img alt="Whole Bean" class="w-full h-32 object-cover mb-4 rounded-sm filter sepia-[.2] contrast-125 brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJx8Et4HVW3XszhYo2FMkfFtOFIikw5gNxHBy11rrl6So9Tiz17P_1j6_81lwG1TcisB43pMoLHGfncypIsxoSVTUdOTG9xr2EmyREOu23Io9BXcUCVk4VRNGtBLaWbXN7NYuquxxMNaQcEJ0eyAZssyKP2qqjM5yp5W6Hb4UxE_ExQOMbIEvtlyA45QZD5xQ0xx2m8-8D-3-R1gP_KYteT2rCrjyvTabkI-VnThwWfet9o1ddOl31NV26NQmcgHfzjpG6bMvrvf2s"/>
+<h3 class="font-display text-lg text-gray-900 dark:text-white">Whole Bean</h3>
+<p class="text-xs text-gray-500 mt-2">For maximum freshness. Grind it yourself right before brewing.</p>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="format" type="radio"/>
+<div class="selection-card p-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark rounded-sm hover:border-primary/50 transition-all duration-300 flex flex-col items-center text-center">
+<div class="absolute top-3 right-3 w-5 h-5 rounded-full border border-primary flex items-center justify-center opacity-0 check-icon transition-all duration-300 bg-primary text-white">
+<span class="material-icons-outlined text-[10px]">check</span>
+</div>
+<img alt="Ground Coffee" class="w-full h-32 object-cover mb-4 rounded-sm filter sepia-[.2] contrast-125 brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2bY8lFrg2cg3H258mcqZHKtLGC1tTrXRMOcs2mnvRTEfdFIOjmi1qeqakfduZiGQom7VukTsD3ALlTANQljj-onP0bxnSiYK4JVMcyyDYP8nNIbMLOiZ0jcSWuR44K6dk4VcDWWvlqSKQNtdfPbd_Y3HbMdNseqMbXySVVndr-ZG5N_8zLjLM0uSAOAftQZCntXV0GndxxlJqIYrVn9MrRZQzu0_ifFSCh4Bd3GbJhMR3aV1150ha42M9HBNyUeWbd0rSkMsmy6Lv"/>
+<h3 class="font-display text-lg text-gray-900 dark:text-white">Ground</h3>
+<p class="text-xs text-gray-500 mt-2">Perfectly ground for your method: Drip, French Press, or Espresso.</p>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="format" type="radio"/>
+<div class="selection-card p-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark rounded-sm hover:border-primary/50 transition-all duration-300 flex flex-col items-center text-center">
+<div class="absolute top-3 right-3 w-5 h-5 rounded-full border border-primary flex items-center justify-center opacity-0 check-icon transition-all duration-300 bg-primary text-white">
+<span class="material-icons-outlined text-[10px]">check</span>
+</div>
+<img alt="Coffee Capsules" class="w-full h-32 object-cover mb-4 rounded-sm filter sepia-[.2] contrast-125 brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-6scBBpQeR9q5CRlRJUac3X4Yni9tAmZKpgVY4by95o9sKATtPjIUozMp2smlDnmlsCeo0rGq7a3o5wkijfGmBaGLVceWE15q5IAtSnuG2T0Rc0V7G1pa7b4FuXzSinSOJXb2nRzPq18vIKb7QkaORrIgY9fn_dKxibuqe14bCelel4ymxQ2DjWBUUdeWko23ZKylI8_jZp-sgCY6nKJdFevE8oVmZJf4YjU_lmVhtxSHLvvfZdy8X_nBvHujd0QO7UK6pzjUez0f"/>
+<h3 class="font-display text-lg text-gray-900 dark:text-white">Eco Capsules</h3>
+<p class="text-xs text-gray-500 mt-2">Biodegradable pods compatible with Nespresso® Original machines.</p>
+</div>
+</label>
+</div>
+</section>
+<section class="step-content mb-16">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-display text-gray-900 dark:text-white mb-2">Delivery Frequency</h2>
+<div class="h-0.5 w-16 bg-primary mx-auto mb-4"></div>
+<p class="text-gray-600 dark:text-gray-400 font-light">Never run out of your morning ritual.</p>
+</div>
+<div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 p-8 rounded-sm">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="frequency" type="radio"/>
+<div class="selection-card p-6 border-2 border-transparent bg-gray-50 dark:bg-black/20 rounded-sm hover:bg-white dark:hover:bg-black/40 transition-all duration-300 text-center">
+<div class="text-primary mb-2 font-display text-2xl font-bold">Every Week</div>
+<div class="text-sm text-gray-500 mb-4">For the passionate daily drinker</div>
+<div class="text-xs font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 py-1 px-3 rounded-full inline-block">Best Value - 15% Off</div>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only selection-input" name="frequency" type="radio"/>
+<div class="selection-card p-6 border-2 border-transparent bg-gray-50 dark:bg-black/20 rounded-sm hover:bg-white dark:hover:bg-black/40 transition-all duration-300 text-center">
+<div class="text-primary mb-2 font-display text-2xl font-bold">Every 2 Weeks</div>
+<div class="text-sm text-gray-500 mb-4">The standard for fresh coffee</div>
+<div class="text-xs font-bold text-primary bg-primary/10 py-1 px-3 rounded-full inline-block">Most Popular - 10% Off</div>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only selection-input" name="frequency" type="radio"/>
+<div class="selection-card p-6 border-2 border-transparent bg-gray-50 dark:bg-black/20 rounded-sm hover:bg-white dark:hover:bg-black/40 transition-all duration-300 text-center">
+<div class="text-primary mb-2 font-display text-2xl font-bold">Monthly</div>
+<div class="text-sm text-gray-500 mb-4">A casual treat for yourself</div>
+<div class="text-xs font-bold text-gray-500 bg-gray-200 dark:bg-gray-700 py-1 px-3 rounded-full inline-block">Standard Price</div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-surface-dark border-t-4 border-primary p-8 md:p-12 shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="flex flex-col md:flex-row items-center justify-between relative z-10">
+<div class="mb-8 md:mb-0 text-center md:text-left">
+<span class="text-primary font-bold tracking-widest text-xs uppercase mb-2 block">Your Selection</span>
+<h3 class="text-2xl md:text-3xl font-display text-gray-900 dark:text-white mb-2">Sierra Nevada Signature Blend</h3>
+<p class="text-gray-500 dark:text-gray-400">Dark Chocolate &amp; Nuts • Whole Bean • Every 2 Weeks</p>
+</div>
+<div class="text-center md:text-right flex flex-col items-center md:items-end">
+<div class="flex items-baseline mb-4">
+<span class="text-sm text-gray-500 line-through mr-3">$24.00</span>
+<span class="text-4xl font-display font-bold text-gray-900 dark:text-white">$21.60</span>
+<span class="text-sm text-gray-500 ml-1">/ shipment</span>
+</div>
+<button class="bg-primary hover:bg-primary-hover text-white font-bold py-4 px-10 rounded-sm shadow-lg shadow-primary/30 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
+<span>START SUBSCRIPTION</span>
+<span class="material-icons-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-xs text-gray-400 mt-3">Cancel or pause anytime. Free shipping included.</p>
+</div>
+</div>
+</section>
+</form>
+</main>
+<footer class="bg-background-dark text-white py-16 border-t border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col items-center">
+<div class="w-16 h-16 border-2 border-primary rounded-full flex items-center justify-center mb-6">
+<span class="font-display font-bold text-3xl text-primary">O</span>
+</div>
+<h2 class="font-display text-2xl text-primary tracking-widest uppercase mb-8">Origen Sierra Nevada</h2>
+<div class="flex space-x-8 mb-8">
+<a class="text-gray-400 hover:text-primary transition-colors text-sm tracking-wider uppercase" href="#">Our Coffee</a>
+<a class="text-gray-400 hover:text-primary transition-colors text-sm tracking-wider uppercase" href="#">Story</a>
+<a class="text-gray-400 hover:text-primary transition-colors text-sm tracking-wider uppercase" href="#">Shop</a>
+<a class="text-gray-400 hover:text-primary transition-colors text-sm tracking-wider uppercase" href="#">Contact</a>
+</div>
+<div class="flex space-x-6 mb-12">
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">
+<span class="sr-only">Facebook</span>
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</a>
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">
+<span class="sr-only">Instagram</span>
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+</div>
+<div class="text-xs text-gray-600 font-light">
+                    © 2023 Origen Sierra Nevada. All rights reserved.
+                </div>
+</div>
+</div>
+</footer>
+
+</body></html>

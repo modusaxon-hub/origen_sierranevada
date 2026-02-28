@@ -1,0 +1,78 @@
+/**
+ * DOC: INSTRUCCIONES PARA EL PROYECTO
+ * PROPOSITO: Este documento es la "Biblia" de estilo y reglas técnicas. Define cómo se deben ver y comportar los elementos 
+ * (UI/UX), las jerarquías tipográficas, el tratamiento de imágenes y las convenciones de nomenclatura para mantener 
+ * la coherencia visual "Boutique de Lujo" del portal.
+ */
+
+** mantener limpio el proyecto **
+Revisar archivos versionados o creados para pruebas que ya cumplieron su ciclo de vida y que no sean necesarios para el proyecto, eliminar; si es necesario crear una carpeta "temp" donde se mantengan este tipo de archivos.
+
+** respuesta de correo **
+Diseña un correo digno de la página que estamos creando, que los correos que se envíen sean épicos como el proyecto, no un texto blanco plano simple, que sea una bienvenida agradable y épica, una gran tarjeta única!
+
+** conexión de resend con supabase ** 
+ir a Resend -> add API Key, copiar e ir a supabase/dashboard/project/functions/secrets/add y agregar la api key de resend.
+
+** Tratamiento a la Imagen de Producto (Arquitectura Definitiva: "True 3D Pop-Out Portal") **
+Objetivo: Lograr que el producto salga del portal por arriba pero se contenga en "U" por abajo, con una escala monumental y controlada.
+
+Instrucción Técnica (Prompt Maestro):
+"Implementar el Sandwich de 3 Capas para el Hero:
+1.  **Capa Fondo (Z-0):** 'Arco Superior'. Aro dorado (1px) recortado al 45% superior.
+    -   Escala PC: `lg:scale-[1.56]`.
+2.  **Capa Medio (Z-10):** Imagen del Producto.
+    -   Escala PC: `lg:w-[129%] lg:h-[129%]`.
+    -   Escala Móvil: `w-[125%] h-[125%]`.
+    -   Contenedor de Recorte (Clip): `lg:scale-[1.56]` para alinear con aros.
+    -   Recorte: `clip-path: inset(-100% 2px 2px 2px round 0 0 50% 50%)`.
+3.  **Capa Frente (Z-20):** 'Arco Inferior'. Aro dorado (1px) recortado al 55% inferior.
+    -   Escala PC: `lg:scale-[1.56]`.
+
+Estabilidad y Escalado Responsivo (Tiered Scaling):
+-   **Grosor Bordes:** Siempre 1px (`border-[1px]`) para refinamiento.
+-   **Tier 1 (Mobile):** `max-w-[320px]`.
+-   **Tier 2 (Tablet):** `md:w-[500px] md:h-[500px]`.
+-   **Tier 3 (Laptop/1024x768):**
+    -   Portal Container: `lg:w-[378px] lg:h-[378px]`.
+    -   Rings/Clip Scale: `lg:scale-[1.33]`.
+    -   Info Side Scale: `lg:scale-[0.8] lg:origin-left`.
+    -   Layout Grid: Switch to 2 columns and `lg:translate-x-[5%]`.
+    -   Nav Arrows: Pushed outside (`lg:-left-12`, `lg:-right-12`).
+-   **Tier 4 (Desktop):** `xl:w-[750px] xl:h-[750px]`.
+-   **Tier 5 (Ultra-wide):** `2xl:w-[1000px] 2xl:h-[1000px]`.
+-   **Layout Grid:** Switch to 2 columns (starting at `lg`) to maximize 1024px vertical space."
+
+---
+
+1.  **Tipografía del Proyecto:**
+    -   **Primaria (Serif):** `font-serif` -> 'Playfair Display'. Uso exclusivo para Títulos Editoriales y Nombres de Producto.
+    -   **Secundaria (Functional/Body):** `font-sans`, `font-display`, `font-body` -> 'Montserrat'. Uso obligatorio para todo lo demás (menús, botones, descripciones, etiquetas).
+    -   **Identidad:** 'Papyrus' se mantiene únicamente para el subtítulo del logo "SIERRA NEVADA".
+
+2.  **Arquitectura de Información "Boutique Lujo" (Info Side):**
+    -   **Perfil Sensorial:** Presentar etiquetas como notas de cata artísticas (serif, italic) con subrayado dinámico en oro.
+    -   **Descripción:** Siempre usar `text-justify` para mantener bloques de texto limpios.
+    -   **Configurador:** Implementar selectores de botones minimalistas para Tamaño (125g, 250g, 350g, 400g, 500g), Molienda y Tostión.
+    -   **Precio:** Etiquetar como "Inversión Actual" para elevar el valor del producto.
+    -   **CTA:** El botón principal DEBE decir "Seleccionar Producto". NUNCA usar la palabra "ritual" para comprar.
+    -   **Historia:** El botón "La Historia" se desplaza a un link secundario ("Descubrir Historia") cerca del título del producto.
+
+3.  **Reglas de Viewport Críticas (No Scroll):**
+    -   El Hero/Header debe ocupar exactamente `100vh`. No se permite scroll vertical.
+    -   Para tablets/laptops en horizontal (iPad Mini), usar: `[@media(orientation:landscape)_and_(max-height:800px)]` para compactar márgenes y reducir escala de fuentes.
+    -   En móvil, usar `pt-40` en el header para que el contenido no quede oculto bajo la navegación fija.
+
+4.  **Uso de Logos de Producto (Identidad Visual):**
+    -   Para productos con identidad visual propia (ej. Café Malü), el título en texto debe reemplazarse por el logo oficial.
+    -   **Versión Web/Desktop:** Utilizar formato `.svg` para máxima nitidez y escalabilidad (`logocafemalu-himalaya.svg`).
+    -   **Versión Responsive/Mobile:** Utilizar formato `.png` para asegurar compatibilidad y rendimiento en dispositivos móviles (`logocafemalu-himalaya.png`).
+    -   Aplicar siempre `drop-shadow` profundo para integrar el logo con la estética del portal.
+
+---
+**NOTA DE CIERRE [2026-02-04]:**
+- Unificación definitiva del logo de Café Malü bajo la propuesta "Himalaya" (SVG para Web, PNG para Mobile).
+- Sincronización estética del botón "Seleccionar Producto" con el banner de cookies.
+- Optimización de legibilidad incrementando el tamaño de fuente en selectores de variantes a 10px/11px.
+- Ajuste de padding-top en el Hero para Desktop/Tablet para evitar solapamiento.
+- Cambio de label "DERIVADOS" por "ACCESORIOS" en el selector de despensas.

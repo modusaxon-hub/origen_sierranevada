@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta de Logotipo - Origen Sierra Nevada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #141E16;
+            --gold: #C8AA6E;
+            --white: #F5F5F5;
+        }
+
+        body {
+            font-family: 'Papyrus', fantasy;
+            background: var(--primary);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(20, 31, 22, 0.95) 0%, rgba(20, 31, 22, 0.98) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(200, 170, 110, 0.1) 0%, transparent 70%);
+            top: 20%;
+            left: 10%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+        }
+
+        .hero-label {
+            color: var(--gold);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: rgba(200, 170, 110, 0.8);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        /* Section Styles */
+        section {
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-label {
+            color: var(--gold);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--gold);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(245, 245, 245, 0.8);
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        /* Concept Layout */
+        .concept {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .concept-content {
+            background: linear-gradient(135deg, rgba(200, 170, 110, 0.05) 0%, rgba(200, 170, 110, 0.02) 100%);
+            border: 1px solid rgba(200, 170, 110, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+        }
+
+        .concept-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: rgba(200, 170, 110, 0.15);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .concept-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-tagline {
+            font-size: 0.9rem;
+            color: rgba(200, 170, 110, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+        }
+
+        .concept-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(245, 245, 245, 0.7);
+            margin-bottom: 2rem;
+        }
+
+        .concept-features {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .concept-features li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: rgba(245, 245, 245, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .concept-features li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+        }
+
+        .concept-image {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .concept-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        /* Guidelines */
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .guideline-item {
+            background: rgba(200, 170, 110, 0.03);
+            border-left: 3px solid var(--gold);
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .guideline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .guideline-text {
+            color: rgba(245, 245, 245, 0.8);
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(200, 170, 110, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .concept {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-label">Propuesta de Identidad Visual</p>
+        <h1 class="hero-title">Logotipo Premium</h1>
+        <p class="hero-subtitle">Cuatro Conceptos Exclusivos para Origen Sierra Nevada</p>
+    </section>
+
+    <!-- Introduction -->
+    <section style="background: linear-gradient(180deg, rgba(20,31,22,1) 0%, rgba(20,31,22,0.95) 100%);">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <p class="section-label">Filosofía</p>
+            <h2 class="section-title">El Poder del Nombre</h2>
+            <p class="section-description">
+                "Origen Sierra Nevada" evoca altura, misticismo, naturaleza pura y una herencia cultural profunda.
+                Para cumplir con la exigencia de un logo <strong>minimalista, elegante y exclusivo</strong>,
+                debemos alejarnos de lo literal. La clave está en la <strong>abstracción inteligente</strong>:
+                un símbolo que con pocas líneas diga mucho.
+            </p>
+        </div>
+    </section>
+
+    <!-- Concept 1: La Cumbre Áurea -->
+    <section style="background: rgba(0,0,0,0.1);">
+        <div class="concept">
+            <div class="concept-image">
+                <img src="concepto1.png" alt="Concepto 1: La Cumbre Áurea">
+            </div>
+            <div class="concept-content">
+                <div class="concept-number">01</div>
+                <h3 class="concept-title">La Cumbre Áurea</h3>
+                <p class="concept-tagline">Geometría & Altitud</p>
+
+                <p class="concept-description">
+                    Este concepto se enfoca en la <strong>precisión, la altura y la perfección del grano</strong>.
+                    Es un lujo arquitectónico y moderno que fusiona la forma de la montaña más alta de la Sierra
+                    con la forma del grano de café, usando solo geometría esencial.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Descripción
+                    Visual</h4>
+                <p class="concept-description">
+                    Un diseño basado en un triángulo equilátero minimalista (la montaña). Formado por dos líneas doradas
+                    gruesas que ascienden y se cruzan en la cima. El espacio negativo crea la forma de la ranura
+                    central de un grano de café.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Por Qué Es
+                    Exclusivo</h4>
+                <ul class="concept-features">
+                    <li><strong>Minimalismo Puro:</strong> Son solo dos trazos</li>
+                    <li><strong>Doble Lectura Inteligente:</strong> El cerebro ve primero una montaña elegante, y
+                        milisegundos después, descubre el grano de café</li>
+                    <li><strong>Simbolismo:</strong> El café está literalmente en "la cumbre"</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept 2: El Origen Ancestral -->
+    <section>
+        <div class="concept">
+            <div class="concept-content">
+                <div class="concept-number">02</div>
+                <h3 class="concept-title">El Origen Ancestral</h3>
+                <p class="concept-tagline">Herencia & Tejido</p>
+
+                <p class="concept-description">
+                    Este concepto es más orgánico y profundo. Se basa en que el "Origen" de la Sierra Nevada es también
+                    <strong>humano y cultural</strong> (las comunidades indígenas Arhuacas/Kogi).
+                    El lujo aquí es lo artesanal y lo sagrado.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Descripción
+                    Visual</h4>
+                <p class="concept-description">
+                    Un emblema circular con patrón geométrico escalonado (tipo greca indígena) que forma una estrella
+                    o flor abstracta de cuatro puntas. En el centro, un pequeño rombo dorado representa el grano de
+                    café.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Por Qué Es
+                    Exclusivo</h4>
+                <ul class="concept-features">
+                    <li><strong>Misticismo:</strong> Parece un sello de una logia exclusiva o un hallazgo arqueológico
+                        de oro</li>
+                    <li><strong>Narrativa Única:</strong> Habla de la herencia cultural sin usar clichés</li>
+                    <li><strong>Textura Visual:</strong> El patrón sugiere la textura de un tejido valioso</li>
+                </ul>
+            </div>
+            <div class="concept-image">
+                <img src="concepto2.png" alt="Concepto 2: El Origen Ancestral">
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept 3: La Niebla y el Aroma -->
+    <section style="background: rgba(0,0,0,0.1);">
+        <div class="concept">
+            <div class="concept-image">
+                <img src="concepto3.png" alt="Concepto 3: La Niebla y el Aroma">
+            </div>
+            <div class="concept-content">
+                <div class="concept-number">03</div>
+                <h3 class="concept-title">La Niebla y el Aroma</h3>
+                <p class="concept-tagline">Etéreo & Sensorial</p>
+
+                <p class="concept-description">
+                    Este concepto es el más poético. Se enfoca en la <strong>atmósfera de la Sierra</strong>:
+                    las nubes bajas, la humedad que nutre el café y el vapor (aroma) que sale de la taza.
+                    El logo no es un objeto, es una sensación.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Descripción
+                    Visual</h4>
+                <p class="concept-description">
+                    Tres líneas doradas, fluidas y orgánicas. Nacen de un punto inferior y se curvan hacia arriba
+                    como humo o vapor. Las curvas sugieren sutilmente tres picos de montaña cubiertos de niebla.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Por Qué Es
+                    Exclusivo</h4>
+                <ul class="concept-features">
+                    <li><strong>Elegancia Fluida:</strong> Se siente suave, como seda o vapor. Evoca calma y placer
+                        sensorial</li>
+                    <li><strong>Abstracción Poética:</strong> Es el menos literal. Requiere sensibilidad para
+                        interpretarlo</li>
+                    <li><strong>Versatilidad:</strong> Funciona como patrón repetitivo para empaques o fondos web</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept 4: El Horizonte Áureo -->
+    <section>
+        <div class="concept">
+            <div class="concept-content">
+                <div class="concept-number">04</div>
+                <h3 class="concept-title">El Horizonte Áureo</h3>
+                <p class="concept-tagline">Topografía & Identidad</p>
+
+                <p class="concept-description">
+                    Este concepto es el más <strong>icónico y minimalista</strong>. Se aleja de la representación
+                    figurativa del café para centrarse exclusivamente en el "Terroir": la geografía única de la
+                    Sierra Nevada. Es <span class="highlight">"La firma de la tierra"</span>.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">La Idea
+                </h4>
+                <p class="concept-description">
+                    <strong>"La Firma De La Tierra".</strong> El logo representa la línea de horizonte exacta de la
+                    Sierra Nevada vista al amanecer. Simboliza la <strong>"Cota De Oro"</strong>: esa línea de altitud
+                    específica (1.600-2.000 m.s.n.m.) donde nace el mejor café del mundo.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Descripción
+                    Visual</h4>
+                <p class="concept-description">
+                    Un trazo único, continuo y fluido en dorado, que dibuja el perfil topográfico de los picos
+                    montañosos.
+                    Un segundo trazo inferior crea profundidad, sugiriendo un valle o camino ancestral. Es la síntesis
+                    perfecta entre un paisaje y una firma manuscrita.
+                </p>
+
+                <h4 style="color: var(--gold); margin: 2rem 0 1rem; font-family: 'Playfair Display', serif;">Por Qué Es
+                    Exclusivo</h4>
+                <ul class="concept-features">
+                    <li><strong>Lujo Silencioso:</strong> No necesita gritar "café". Asume que el consumidor reconoce la
+                        calidad</li>
+                    <li><strong>Narrativa de Origen:</strong> Transforma el empaque en un "souvenir" del lugar</li>
+                    <li><strong>Versatilidad de Alta Gama:</strong> Funciona espectacularmente como grabado en relieve
+                        (embossing)</li>
+                </ul>
+            </div>
+            <div class="concept-image">
+                <img src="concepto4.png" alt="Concepto 4: El Horizonte Áureo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Guidelines -->
+    <section style="background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 100%);">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <p class="section-label">Integración</p>
+            <h2 class="section-title">Recomendaciones de Composición</h2>
+            <p class="section-description">
+                Para que el proyecto "estalle", la composición final debe seguir estas directrices premium.
+            </p>
+        </div>
+
+        <div class="guidelines-grid">
+            <div class="guideline-item">
+                <h4 class="guideline-title">1. Seleccionar el Símbolo</h4>
+                <p class="guideline-text">
+                    Elegir uno de los cuatro isotipos según la historia que quieras contar:
+                    ¿La precisión de la altura? ¿La herencia ancestral? ¿La experiencia sensorial? ¿El terroir único?
+                </p>
+            </div>
+
+            <div class="guideline-item">
+                <h4 class="guideline-title">2. Composición Vertical</h4>
+                <p class="guideline-text">
+                    Símbolo dorado arriba, centrado. Debajo, "ORIGEN" en <strong>Playfair Display</strong>
+                    (mayúsculas, tracking +150). Luego, "SIERRA NEVADA" en <strong>Papyrus</strong>.
+                </p>
+            </div>
+
+            <div class="guideline-item">
+                <h4 class="guideline-title">3. Paleta de Color</h4>
+                <p class="guideline-text">
+                    Debe funcionar espectacularmente en <strong>Dorado Sierra (Metallic Gold #C8AA6E)</strong>
+                    sobre el fondo <strong>Verde Origen Profundo (#141E16)</strong>.
+                </p>
+            </div>
+
+            <div class="guideline-item">
+                <h4 class="guideline-title">4. Estilo Premium</h4>
+                <p class="guideline-text">
+                    Líneas limpias, sofisticado, premium. El resultado debe ser minimalista, elegante,
+                    atractivo y, sobre todo, <strong>exclusivo</strong>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 1rem;">
+            Origen Sierra Nevada
+        </p>
+        <p>© 2024 Origen Sierra Nevada. Todos los derechos reservados.</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem;">
+            Propuesta de Logotipo Premium - Documento Confidencial
+        </p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
+
+        document.querySelectorAll('.concept, .guideline-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+
+</html>
