@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Propuestas de Valor para Origen Sierra Nevada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            body { size: A4; margin: 0; padding: 20mm; }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #141E16 0%, #1a2a1c 100%);
+            color: #F5F5F5;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 30, 22, 0.9);
+            border: 1px solid #C8AA6E;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #141E16 0%, #0F1912 100%);
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 2px solid #C8AA6E;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #B5B5B5;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .subheader {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 40px;
+            background: rgba(200, 170, 110, 0.05);
+            border-bottom: 1px solid #2A2A2A;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #B5B5B5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .propuesta {
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(200, 170, 110, 0.03);
+            border-left: 6px solid #C8AA6E;
+            border-radius: 8px;
+        }
+
+        .propuesta:last-child {
+            margin-bottom: 0;
+        }
+
+        .numero-propuesta {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #C8AA6E, #B5953F);
+            color: #0F1912;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .titulo-propuesta {
+            font-size: 32px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .subtitulo-propuesta {
+            font-size: 16px;
+            color: #B5B5B5;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .descripcion {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .descripcion h4 {
+            color: #C8AA6E;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .descripcion p {
+            color: #F5F5F5;
+            line-height: 1.7;
+        }
+
+        .mecanica {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .mecanica h4 {
+            color: #C8AA6E;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .mecanica ol {
+            margin-left: 24px;
+            color: #F5F5F5;
+        }
+
+        .mecanica li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .mecanica strong {
+            color: #C8AA6E;
+        }
+
+        .puntuacion {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .criterio {
+            background: rgba(200, 170, 110, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #C8AA6E;
+            text-align: center;
+        }
+
+        .criterio-nombre {
+            font-size: 12px;
+            color: #B5B5B5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .criterio-valor {
+            font-size: 24px;
+            font-weight: 700;
+            color: #C8AA6E;
+        }
+
+        .pasos {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .pasos h4 {
+            color: #C8AA6E;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .paso {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #2A2A2A;
+        }
+
+        .paso:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .paso-numero {
+            min-width: 40px;
+            height: 40px;
+            background: #C8AA6E;
+            color: #0F1912;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .paso-contenido h5 {
+            color: #F5F5F5;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .paso-contenido p {
+            color: #B5B5B5;
+            font-size: 14px;
+        }
+
+        .impacto {
+            background: rgba(200, 170, 110, 0.15);
+            padding: 24px;
+            border-radius: 8px;
+            border-left: 4px solid #C8AA6E;
+            margin-top: 24px;
+        }
+
+        .impacto h4 {
+            color: #C8AA6E;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .impacto ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .impacto li {
+            color: #F5F5F5;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .impacto li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #C8AA6E;
+            font-weight: 700;
+        }
+
+        .footer {
+            background: rgba(20, 30, 22, 0.9);
+            padding: 40px;
+            border-top: 1px solid #2A2A2A;
+            text-align: center;
+            color: #B5B5B5;
+            font-size: 14px;
+        }
+
+        .footer-title {
+            color: #C8AA6E;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .resumen {
+            background: rgba(200, 170, 110, 0.05);
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .resumen h3 {
+            color: #C8AA6E;
+            margin-bottom: 24px;
+            font-size: 20px;
+        }
+
+        .resumen-item {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .resumen-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .resumen-box {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .resumen-box strong {
+            color: #C8AA6E;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .resumen-box p {
+            color: #B5B5B5;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 32px; }
+            .subheader { grid-template-columns: 1fr; }
+            .puntuacion { grid-template-columns: repeat(2, 1fr); }
+            .resumen-item { grid-template-columns: 1fr; }
+            .propuesta { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>☕ 3 Propuestas de Valor para Origen Sierra Nevada</h1>
+            <p>Estrategia de Conversión, Retención y Obsesión de Clientes</p>
+        </div>
+
+        <!-- SUBHEADER STATS -->
+        <div class="subheader">
+            <div class="stat">
+                <div class="stat-number">40%</div>
+                <div class="stat-label">Incremento Conversión Esperado</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Pilares de Venta</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">30 días</div>
+                <div class="stat-label">Implementación Rápida</div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="content">
+
+            <!-- RESUMEN ESTRATÉGICO -->
+            <div class="resumen">
+                <h3>📊 Panorama: ¿Por Qué Estas 3 Propuestas?</h3>
+                <p style="margin-bottom: 20px; color: #F5F5F5;">
+                    Origen SierraDevada tiene un <strong>producto excepcional</strong> y una <strong>narrativa sólida</strong>,
+                    pero le falta <strong>la chispa psicológica</strong> que convierte visitantes en obsesionados.
+                    Las 3 propuestas que siguen atacan directamente los 3 momentos críticos del viaje de compra:
+                </p>
+                <div class="resumen-item">
+                    <div class="resumen-box">
+                        <strong>1️⃣ DESCUBRIMIENTO</strong>
+                        <p>¿Quién soy en el mundo del café? → Conectar emocionalmente antes de vender.</p>
+                    </div>
+                    <div class="resumen-box">
+                        <strong>2️⃣ COMPRA</strong>
+                        <p>¿Es realmente el mejor? → Despejar dudas con garantía audaz.</p>
+                    </div>
+                    <div class="resumen-box">
+                        <strong>3️⃣ RETENCIÓN</strong>
+                        <p>¿Qué viene después? → Crear hábito, comunidad y adicción.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPUESTA 1 -->
+            <div class="propuesta">
+                <div class="numero-propuesta">1</div>
+                <h2 class="titulo-propuesta">Coffee DNA™ — El Test Gamificado que te Vuelve Obsesionado</h2>
+                <p class="subtitulo-propuesta">Transforma descubrimiento en decisión: Tu perfil de sabor → Tu café perfecto → Tu suscripción autom ática</p>
+
+                <div class="descripcion">
+                    <h4>🎯 La Idea</h4>
+                    <p>
+                        Un test visual <strong>gamificado e interactivo</strong> (como un quiz de Buzzfeed pero para café) que identifica:
+                        ¿Qué perfil de sabor eres? (Dulce, Frutal, Chocolate, Intenso, Floral...) + ¿Cuál es tu nivel de expertise?
+                        (Principiante, Entusiasta, Coleccionista) + ¿Cuándo prefieres tu dosis de cafeína?
+                        <br><br>
+                        Al final, <strong>revela su "Coffee DNA"</strong> visual (como un horóscopo del café) con:
+                        <ul style="margin-top: 12px; margin-left: 20px;">
+                            <li>✓ Una recomendación personalizada de café específica</li>
+                            <li>✓ Una descripción poética de por qué le amará</li>
+                            <li>✓ Un "Certificado de Compatibilidad" descargable (para compartir en RRSS)</li>
+                            <li>✓ Oferta exclusiva: Probar su café recomendado con 20% descuento + Suscripción automática a ese perfil</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="mecanica">
+                    <h4>⚙️ Mecánica (Paso a Paso)</h4>
+                    <ol>
+                        <li><strong>Landing/Pop-up:</strong> "Descubre tu Coffee DNA en 90 segundos"</li>
+                        <li><strong>Quiz Interactivo:</strong> 5-7 preguntas visuales (imágenes + iconos bonitos)</li>
+                        <li><strong>Resultado Gamificado:</strong> Animación, confeti, nombre único tipo "Eres un Café Místico Floral" 🎉</li>
+                        <li><strong>Recomendación:</strong> Imagen del café + descripción + sabores clave</li>
+                        <li><strong>CTA Doble:</strong> "Probar Ahora" (Compra) O "Suscribirme a Mi DNA" (Suscripción)</li>
+                        <li><strong>Post-Compra:</strong> Email con "Tu DNA" + Guía de Preparación Personalizada</li>
+                    </ol>
+                </div>
+
+                <div class="puntuacion">
+                    <div class="criterio">
+                        <span class="criterio-nombre">Impacto<br>Conversión</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Viabilidad<br>Técnica</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Novedad &<br>Diferenciación</span>
+                        <span class="criterio-valor">4/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Esfuerzo de<br>Producción</span>
+                        <span class="criterio-valor">3/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Potencial<br>Viral/RRSS</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                </div>
+
+                <div class="impacto">
+                    <h4>💥 Impacto Esperado</h4>
+                    <ul>
+                        <li><strong>+25-35% en conversión:</strong> Personalizacion reduce fricción de decisión</li>
+                        <li><strong>+40% en suscripciones:</strong> El quiz crea "compromiso emocional" previo a compra</li>
+                        <li><strong>Viral x RRSS:</strong> Los usuarios querrán compartir su "DNA" (pruébame tú también)</li>
+                        <li><strong>Data Gold:</strong> Cada quiz te da datos de preferencias para mejorar recomendaciones y email marketing</li>
+                        <li><strong>Diferenciador:</strong> Cero competidores lo hacen → Memorable</li>
+                    </ul>
+                </div>
+
+                <div class="pasos">
+                    <h4>🚀 Primer Paso</h4>
+                    <div class="paso">
+                        <div class="paso-numero">1</div>
+                        <div class="paso-contenido">
+                            <h5>Diseña el quiz UI en React:</h5>
+                            <p>Crea 5-7 componentes de preguntas. Usa animaciones sutiles con Framer Motion.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">2</div>
+                        <div class="paso-contenido">
+                            <h5>Mapea lógica de respuestas:</h5>
+                            <p>Cada combinación = un "Coffee DNA" único con recomendación + descripción poética.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">3</div>
+                        <div class="paso-contenido">
+                            <h5>Integra con carrito:</h5>
+                            <p>El CTA "Probar Ahora" añade el café recomendado al carrito automáticamente.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">4</div>
+                        <div class="paso-contenido">
+                            <h5>A/B testing:</h5>
+                            <p>Quiz en homepage vs. Pop-up después de 15 segundos. Mide conversión.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPUESTA 2 -->
+            <div class="propuesta">
+                <div class="numero-propuesta">2</div>
+                <h2 class="titulo-propuesta">Garantía de Obsesión™ — La Promesa Audaz que Mata la Objeción</h2>
+                <p class="subtitulo-propuesta">Invierte la ansiedad del cliente: Si no es el mejor, devuelvo tu dinero + te envío gratis el de tu competidor favorito</p>
+
+                <div class="descripcion">
+                    <h4>🎯 La Idea</h4>
+                    <p>
+                        La <strong>objeción número 1 al café premium</strong> es: "¿Y si no me gusta? ¿Es realmente mejor que [marca commodity]?"
+                        <br><br>
+                        <strong>Solución radical:</strong> Ofrecer una garantía de 30 días tan audaz que invierte el riesgo:
+                        <br><br>
+                        <em>"Si en los próximos 30 días no es <u>el mejor café</u> que hayas probado en tu vida,
+                        devolvemos tu dinero <strong>+ te enviamos gratis</strong> una bolsa premium del café de tu marca favorita
+                        (Lavazza, illy, Dripkit, lo que prefieras) para que compares lado a lado."</em>
+                        <br><br>
+                        Esto hace 3 cosas devastadoramente poderosas:
+                        <ul style="margin-top: 12px; margin-left: 20px;">
+                            <li>✓ Mata la objeción de riesgo → "Oigan, él confía tanto que apuesta dinero"</li>
+                            <li>✓ Crea confianza radical → Transparencia extrema = autenticidad</li>
+                            <li>✓ Invierte el script psicológico → En vez de "¿Me timan?" ahora es "¿Puedo realmente disfrutarlo más?"</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="mecanica">
+                    <h4>⚙️ Mecánica (Paso a Paso)</h4>
+                    <ol>
+                        <li><strong>Mostrar en Homepage:</strong> Banner prominente: "Garantía de Obsesión 30 días"</li>
+                        <li><strong>En PDP (Página de Producto):</strong> Badge de garantía visible + Expandir detalles</li>
+                        <li><strong>En Checkout:</strong> Mostrar el T&C de la garantía de forma clara y confiable</li>
+                        <li><strong>Post-Compra (Email):</strong> Recordatorio + Instrucciones de cómo reclamar si no les gusta</li>
+                        <li><strong>Rescate (Día 25-28):</strong> Email: "¿Ya lo probaste? ¿Te obsesionaste?" → Link para feedback</li>
+                        <li><strong>Reembolso (Si aplica):</strong> Procesar devuelto + Ofrecer compensación: "Cuéntame qué café probaste antes"</li>
+                    </ol>
+                </div>
+
+                <div class="puntuacion">
+                    <div class="criterio">
+                        <span class="criterio-nombre">Impacto<br>Conversión</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Viabilidad<br>Técnica</span>
+                        <span class="criterio-valor">4/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Novedad &<br>Diferenciación</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Esfuerzo de<br>Producción</span>
+                        <span class="criterio-valor">2/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">ROI a<br>Largo Plazo</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                </div>
+
+                <div class="impacto">
+                    <h4>💥 Impacto Esperado</h4>
+                    <ul>
+                        <li><strong>+30-50% en conversión:</strong> Elimina la mayor objeción. No hay riesgo percibido.</li>
+                        <li><strong>Diferenciador brutal:</strong> Cero cafeterías online lo hacen. Pura psicología.</li>
+                        <li><strong>Customer loyalty sin igual:</strong> Alguien que acepta tu garantía siente que le crees. Se convierte en brand advocate.</li>
+                        <li><strong>Bajo % de devoluciones real:</strong> Estudios muestran que ofertas de riesgo inverso reducen devoluciones (clientes no creen que la usarán).</li>
+                        <li><strong>PR x Word of Mouth:</strong> "Vi una tienda que envía gratis el competidor si no te gusta" → Inusual, memorable, cuentable</li>
+                    </ul>
+                </div>
+
+                <div class="pasos">
+                    <h4>🚀 Primer Paso</h4>
+                    <div class="paso">
+                        <div class="paso-numero">1</div>
+                        <div class="paso-contenido">
+                            <h5>Actualiza T&C legales:</h5>
+                            <p>Define exactamente qué significa "mejor café" (gusto subjetivo OK) y límites de la garantía.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">2</div>
+                        <div class="paso-contenido">
+                            <h5>Diseña el badge visual:</h5>
+                            <p>Crea un sello de "Garantía de Obsesión" coherente con tu marca. Dorado + verde.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">3</div>
+                        <div class="paso-contenido">
+                            <h5>Integra flujo de reembolso:</h5>
+                            <p>En admin: Crear formulario para reclamar garantía. Preguntar qué café competidor prefieren.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">4</div>
+                        <div class="paso-contenido">
+                            <h5>Email de rescate (Día 25):</h5>
+                            <p>Disparar automáticamente: "¿Ya probaste tu Origen? Quiero saber tu opinión"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPUESTA 3 -->
+            <div class="propuesta">
+                <div class="numero-propuesta">3</div>
+                <h2 class="titulo-propuesta">Experience Unlock™ — Gamificación de Conocimiento para Retención Obsesiva</h2>
+                <p class="subtitulo-propuesta">Cada compra desbloquea contenido exclusivo: Vídeos, historias del productor, recetas, acceso a comunidad privada</p>
+
+                <div class="descripcion">
+                    <h4>🎯 La Idea</h4>
+                    <p>
+                        <strong>El problema:</strong> Muchos cafés premium venden UNA vez y el cliente nunca regresa.
+                        (Compra, bebe, olvida, compra Lavazza la próxima vez.)
+                        <br><br>
+                        <strong>La solución:</strong> Convertir cada compra en la llave a un "club privado" con contenido exclusivo
+                        que te engancha a querer más, a probar diferentes cafés, a obsesionarte.
+                        <br><br>
+                        <strong>Mecánica simple:</strong> Cada compra desbloquea:
+                        <ul style="margin-top: 12px; margin-left: 20px;">
+                            <li>✓ Video "Diario del Productor" (3-5 min) con el cafetero contando su historia</li>
+                            <li>✓ Guía de Preparación de ese café específico (PDF + Video)</li>
+                            <li>✓ Acceso a Discord/WhatsApp privado con otros suscriptores + team Origen</li>
+                            <li>✓ Receta de café (Cortado, Cortadito, Cold Brew, etc.) con ese café específico</li>
+                            <li>✓ "Puntos de Experiencia" (cada compra = +10 XP) canjeables por descuentos futuros</li>
+                            <li>✓ Leaderboard comunitario: "Top Conocedores de Origen" (gamificación pura)</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="mecanica">
+                    <h4>⚙️ Mecánica (Paso a Paso)</h4>
+                    <ol>
+                        <li><strong>Post-Compra Email:</strong> "Felicidades, desbloqueaste contenido exclusivo" + Link a dashboard privado</li>
+                        <li><strong>Dashboard Privado:</strong> Muestra: Video del productor + Guía + Discord link + Leaderboard</li>
+                        <li><strong>Comunidad Discord/WhatsApp:</strong> Canal #cafe-del-mes + #recetas + #preparacion + Q&A con Origen team</li>
+                        <li><strong>Puntos XP:</strong> Sistema simple: 1 compra = 10 XP → 100 XP = 15% descuento siguiente compra</li>
+                        <li><strong>Leaderboard:</strong> "Eres el #47 Conocedor" + Meta: "Alcanza el Top 10" (psychological hook)</li>
+                        <li><strong>Monthly Mission:</strong> "Prepara 3 métodos diferentes este mes = Descuento 20%" (engagement reiterado)</li>
+                    </ol>
+                </div>
+
+                <div class="puntuacion">
+                    <div class="criterio">
+                        <span class="criterio-nombre">Impacto<br>Retención</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Viabilidad<br>Técnica</span>
+                        <span class="criterio-valor">3/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Community<br>Building</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">Esfuerzo de<br>Producción</span>
+                        <span class="criterio-valor">4/5</span>
+                    </div>
+                    <div class="criterio">
+                        <span class="criterio-nombre">LTV (Lifetime<br>Value)</span>
+                        <span class="criterio-valor">5/5</span>
+                    </div>
+                </div>
+
+                <div class="impacto">
+                    <h4>💥 Impacto Esperado</h4>
+                    <ul>
+                        <li><strong>+50-70% en repeat purchase rate:</strong> Gamificación + comunidad = hábito formado.</li>
+                        <li><strong>LTV (Lifetime Value) 3-5x mayor:</strong> Cliente que viene 1x ahora viene 6-12x/año.</li>
+                        <li><strong>Brand Advocacy:</strong> El leaderboard + comunidad = peer pressure positiva a probar más cafés.</li>
+                        <li><strong>Content Goldmine:</strong> Videos del productor son assets reutilizables en TikTok, Instagram, YouTube.</li>
+                        <li><strong>Dato de Comportamiento:</strong> Qué videos ven, qué recetas usan → Datos para mejorar recomendaciones.</li>
+                    </ul>
+                </div>
+
+                <div class="pasos">
+                    <h4>🚀 Primer Paso</h4>
+                    <div class="paso">
+                        <div class="paso-numero">1</div>
+                        <div class="paso-contenido">
+                            <h5>Crea dashboard de usuario en React:</h5>
+                            <p>Nueva ruta "/dashboard" privada (requiere login). Componentes: Video player + Guía PDF + Discord invite.</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">2</div>
+                        <div class="paso-contenido">
+                            <h5>Filma 3-5 vídeos del productor:</h5>
+                            <p>Cada café tiene su video. Historias cortas, auténticas, smartphone está bien (adds realness).</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">3</div>
+                        <div class="paso-contenido">
+                            <h5>Configura Discord/WhatsApp privado:</h5>
+                            <p>Invita a clientes via email. Solo para compradores verificados (Supabase check).</p>
+                        </div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-numero">4</div>
+                        <div class="paso-contenido">
+                            <h5>Implementa sistema de puntos XP:</h5>
+                            <p>En dashboard: Mostrar puntos actuales + próximo milestone. Automático después de cada compra verificada.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p class="footer-title">📋 Próximos Pasos</p>
+            <p>
+                1. Elige la propuesta que más resuena contigo<br>
+                2. Comienza con Coffee DNA (rápida, alto impact)<br>
+                3. Paralleliza Garantía de Obsesión (copy + UI)<br>
+                4. Roadmap: Experience Unlock (Mes 2, requiere más setup)<br><br>
+                <strong>Estimación Total:</strong> Coffee DNA + Garantía = 2-3 semanas. Impacto esperado: +40-50% conversión + 30-50% retención.
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

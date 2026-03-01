@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Ejecutivo — 3 Propuestas de Venta para Origen Sierra Nevada</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Playfair Display', 'Segoe UI', sans-serif;
+            background: #0F1912;
+            color: #F5F5F5;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #141E16 0%, #0F1912 50%, #1a2a1c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            border-bottom: 4px solid #C8AA6E;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 64px;
+            color: #C8AA6E;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #B5B5B5;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 16px 32px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #C8AA6E;
+            color: #0F1912;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(200, 170, 110, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #C8AA6E;
+            color: #C8AA6E;
+        }
+
+        .btn-secondary:hover {
+            background: #C8AA6E;
+            color: #0F1912;
+        }
+
+        .section {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 48px;
+            color: #C8AA6E;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #C8AA6E;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: rgba(200, 170, 110, 0.05);
+            border: 1px solid #2A2A2A;
+            border-radius: 12px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #C8AA6E;
+            background: rgba(200, 170, 110, 0.08);
+            box-shadow: 0 20px 40px rgba(200, 170, 110, 0.15);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            color: #C8AA6E;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #B5B5B5;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-description {
+            color: #F5F5F5;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .score-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #2A2A2A;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 11px;
+            color: #B5B5B5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .score-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #C8AA6E;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: rgba(200, 170, 110, 0.1);
+            border: 1px solid #C8AA6E;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            color: #B5B5B5;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #C8AA6E;
+        }
+
+        .timeline-item {
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: 52%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-right: 52%;
+            text-align: right;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #C8AA6E;
+            border: 4px solid #0F1912;
+            border-radius: 50%;
+            top: 0;
+        }
+
+        .timeline-content {
+            background: rgba(200, 170, 110, 0.05);
+            border: 1px solid #2A2A2A;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .timeline-content h4 {
+            color: #C8AA6E;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .timeline-content p {
+            color: #B5B5B5;
+            font-size: 14px;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .feature {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(200, 170, 110, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #C8AA6E;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            min-width: 24px;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-text h5 {
+            color: #C8AA6E;
+            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .feature-text p {
+            color: #B5B5B5;
+            font-size: 13px;
+        }
+
+        .cta-section {
+            background: rgba(200, 170, 110, 0.1);
+            border: 2px solid #C8AA6E;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .cta-section h2 {
+            font-size: 40px;
+            color: #C8AA6E;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: #F5F5F5;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .hero-subtitle { font-size: 18px; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .timeline::before { display: none; }
+            .timeline-item { padding-left: 0 !important; padding-right: 0 !important; text-align: left !important; }
+            .timeline-dot { position: relative; margin-bottom: 16px; }
+            .features-list { grid-template-columns: 1fr; }
+            .section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>☕ Origen Sierra Nevada</h1>
+            <p class="hero-subtitle">
+                3 Propuestas de Valor para <strong>Convertir Visitantes en Obsesionados</strong>
+            </p>
+            <div class="hero-cta">
+                <button class="btn-primary">Ver Propuestas Completas</button>
+                <button class="btn-secondary">Descargar Plan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LAS 3 PROPUESTAS -->
+    <section class="section">
+        <h2 class="section-title">💡 3 Pilares de Venta</h2>
+
+        <div class="grid-3">
+            <!-- PROPUESTA 1 -->
+            <div class="card">
+                <div class="card-icon">🧬</div>
+                <div class="card-subtitle">Descubrimiento Emocional</div>
+                <h3 class="card-title">Coffee DNA™</h3>
+                <p class="card-description">
+                    Test gamificado que identifica el perfil de sabor emocional del cliente. Resultado = Recomendación personalizada + Certificado descargable + CTA fuerza a comprar.
+                </p>
+                <div class="score-row">
+                    <div class="score-item">
+                        <span class="score-label">Impacto</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Viabilidad</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Novedad</span>
+                        <span class="score-value">4/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Esfuerzo</span>
+                        <span class="score-value">3/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Viral</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPUESTA 2 -->
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <div class="card-subtitle">Reducción de Riesgo</div>
+                <h3 class="card-title">Garantía de Obsesión™</h3>
+                <p class="card-description">
+                    Promesa radical: "30 días, si no es el mejor café que probaste, devolvemos dinero + te enviamos gratis el competidor que prefieras".
+                </p>
+                <div class="score-row">
+                    <div class="score-item">
+                        <span class="score-label">Impacto</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Viabilidad</span>
+                        <span class="score-value">4/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Novedad</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Esfuerzo</span>
+                        <span class="score-value">2/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">ROI</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPUESTA 3 -->
+            <div class="card">
+                <div class="card-icon">🎮</div>
+                <div class="card-subtitle">Retención Obsesiva</div>
+                <h3 class="card-title">Experience Unlock™</h3>
+                <p class="card-description">
+                    Dashboard privado: Cada compra desbloquea vídeos del productor, guías exclusivas, acceso comunidad Discord, leaderboard, puntos XP. Hábito formado.
+                </p>
+                <div class="score-row">
+                    <div class="score-item">
+                        <span class="score-label">Retención</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Viabilidad</span>
+                        <span class="score-value">3/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Comunidad</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Esfuerzo</span>
+                        <span class="score-value">4/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">LTV</span>
+                        <span class="score-value">5/5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPACTO ESPERADO -->
+    <section class="section" style="background: rgba(200, 170, 110, 0.05); border-top: 1px solid #2A2A2A;">
+        <h2 class="section-title">📊 Impacto Esperado (60 Días)</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">+40-50%</div>
+                <div class="stat-label">Incremento Conversión</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">+50-70%</div>
+                <div class="stat-label">Repeat Purchase Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3-5x</div>
+                <div class="stat-label">Lifetime Value (LTV)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">+$50K</div>
+                <div class="stat-label">Ingresos Adicionales Q1</div>
+            </div>
+        </div>
+
+        <div class="features-list">
+            <div class="feature">
+                <span class="feature-icon">🎯</span>
+                <div class="feature-text">
+                    <h5>Conversión Inmediata</h5>
+                    <p>Coffee DNA + Garantía matan objeciones. 20-30 visitantes → 25-30 órdenes/día (vs. 12-15 hoy).</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔄</span>
+                <div class="feature-text">
+                    <h5>Retención Obsesiva</h5>
+                    <p>Experience Unlock forma hábito. Clientes que compraban 1x/año ahora compran 6-12x/año.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <div class="feature-text">
+                    <h5>Viral x Social</h5>
+                    <p>Coffee DNA genera share-worthy moments. "Descubre tu DNA" viral en Instagram, TikTok.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">💎</span>
+                <div class="feature-text">
+                    <h5>Premium Positioning</h5>
+                    <p>Garantía audaz + comunidad exclusiva = Posicionamiento como marca de confianza absoluta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section">
+        <h2 class="section-title">⏱️ Timeline de Ejecución (4 Semanas)</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h4>📋 Semana 1-2: Preparación</h4>
+                    <p>Wireframes, Copys, Setup BD. Entregable: Diseños aprobados + T&C finalizados.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h4>⚡ Semana 2-3: Coffee DNA + Garantía</h4>
+                    <p>Desarrollo del quiz + Badges de garantía + Templates de emails. Entregable: Ambos vivos en staging.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h4>🎮 Semana 3-4: Experience Unlock</h4>
+                    <p>Dashboard + XP system + Vídeos + Discord. Entregable: Todo funcional, listo para deploy.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h4>🚀 Semana 4: Deploy + Monitoreo</h4>
+                    <p>Lanzamiento a producción. A/B testing activo. Monitoreo diario de métricas y feedback.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RECURSOS -->
+    <section class="section" style="background: rgba(200, 170, 110, 0.05); border-top: 1px solid #2A2A2A;">
+        <h2 class="section-title">🛠️ Recursos Necesarios</h2>
+
+        <div class="features-list">
+            <div class="feature">
+                <span class="feature-icon">👨‍💻</span>
+                <div class="feature-text">
+                    <h5>Desarrollador Frontend (React)</h5>
+                    <p>100% dedicación, 4 semanas. Componentes interactivos, animaciones, integraciones.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚙️</span>
+                <div class="feature-text">
+                    <h5>Backend / Supabase</h5>
+                    <p>50% dedicación, 2 semanas. Tablas, RLS, triggers, webhooks para XP.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">✍️</span>
+                <div class="feature-text">
+                    <h5>Copywriter / Estratega</h5>
+                    <p>30% dedicación, 3 semanas. Headlines, CTAs, emails, descripciones, T&C legal.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎨</span>
+                <div class="feature-text">
+                    <h5>Designer UI/UX</h5>
+                    <p>60% dedicación, 3 semanas. Wireframes, badges, dashboard layout, componentes.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🧪</span>
+                <div class="feature-text">
+                    <h5>QA / Testing</h5>
+                    <p>40% dedicación, 2 semanas. Multi-navegador, emails, flujos de usuario.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎥</span>
+                <div class="feature-text">
+                    <h5>Videógrafo (Freelance)</h5>
+                    <p>1 proyecto: Filmar 3-5 vídeos del productor. Básico, auténtico, +3-5 min cada uno.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RIESGOS -->
+    <section class="section">
+        <h2 class="section-title">⚠️ Riesgos Principales & Mitigación</h2>
+
+        <div class="features-list">
+            <div class="feature" style="background: rgba(200, 170, 110, 0.1); border-left-color: #C8AA6E;">
+                <span class="feature-icon">🔴</span>
+                <div class="feature-text">
+                    <h5>Tasa de devoluciones alta (Garantía)</h5>
+                    <p><strong>Mitigación:</strong> Datos reales muestran que garantías de riesgo inverso REDUCEN devoluciones. Limita a primeros 100 clientes. Monitorea religiosamente día 1.</p>
+                </div>
+            </div>
+            <div class="feature" style="background: rgba(200, 170, 110, 0.1); border-left-color: #C8AA6E;">
+                <span class="feature-icon">🟡</span>
+                <div class="feature-text">
+                    <h5>Quiz abandonment (Coffee DNA)</h5>
+                    <p><strong>Mitigación:</strong> 5-7 preguntas MAX. Testing con 20 usuarios. Si bounce >40%, simplifica. Botón "Skip" siempre disponible.</p>
+                </div>
+            </div>
+            <div class="feature" style="background: rgba(200, 170, 110, 0.1); border-left-color: #C8AA6E;">
+                <span class="feature-icon">🟡</span>
+                <div class="feature-text">
+                    <h5>Content overload (Experience Unlock)</h5>
+                    <p><strong>Mitigación:</strong> Comienza con 3 vídeos. Templates para guías. Discord: 15 min/día. Roadmap: Más contenido en mes 2.</p>
+                </div>
+            </div>
+            <div class="feature" style="background: rgba(200, 170, 110, 0.1); border-left-color: #C8AA6E;">
+                <span class="feature-icon">🟢</span>
+                <div class="feature-text">
+                    <h5>Scope creep durante desarrollo</h5>
+                    <p><strong>Mitigación:</strong> Cierra scope AHORA. Cualquier idea nueva → Roadmap V2. Sync semanal 15 min. Zero nuevas features.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="section">
+        <div class="cta-section">
+            <h2>¿Listo para la Obsesión?</h2>
+            <p>
+                Con estas 3 propuestas bien ejecutadas, Origen Sierra Nevada pasará de ser "un buen café"
+                a ser "la obsesión de todo amante del café en Colombia".
+                <br><br>
+                <strong>Tiempo: 4 semanas. Impacto: +40-50% conversión + 3-5x LTV.</strong>
+            </p>
+            <button class="btn-primary" style="margin-top: 20px;">Descarga Plan Completo (PDF + HTML)</button>
+        </div>
+    </section>
+
+    <!-- DOCUMENTOS ASOCIADOS -->
+    <section class="section" style="background: rgba(200, 170, 110, 0.05); border-top: 1px solid #2A2A2A; text-align: center;">
+        <h2 class="section-title">📄 Documentos Generados</h2>
+        <p style="color: #B5B5B5; font-size: 16px; margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            Se han generado 3 documentos HTML profesionales en la carpeta del proyecto:
+        </p>
+
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-icon">📋</div>
+                <h3 class="card-title">Propuestas Detalladas</h3>
+                <p class="card-description">
+                    PROPUESTAS_VALOR_CONVERSION.html<br>
+                    <small style="color: #B5B5B5;">Detalles completos de cada propuesta con puntuación, mecánica, impacto y primer paso.</small>
+                </p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">Plan de Implementación</h3>
+                <p class="card-description">
+                    PLAN_IMPLEMENTACION_PROPUESTAS.html<br>
+                    <small style="color: #B5B5B5;">4 fases detalladas, recursos, riesgos, checklist final, timeline visual.</small>
+                </p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">Task List</h3>
+                <p class="card-description">
+                    TASK.md<br>
+                    <small style="color: #B5B5B5;">Bitácora viva con 20+ tareas, estados, responsables, criterios de éxito.</small>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: #0F1912; padding: 40px; text-align: center; border-top: 1px solid #2A2A2A; color: #B5B5B5;">
+        <p>
+            <strong style="color: #C8AA6E;">Origen Sierra Nevada</strong> — Estrategia de Conversión y Retención<br>
+            Generado con la librería de Skills de Agentes (Anthropic Claude + React)<br>
+            Aplicados: brainstorming-pro, planificacion-pro, brandbook, modo-produccion<br>
+            <small>Última actualización: 28 Feb 2026</small>
+        </p>
+    </footer>
+
+</body>
+</html>

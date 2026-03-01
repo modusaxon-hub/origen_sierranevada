@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida a Origen Sierra Nevada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050806;
+            font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+            color: #F5F5F5;
+        }
+
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #050806;
+            padding-bottom: 40px;
+        }
+
+        .main-table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #141E16;
+            border-collapse: collapse;
+        }
+
+        .header {
+            padding: 40px 0;
+            text-align: center;
+            background-color: #050806;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content-padding {
+            padding: 40px 30px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: #C8AA6E;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            font-style: italic;
+        }
+
+        .text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(245, 245, 245, 0.8);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .button-container {
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .button {
+            background-color: #C8AA6E;
+            color: #050806;
+            padding: 18px 35px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+        .footer {
+            background-color: #050806;
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(200, 170, 110, 0.1);
+        }
+
+        .footer-logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #C8AA6E;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .disclaimer {
+            font-size: 10px;
+            color: rgba(245, 245, 245, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: rgba(200, 170, 110, 0.2);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <table class="main-table" align="center">
+            <!-- Header -->
+            <tr>
+                <td class="header">
+                    <img src="https://origen-sierranevada.vercel.app/logo-gold.png" alt="Origen Sierra Nevada"
+                        style="width: 180px;">
+                </td>
+            </tr>
+
+            <!-- Hero Image -->
+            <tr>
+                <td>
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                        alt="Café de Especialidad" class="hero-image">
+                </td>
+            </tr>
+
+            <!-- Main Content -->
+            <tr>
+                <td class="content-padding">
+                    <h1 class="title">Bienvenido al Origen, donde el café toca el cielo.</h1>
+                    <div class="divider"></div>
+                    <p class="text">
+                        Es un honor para nosotros darte la bienvenida a nuestra comunidad. En Origen Sierra Nevada, no
+                        solo cultivamos granos; preservamos la herencia de las montañas más altas frente al mar Caribe.
+                        <br><br>
+                        Has dado el primer paso para acceder a lotes exclusivos, micro-climas únicos y perfiles
+                        sensoriales que solo nuestra tierra puede otorgar.
+                    </p>
+                    <div class="button-container">
+                        <a href="https://origen2025.share.zrok.io/" class="button">Explorar la Despensa</a>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+                <td class="footer">
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/origensierranevada">Instagram</a>
+                        <a href="https://wa.me/573001234567">WhatsApp</a>
+                        <a href="{{CATALOG_PDF_URL}}" download>Descargar Catálogo PDF</a>
+                    </div>
+                    <p class="disclaimer">Sierra Nevada de Santa Marta • Colombia<br>El Ritual del Café de Altura</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

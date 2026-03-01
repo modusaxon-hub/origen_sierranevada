@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Implementación - Origen Sierra Nevada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            body { size: A4; margin: 0; padding: 20mm; }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #141E16 0%, #1a2a1c 100%);
+            color: #F5F5F5;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 30, 22, 0.9);
+            border: 1px solid #C8AA6E;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #141E16 0%, #0F1912 100%);
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 2px solid #C8AA6E;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #B5B5B5;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 2px solid #2A2A2A;
+            padding-bottom: 16px;
+        }
+
+        .section-title .icon {
+            font-size: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+
+        th {
+            background: rgba(200, 170, 110, 0.2);
+            color: #C8AA6E;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #2A2A2A;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 16px;
+            border: 1px solid #2A2A2A;
+            background: rgba(20, 30, 22, 0.6);
+            color: #F5F5F5;
+        }
+
+        td strong {
+            color: #C8AA6E;
+        }
+
+        .fase {
+            background: rgba(200, 170, 110, 0.05);
+            padding: 24px;
+            border-left: 6px solid #C8AA6E;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .fase-titulo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #C8AA6E;
+            margin-bottom: 16px;
+        }
+
+        .fase-subtitulo {
+            color: #B5B5B5;
+            font-size: 13px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tareas {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .tarea {
+            display: grid;
+            grid-template-columns: 1fr 100px 150px;
+            gap: 16px;
+            padding: 12px;
+            border-bottom: 1px solid #2A2A2A;
+            align-items: start;
+        }
+
+        .tarea:last-child {
+            border-bottom: none;
+        }
+
+        .tarea-nombre {
+            color: #F5F5F5;
+            font-weight: 500;
+        }
+
+        .tarea-dificultad {
+            background: rgba(200, 170, 110, 0.15);
+            color: #C8AA6E;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .tarea-tiempo {
+            color: #B5B5B5;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .riesgo {
+            background: rgba(200, 170, 110, 0.05);
+            padding: 16px;
+            border-left: 4px solid #C8AA6E;
+            margin-bottom: 16px;
+            border-radius: 6px;
+        }
+
+        .riesgo-titulo {
+            color: #C8AA6E;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .riesgo-descripcion {
+            color: #F5F5F5;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .riesgo-mitigacion {
+            color: #B5B5B5;
+            font-size: 13px;
+            padding: 8px;
+            background: rgba(20, 30, 22, 0.8);
+            border-radius: 4px;
+        }
+
+        .riesgo-mitigacion strong {
+            color: #C8AA6E;
+        }
+
+        .checklist {
+            background: rgba(20, 30, 22, 0.6);
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: rgba(200, 170, 110, 0.03);
+            border-radius: 6px;
+            border-left: 3px solid transparent;
+        }
+
+        .checklist-item:hover {
+            background: rgba(200, 170, 110, 0.08);
+            border-left-color: #C8AA6E;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #C8AA6E;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .checkbox.checked {
+            background: #C8AA6E;
+            color: #0F1912;
+        }
+
+        .checklist-label {
+            flex: 1;
+            color: #F5F5F5;
+        }
+
+        .criteria-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .criteria-card {
+            background: rgba(200, 170, 110, 0.05);
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .criteria-card h4 {
+            color: #C8AA6E;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .criteria-card p {
+            color: #F5F5F5;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .timeline-date {
+            background: rgba(200, 170, 110, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #C8AA6E;
+        }
+
+        .timeline-date-strong {
+            color: #C8AA6E;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .timeline-date-detail {
+            color: #B5B5B5;
+            font-size: 12px;
+        }
+
+        .timeline-content {
+            background: rgba(20, 30, 22, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .timeline-content h5 {
+            color: #C8AA6E;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .timeline-content p {
+            color: #F5F5F5;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content ul {
+            margin-left: 20px;
+            color: #B5B5B5;
+            font-size: 13px;
+        }
+
+        .timeline-content li {
+            margin-bottom: 6px;
+        }
+
+        .footer {
+            background: rgba(20, 30, 22, 0.9);
+            padding: 40px;
+            border-top: 1px solid #2A2A2A;
+            text-align: center;
+            color: #B5B5B5;
+            font-size: 14px;
+        }
+
+        .footer-title {
+            color: #C8AA6E;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .success-metric {
+            background: rgba(200, 170, 110, 0.1);
+            padding: 16px;
+            border-left: 4px solid #C8AA6E;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+
+        .success-metric strong {
+            color: #C8AA6E;
+        }
+
+        .success-metric p {
+            color: #F5F5F5;
+            margin: 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 32px; }
+            .criteria-box { grid-template-columns: 1fr; }
+            .tarea { grid-template-columns: 1fr; }
+            .timeline-item { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🎯 Plan de Implementación</h1>
+            <p>3 Propuestas de Valor para Origen Sierra Nevada<br>Timeline, Recursos, Riesgos y Checklist de Éxito</p>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="content">
+
+            <!-- SECCIÓN 1: DEFINICIÓN DE ÉXITO -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">✨</span> Definición de Éxito
+                </h2>
+                <div class="criteria-box">
+                    <div class="criteria-card">
+                        <h4>Resultado Final</h4>
+                        <p>Implementar 3 propuestas de valor que incrementen conversión (+40-50%), retención (+30-50%) y LTV (3-5x) en 60 días.</p>
+                    </div>
+                    <div class="criteria-card">
+                        <h4>Criterio 1: Conversión</h4>
+                        <p>Coffee DNA + Garantía vivos en producción. Medir: Tasa de conversión baseline vs. con nuevas propuestas.</p>
+                    </div>
+                    <div class="criteria-card">
+                        <h4>Criterio 2: Engagement</h4>
+                        <p>Experience Unlock activo. Medir: % de usuarios que entran al dashboard + repiten compra dentro de 30 días.</p>
+                    </div>
+                    <div class="criteria-card">
+                        <h4>Criterio 3: Data</h4>
+                        <p>Recopilar feedback de clientes. Medir: NPS, reviews sobre las nuevas features, tasa de devoluciones con garantía.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: FASES DE IMPLEMENTACIÓN -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📋</span> Plan por Fases (4 Semanas)
+                </h2>
+
+                <!-- FASE 1 -->
+                <div class="fase">
+                    <div class="fase-titulo">⏰ FASE 1: Preparación y Setup (Semana 1-2)</div>
+                    <div class="fase-subtitulo">Duración: 10 días | Entregable: Roadmap técnico, componentes boilerplate, copys finales</div>
+
+                    <div class="tareas">
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>1.1</strong> — Revisar stack React 19 + Supabase. Planificar arquitectura de nuevos componentes.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>1.2</strong> — Diseñar wireframes de Coffee DNA, Garantía, Dashboard Experience Unlock.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">3 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>1.3</strong> — Escribir copys finales (headlines, CTAs, emails, T&C garantía).</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>1.4</strong> — Crear tabla de mapeo: Cada café → Coffee DNA type + Recomendaciones cruzadas.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>1.5</strong> — Setup base de datos Supabase: Tablas para XP points, Guarantees, Dashboard data.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 2 -->
+                <div class="fase">
+                    <div class="fase-titulo">⚡ FASE 2: Coffee DNA + Garantía (Semana 2-3)</div>
+                    <div class="fase-subtitulo">Duración: 10 días | Entregable: Quiz funcional + Badges de garantía en PDP + Emails</div>
+
+                    <div class="tareas">
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.1</strong> — Desarrollar componente Quiz Coffee DNA (React). Preguntas + Animaciones.</div>
+                            <div class="tarea-dificultad">DIFÍCIL</div>
+                            <div class="tarea-tiempo">4 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.2</strong> — Integrar lógica de quiz: Mapeo de respuestas → Coffee DNA + Recomendación.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.3</strong> — Actualizar T&C legales para Garantía de Obsesión. Testing con asesor legal.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.4</strong> — Diseñar badges de garantía. Añadir a PDP, homepage, checkout.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.5</strong> — Crear secuencia de emails: Confirmación + Día 25 + Reembolso (templates).</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>2.6</strong> — Testing QA: Quiz en múltiples navegadores/dispositivos. Emails en inbox.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 3 -->
+                <div class="fase">
+                    <div class="fase-titulo">🎮 FASE 3: Experience Unlock (Semana 3-4)</div>
+                    <div class="fase-subtitulo">Duración: 10 días | Entregable: Dashboard privado + Sistema XP + Discord setup + Videos producidos</div>
+
+                    <div class="tareas">
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.1</strong> — Desarrollar Dashboard privado (/dashboard). Componentes: Video player, Guía PDF, Discord link.</div>
+                            <div class="tarea-dificultad">DIFÍCIL</div>
+                            <div class="tarea-tiempo">4 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.2</strong> — Implementar sistema de puntos XP. Base de datos + Lógica auto-increment post-compra.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.3</strong> — Crear leaderboard comunitario. Mostrar top 10 clientes en dashboard.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.4</strong> — Filmar 3-5 videos "Diario del Productor". Audio/Video básico, authenticity over production.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">3 días</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.5</strong> — Setup Discord/WhatsApp privado. Bot para invitar automáticamente a clientes verificados.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>3.6</strong> — Crear guías de preparación (PDF + Markdown). Incluir recetas para cada café.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 4 -->
+                <div class="fase">
+                    <div class="fase-titulo">🚀 FASE 4: Deploy + Optimización (Semana 4)</div>
+                    <div class="fase-subtitulo">Duración: 7 días | Entregable: Todo en producción + A/B tests iniciados + Monitoreo activo</div>
+
+                    <div class="tareas">
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.1</strong> — Deploy Coffee DNA a producción. A/B test: Quiz vs. No quiz en homepage.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.2</strong> — Deploy Garantía de Obsesión. Monitorear tasa de reembolsos los primeros 7 días.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.3</strong> — Deploy Experience Unlock. Email automático a todos los compradores previos con invite al dashboard.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.4</strong> — Setup Google Analytics + Hotjar. Medir: conversión, tiempo en quiz, scroll en dashboard.</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.5</strong> — Comunicación al equipo + Clientes. Email: "Hoy cambiamos cómo vendes café".</div>
+                            <div class="tarea-dificultad">FÁCIL</div>
+                            <div class="tarea-tiempo">1 día</div>
+                        </div>
+                        <div class="tarea">
+                            <div class="tarea-nombre"><strong>4.6</strong> — Monitoreo diario primeros 7 días. Fixear bugs, responder feedback, ajustar copys.</div>
+                            <div class="tarea-dificultad">MEDIO</div>
+                            <div class="tarea-tiempo">2 días</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECCIÓN 3: RECURSOS NECESARIOS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">🛠️</span> Recursos Necesarios
+                </h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rol / Recurso</th>
+                            <th>Dedicación</th>
+                            <th>Especialidad Clave</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Desarrollador Frontend (React)</strong></td>
+                            <td>100% (4 semanas)</td>
+                            <td>Componentes interactivos, integraciones API, estado global, animaciones</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desarrollador Backend / Supabase</strong></td>
+                            <td>50% (2 semanas)</td>
+                            <td>Tablas, RLS, triggers para auto-increment XP, webhooks</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Copywriter / Estratega</strong></td>
+                            <td>30% (3 semanas)</td>
+                            <td>Headlines, CTAs, emails, descripción de productos, T&C legal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Designer / UI/UX</strong></td>
+                            <td>60% (3 semanas)</td>
+                            <td>Wireframes, badges, dashboard layout, componentes visuales</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QA / Testing</strong></td>
+                            <td>40% (2 semanas)</td>
+                            <td>Cross-browser testing, email testing, flujos de usuario</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Community Manager (Discord/WhatsApp)</strong></td>
+                            <td>50% (ongoing)</td>
+                            <td>Moderar, responder preguntas, crear contenido comunitario</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Videógrafo (Freelance OK)</strong></td>
+                            <td>1 proyecto (3-5 vídeos)</td>
+                            <td>Filmar productor. Básico, auténtico. 3-5 min cada uno.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECCIÓN 4: RIESGOS Y MITIGACIONES -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">⚠️</span> Matriz de Riesgos y Mitigaciones
+                </h2>
+
+                <div class="riesgo">
+                    <div class="riesgo-titulo">🔴 Riesgo 1: Tasa de devoluciones alta con Garantía de Obsesión</div>
+                    <div class="riesgo-descripcion">
+                        Si muchos clientes devuelven diciendo "no es el mejor café", podrías perder dinero rápidamente. Además, costo de enviar competidor gratis.
+                    </div>
+                    <div class="riesgo-mitigacion">
+                        <strong>Mitigación:</strong> (a) La mayoría de estudios muestran que ofertas de riesgo inverso REDUCEN devoluciones (clientes no creen que aplicará). (b) Limita garantía a primeros 100 clientes o máx $X al mes. (c) Recuerda: Es un imán de confianza, no un "riesgo real". La psicología juega a tu favor. (d) Monitorea primeros 30 días religiosamente.
+                    </div>
+                </div>
+
+                <div class="riesgo">
+                    <div class="riesgo-titulo">🟡 Riesgo 2: Quiz Coffee DNA percibido como "frivolous" o "demasiado largo"</div>
+                    <div class="riesgo-descripcion">
+                        Si el quiz es >15 segundos, clientes lo saltarán. Si preguntas no resuenan, no activa conexión emocional.
+                    </div>
+                    <div class="riesgo-mitigacion">
+                        <strong>Mitigación:</strong> (a) Mantén quiz a 5-7 preguntas MAX. (b) Test con 20 usuarios reales antes de deploy. (c) Si bounce rate en quiz >40%, simplifica preguntas. (d) Opción "Skip quiz" siempre disponible (no forces).
+                    </div>
+                </div>
+
+                <div class="riesgo">
+                    <div class="riesgo-titulo">🟡 Riesgo 3: Experience Unlock requiere mucho contenido (vídeos, guías)</div>
+                    <div class="riesgo-descripcion">
+                        Filmar vídeos, escribir guías, mantener Discord lleva tiempo. Si no ejecutas bien, se ve "abandonado".
+                    </div>
+                    <div class="riesgo-mitigacion">
+                        <strong>Mitigación:</strong> (a) Comienza con 3 vídeos. Suficiente para V1. (b) Usa templates para guías (no custom cada café). (c) Discord: 1-2 personas manejándolo, 15 min/día suficiente. (d) Roadmap: Videosinicio rápido (no perfeccionismo).
+                    </div>
+                </div>
+
+                <div class="riesgo">
+                    <div class="riesgo-titulo">🟢 Riesgo 4: Parálisis por análisis (perfeccionismo)</div>
+                    <div class="riesgo-descripcion">
+                        Pasar 4 semanas perfeccionando la UI del quiz cuando debería ser "bueno enough" en 1 semana.
+                    </div>
+                    <div class="riesgo-mitigacion">
+                        <strong>Mitigación:</strong> (a) Timeboxea cada tarea. No vuelvas atrás. (b) Deploy a producción incluso con bugs menores (soluciona después). (c) Mantra: "Launch > Perfect". (d) Feedback de clientes es lo que refina, no el perfeccionismo previo.
+                    </div>
+                </div>
+
+                <div class="riesgo">
+                    <div class="riesgo-titulo">🟢 Riesgo 5: Cambios de scope durante implementación</div>
+                    <div class="riesgo-descripcion">
+                        El equipo pide "una pequeña mejora" a medio desarrollo, derailing timeline.
+                    </div>
+                    <div class="riesgo-mitigacion">
+                        <strong>Mitigación:</strong> (a) "Roadmap V2" — Cualquier idea nueva va a backlog para mes 5+. (b) Cierra el scope AHORA. No cambios. (c) Reunión semanal 15 min para sync.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 5: CHECKLIST DE VALIDACIÓN -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">✅</span> Checklist Final de Validación
+                </h2>
+
+                <div class="checklist">
+                    <h3 style="color: #C8AA6E; margin-bottom: 20px; font-size: 16px;">Coffee DNA</h3>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Quiz funciona en mobile/desktop (Chrome, Safari, Firefox)</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Resultado muestra "Coffee DNA" visual + nombre único + descripción</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">CTA "Probar Ahora" añade café recomendado al carrito automáticamente</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Certificado descargable funciona (PDF con nombre cliente + DNA)</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Post-compra email incluye DNA + Guía Preparación personalizada</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">A/B test setup: Medir conversión quiz vs. sin quiz</div>
+                    </div>
+
+                    <h3 style="color: #C8AA6E; margin-bottom: 20px; margin-top: 30px; font-size: 16px;">Garantía de Obsesión</h3>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Badge de garantía visible en PDP, Homepage, Checkout</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">T&C legales finalizados y revisados por asesor legal</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Formulario de reclamo de garantía funciona en admin panel</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Email Día 25: "¿Ya probaste tu Origen?" dispara automáticamente</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Flujo de reembolso: Cliente → Reclama → Recibe devuelto + café competidor</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Monitoreo diario: % de reclamos, tiempo promedio respuesta</div>
+                    </div>
+
+                    <h3 style="color: #C8AA6E; margin-bottom: 20px; margin-top: 30px; font-size: 16px;">Experience Unlock</h3>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Dashboard privado (/dashboard) requiere login y orden previa</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">3-5 vídeos producidos y hosteados. Video player funciona sin buffering</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Guías PDF descargables para cada café</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Sistema XP funciona: +10 puntos por cada compra verificada</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Leaderboard muestra top 10, se actualiza en tiempo real</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Discord/WhatsApp privado setup. Invites automáticas a clientes en email</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Email post-compra con link invitación a dashboard + Discord</div>
+                    </div>
+
+                    <h3 style="color: #C8AA6E; margin-bottom: 20px; margin-top: 30px; font-size: 16px;">Global</h3>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Todos los elementos en marca: Colores (#141E16, #C8AA6E), tipografía (Playfair Display)</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Analytics setup: Google Analytics + Hotjar para mapear comportamientos</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Todos los emails probados en Litmus / Real Inbox</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Backup completo de BD antes de deploy a producción</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Documentación interna para team: Cómo responder reclamos, manejar XP, etc.</div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div class="checklist-label">Lanzamiento público: Email + Social + Blog post explicando cambios</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECCIÓN 6: TIMELINE VISUAL -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📅</span> Timeline Visual (4 Semanas)
+                </h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="timeline-date-strong">Semana 1-2</span>
+                            <span class="timeline-date-detail">Preparación y Setup</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>📋 Fase 1: Preparación (10 días)</h5>
+                            <ul>
+                                <li>Wireframes + Diseño de 3 propuestas</li>
+                                <li>Copys finales (headlines, CTAs, emails)</li>
+                                <li>Setup BD Supabase (tablas, RLS)</li>
+                                <li>Mapeo de Coffee DNA types (20-25 combos)</li>
+                            </ul>
+                            <p><strong>Entregables:</strong> Wireframes aprobados + Copys finalizados + BD lista</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="timeline-date-strong">Semana 2-3</span>
+                            <span class="timeline-date-detail">Coffee DNA + Garantía</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>⚡ Fase 2: Desarrollo (10 días)</h5>
+                            <ul>
+                                <li>Quiz Coffee DNA (React + animaciones)</li>
+                                <li>Badges de garantía en PDP + home</li>
+                                <li>T&C legales finalizados</li>
+                                <li>Templates de emails</li>
+                                <li>QA y testing cross-browser</li>
+                            </ul>
+                            <p><strong>Entregables:</strong> Quiz funcional + Garantía UI + Emails listos</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="timeline-date-strong">Semana 3-4</span>
+                            <span class="timeline-date-detail">Experience Unlock</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>🎮 Fase 3: Experience Unlock (10 días)</h5>
+                            <ul>
+                                <li>Dashboard privado (/dashboard)</li>
+                                <li>Sistema de puntos XP</li>
+                                <li>Leaderboard comunitario</li>
+                                <li>Filmar 3-5 vídeos productor</li>
+                                <li>Setup Discord/WhatsApp privado</li>
+                                <li>Guías de preparación (PDF + Markdown)</li>
+                            </ul>
+                            <p><strong>Entregables:</strong> Dashboard live + XP system + Videos producidos</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="timeline-date-strong">Semana 4</span>
+                            <span class="timeline-date-detail">Deploy + Optimización</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>🚀 Fase 4: Lanzamiento (7 días)</h5>
+                            <ul>
+                                <li>Deploy a producción (Coffee DNA + Garantía + Experience)</li>
+                                <li>Setup A/B tests (Google Optimize)</li>
+                                <li>Analytics + Hotjar activos</li>
+                                <li>Monitoreo diario (bugs, feedback)</li>
+                                <li>Comunicación al team + Clientes</li>
+                            </ul>
+                            <p><strong>Entregables:</strong> Todo en producción + Monitoreo activo + 100% funcional</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECCIÓN 7: MÉTRICAS DE ÉXITO -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📊</span> Métricas de Éxito (Monitorear Diariamente)
+                </h2>
+
+                <div class="success-metric">
+                    <p><strong>1. Conversión (Coffee DNA + Garantía)</strong></p>
+                    <p>📈 Meta: +40-50% tasa de conversión vs. baseline actual</p>
+                    <p>🔍 Medir: (Órdenes con propuestas nuevas) / (Total visitantes) = % conversión</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>2. Quiz Engagement (Coffee DNA)</strong></p>
+                    <p>📈 Meta: >60% de visitantes inician quiz | >40% completan</p>
+                    <p>🔍 Medir: Google Analytics → Eventos personalizados para "Quiz Start" y "Quiz Complete"</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>3. Garantía Reclamada (Obsesión)</strong></p>
+                    <p>📈 Meta: <10% tasa de reclamación (estudios muestran 5-8% es healthy)</p>
+                    <p>🔍 Medir: # reclamos / # órdenes con garantía = % reclamación</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>4. Dashboard Adoption (Experience Unlock)</strong></p>
+                    <p>📈 Meta: >50% de clientes que reciben link entran al dashboard</p>
+                    <p>🔍 Medir: Supabase logs → Auth logins / # emails enviados = % adoption</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>5. Repeat Purchase Rate (Retención)</strong></p>
+                    <p>📈 Meta: +50% clientes que compran 2+ veces dentro de 30 días</p>
+                    <p>🔍 Medir: # clientes con 2+ órdenes en 30 días / # total clientes = % retención</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>6. XP Engagement (Experience Unlock)</strong></p>
+                    <p>📈 Meta: >40% de usuarios miran su leaderboard position</p>
+                    <p>🔍 Medir: Hotjar → % scroll en leaderboard | Supabase logs → visits a /dashboard</p>
+                </div>
+
+                <div class="success-metric">
+                    <p><strong>7. NPS Post-Cambios (Satisfacción General)</strong></p>
+                    <p>📈 Meta: NPS baseline +5-10 puntos después de semana 4</p>
+                    <p>🔍 Medir: Email NPS survey a todo cliente nuevo. Escala 1-10 "¿Qué tan probable...?"</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p class="footer-title">🎯 Resumen Ejecutivo</p>
+            <p>
+                <strong>Cronograma:</strong> 4 semanas, 6 personas, 0 dependencies externas.<br>
+                <strong>Presupuesto estimado:</strong> $8,000-12,000 (incluye vídeos freelance + horas equipo).<br>
+                <strong>ROI esperado:</strong> +40-50% conversión = +$50-100K ingresos adicionales en Q1 (suponiendo $200K ingresos baseline mensual).<br><br>
+                <strong>Próximos pasos:</strong><br>
+                1. Aprueba este plan ✓<br>
+                2. Asigna recursos (Frontend, Backend, Copy, Design, QA) ✓<br>
+                3. Comienza Fase 1 en lunes ✓<br>
+                4. Sync semanal 30 min para desbloquear + feedback ✓<br><br>
+                <strong>¿Listo para hacer que Origen sea la obsesión de todo amante del café?</strong> ☕🔥
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

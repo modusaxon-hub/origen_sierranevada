@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Interactivo — Rediseño Landing + Despensa | Origen Sierra Nevada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #141E16;
+            --accent: #C8AA6E;
+            --text: #F5F5F5;
+            --text-dim: #B5B5B5;
+            --border: #2A2A2A;
+            --success: #4CAF50;
+            --warning: #FF9800;
+        }
+
+        @media print {
+            body { size: A4; margin: 0; padding: 20mm; }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #0a0d0b 100%);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 30, 22, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #0F1912 100%);
+            padding: 60px 40px;
+            border-bottom: 2px solid var(--accent);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step.active {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .component-card {
+            background: rgba(200, 170, 110, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            border-color: var(--accent);
+            background: rgba(200, 170, 110, 0.08);
+        }
+
+        .component-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .component-path {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        .component-desc {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .status-ok {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.4);
+        }
+
+        .status-review {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.4);
+        }
+
+        .option-group {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .option-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(200, 170, 110, 0.03);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: rgba(200, 170, 110, 0.08);
+            border-color: var(--border);
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-top: 3px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .option.selected {
+            background: rgba(200, 170, 110, 0.15);
+            border-color: var(--accent);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .option-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .option-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            background: rgba(200, 170, 110, 0.2);
+            color: var(--accent);
+            margin-top: 8px;
+            margin-right: 6px;
+        }
+
+        .comment-section {
+            background: rgba(200, 170, 110, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .comment-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(200, 170, 110, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 32px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(200, 170, 110, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .summary {
+            background: rgba(200, 170, 110, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .summary-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-dim);
+        }
+
+        .summary-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            border-radius: 8px;
+            padding: 16px;
+            color: #4CAF50;
+            margin-top: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 40px 20px; }
+            .content { padding: 40px 20px; }
+            .analysis-grid { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+        }
+
+        /* Print styles */
+        @media print {
+            .button-group { display: none; }
+            .comment-section { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎯 Plan Interactivo — Landing + Despensa</h1>
+        <p>Rediseño Full React de Hero Carrusel, Cafés, Antojos y Accesorios</p>
+        <div class="breadcrumb">
+            <span class="step active">📋 Análisis</span>
+            <span>→</span>
+            <span class="step">🎨 Opciones</span>
+            <span>→</span>
+            <span class="step">💬 Comentarios</span>
+            <span>→</span>
+            <span class="step">✅ Aprobación</span>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="content">
+
+        <!-- SECCIÓN 1: ANÁLISIS DE COMPONENTES ACTUALES -->
+        <div class="section">
+            <h2 class="section-title">1️⃣ Análisis de Componentes Existentes</h2>
+            <p style="color: var(--text-dim); margin-bottom: 24px;">
+                Estado actual: Los componentes React ya existen, pero necesitamos revisar duplicación,
+                refactorizar para máxima reutilización y asegurar CERO componentes nativos/estáticos.
+            </p>
+
+            <div class="analysis-grid">
+                <!-- ProductCard -->
+                <div class="component-card">
+                    <div class="component-name">ProductCard.tsx</div>
+                    <div class="component-path">components/ProductCard.tsx</div>
+                    <div class="component-desc">
+                        Tarjeta de café con imagen, badge, tags, precio y botón "Comprar".
+                        Includes blur effect y hover animations.
+                    </div>
+                    <span class="status-badge status-ok">✅ Full React</span>
+                </div>
+
+                <!-- AntojitoCard -->
+                <div class="component-card">
+                    <div class="component-name">AntojitoCard.tsx</div>
+                    <div class="component-path">components/AntojitoCard.tsx</div>
+                    <div class="component-desc">
+                        Tarjeta cuadrada para antojitos/comestibles. Imagen + hover overlay
+                        con nombre, precio y botón "Añadir".
+                    </div>
+                    <span class="status-badge status-ok">✅ Full React</span>
+                </div>
+
+                <!-- AccessoryCard -->
+                <div class="component-card">
+                    <div class="component-name">AccessoryCard.tsx</div>
+                    <div class="component-path">components/AccessoryCard.tsx</div>
+                    <div class="component-desc">
+                        Tarjeta para accesorios/herramientas. Similar a ProductCard
+                        pero sin badge/score específicos.
+                    </div>
+                    <span class="status-badge status-review">⚠️ Revisar</span>
+                </div>
+
+                <!-- HomePage -->
+                <div class="component-card">
+                    <div class="component-name">HomePage.tsx</div>
+                    <div class="component-path">pages/HomePage.tsx</div>
+                    <div class="component-desc">
+                        Página principal con hero, carruseles, selectores dinámicos de
+                        variante/molienda. ~530 líneas, lógica compleja.
+                    </div>
+                    <span class="status-badge status-review">⚠️ Refactorizar</span>
+                </div>
+
+                <!-- ProductDetailsModal -->
+                <div class="component-card">
+                    <div class="component-name">ProductDetailsModal.tsx</div>
+                    <div class="component-path">components/ProductDetailsModal.tsx</div>
+                    <div class="component-desc">
+                        Modal que abre al hacer clic en tarjeta. Muestra info completa
+                        del producto.
+                    </div>
+                    <span class="status-badge status-ok">✅ Full React</span>
+                </div>
+
+                <!-- Contexts -->
+                <div class="component-card">
+                    <div class="component-name">CartContext + AuthContext</div>
+                    <div class="component-path">contexts/</div>
+                    <div class="component-desc">
+                        Manejo de carrito y autenticación. Full React Hooks (useContext, useReducer).
+                    </div>
+                    <span class="status-badge status-ok">✅ Full React</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: OPCIONES DE IMPLEMENTACIÓN -->
+        <div class="section">
+            <h2 class="section-title">2️⃣ Opciones de Diseño & Implementación</h2>
+            <p style="color: var(--text-dim); margin-bottom: 24px;">
+                Selecciona tus preferencias. Cada opción afecta el scope, timeline y experiencia final.
+            </p>
+
+            <!-- OPCIÓN 1: CARRUSEL HERO CAFÉS -->
+            <div class="option-group">
+                <div class="option-title">A. HERO CARRUSEL DE CAFÉS</div>
+
+                <label class="option">
+                    <input type="radio" name="hero-carousel" value="auto-manual" checked>
+                    <div class="option-content">
+                        <span class="option-label">Auto-Play + Manual (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Auto-scroll cada 5 segundos + flechas prev/next para navegación manual.
+                            Swipe en mobile.
+                        </div>
+                        <span class="option-tag">Más interactivo</span>
+                        <span class="option-tag">Mejor UX</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="hero-carousel" value="manual-only">
+                    <div class="option-content">
+                        <span class="option-label">Manual Only</span>
+                        <div class="option-desc">
+                            Solo flechas y paginación de puntos. Sin auto-scroll.
+                        </div>
+                        <span class="option-tag">Menos código</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="hero-carousel" value="dots-pagination">
+                    <div class="option-content">
+                        <span class="option-label">Pagination Dots Click</span>
+                        <div class="option-desc">
+                            Puntos numerados donde el usuario hace clic para saltar directo a un café.
+                        </div>
+                        <span class="option-tag">Directo</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- OPCIÓN 2: SELECTORES DINÁMICOS -->
+            <div class="option-group">
+                <div class="option-title">B. SELECTORES DE VARIANTE/MOLIENDA</div>
+
+                <label class="option">
+                    <input type="radio" name="selectors" value="buttons" checked>
+                    <div class="option-content">
+                        <span class="option-label">Botones Toggle (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Botones que cambian estilo al seleccionar (bg color, border highlight).
+                        </div>
+                        <span class="option-tag">Claro</span>
+                        <span class="option-tag">Touch-friendly</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="selectors" value="dropdown">
+                    <div class="option-content">
+                        <span class="option-label">Dropdown Selects</span>
+                        <div class="option-desc">
+                            &lt;select&gt; HTML estándar (no es Full React puro).
+                        </div>
+                        <span class="option-tag">⚠️ Nativo HTML</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="selectors" value="tabs">
+                    <div class="option-content">
+                        <span class="option-label">Tabs/Pills</span>
+                        <div class="option-desc">
+                            Pestañas estilo iOS que deslizan al seleccionar.
+                        </div>
+                        <span class="option-tag">Moderno</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- OPCIÓN 3: MODAL DE DETALLES -->
+            <div class="option-group">
+                <div class="option-title">C. MODAL DE DETALLES DEL PRODUCTO</div>
+
+                <label class="option">
+                    <input type="radio" name="modal" value="centered" checked>
+                    <div class="option-content">
+                        <span class="option-label">Centered Modal (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Modal centrado en pantalla, backdrop oscuro, scroll interno.
+                        </div>
+                        <span class="option-tag">Estándar</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="modal" value="fullscreen">
+                    <div class="option-content">
+                        <span class="option-label">Fullscreen Slide</span>
+                        <div class="option-desc">
+                            Modal a pantalla completa que desliza desde derecha. Cierra al swipe.
+                        </div>
+                        <span class="option-tag">Mobile-first</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="modal" value="drawer">
+                    <div class="option-content">
+                        <span class="option-label">Bottom Sheet (Drawer)</span>
+                        <div class="option-desc">
+                            Panel que sube desde abajo, como un drawer. Arrastra para cerrar.
+                        </div>
+                        <span class="option-tag">Touch-native</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- OPCIÓN 4: CARRUSELES SECUNDARIAS -->
+            <div class="option-group">
+                <div class="option-title">D. CARRUSELES DE ANTOJITOS & ACCESORIOS</div>
+
+                <label class="option">
+                    <input type="radio" name="carousel-secondary" value="swiper" checked>
+                    <div class="option-content">
+                        <span class="option-label">Swiper.js (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Librería React optimizada para carruseles (touch, swipe, lazy-load).
+                        </div>
+                        <span class="option-tag">Probada</span>
+                        <span class="option-tag">Touch</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="carousel-secondary" value="custom">
+                    <div class="option-content">
+                        <span class="option-label">Custom React Hook</span>
+                        <div class="option-desc">
+                            Carrusel custom con useState + transform CSS. Zero dependencias.
+                        </div>
+                        <span class="option-tag">Ligero</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="carousel-secondary" value="embla">
+                    <div class="option-content">
+                        <span class="option-label">Embla Carousel</span>
+                        <div class="option-desc">
+                            Otra alternativa popular, lightweight, headless (máx control).
+                        </div>
+                        <span class="option-tag">Flexible</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- OPCIÓN 5: PRECIO DINÁMICO -->
+            <div class="option-group">
+                <div class="option-title">E. ACTUALIZACIÓN DE PRECIO EN TIEMPO REAL</div>
+
+                <label class="option">
+                    <input type="radio" name="price-update" value="instant" checked>
+                    <div class="option-content">
+                        <span class="option-label">Instant (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Precio se actualiza al instante sin delay cuando selecciona variante.
+                        </div>
+                        <span class="option-tag">Rápido</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="price-update" value="animation">
+                    <div class="option-content">
+                        <span class="option-label">With Animation</span>
+                        <div class="option-desc">
+                            Precio cambia con transición suave (fade, slide up). Más visual.
+                        </div>
+                        <span class="option-tag">Polish</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- OPCIÓN 6: EFECTO VISUAL TARJETAS -->
+            <div class="option-group">
+                <div class="option-title">F. EFECTO VISUAL TARJETAS (Blur + Nombre/Precio)</div>
+
+                <label class="option">
+                    <input type="radio" name="card-effect" value="blur-overlay" checked>
+                    <div class="option-content">
+                        <span class="option-label">Glassmorphism Blur (RECOMENDADO)</span>
+                        <div class="option-desc">
+                            Capa difuminada (backdrop-filter: blur) con nombre y precio superpuesto en hover.
+                        </div>
+                        <span class="option-tag">Premium</span>
+                        <span class="option-tag">Brandbook</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="card-effect" value="dark-overlay">
+                    <div class="option-content">
+                        <span class="option-label">Dark Overlay</span>
+                        <div class="option-desc">
+                            Overlay oscuro (black/50%) con texto encima. Más legible, menos blurry.
+                        </div>
+                        <span class="option-tag">Legible</span>
+                    </div>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="card-effect" value="gradient-overlay">
+                    <div class="option-content">
+                        <span class="option-label">Gradient Overlay</span>
+                        <div class="option-desc">
+                            Gradiente de negro (abajo) a transparent (arriba). Nombre al pie.
+                        </div>
+                        <span class="option-tag">Elegante</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: COMENTARIOS Y FEEDBACK -->
+        <div class="section">
+            <div class="comment-section">
+                <div class="comment-title">💬 Notas, Comentarios y Feedback</div>
+                <p style="color: var(--text-dim); margin-bottom: 16px; font-size: 14px;">
+                    Comparte tus observaciones, preferencias, cambios o dudas sobre el plan.
+                    Este feedback es crítico para la implementación.
+                </p>
+                <textarea id="comments" placeholder="Escribe tus comentarios aquí...
+
+Ejemplo:
+- Me gustaría que el carrusel se pause al hacer hover
+- Necesitamos que el descuento 10% sea más visible
+- ¿Es posible agregar animación de confetti al añadir al carrito?
+- Prefiero que las tarjetas muestren el precio siempre, no solo en hover
+"></textarea>
+            </div>
+        </div>
+
+        <!-- RESUMEN DINÁMICO -->
+        <div class="summary" id="summary">
+            <div class="summary-title">📊 Resumen de Decisiones</div>
+            <div class="summary-item">
+                <span class="summary-label">Hero Carrusel:</span>
+                <span class="summary-value" id="sum-hero">Auto-Play + Manual</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Selectores:</span>
+                <span class="summary-value" id="sum-selectors">Botones Toggle</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Modal:</span>
+                <span class="summary-value" id="sum-modal">Centered Modal</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Carruseles Sec.:</span>
+                <span class="summary-value" id="sum-carousel">Swiper.js</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Actualización Precio:</span>
+                <span class="summary-value" id="sum-price">Instant</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Efecto Tarjetas:</span>
+                <span class="summary-value" id="sum-effect">Glassmorphism Blur</span>
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="button-group">
+            <button class="btn-primary" onclick="savePlan()">
+                💾 Guardar Plan (JSON)
+            </button>
+            <button class="btn-secondary" onclick="resetForm()">
+                🔄 Restaurar Valores
+            </button>
+            <button class="btn-primary" onclick="downloadPDF()">
+                📥 Descargar PDF
+            </button>
+        </div>
+
+        <div class="success-message" id="success">
+            ✅ Plan guardado exitosamente. Abre DevTools (F12) → Console para ver JSON completo.
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Actualizar resumen dinámicamente
+    const radios = document.querySelectorAll('input[type="radio"]');
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            updateSummary();
+            markOptionSelected(e.target);
+        });
+    });
+
+    function updateSummary() {
+        const selections = {
+            'hero-carousel': document.querySelector('input[name="hero-carousel"]:checked'),
+            'selectors': document.querySelector('input[name="selectors"]:checked'),
+            'modal': document.querySelector('input[name="modal"]:checked'),
+            'carousel-secondary': document.querySelector('input[name="carousel-secondary"]:checked'),
+            'price-update': document.querySelector('input[name="price-update"]:checked'),
+            'card-effect': document.querySelector('input[name="card-effect"]:checked'),
+        };
+
+        const labelMap = {
+            'hero-carousel': {
+                'auto-manual': 'Auto-Play + Manual Arrows',
+                'manual-only': 'Manual Only',
+                'dots-pagination': 'Dots Click Navigation'
+            },
+            'selectors': {
+                'buttons': 'Botones Toggle',
+                'dropdown': 'Dropdown Selects',
+                'tabs': 'Tabs/Pills'
+            },
+            'modal': {
+                'centered': 'Centered Modal',
+                'fullscreen': 'Fullscreen Slide',
+                'drawer': 'Bottom Sheet (Drawer)'
+            },
+            'carousel-secondary': {
+                'swiper': 'Swiper.js',
+                'custom': 'Custom React Hook',
+                'embla': 'Embla Carousel'
+            },
+            'price-update': {
+                'instant': 'Instant Update',
+                'animation': 'With Animation'
+            },
+            'card-effect': {
+                'blur-overlay': 'Glassmorphism Blur',
+                'dark-overlay': 'Dark Overlay',
+                'gradient-overlay': 'Gradient Overlay'
+            }
+        };
+
+        document.getElementById('sum-hero').textContent = labelMap['hero-carousel'][selections['hero-carousel']?.value];
+        document.getElementById('sum-selectors').textContent = labelMap['selectors'][selections['selectors']?.value];
+        document.getElementById('sum-modal').textContent = labelMap['modal'][selections['modal']?.value];
+        document.getElementById('sum-carousel').textContent = labelMap['carousel-secondary'][selections['carousel-secondary']?.value];
+        document.getElementById('sum-price').textContent = labelMap['price-update'][selections['price-update']?.value];
+        document.getElementById('sum-effect').textContent = labelMap['card-effect'][selections['card-effect']?.value];
+    }
+
+    function markOptionSelected(radio) {
+        // Remove previous selection in this group
+        document.querySelectorAll(`input[name="${radio.name}"]`).forEach(r => {
+            r.closest('.option').classList.remove('selected');
+        });
+        // Mark current as selected
+        radio.closest('.option').classList.add('selected');
+    }
+
+    function savePlan() {
+        const plan = {
+            timestamp: new Date().toISOString(),
+            selections: {
+                heroCarousel: document.querySelector('input[name="hero-carousel"]:checked')?.value,
+                selectors: document.querySelector('input[name="selectors"]:checked')?.value,
+                modal: document.querySelector('input[name="modal"]:checked')?.value,
+                carouselSecondary: document.querySelector('input[name="carousel-secondary"]:checked')?.value,
+                priceUpdate: document.querySelector('input[name="price-update"]:checked')?.value,
+                cardEffect: document.querySelector('input[name="card-effect"]:checked')?.value,
+            },
+            comments: document.getElementById('comments').value,
+            project: 'Origen Sierra Nevada - Landing + Despensa Rediseño'
+        };
+
+        console.log('📋 PLAN GUARDADO:', plan);
+        console.log(JSON.stringify(plan, null, 2));
+
+        document.getElementById('success').classList.add('show');
+        setTimeout(() => {
+            document.getElementById('success').classList.remove('show');
+        }, 4000);
+    }
+
+    function resetForm() {
+        document.querySelectorAll('input[type="radio"]').forEach(r => {
+            r.closest('.option').classList.remove('selected');
+        });
+        document.getElementById('comments').value = '';
+
+        // Reset defaults
+        document.querySelector('input[name="hero-carousel"][value="auto-manual"]').checked = true;
+        document.querySelector('input[name="selectors"][value="buttons"]').checked = true;
+        document.querySelector('input[name="modal"][value="centered"]').checked = true;
+        document.querySelector('input[name="carousel-secondary"][value="swiper"]').checked = true;
+        document.querySelector('input[name="price-update"][value="instant"]').checked = true;
+        document.querySelector('input[name="card-effect"][value="blur-overlay"]').checked = true;
+
+        updateSummary();
+    }
+
+    function downloadPDF() {
+        alert('Funcionalidad en desarrollo. Usa Ctrl+P para imprimir a PDF.');
+    }
+
+    // Initializar
+    document.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+        markOptionSelected(r);
+    });
+    updateSummary();
+</script>
+
+</body>
+</html>
