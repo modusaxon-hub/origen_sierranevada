@@ -10,8 +10,8 @@ Bitácora viva del proyecto. Actualizado: 2026-02-28
 |---|-------|--------|------|
 | **DOCS-001** | 📚 **Reorganización Documentación Técnica** | ✅ COMPLETADO | Commit: da5a64f (28-Feb-2026) |
 | **DOCS-002** | 💎 **Branding: MODUS AXON Power** | ⏳ EN PROCESO | Migración de identidad visual de docs a Modus Axon |
-| **DOCS-002.1** | Actualizar Skill `documentador-tecnico` con estilos Modus Axon | ⏳ TODO | Colores: #1A1A2E, #8A2BE2, #00FFFF |
-| **DOCS-002.2** | Actualizar README.md y Master Plan con sello Modus Axon | ⏳ TODO | Pie de página y encabezados |
+| **DOCS-002.1** | Actualizar Skill `documentador-tecnico` con estilos Modus Axon | ✅ COMPLETADO | Colores: #1A1A2E, #8A2BE2, #00FFFF |
+| **DOCS-002.2** | Actualizar README.md y Master Plan con sello Modus Axon | ✅ COMPLETADO | Pie de página y encabezados actualizados |
 | **DOCS-001.1** | Crear estructura 7-carpetas (00-06 temáticas) | ✅ COMPLETADO | 00-INICIALIZACION, 01-ARQUITECTURA, etc. |
 | **DOCS-001.2** | Consolidar documentos duplicados (6 grupos) | ✅ COMPLETADO | QA, Requirements, Ambiente, Responsive, Changelog, Roadmap |
 | **DOCS-001.3** | Mover archivos caducados a _DEPRECADO | ✅ COMPLETADO | 8 archivos en staging para eliminación (1 sprint) |
@@ -112,7 +112,7 @@ Si todo se ejecuta correctamente:
 | **RECON-001** | 🧠 **Brainstorming Pro — Ideas de Reconstrucción** | ✅ COMPLETADO | `BRAINSTORMING_RECONSTRUCCION.html` generado. 23 ideas, TOP 5 seleccionado |
 | **RECON-002** | ⚖️ **Compliance Legal + Factura Electrónica** | ✅ COMPLETADO | `COMPLIANCE_LEGAL.html` generado. Res.000042/2020 DIAN + Ley 1581 + WCAG 2.1 |
 | **RECON-003** | 🗺️ **Roadmap de Construcción — 4 Fases** | ✅ COMPLETADO | `ROADMAP_CONSTRUCCION.html` generado. 6 semanas, 12 módulos, 5 riesgos, checklist 16 items |
-| **F1-001** | 🏗️ **Arquitectura React Modular** | ⏳ TODO | Feature-folders + Zustand + RLS + PWA |
+| **F1-001** | 🏗️ **Arquitectura React Modular** | ⏳ EN PROCESO | Feature-folders + Zustand + Refactor src/ |
 | **F1-002** | 🗄️ **Supabase DB Schema** | ⏳ TODO | 10 tablas: users, orders, payments, invoices, financial_records, audit_logs... |
 | **F1-003** | 🔐 **RLS + Auth por roles** | ⏳ TODO | Admin / Cliente / Proveedor |
 | **F1-004** | 🎨 **Design Tokens (Brandbook → CSS)** | ⏳ TODO | Paleta #141E16/#C8AA6E + Playfair Display + Montserrat |
@@ -155,7 +155,7 @@ Si todo se ejecuta correctamente:
 | # | Tarea | Estado | Nota |
 |---|-------|--------|------|
 | **AXON-001** | 💎 **Sello MODUS AXON en PRESUPUESTO_CONTRATO.html** | ✅ COMPLETADO | Paleta #1A1A2E/#8A2BE2/#00FFFF aplicada |
-| **AXON-002** | 📋 **Actualizar skill documentador-tecnico con estilos MODUS AXON** | ⏳ TODO | Colores axon en templates HTML del skill |
+| **AXON-002** | 📋 **Actualizar skill documentador-tecnico con estilos MODUS AXON** | ✅ COMPLETADO | Colores axon en templates HTML del skill |
 | **AXON-003** | 📂 **Portafolio MODUS AXON — registrar origen_sierranevada** | ⏳ TODO | Agregar como caso de estudio al portafolio |
 | **AXON-004** | 🌐 **Sitio web MODUS AXON** | ⏳ PLANIFICACIÓN | Nueva empresa — requiere brainstorming propio |
 

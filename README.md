@@ -1,9 +1,10 @@
 # ☕ Origen Sierra Nevada - Café Premium
+![MODUS AXON Seal](https://img.shields.io/badge/DEVELOPMENT%20POWERED%20BY-MODUS%20AXON-8A2BE2?style=for-the-badge&logo=probot&logoColor=00FFFF)
 
 ![Sierra Nevada de Santa Marta](https://img.shields.io/badge/Origen-Sierra%20Nevada-C8AA6E?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-En%20Desarrollo-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-En%20Reconstrucción%20Modular-blue?style=for-the-badge)
 
-Proyecto web para **Café Origen Sierra Nevada**, un café premium proveniente de la Sierra Nevada de Santa Marta, Colombia.
+Proyecto web para **Café Origen Sierra Nevada**, bajo el estándar de ingeniería **MODUS AXON**.
 
 ---
 
@@ -36,21 +37,18 @@ Plataforma digital completa para presentar y comercializar café de origen premi
 
 ```
 origen_sierranevada/
-├── Documentation/
-│   └── Brandbook Origen SNSM/    # Brandbook interactivo
-│       ├── brandbook.html         # Página principal del brandbook
-│       ├── brandbook.js           # Interactividad (menú, animaciones)
-│       └── Brandbook Origen SNSM.pdf  # Versión PDF descargable
+├── Documentation/         # Corpus de conocimiento y guías
 ├── web-page/
-│   ├── pages/                     # Aplicación React con Vite
-│   │   ├── components/            # Componentes reutilizables
-│   │   ├── contexts/              # Context API (AuthContext)
-│   │   ├── pages/                 # Páginas de la aplicación
-│   │   ├── services/              # Servicios (Supabase, Auth)
-│   │   └── .env                   # Variables de entorno
-│   └── database/                  # Scripts SQL de Supabase
-│       └── setup.sql              # Configuración de base de datos
-└── imagen_apoyo/                  # Assets y recursos gráficos
+│   ├── pages/             # Aplicación React (Arquitectura Modular)
+│   │   ├── src/
+│   │   │   ├── features/  # Módulos de negocio (Auth, Catalog, etc.)
+│   │   │   ├── shared/    # Componentes, store y utilerías comunes
+│   │   │   ├── pages/     # Vistas principales de la App
+│   │   │   ├── services/  # Conectores de datos (Supabase, API)
+│   │   │   └── store/     # Estado global (Zustand)
+│   │   └── types/         # Definiciones de TypeScript
+│   └── database/          # Scripts SQL de Supabase
+└── assets/                # Recursos gráficos y multimedia
 ```
 
 ---
@@ -214,4 +212,15 @@ Todos los derechos reservados © 2024
 
 ---
 
-**Hecho bajo el poder del diseño de [MODUS AXON](https://github.com/modusaxon-hub) con ☕ y ❤️ en Colombia**
+---
+
+<div align="center">
+  <img src="https://img.shields.io/badge/ARCHITECTURE-MODULAR%20FEATURES-00FFFF?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/ENGINE-ZUSTAND-8A2BE2?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/BACKEND-SUPABASE%20RLS-1A1A2E?style=for-the-badge" />
+  
+  <p><b>Desarrollado con precisión quirúrgica por</b></p>
+  <h3>MODUS AXON</h3>
+  <p><i>The Future of Software Precision</i></p>
+</div>
+
