@@ -1,6 +1,29 @@
 # TASK.md — Origen Sierra Nevada
 
-Bitácora viva del proyecto. Actualizado: 2026-02-28
+Bitácora viva del proyecto. Actualizado: 2026-03-03
+
+---
+
+## 🎨 Componentes UI — Header & Footer (Premium Glassmorphism)
+
+| # | Tarea | Estado | Commit |
+|---|-------|--------|--------|
+| **UI-001** | 🎯 **Refactorización Header** (Navbar → Header.tsx) | ✅ COMPLETADO | 30f8fab (3-Mar-2026) |
+| **UI-001.1** | Estilos Premium Glassmorphism basados en propuesta-logo.html | ✅ COMPLETADO | Colores: #141E16, #C8AA6E, #F5F5F5 |
+| **UI-001.2** | Logo con drop-shadow premium + hover effects | ✅ COMPLETADO | Blur 2xl, border dorados, scale transitions |
+| **UI-001.3** | Navbar menu + Links con underline animations doradas | ✅ COMPLETADO | Navigation: Inicio, Catálogo, Guía |
+| **UI-001.4** | Botón Ingresar (border dorado, glow, scale on hover) | ✅ COMPLETADO | Estilos premium con active:scale-95 |
+| **UI-001.5** | Icons (search, cart, language, dark-mode) con hover backgrounds | ✅ COMPLETADO | Transitions smooth, 300ms duration |
+| **UI-002** | 🎯 **Refactorización Footer** | ✅ COMPLETADO | 30f8fab (3-Mar-2026) |
+| **UI-002.1** | Glassmorphic design + backdrop-blur + bordes dorados | ✅ COMPLETADO | Efecto premium con glow radial |
+| **UI-002.2** | Logo mejorado + Newsletter glassmorphic card | ✅ COMPLETADO | Form styling premium, checkbox dorado |
+| **UI-002.3** | Links con underline animations + Social icons scale | ✅ COMPLETADO | Smooth transitions 300ms |
+| **UI-002.4** | Footer MODUS AXON seal (cumplimiento de identidad) | ✅ COMPLETADO | Sello de desarrollador en pie de página |
+| **UI-003** | 🔧 **Actualizar imports & estructura** | ✅ COMPLETADO | 30f8fab (3-Mar-2026) |
+| **UI-003.1** | Eliminar Navbar.tsx, crear Header.tsx | ✅ COMPLETADO | Archivo eliminado, refactorizado |
+| **UI-003.2** | Actualizar App.tsx: import Header | ✅ COMPLETADO | `import Header from './shared/components/Header'` |
+| **UI-003.3** | Actualizar CatalogPage.tsx: import Header | ✅ COMPLETADO | Rutas correctas para contextos/servicios |
+| **UI-003.4** | Verificar compilación React (npm run dev) | ✅ COMPLETADO | Server inicia en http://127.0.0.1:3000 sin errores |
 
 ---
 
