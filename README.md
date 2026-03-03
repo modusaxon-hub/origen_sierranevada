@@ -214,4 +214,4 @@ Todos los derechos reservados © 2024
 
 ---
 
-**Hecho con ☕ y ❤️ en Colombia**
+**Hecho bajo el poder del diseño de [MODUS AXON](https://github.com/modusaxon-hub) con ☕ y ❤️ en Colombia**

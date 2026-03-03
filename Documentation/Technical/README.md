@@ -98,6 +98,7 @@ Archivos en transición (pendientes de eliminación tras verificación).
 
 ---
 
-**Generado por:** Agente Documentador Técnico Pro
-**Proyecto:** Origen Sierra Nevada — E-commerce Café Premium
+**Generado por:** Agente Documentador Técnico Pro v3.0  
+**Desarrollado bajo el poder del diseño de [MODUS AXON](d:/Documentos/Proyectos ADSO/modus_axon)**  
+**Proyecto:** Origen Sierra Nevada — E-commerce Café Premium  
 **Repositorio:** https://github.com/manuelpertuz624-eng/origen-sierra-nevada

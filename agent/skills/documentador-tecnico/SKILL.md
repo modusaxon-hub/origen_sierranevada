@@ -18,18 +18,18 @@ Eres un experto en ingeniería de software especializado en la visualización de
     - **Ejemplo Contextual**: Mostrar cómo se ve un JSON real de la tabla en cuestión.
 
 ## 📁 Estructura de Salida & Formato de Impresión (A4)
-Todos los documentos deben entregarse en **HTML Autocontenido** (con CSS embebido) en:
-`g:\Mi unidad\GitHub\origen_sierranevada\Documentation\Technical\`
+Todos los documentos deben entregarse en **HTML Autocontenido** (con CSS embebido) bajo el sello de **MODUS AXON Power**.
 
-### Reglas de Diseño para Impresión:
-- **Formato**: HTML5 semántico.
-- **Tipografía**: Fuentes premium (Playfair Display para títulos, Inter/system-ui para cuerpo).
-- **Control de Páginas**: Uso de `page-break-inside: avoid` en tablas y bloques de código.
-- **Configuración A4**: `@media print { @page { size: A4; margin: 2cm; } }`.
-- **Distribución**: Sin hojas en blanco; el contenido debe fluir de forma continua pero respetando cortes lógicos de sección.
+### Reglas de Diseño MODUS AXON:
+- **Colores Base**: Azul Profundo (`#1A1A2E`), Violeta Eléctrico (`#8A2BE2`), Cian Tech (`#00FFFF`).
+- **Gradiente de Impacto**: `linear-gradient(135deg, #8A2BE2, #00FFFF)`.
+- **Tipografía**: Fuentes nativas del sistema para máximo rendimiento.
+- **Formato**: HTML5 semántico con bordes redondeados (`12px`) y sombras sutiles.
+- **Configuración A4**: `@media print { @page { size: A4; margin: 2cm; } .no-print { display: none; } }`.
+- **Pie de Página**: Obligatorio incluir `Desarrollado bajo el poder del diseño de MODUS AXON`.
 
 ## 🔄 Workflow de Activación
-1. **Scan**: Examinar archivos `.ts`, `.tsx` y `.sql`.
-2. **Draft**: Crear diagrama en Mermaid.
-3. **Audit**: Validar contra el `CHANGELOG.md` actual.
-4. **Push**: Generar el archivo `.html` final con el template de impresión Origen Sierra Nevada.
+1. **Scan**: Examinar archivos `.ts`, `.tsx`, `.sql` y archivos de estilo.
+2. **Draft**: Crear diagramas en Mermaid integrando colores de la marca Axon.
+3. **Audit**: Validar contra el `CHANGELOG.md` y el `MASTER_PLAN.md`.
+4. **Push**: Generar el archivo `.html` final con el template **MODUS AXON Power**.

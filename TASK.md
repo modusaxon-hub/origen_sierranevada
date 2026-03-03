@@ -9,6 +9,9 @@ Bitácora viva del proyecto. Actualizado: 2026-02-28
 | # | Tarea | Estado | Nota |
 |---|-------|--------|------|
 | **DOCS-001** | 📚 **Reorganización Documentación Técnica** | ✅ COMPLETADO | Commit: da5a64f (28-Feb-2026) |
+| **DOCS-002** | 💎 **Branding: MODUS AXON Power** | ⏳ EN PROCESO | Migración de identidad visual de docs a Modus Axon |
+| **DOCS-002.1** | Actualizar Skill `documentador-tecnico` con estilos Modus Axon | ⏳ TODO | Colores: #1A1A2E, #8A2BE2, #00FFFF |
+| **DOCS-002.2** | Actualizar README.md y Master Plan con sello Modus Axon | ⏳ TODO | Pie de página y encabezados |
 | **DOCS-001.1** | Crear estructura 7-carpetas (00-06 temáticas) | ✅ COMPLETADO | 00-INICIALIZACION, 01-ARQUITECTURA, etc. |
 | **DOCS-001.2** | Consolidar documentos duplicados (6 grupos) | ✅ COMPLETADO | QA, Requirements, Ambiente, Responsive, Changelog, Roadmap |
 | **DOCS-001.3** | Mover archivos caducados a _DEPRECADO | ✅ COMPLETADO | 8 archivos en staging para eliminación (1 sprint) |
@@ -99,5 +102,64 @@ Si todo se ejecuta correctamente:
 
 ---
 
-**Última actualización:** 28 Feb 2026
-**Próxima revisión:** 3 Mar 2026 (Post-kickoff)
+---
+
+## 🚀 RECONSTRUCCIÓN — Sesión 03 Mar 2026
+
+| # | Tarea | Estado | Nota |
+|---|-------|--------|------|
+| **RECON-000** | 📁 **Organización de Documentación** | ✅ COMPLETADO | Carpeta `00-estrategia-lanzamiento` creada. 4 HTML sueltos movidos desde raíz |
+| **RECON-001** | 🧠 **Brainstorming Pro — Ideas de Reconstrucción** | ✅ COMPLETADO | `BRAINSTORMING_RECONSTRUCCION.html` generado. 23 ideas, TOP 5 seleccionado |
+| **RECON-002** | ⚖️ **Compliance Legal + Factura Electrónica** | ✅ COMPLETADO | `COMPLIANCE_LEGAL.html` generado. Res.000042/2020 DIAN + Ley 1581 + WCAG 2.1 |
+| **RECON-003** | 🗺️ **Roadmap de Construcción — 4 Fases** | ✅ COMPLETADO | `ROADMAP_CONSTRUCCION.html` generado. 6 semanas, 12 módulos, 5 riesgos, checklist 16 items |
+| **F1-001** | 🏗️ **Arquitectura React Modular** | ⏳ TODO | Feature-folders + Zustand + RLS + PWA |
+| **F1-002** | 🗄️ **Supabase DB Schema** | ⏳ TODO | 10 tablas: users, orders, payments, invoices, financial_records, audit_logs... |
+| **F1-003** | 🔐 **RLS + Auth por roles** | ⏳ TODO | Admin / Cliente / Proveedor |
+| **F1-004** | 🎨 **Design Tokens (Brandbook → CSS)** | ⏳ TODO | Paleta #141E16/#C8AA6E + Playfair Display + Montserrat |
+| **F1-005** | 📱 **PWA App Shell + Manifest** | ⏳ TODO | manifest.json + service worker + offline fallback |
+| **F1-006** | 📋 **AI_LOG_CUMPLIMIENTO.md** | ⏳ TODO | Bitácora de cumplimiento en raíz del proyecto |
+| **F2-001** | ✨ **Hero Carrusel Glassmorphism** | ⏳ TODO | Embla Carousel + parallax + glass cards flotantes |
+| **F2-002** | 🌐 **Secciones Landing** | ⏳ TODO | Despensa · Productos · Historia · Mapa origen · Testimonios |
+| **F2-003** | 🔀 **Bifurcación B2C + B2B** | ⏳ TODO | 2 CTAs: Comprador vs Proveedor |
+| **F2-004** | 📝 **Formulario Proveedores** | ⏳ TODO | Supabase + Resend notificación admin |
+| **F2-005** | 🍪 **CookieBanner + Compliance UI** | ⏳ TODO | Ley 1581 + logs consentimiento en Supabase |
+| **F3-001** | 🔑 **Auth Completo** | ⏳ TODO | Registro / Login / Recuperación / Redirección por rol |
+| **F3-002** | ⚙️ **Dashboard Admin** | ⏳ TODO | Métricas RT · Inventario · Pedidos · Usuarios |
+| **F3-003** | 👤 **Dashboard Cliente** | ⏳ TODO | Perfil · Historial · Facturas PDF · Solicitud datos |
+| **F3-004** | 💳 **Zona de Pagos** | ⏳ TODO | QR dinámico + Nequi/Daviplata/PSE/Llave + confirmación WhatsApp |
+| **F3-005** | 🧾 **Factura Electrónica DIAN** | ⏳ TODO | PTA Alegra API · XML UBL 2.1 · CUFE · PDF via Resend |
+| **F3-006** | 💬 **WhatsApp + Email Flows** | ⏳ TODO | wa.me links + Resend: welcome → compra → factura |
+| **F3-007** | 🛡️ **Seguridad OWASP** | ⏳ TODO | CSP · Rate limiting · Inputs sanitizados · Audit logs |
+| **F4-001** | 📊 **Sistema Financiero** | ⏳ TODO | Recharts · Flujo de caja · IVA · Export PDF/Excel |
+| **F4-002** | 📈 **Proyección de Crecimiento** | ⏳ TODO | 3/6/12 meses · 3 escenarios · Alerta stock crítico |
+| **F4-003** | 📉 **Big Data — GA4 + Patrones** | ⏳ TODO | Eventos personalizados + dashboard patrones de compra |
+| **F4-004** | 🤖 **AI Sommelier (Gemini)** | ⏳ TODO | @google/genai instalado. Paladar → recomendación café |
+| **F4-005** | 🔍 **QA Integral** | ⏳ TODO | Lighthouse ≥ 90 · WCAG 2.1 AA · E2E · Mobile real |
+| **F4-006** | 🚀 **Deploy Producción** | ⏳ TODO | Supabase prod · Vite build · Dominio · Sentry · Go-live |
+
+---
+
+## 📁 Documentos de Referencia — Reconstrucción
+
+| Documento | Ruta | Descripción |
+|-----------|------|-------------|
+| `BRAINSTORMING_RECONSTRUCCION.html` | `Documentation/00-estrategia-lanzamiento/` | 23 ideas, TOP 5, mapa de módulos |
+| `COMPLIANCE_LEGAL.html` | `Documentation/00-estrategia-lanzamiento/` | Factura DIAN + Ley 1581 + WCAG + Tributación |
+| `ROADMAP_CONSTRUCCION.html` | `Documentation/00-estrategia-lanzamiento/` | 4 fases, riesgos, checklist 16 items |
+| `PRESUPUESTO_CONTRATO.html` | `Documentation/00-estrategia-lanzamiento/` | Propuesta comercial + contrato 10 cláusulas · Sello MODUS AXON |
+
+---
+
+## 🏢 MODUS AXON — Identidad de Marca (Permanente)
+
+| # | Tarea | Estado | Nota |
+|---|-------|--------|------|
+| **AXON-001** | 💎 **Sello MODUS AXON en PRESUPUESTO_CONTRATO.html** | ✅ COMPLETADO | Paleta #1A1A2E/#8A2BE2/#00FFFF aplicada |
+| **AXON-002** | 📋 **Actualizar skill documentador-tecnico con estilos MODUS AXON** | ⏳ TODO | Colores axon en templates HTML del skill |
+| **AXON-003** | 📂 **Portafolio MODUS AXON — registrar origen_sierranevada** | ⏳ TODO | Agregar como caso de estudio al portafolio |
+| **AXON-004** | 🌐 **Sitio web MODUS AXON** | ⏳ PLANIFICACIÓN | Nueva empresa — requiere brainstorming propio |
+
+---
+
+**Última actualización:** 03 Mar 2026
+**Próxima acción:** Iniciar F1-001 — Arquitectura React Modular
