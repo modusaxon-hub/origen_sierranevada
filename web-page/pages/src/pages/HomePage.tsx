@@ -333,14 +333,37 @@ const HomePage: React.FC = () => {
                                         onTouchMove={onTouchMove}
                                         onTouchEnd={onTouchEnd}
                                     >
-                                        <div className="relative w-[85vw] h-[85vw] max-w-[300px] max-h-[300px] md:w-[500px] md:h-[500px] lg:w-[378px] lg:h-[378px] xl:w-[750px] xl:h-[750px] 2xl:w-[1000px] 2xl:h-[1000px] shrink-0 mx-auto flex items-center justify-center" key={currentProduct.id}>
-                                            <div className="absolute inset-0 w-full h-full rounded-full border-[1px] border-[#C8AA6E]/50 z-0 pointer-events-none scale-100 lg:scale-[1.33] xl:scale-[1.56]" style={{ clipPath: 'inset(0 0 45% 0)' }}></div>
-                                            <div className="absolute inset-0 w-full h-full z-10 flex items-center justify-center pointer-events-none scale-100 lg:scale-[1.33] xl:scale-[1.56]" style={{ clipPath: 'inset(-100% 2px 2px 2px round 0 0 50% 50%)' }}>
-                                                <div className="w-full h-full animate-float-yoyo flex items-center justify-center">
-                                                    <img src={currentProduct.image_url || '/cafe_malu_full_composition.png'} className="w-[125%] h-[125%] md:w-[140%] md:h-[140%] lg:w-[129%] lg:h-[129%] max-w-none object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] translate-y-[8%]" alt={currentProduct.name[lang]} />
+                                        <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[400px] lg:h-[400px] xl:w-[600px] xl:h-[600px] 2xl:w-[800px] 2xl:h-[800px] shrink-0 mx-auto flex items-center justify-center animate-float-hero-pop" key={currentProduct.id}>
+                                            {/* Aura Golden Flare */}
+                                            <div className="absolute inset-x-[-20%] inset-y-[-20%] gold-flare pointer-events-none"></div>
+
+                                            {/* Golden Metallic Ring */}
+                                            <div className="absolute inset-0 rounded-full gold-ring-metallic pointer-events-none"></div>
+
+                                            {/* Static Reflection Layers inside the portal */}
+                                            <div className="absolute inset-[10%] rounded-full opacity-10 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
+
+                                            {/* Product Image within Portal Mask */}
+                                            <div className="absolute inset-[-10%] z-10 flex items-center justify-center pointer-events-none portal-mask-pop">
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <img
+                                                        src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                        className="w-[115%] h-[115%] object-contain drop-shadow-[0_45px_100px_rgba(0,0,0,0.8)] translate-y-[5%] scale-110"
+                                                        alt={currentProduct.name[lang]}
+                                                    />
                                                 </div>
                                             </div>
-                                            <div className="absolute inset-0 w-full h-full rounded-full border-[1px] border-[#C8AA6E]/50 z-20 pointer-events-none scale-100 lg:scale-[1.33] xl:scale-[1.56]" style={{ clipPath: 'inset(55% 0 0 0)' }}></div>
+
+                                            {/* Rim Light for depth */}
+                                            <div className="absolute inset-[-10%] z-20 flex items-center justify-center pointer-events-none bag-rim-light portal-mask-pop opacity-60">
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <img
+                                                        src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                        className="w-[115%] h-[115%] object-contain mix-blend-plus-lighter translate-y-[5%] scale-110"
+                                                        alt="Rim light effect"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -467,7 +490,7 @@ const HomePage: React.FC = () => {
                                                 <button
                                                     onClick={handleAddToCart}
                                                     disabled={availableVariants.length > 0 && !selectedVariantId}
-                                                    className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
                                                 >
                                                     {lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART'}
                                                 </button>
