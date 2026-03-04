@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Order, orderService } from '@/services/orderService';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface OrderCardProps {
     order: Order;

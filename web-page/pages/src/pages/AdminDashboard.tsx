@@ -1,7 +1,8 @@
 import React from 'react';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { authService } from '@/services/authService';
 import { useNavigate } from 'react-router-dom';
+import Logo from '../shared/components/Logo';
 
 const AdminDashboard: React.FC = () => {
     const { user } = useAuth();
@@ -34,7 +35,7 @@ const AdminDashboard: React.FC = () => {
                         onClick={() => navigate('/')}
                         title="Ir al Inicio"
                     >
-                        <img src="/logo-origen-sierra-nevada.svg" alt="Origen Sierra Nevada" className="h-10 w-auto group-hover:opacity-80 transition-opacity" />
+                        <Logo className="w-[170px] h-auto group-hover:opacity-80 transition-opacity" />
                         <span className="text-[#C5A065] text-xl font-serif tracking-wide border-l border-[#C5A065]/30 pl-4 group-hover:text-white transition-colors">
                             ORIGEN ADMIN
                         </span>

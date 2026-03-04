@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '@/shared/components/Footer';
 import { FlavorProfile, CoffeeFormat } from '@/shared/types';
-import { useLanguage } from '@/shared/store/LanguageContext';
-import { useCart } from '@/shared/store/CartContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
 import SEO from '@/shared/components/SEO';
 
 const SubscriptionPage: React.FC = () => {

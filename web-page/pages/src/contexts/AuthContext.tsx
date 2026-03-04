@@ -72,21 +72,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         refreshAuth();
 
-        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                setUser(session.user);
-                await checkUserRole(session.user);
-            } else {
-                setUser(null);
-                setIsAdmin(false);
-                setRoleChecked(true);
-            }
-            setLoading(false);
-        });
+        try {
+            const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+                if (session?.user) {
+                    setUser(session.user);
+                    await checkUserRole(session.user);
+                } else {
+                    setUser(null);
+                    setIsAdmin(false);
+                    setRoleChecked(true);
+                }
+                setLoading(false);
+            });
 
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
+            return () => {
+                authListener?.subscription?.unsubscribe();
+            };
+        } catch (error) {
+            console.warn("Auth listener initialization failed (Supabase not configured):", error);
+            setLoading(false);
+        }
     }, []);
 
     return (

@@ -2,7 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './shared/components/Header';
 import ChatWidget from './shared/components/ChatWidget';
-import ProtectedRoute from './shared/components/ProtectedRoute';
+import { ProtectedRoute } from './features/auth';
+import Logo from './shared/components/Logo';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
@@ -13,13 +14,14 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const BrewingGuidePage = lazy(() => import('./pages/BrewingGuidePage'));
 const AiLabPage = lazy(() => import('./pages/AiLabPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
+const LoginPage = lazy(() => import('./features/auth/pages/LoginPage'));
 const Brandbook = lazy(() => import('./pages/Brandbook'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const ProductManager = lazy(() => import('./pages/ProductManager'));
 const UserManager = lazy(() => import('./pages/UserManager'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const RegisterPage = lazy(() => import('./features/auth/pages/RegisterPage'));
 
+const Catalog = lazy(() => import('./features/catalog/pages/CatalogPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const OrderManager = lazy(() => import('./pages/OrderManager'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
@@ -32,7 +34,7 @@ const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
 const PageLoader = () => (
     <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center">
         <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
-        <img src="/logo-completo.svg" alt="Origen" className="h-16 w-auto opacity-70 brightness-110" />
+        <Logo className="w-[240px] h-auto opacity-70" />
     </div>
 );
 
@@ -60,6 +62,7 @@ const App: React.FC = () => {
                                     <Route path="/subscription" element={<SubscriptionPage />} />
                                     <Route path="/guide" element={<BrewingGuidePage />} />
                                     <Route path="/ai-lab" element={<AiLabPage />} />
+                                    <Route path="/catalog" element={<Catalog />} />
                                     <Route path="/login" element={<LoginPage />} />
                                     <Route path="/register" element={<RegisterPage />} />
                                     <Route path="/checkout" element={<CheckoutPage />} />

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services/authService';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import Logo from '@/shared/components/Logo';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -66,7 +67,7 @@ const LoginPage: React.FC = () => {
 
                 <div className="text-center mb-10">
                     <div className="inline-block relative mb-8">
-                        <img src="/logo-completo.svg" alt="Origen Sierra Nevada" className="h-20 sm:h-24 md:h-28 w-auto mx-auto object-contain drop-shadow-[0_0_30px_rgba(197,160,101,0.3)] brightness-125" />
+                        <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)]" />
                     </div>
 
                     <h2 className="font-display text-3xl text-white mb-2 tracking-wide">Bienvenido</h2>

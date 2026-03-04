@@ -173,6 +173,25 @@ Si todo se ejecuta correctamente:
 
 ---
 
+## 🖼️ INFRAESTRUCTURA DE LOGO — Sesión 03 Mar 2026
+
+| # | Tarea | Estado | Nota |
+|---|-------|--------|------|
+| **LOGO-001** | 🔍 **Auditoría completa de logo** | ✅ COMPLETADO | Encontradas 5 instancias con `<img>` en vez de `<Logo />` |
+| **LOGO-002** | 🔗 **Fuente única de verdad** | ✅ COMPLETADO | `assets/logo/svg/origen-logo-completo.svg` → import directo via SVGR |
+| **LOGO-003** | 📦 **Instalar vite-plugin-svgr** | ✅ COMPLETADO | v4.5.0 — convierte SVG a React component automáticamente |
+| **LOGO-004** | ⚙️ **Configurar vite.config.ts** | ✅ COMPLETADO | alias `@assets`, `fs.allow`, plugin `watch-assets`, `strictPort: true` |
+| **LOGO-005** | ♻️ **Refactorizar Logo.tsx** | ✅ COMPLETADO | 79 líneas inline → 4 líneas con import. CSS `class` → `className` auto |
+| **LOGO-006** | 🔄 **HMR activo para SVG externo** | ✅ COMPLETADO | `server.watcher.add(assetsPath)` — cambios en SVG reflejan en ~1-2 seg |
+| **LOGO-007** | 📐 **Corrección proporciones Header** | ✅ COMPLETADO | Logo fijo `h-[32px] xl:h-[40px]` — sin resize en scroll |
+| **LOGO-008** | 📐 **Corrección proporciones Footer** | ✅ COMPLETADO | `max-w-[220px] h-auto` — elimina desbordamiento y "SIERRA NEVADA" ×2 |
+| **LOGO-009** | 🛑 **Puerto fijo del servidor** | ✅ COMPLETADO | `port: 5000, strictPort: true` — URL permanente: http://127.0.0.1:5000 |
+| **LOGO-010** | 📄 **BUILD_PROJECT.html** | ✅ COMPLETADO | Bitácora técnica en `technical/BUILD_PROJECT.html` |
+
+**Última actualización:** 03 Mar 2026
+
+---
+
 ## 🏢 MODUS AXON — Identidad de Marca (Permanente)
 
 | # | Tarea | Estado | Nota |

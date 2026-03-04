@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ orderId, total }) => {
     const { formatPrice } = useLanguage();

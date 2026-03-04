@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import Logo from '@/shared/components/Logo';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -16,7 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-[#050806]">
                 <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
-                <img src="/logo-completo.svg" alt="Origen" className="h-8 w-auto opacity-40 animate-pulse" />
+                <Logo className="w-[200px] h-auto opacity-40 animate-pulse" />
             </div>
         );
     }

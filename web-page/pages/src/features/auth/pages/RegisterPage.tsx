@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '@/services/authService';
 import { emailService } from '@/services/emailService';
 import { ShieldCheck, Eye, EyeOff, CheckCircle, Circle, UserPlus, ArrowRight } from 'lucide-react';
+import Logo from '@/shared/components/Logo';
 
 const RegisterPage: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -113,7 +114,7 @@ const RegisterPage: React.FC = () => {
 
             <div className="w-full max-w-md bg-white/[0.01] backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-3xl shadow-2xl relative z-10">
                 <div className="text-center mb-10">
-                    <img src="/logo-completo.svg" alt="Origen Sierra Nevada" className="h-20 w-auto mx-auto mb-6 filter brightness-110 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
+                    <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
                     <h2 className="text-2xl font-serif text-white italic uppercase tracking-widest mb-2">Únete al Gremio</h2>
                     <p className="text-gray-500 text-sm font-light">Accede a tuestes exclusivos y herramientas de IA.</p>
                 </div>

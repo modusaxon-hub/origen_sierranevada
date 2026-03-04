@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { sendChatMessage, analyzeImage, generateImage, editImage, generateVideo } from '@/services/geminiService';
 import { Message, GenerationState, VideoGenerationState } from '@/shared/types';
 import Footer from '@/shared/components/Footer';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Define the tabs for the AI Lab
 type AiTab = 'chat' | 'analyze' | 'generate' | 'edit' | 'video';

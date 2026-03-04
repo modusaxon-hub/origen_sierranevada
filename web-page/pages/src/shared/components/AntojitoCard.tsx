@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '@/shared/types';
-import { useLanguage } from '@/shared/store/LanguageContext';
-import { useCart } from '@/shared/store/CartContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useCart } from '../../contexts/CartContext';
 
 interface AntojitoCardProps {
     product: Product;

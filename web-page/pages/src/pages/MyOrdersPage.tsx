@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Order, orderService } from '@/services/orderService';
 import { OrderCard } from '@/shared/components/OrderCard';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const MyOrdersPage: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);

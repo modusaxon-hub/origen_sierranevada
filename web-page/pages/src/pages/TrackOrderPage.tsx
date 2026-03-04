@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderService, Order } from '@/services/orderService';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const TrackOrderPage: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();

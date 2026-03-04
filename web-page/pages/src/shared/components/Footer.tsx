@@ -51,8 +51,8 @@ const Footer: React.FC = () => {
                 {/* Brand Section - Premium */}
                 <div className="lg:col-span-1 text-center md:text-left group">
                     <span className="font-accent text-[10px] tracking-[0.4em] text-[#C8AA6E] mb-6 block uppercase font-bold">Desde 2025</span>
-                    <div className="mb-8 group-hover:scale-105 transition-transform duration-300">
-                        <Logo className="h-20 xl:h-24 w-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)] hover:drop-shadow-[0_0_45px_rgba(200,170,110,0.6)] transition-all duration-300" />
+                    <div className="mb-8">
+                        <Logo className="w-full max-w-[255px] h-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)]" />
                     </div>
                     <p className="text-[#F5F5F5]/70 text-sm leading-relaxed mb-8 font-light">
                         Café de altura, cultivado en las montañas más puras de Colombia. Origen, sabor, propósito.

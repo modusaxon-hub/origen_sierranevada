@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import Footer from '@/shared/components/Footer';
 import { Truck, Scale, CreditCard, RefreshCcw, Coffee, AlertCircle } from 'lucide-react';
 

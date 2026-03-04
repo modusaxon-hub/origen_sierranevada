@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { productService } from '@/services/productService';
 import { Product, ProductVariant, ProductPersonality } from '@/shared/types';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Package, Palette, Sparkles, Heart, Zap } from 'lucide-react';
 import SystemFeedback from '@/shared/components/SystemFeedback';
 

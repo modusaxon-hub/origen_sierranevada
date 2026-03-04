@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { authService } from '@/services/authService';
 import { orderService, Order } from '@/services/orderService';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import Footer from '@/shared/components/Footer';
 
 const UserDashboard: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Cookie, X, ShieldCheck, ChevronRight } from 'lucide-react';
 

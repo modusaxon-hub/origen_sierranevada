@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '@/shared/types';
-import { useLanguageStore } from '@/shared/store/languageStore';
-import { useCartStore } from '@/shared/store/cartStore';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useCart } from '../../contexts/CartContext';
 
 interface ProductDetailsModalProps {
     product: Product;
@@ -10,8 +10,8 @@ interface ProductDetailsModalProps {
 }
 
 const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOpen, onClose }) => {
-    const { language } = useLanguageStore();
-    const { addToCart } = useCartStore();
+    const { language } = useLanguage();
+    const { addToCart } = useCart();
     const lang = (language as 'es' | 'en') || 'es';
     const [activeDetailTab, setActiveDetailTab] = useState<'story' | 'traceability'>('story');
 

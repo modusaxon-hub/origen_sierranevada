@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { sendChatMessage } from '@/services/geminiService';
 import { Message } from '@/shared/types';
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Footer from '@/shared/components/Footer';
 import { CoffeeMethod } from '@/shared/types';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const BrewingGuidePage: React.FC = () => {
     const { t, language } = useLanguage();

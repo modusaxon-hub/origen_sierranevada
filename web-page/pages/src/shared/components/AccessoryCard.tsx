@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Product } from '@/shared/types';
-import { useLanguage } from '@/shared/store/LanguageContext';
-import { useCart } from '@/shared/store/CartContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useCart } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 interface AccessoryCardProps {

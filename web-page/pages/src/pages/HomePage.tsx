@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/shared/components/Footer';
-import { useAuthStore } from '@/shared/store/authStore';
-import { useLanguageStore } from '@/shared/store/languageStore';
-import { useCartStore } from '@/shared/store/cartStore';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
 import { productService } from '@/services/productService';
 import { Product } from '@/shared/types';
 import SEO from '@/shared/components/SEO';
@@ -13,9 +13,9 @@ import { AntojitoCard } from '@/shared/components/AntojitoCard';
 
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
-    const { user } = useAuthStore();
-    const { language, t, formatPrice } = useLanguageStore();
-    const { addToCart } = useCartStore();
+    const { user } = useAuth();
+    const { language, formatPrice } = useLanguage();
+    const { addToCart } = useCart();
     const lang = (language as 'es' | 'en') || 'es';
 
     const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -41,6 +41,30 @@ const HomePage: React.FC = () => {
     // Specific state for modal product (to avoid conflict with viewerIdx)
     const [selectedModalProduct, setSelectedModalProduct] = useState<Product | null>(null);
 
+    const FALLBACK_PRODUCTS: Product[] = [
+        {
+            id: 'fallback-coffee-1',
+            category: 'cafetal',
+            name: { es: 'Café Malú Reserva Especial', en: 'Malu Coffee Special Reserve' },
+            price: 35000,
+            image_url: '/cafe_malu_full_composition.png',
+            stock: 100,
+            description: { es: 'Notas a chocolate y frutos rojos.', en: 'Notes of chocolate and red fruits.' },
+            story: { es: 'Trazabilidad desde las montañas...', en: 'Traceability from the mountains...' },
+            tags: { es: ['Chocolate'], en: ['Chocolate'] },
+            color: '#C5A065',
+            mask_type: 'pop',
+            variants: [{ id: 'v1', name: '500g', price: 35000, stock: 100 }],
+            weight: 500,
+            origin: 'Sierra Nevada',
+            available: true,
+            intrinsics: {
+                grind_options: ['En Grano', 'Molido'],
+                character: { es: 'Elegante', en: 'Elegant' }
+            }
+        }
+    ];
+
     useEffect(() => {
         const fetchAll = async () => {
             try {
@@ -48,17 +72,23 @@ const HomePage: React.FC = () => {
                 const { data, error } = await productService.getAllProducts();
                 await minWait;
 
-                if (!error) {
+                if (!error && data && data.length > 0) {
                     setAllProducts(data);
+                } else {
+                    console.warn('Supabase returned empty or error, using fallbacks');
+                    setAllProducts(FALLBACK_PRODUCTS);
                 }
             } catch (err) {
-                console.error('Fetch Crash:', err);
+                console.error('Fetch Crash, using fallbacks:', err);
+                setAllProducts(FALLBACK_PRODUCTS);
             } finally {
                 setLoading(false);
             }
         };
         fetchAll();
     }, []);
+
+
 
     const viewerProducts = allProducts.filter(p => {
         if (activeViewerCat === 'coffee') return p.category === 'cafetal' || p.category === 'coffee';
@@ -333,35 +363,23 @@ const HomePage: React.FC = () => {
                                         onTouchMove={onTouchMove}
                                         onTouchEnd={onTouchEnd}
                                     >
-                                        <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[400px] lg:h-[400px] xl:w-[600px] xl:h-[600px] 2xl:w-[800px] 2xl:h-[800px] shrink-0 mx-auto flex items-center justify-center animate-float-hero-pop" key={currentProduct.id}>
+                                        <div className="relative w-[200px] h-[200px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] xl:w-[420px] xl:h-[420px] 2xl:w-[560px] 2xl:h-[560px] shrink-0 mx-auto flex items-center justify-center animate-float-hero-pop" key={currentProduct.id}>
                                             {/* Aura Golden Flare */}
                                             <div className="absolute inset-x-[-20%] inset-y-[-20%] gold-flare pointer-events-none"></div>
 
-                                            {/* Golden Metallic Ring */}
-                                            <div className="absolute inset-0 rounded-full gold-ring-metallic pointer-events-none"></div>
-
-                                            {/* Static Reflection Layers inside the portal */}
-                                            <div className="absolute inset-[10%] rounded-full opacity-10 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
-
-                                            {/* Product Image within Portal Mask */}
+                                            {/* Minimal Portal Mask Container */}
                                             <div className="absolute inset-[-10%] z-10 flex items-center justify-center pointer-events-none portal-mask-pop">
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <img
-                                                        src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
-                                                        className="w-[115%] h-[115%] object-contain drop-shadow-[0_45px_100px_rgba(0,0,0,0.8)] translate-y-[5%] scale-110"
-                                                        alt={currentProduct.name[lang]}
-                                                    />
-                                                </div>
-                                            </div>
+                                                    {/* Internal Ring - Two-Part Construction (Established Design) */}
+                                                    <div className="absolute inset-[-10%] w-full h-full flex items-center justify-center pointer-events-none transition-all duration-1000 group-hover:scale-105">
+                                                        {/* Upper Half - Defined Rim Light */}
+                                                        <div className="absolute inset-0 rounded-full border-[1.5px] border-[#C5A065]/40 [mask-image:linear-gradient(to_bottom,black_48%,transparent_52%)]"></div>
+                                                        {/* Lower Half - Subtle Backdrop */}
+                                                        <div className="absolute inset-0 rounded-full border border-[#C5A065]/10 [mask-image:linear-gradient(to_top,black_48%,transparent_52%)]"></div>
+                                                    </div>
 
-                                            {/* Rim Light for depth */}
-                                            <div className="absolute inset-[-10%] z-20 flex items-center justify-center pointer-events-none bag-rim-light portal-mask-pop opacity-60">
-                                                <div className="w-full h-full flex items-center justify-center">
-                                                    <img
-                                                        src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
-                                                        className="w-[115%] h-[115%] object-contain mix-blend-plus-lighter translate-y-[5%] scale-110"
-                                                        alt="Rim light effect"
-                                                    />
+                                                    {/* Central Glowing Ritual Orb */}
+                                                    <div className="absolute inset-[25%] rounded-full bg-[#C5A065]/10 blur-3xl animate-pulse pointer-events-none"></div>
                                                 </div>
                                             </div>
                                         </div>

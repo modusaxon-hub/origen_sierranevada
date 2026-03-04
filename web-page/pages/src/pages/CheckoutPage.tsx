@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
-import { useCart } from '@/shared/store/CartContext';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/services/supabaseClient';
 import { emailService } from '@/services/emailService';
 import { shippingService } from '@/services/shippingService';
 import { orderService } from '@/services/orderService';
-import { useLanguage } from '@/shared/store/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import TransferInstructions from '@/shared/components/TransferInstructions';
 
 // Lista de departamentos y sus ciudades principales

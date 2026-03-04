@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/shared/store/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { authService } from '@/services/authService';
 import { LogOut, ArrowLeft, Printer, Sidebar, Columns, Type, Palette, MessageSquare, Image, Smartphone, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
