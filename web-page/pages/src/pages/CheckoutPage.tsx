@@ -247,9 +247,16 @@ const CheckoutPage: React.FC = () => {
             clearCart();
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        } catch (error) {
-            console.error('Error procesando pedido:', error);
-            alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.');
+        } catch (error: any) {
+            const errorMsg = error?.response?.data?.message || error?.message || 'Error desconocido';
+            const statusCode = error?.response?.status || 'N/A';
+            console.error('Error procesando pedido:', {
+                status: statusCode,
+                message: errorMsg,
+                data: error?.response?.data,
+                fullError: error
+            });
+            alert(`Error al procesar tu pedido (${statusCode}):\n${errorMsg}\n\nPor favor intenta de nuevo.`);
         } finally {
             setLoading(false);
         }
