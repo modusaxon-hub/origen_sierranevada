@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product, LanguageCode } from '@/shared/types';
 import { ShoppingBag } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductCardProps {
     product: Product;
@@ -14,6 +15,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onAddToCart
 }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const { formatPrice } = useLanguage();
 
     // Helper para obtener texto localizado
     const t = (obj: any) => obj?.[lang] || obj?.['es'] || '';
@@ -95,7 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#E0A367]/20">
                     <span className="text-xl font-serif text-[#1C2923]">
-                        ${product.price.toFixed(2)}
+                        {formatPrice(product.price)}
                     </span>
 
                     <button

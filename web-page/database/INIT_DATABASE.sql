@@ -602,3 +602,57 @@ WITH
 -- 3. Los triggers auto-crean perfiles cuando se registra un usuario en Auth
 -- 4. Después de ejecutar, RECARGA el navegador (Ctrl+Shift+Delete) y limpia cache
 -- ========================================================
+-- ========================================================
+-- FASE 15: DATOS DE PRUEBA (Perfiles y Muestra)
+-- ========================================================
+
+-- Perfil de Administrador (UUID de ejemplo para desarrollo)
+INSERT INTO public.profiles (
+    id, email, full_name, role_name, status, phone, address
+) VALUES (
+    '00000000-0000-0000-0000-000000000001'::uuid,
+    'admin@origensierranevada.com',
+    'Administrador Origen',
+    'Administrador',
+    'active',
+    '+573107405154',
+    'Santa Marta, Colombia'
+) ON CONFLICT (id) DO NOTHING;
+
+-- Usuarios de Prueba
+INSERT INTO public.profiles (
+    id, email, full_name, role_name, status
+) VALUES 
+(
+    '00000000-0000-0000-0000-000000000002'::uuid,
+    'cliente@origen.com',
+    'Cliente VIP Sierra',
+    'Usuario',
+    'active'
+) ON CONFLICT (id) DO NOTHING;
+
+-- ========================================================
+-- VERIFICACIÓN FINAL
+-- ========================================================
+SELECT
+    'Base de Datos Consolidada Correctamente ✅' as status,
+    (
+        SELECT COUNT(*)
+        FROM public.profiles
+    ) as total_perfiles,
+    (
+        SELECT COUNT(*)
+        FROM public.products
+    ) as total_productos,
+    (
+        SELECT COUNT(*)
+        FROM public.user_roles
+    ) as total_roles;
+
+-- ========================================================
+-- NOTAS
+-- ========================================================
+-- 1. Este archivo es la ÚNICA fuente de verdad para la DB.
+-- 2. Ejecutarlo limpia la DB y la prepara con el esquema actual.
+-- 3. Incluye soporte para moneda COP y carga de imágenes.
+-- ========================================================
