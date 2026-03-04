@@ -9,9 +9,9 @@ export const CONTACTS = {
         baseUrl: 'https://wa.me',
     },
     email: {
-        support: 'soporte@origensierranevada.com',
-        admin: 'admin@origensierranevada.com',
-        comercial: 'comercial@origensierranevada.com',
+        support: 'origensierranevadasm@gmail.com',
+        admin: 'origensierranevadasm@gmail.com',
+        comercial: 'origensierranevadasm@gmail.com',
     },
 };
 
