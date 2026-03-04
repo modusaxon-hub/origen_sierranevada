@@ -569,29 +569,15 @@ DROP POLICY IF EXISTS "Admins pueden borrar imágenes de productos" ON storage.o
 CREATE POLICY "Acceso público a imágenes de productos" ON storage.objects FOR
 SELECT USING (bucket_id = 'products');
 
--- PERMISO: Gestión (Insert/Update/Delete) para Administradores
-CREATE POLICY "Admins pueden gestionar imágenes de productos" ON storage.objects FOR ALL TO authenticated USING (
+-- PERMISO: Gestión (Insert/Update/Delete) para Usuarios Autenticados (DESARROLLO)
+-- NOTA: En producción, esto debería verificar si el usuario es Administrador
+-- Para desarrollo, permitimos cualquier usuario autenticado subir imágenes
+CREATE POLICY "Usuarios autenticados pueden gestionar imágenes" ON storage.objects FOR ALL TO authenticated USING (
     bucket_id = 'products'
-    AND (
-        auth.uid () IN (
-            SELECT id
-            FROM public.profiles
-            WHERE
-                role_name = 'Administrador'
-        )
-    )
 )
 WITH
     CHECK (
         bucket_id = 'products'
-        AND (
-            auth.uid () IN (
-                SELECT id
-                FROM public.profiles
-                WHERE
-                    role_name = 'Administrador'
-            )
-        )
     );
 
 -- ========================================================

@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 import { Product, ProductInput } from '../types';
 
 export const PRODUCTS_TABLE = 'products';
-export const PRODUCTS_BUCKET = 'products-images';
+export const PRODUCTS_BUCKET = 'products';  // Debe coincidir con bucket en Supabase
 
 /**
  * Obtiene todos los productos ordenados por fecha de creación (más recientes primero)
