@@ -28,7 +28,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
     }
 
     // SI ES ADMIN O EL USUARIO TIENE EL ROL EN SUS PROPIOS METADATOS (BACKUP DE EMERGENCIA)
-    const canAccess = isAdmin || user.user_metadata?.role === 'admin' || ADMIN_EMAIL_WHITELIST.includes(user.email || '');
+    const canAccess = isAdmin || user.user_metadata?.role_name === 'Administrador' || ADMIN_EMAIL_WHITELIST.includes(user.email || '');
 
     if (requireAdmin && !canAccess) {
         // Solo mostramos esta pantalla si estamos COMPLETAMENTE SEGUROS de que no es admin

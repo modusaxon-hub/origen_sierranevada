@@ -1,6 +1,6 @@
 
 import { supabase } from './supabaseClient';
-import { UserRole, SecurityFlag } from '../types';
+import { UserRole, SecurityFlag } from '@/shared/types';
 
 // Admin whitelist — única fuente de verdad para emails con acceso admin
 export const ADMIN_EMAIL_WHITELIST = ['origensierranevadasm@gmail.com'];
@@ -73,7 +73,7 @@ export const authService = {
         // 1. Try to get role from profiles table
         const { data, error } = await supabase
             .from('profiles')
-            .select('role')
+            .select('role_name')
             .eq('id', userId)
             .single();
 
@@ -82,7 +82,7 @@ export const authService = {
             return false;
         }
 
-        return data?.role === 'admin';
+        return data?.role_name === 'Administrador';
     },
 
     // --- User Management (Admin Only) ---
@@ -99,7 +99,7 @@ export const authService = {
     updateUserRole: async (userId: string, newRole: UserRole) => {
         const { data, error } = await supabase
             .from('profiles')
-            .update({ role: newRole })
+            .update({ role_name: newRole })
             .eq('id', userId)
             .select();
 

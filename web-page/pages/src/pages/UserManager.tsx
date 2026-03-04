@@ -9,7 +9,7 @@ interface Profile {
     id: string;
     email: string;
     full_name: string;
-    role: UserRole;
+    role_name: UserRole;
     status: UserStatus;
     security_flag?: SecurityFlag;
     security_notes?: string;
@@ -22,7 +22,7 @@ const UserManager: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; userId: string; currentRole: UserRole; fullName: string } | null>(null);
-    const [selectedRole, setSelectedRole] = useState<UserRole>('user');
+    const [selectedRole, setSelectedRole] = useState<UserRole>('Usuario');
     const [banModal, setBanModal] = useState<{ isOpen: boolean; userId: string; fullName: string } | null>(null);
     const [softDeleteModal, setSoftDeleteModal] = useState<{ isOpen: boolean; userId: string; fullName: string } | null>(null);
     const [securityFlag, setSecurityFlag] = useState<SecurityFlag>('n/a');
@@ -68,7 +68,7 @@ const UserManager: React.FC = () => {
             setError("Error al actualizar rol: " + error.message);
         } else {
             // Optimistic update
-            setProfiles(profiles.map(p => p.id === userId ? { ...p, role: newRole } : p));
+            setProfiles(profiles.map(p => p.id === userId ? { ...p, role_name: newRole } : p));
         }
     };
 
@@ -245,13 +245,13 @@ const UserManager: React.FC = () => {
                                             </td>
                                             <td className="p-6">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role === 'admin'
+                                                    <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role_name === 'Administrador'
                                                         ? 'bg-[#C5A065]/20 text-[#C5A065] border border-[#C5A065]/30'
-                                                        : profile.role === 'colaborador'
+                                                        : profile.role_name === 'Colaborador'
                                                             ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                                                             : 'bg-white/10 text-white/60'
                                                         }`}>
-                                                        {profile.role}
+                                                        {profile.role_name}
                                                     </span>
                                                     {profile.status === 'banned' && (
                                                         <span className="w-fit px-2 py-0.5 rounded bg-red-500/20 text-red-500 text-[9px] font-bold uppercase border border-red-500/30">
@@ -285,7 +285,7 @@ const UserManager: React.FC = () => {
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => handleRoleChange(profile.id, profile.role, profile.full_name)}
+                                                        onClick={() => handleRoleChange(profile.id, profile.role_name, profile.full_name)}
                                                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black border border-white/10"
                                                     >
                                                         <span className="material-icons-outlined text-sm">manage_accounts</span>
@@ -347,9 +347,9 @@ const UserManager: React.FC = () => {
 
                                 <div className="grid grid-cols-1 gap-3 pt-2">
                                     {[
-                                        { id: 'user', label: 'Usuario (Cliente)', desc: 'Acceso estándar a tienda y pedidos.', icon: 'person' },
-                                        { id: 'colaborador', label: 'Colaborador', desc: 'Personal operativo (Almacén, Recepción).', icon: 'engineering' },
-                                        { id: 'admin', label: 'Administrador', desc: 'Control total de la plataforma.', icon: 'security' }
+                                        { id: 'Usuario', label: 'Usuario (Cliente)', desc: 'Acceso estándar a tienda y pedidos.', icon: 'person' },
+                                        { id: 'Colaborador', label: 'Colaborador', desc: 'Personal operativo (Almacén, Recepción).', icon: 'engineering' },
+                                        { id: 'Administrador', label: 'Administrador', desc: 'Control total de la plataforma.', icon: 'security' }
                                     ].map((r) => (
                                         <button
                                             key={r.id}

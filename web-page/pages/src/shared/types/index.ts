@@ -1,7 +1,7 @@
 
 import { User } from '@supabase/supabase-js';
 
-export type UserRole = 'admin' | 'user' | 'colaborador' | 'proveedor';
+export type UserRole = 'Administrador' | 'Usuario' | 'Colaborador' | 'Proveedor';
 export type UserStatus = 'active' | 'banned' | 'suspended' | 'pending' | 'deleted';
 export type SecurityFlag = 'fraude' | 'estafa' | 'extorsion' | 'uso_indebido' | 'prueba' | 'inactividad' | 'eliminacion' | 'n/a';
 export type LanguageCode = 'es' | 'en';
@@ -10,7 +10,7 @@ export interface Profile {
     id: string;
     email: string;
     full_name?: string;
-    role: UserRole;
+    role_name: UserRole;
     status: UserStatus;
     security_flag?: SecurityFlag;
     security_notes?: string;
