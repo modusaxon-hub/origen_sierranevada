@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estrategia de Facturación MVP — Origen Sierra Nevada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --osn-verde: #141E16;
+      --osn-dorado: #C8AA6E;
+      --axon-dark: #1A1A2E;
+      --axon-violet: #8A2BE2;
+      --axon-cyan: #00FFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--osn-verde) 0%, var(--axon-dark) 100%);
+      color: #f5f5f5;
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.7;
+      padding: 2rem;
+      font-size: 0.9rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border-bottom: 2px solid var(--axon-violet);
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--axon-violet), var(--axon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(138, 43, 226, 0.1);
+      border: 1px solid var(--axon-violet);
+      color: var(--axon-cyan);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--axon-cyan);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid var(--axon-violet);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title .emoji {
+      font-size: 1.8rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(200, 170, 110, 0.05);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .card.highlight {
+      border-color: var(--axon-cyan);
+      background: rgba(0, 255, 255, 0.05);
+    }
+
+    .card.alert {
+      border-color: rgba(255, 100, 100, 0.4);
+      background: rgba(255, 100, 100, 0.05);
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--axon-cyan);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .card-body {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.8;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: rgba(138, 43, 226, 0.2);
+      border: 1px solid var(--axon-violet);
+      padding: 0.8rem;
+      text-align: left;
+      font-weight: 700;
+      color: var(--axon-cyan);
+    }
+
+    td {
+      border: 1px solid rgba(138, 43, 226, 0.1);
+      padding: 0.8rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(138, 43, 226, 0.05);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 0.7rem;
+      border-radius: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-ok {
+      background: rgba(100, 200, 120, 0.2);
+      color: #7fda90;
+      border: 1px solid rgba(100, 200, 120, 0.4);
+    }
+
+    .status-warn {
+      background: rgba(255, 200, 80, 0.2);
+      color: #f5c842;
+      border: 1px solid rgba(255, 200, 80, 0.4);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .flow-box {
+      background: rgba(138, 43, 226, 0.1);
+      border: 1px solid var(--axon-violet);
+      border-radius: 0.8rem;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-box .number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: rgba(138, 43, 226, 0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    .flow-box .label {
+      font-weight: 700;
+      color: var(--axon-cyan);
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .flow-box .desc {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .checklist {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      padding: 0.7rem;
+      background: rgba(138, 43, 226, 0.05);
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .checklist .icon {
+      flex-shrink: 0;
+      color: var(--axon-cyan);
+      font-weight: 700;
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid var(--axon-cyan);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--axon-cyan);
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-box {
+      border-radius: 0.8rem;
+      padding: 1.2rem;
+      border: 2px solid;
+    }
+
+    .comparison-box.no {
+      background: rgba(255, 100, 100, 0.05);
+      border-color: rgba(255, 100, 100, 0.3);
+    }
+
+    .comparison-box.yes {
+      background: rgba(100, 200, 120, 0.05);
+      border-color: rgba(100, 200, 120, 0.3);
+    }
+
+    .comparison-box h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--axon-cyan);
+    }
+
+    .comparison-box ul {
+      list-style: none;
+    }
+
+    .comparison-box li {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .comparison-box.no li::before {
+      content: '✗';
+      position: absolute;
+      left: 0;
+      color: rgba(255, 100, 100, 0.6);
+      font-weight: 700;
+    }
+
+    .comparison-box.yes li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: rgba(100, 200, 120, 0.8);
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(138, 43, 226, 0.3);
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+    }
+
+    .axon-seal {
+      font-size: 0.9rem;
+      margin-top: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(0, 255, 255, 0.15));
+      border: 2px solid var(--axon-violet);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .highlight-box h3 {
+      color: var(--axon-cyan);
+      margin-bottom: 1rem;
+    }
+
+    .highlight-box p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="badge">📊 Estrategia MVP · No Contribuyente de IVA</div>
+      <h1>Facturación Sin IVA</h1>
+      <p>Origen Sierra Nevada — Régimen Tributario Actual</p>
+    </div>
+
+    <!-- ESTADO ACTUAL -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">⚖️</span>
+        <span>Situación Tributaria Actual</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight">
+          <div class="card-title">Estatus Legal</div>
+          <div class="card-body">
+            <strong>NO Responsable de IVA</strong><br>
+            Ingresos anuales proyectados < 3.500 UVT (~$164M COP 2026)
+          </div>
+        </div>
+
+        <div class="card highlight">
+          <div class="card-title">Obligación Facturación</div>
+          <div class="card-body">
+            <strong>SÍ — Obligatoria</strong><br>
+            Resolución 000042/2020 DIAN aplica a todo vendedor de bienes
+          </div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Origen Sierra Nevada</th>
+            <th>Implicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IVA en factura</strong></td>
+            <td><span class="status-badge status-ok">$0 COP</span></td>
+            <td>Clientes ven precio final sin adiciones</td>
+          </tr>
+          <tr>
+            <td><strong>Leyenda obligatoria</strong></td>
+            <td><span class="status-badge status-ok">SÍ</span></td>
+            <td>"No responsable de IVA — Art. 437 ET"</td>
+          </tr>
+          <tr>
+            <td><strong>Declaración trimestral IVA</strong></td>
+            <td><span class="status-badge status-warn">NO</span></td>
+            <td>Solo renta anual simplificada</td>
+          </tr>
+          <tr>
+            <td><strong>Precio = Precio Final</strong></td>
+            <td><span class="status-badge status-ok">✓ Sí</span></td>
+            <td>Lo que ves es lo que pagas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- COMPARACIÓN VISUAL -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">🔄</span>
+        <span>Comparación: Con IVA vs Sin IVA</span>
+      </div>
+
+      <div class="comparison">
+        <div class="comparison-box no">
+          <h3>❌ Si fuera Contribuyente (>$164M)</h3>
+          <ul>
+            <li>Café Malú mostraría: $15.126 + $2.874 IVA = $18.000</li>
+            <li>Cliente ve desglose de IVA</li>
+            <li>Declara IVA bimensual a DIAN</li>
+            <li>Sistema más complejo</li>
+            <li>Clientes B2B pueden descontar IVA</li>
+          </ul>
+        </div>
+
+        <div class="comparison-box yes">
+          <h3>✓ Actual: No Contribuyente</h3>
+          <ul>
+            <li>Café Malú: $18.000 (precio final)</li>
+            <li>Sin desglose de IVA</li>
+            <li>Solo renta anual (no bimensual)</li>
+            <li>Sistema más simple</li>
+            <li>Factura con leyenda obligatoria</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPLEMENTACIÓN TÉCNICA -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">⚙️</span>
+        <span>Implementación Técnica (F3-005)</span>
+      </div>
+
+      <div class="highlight-box">
+        <h3>Cambio Principal en Backend</h3>
+        <p>
+          El cálculo de IVA DEBE ser 0 en todas las llamadas a la API del PTA (Alegra/Siigo).
+          No se trata de "omitir" el campo, sino de enviarlo explícitamente como 0.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">1️⃣ Cálculo en Checkout</div>
+        <div class="code-block">
+// CORRECTO para NO Contribuyente
+const calculateTotal = (items) => {
+  const subtotal = items.reduce((sum, item) =>
+    sum + (item.price * item.quantity), 0);
+
+  const iva = 0; // SIEMPRE 0
+  const total = subtotal + iva;
+
+  return { subtotal, iva, total };
+};
+
+// Ejemplo:
+// Café Malú $18.000 x 1
+// Subtotal: $18.000
+// IVA: $0
+// Total: $18.000
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2️⃣ Payload a PTA (Alegra API)</div>
+        <div class="code-block">
+{
+  "invoice": {
+    "seller": {
+      "nit": "XXXXXXXXX-X",
+      "name": "Café Origen Sierra Nevada E.U."
+    },
+    "buyer": {
+      "id": "CCXXXXXXXX",  // Recolectado en checkout
+      "name": "Cliente"
+    },
+    "items": [{
+      "description": "Café Malú x1",
+      "quantity": 1,
+      "unit_price": 18000,
+      "subtotal": 18000,
+      "tax_percentage": 0,    // ← IMPORTANTE: 0, no null
+      "tax_amount": 0
+    }],
+    "subtotal": 18000,
+    "total_tax": 0,          // ← IVA Total = 0
+    "total": 18000,
+    "note": "No responsable de IVA - Art. 437 ET"
+  }
+}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3️⃣ PDF de Factura (Incluir Leyenda)</div>
+        <div class="code-block">
+═══════════════════════════════════════════
+  CAFÉ ORIGEN SIERRA NEVADA E.U.
+  NIT: XXXXXXXXX-X
+
+  ⚠️  NO RESPONSABLE DE IVA
+
+  Conforme al artículo 437 del Estatuto
+  Tributario Colombiano, esta empresa
+  NO es responsable del Impuesto al
+  Valor Agregado
+═══════════════════════════════════════════
+
+Factura No: 000001
+Fecha: 04/03/2026 | Hora: 14:30:00
+CUFE: [Código único de validación]
+
+Café Malú x1                    $18.000
+─────────────────────────────────────────
+SUBTOTAL:                       $18.000
+IVA (0%):                          $0
+─────────────────────────────────────────
+TOTAL A PAGAR:                  $18.000
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4️⃣ Dashboard Admin — Reportes</div>
+        <p style="margin-bottom: 1rem; color: rgba(255, 255, 255, 0.75);">
+          La columna "IVA Generado" debe mostrar $0 en todos los períodos mientras se mantenga el estatus NO Contribuyente.
+        </p>
+        <div class="code-block">
+REPORTE FINANCIERO — MARZO 2026
+
+Ventas Totales:          $450.000
+├─ Café Malú (25 x $18k)
+├─ Sombra Sagrada (0 x $24k)
+└─ Subtotal:             $450.000
+
+IVA GENERADO:            $0
+Status:                  NO Responsable de IVA
+
+Declaración:
+└─ Forma: Renta Anual
+└─ Período: 01/01/2026 - 31/12/2026
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUJO ACTUALIZADO -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">🔄</span>
+        <span>Flujo de Pago → Factura</span>
+      </div>
+
+      <div class="flow">
+        <div class="flow-box">
+          <div class="number">01</div>
+          <div class="label">Cliente en Checkout</div>
+          <div class="desc">Ve Café Malú: $18.000 COP (sin IVA adicional)</div>
+        </div>
+
+        <div class="flow-box">
+          <div class="number">02</div>
+          <div class="label">Confirma Compra</div>
+          <div class="desc">Pago de $18.000 (es el total final)</div>
+        </div>
+
+        <div class="flow-box">
+          <div class="number">03</div>
+          <div class="label">Backend Calcula</div>
+          <div class="desc">Subtotal: $18.000 | IVA: $0 | Total: $18.000</div>
+        </div>
+
+        <div class="flow-box">
+          <div class="number">04</div>
+          <div class="label">Llamada a PTA</div>
+          <div class="desc">API Alegra: iva = 0, total = 18000</div>
+        </div>
+
+        <div class="flow-box">
+          <div class="number">05</div>
+          <div class="label">DIAN Valida</div>
+          <div class="desc">CUFE generado + firma digital</div>
+        </div>
+
+        <div class="flow-box">
+          <div class="number">06</div>
+          <div class="label">PDF a Cliente</div>
+          <div class="desc">Email + Dashboard con leyenda "No responsable"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTOS LEGALES -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">📋</span>
+        <span>Documentos Obligatorios a Actualizar</span>
+      </div>
+
+      <ul class="checklist">
+        <li>
+          <span class="icon">📄</span>
+          <div>
+            <strong>Términos y Condiciones:</strong> Agregar cláusula "Precios mostrados incluyen todos los impuestos aplicables. No se cobra IVA adicional."
+          </div>
+        </li>
+        <li>
+          <span class="icon">📄</span>
+          <div>
+            <strong>Política de Privacidad:</strong> Verificar que no promete "sin costo de IVA" (podría cambiar si se transiciona).
+          </div>
+        </li>
+        <li>
+          <span class="icon">📄</span>
+          <div>
+            <strong>Aviso en Landing:</strong> Opcional: pequeña leyenda "Precios finales — No responsable de IVA" en footer o banner.
+          </div>
+        </li>
+        <li>
+          <span class="icon">📄</span>
+          <div>
+            <strong>Dashboard Cliente:</strong> Facturas descargables deben incluir la leyenda obligatoria.
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ESCALABILIDAD -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">📈</span>
+        <span>¿Qué Sucede si Superamos $164M?</span>
+      </div>
+
+      <div class="alert-box" style="background: rgba(255, 200, 80, 0.05); border: 2px solid rgba(255, 200, 80, 0.3); border-radius: 1rem; padding: 1.5rem;">
+        <h3 style="color: #f5c842; margin-bottom: 1rem;">⚠️ Transición a Responsable de IVA</h3>
+        <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.8); line-height: 1.8;">
+          <p><strong>Paso 1:</strong> Contactar DIAN + Contador para solicitar cambio de régimen</p>
+          <p style="margin-top: 0.8rem;"><strong>Paso 2:</strong> Actualizar backend:</p>
+          <ul style="list-style: none; margin-left: 1rem; margin-top: 0.5rem;">
+            <li>✓ Cambiar IVA de 0 a 19% (o aplicable)</li>
+            <li>✓ Recalcular precios (mostrar + IVA)</li>
+            <li>✓ Actualizar API del PTA</li>
+          </ul>
+          <p style="margin-top: 0.8rem;"><strong>Paso 3:</strong> Comunicar a clientes:</p>
+          <ul style="list-style: none; margin-left: 1rem; margin-top: 0.5rem;">
+            <li>✓ Email: "Cambio de régimen tributario — nuevos precios"</li>
+            <li>✓ Landing: Actualizar precios visuales</li>
+            <li>✓ Transparencia total</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECKLIST FINAL -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji">✅</span>
+        <span>Checklist de Implementación F3-005</span>
+      </div>
+
+      <ul class="checklist">
+        <li><span class="icon">□</span> <div>Confirmar con contador: NIT está registrado como "No Responsable" ante DIAN</div></li>
+        <li><span class="icon">□</span> <div>Obtener API key del PTA (Alegra/Siigo/Facturante)</div></li>
+        <li><span class="icon">□</span> <div>Backend: Crear endpoint `/invoices/create` con iva = 0</div></li>
+        <li><span class="icon">□</span> <div>Frontend: Checkout NO muestra "IVA $0" (confunde)</div></li>
+        <li><span class="icon">□</span> <div>Database: Agregar columnas `leyenda` y `iva_porcentaje` a tabla invoices</div></li>
+        <li><span class="icon">□</span> <div>PDF: Incluir leyenda obligatoria "No Responsable de IVA"</div></li>
+        <li><span class="icon">□</span> <div>Email: Plantilla de factura con leyenda + CUFE + QR</div></li>
+        <li><span class="icon">□</span> <div>Dashboard Admin: Reportes con IVA Generado = $0</div></li>
+        <li><span class="icon">□</span> <div>Test E2E: Flujo completo (pago → factura → PDF)</div></li>
+        <li><span class="icon">□</span> <div>Documentación: T&C + Aviso en landing actualizado</div></li>
+        <li><span class="icon">□</span> <div>Capacitación: Admin entiende diferencia NO Contribuyente vs Responsable</div></li>
+      </ul>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <p>Origen Sierra Nevada © 2026</p>
+      <p style="margin-top: 1rem;">
+        <strong>Documentos Asociados:</strong><br>
+        <a href="COMPLIANCE_LEGAL.html" style="color: var(--axon-cyan); text-decoration: none;">COMPLIANCE_LEGAL.html</a> ·
+        <a href="TRIBUTACION_NO_CONTRIBUYENTE.md" style="color: var(--axon-cyan); text-decoration: none;">TRIBUTACION_NO_CONTRIBUYENTE.md</a>
+      </p>
+      <div class="axon-seal">MODUS AXON</div>
+    </div>
+  </div>
+</body>
+</html>

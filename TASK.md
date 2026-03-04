@@ -152,7 +152,8 @@ Si todo se ejecuta correctamente:
 | **F3-003** | 👤 **Dashboard Cliente** | ✅ COMPLETADO | Settings tab funcional: inputs controlados + handleSaveSettings + sanitizeText + feedback (04 Mar 2026) |
 | **F3-003.1** | 📦 **Deploy a Staging** | ✅ COMPLETADO | Build optimizado copiado a htdocs/ — npm run build: 0 errores, 620 KB CSS, 520 KB JS (04 Mar 2026) |
 | **F3-004** | 💳 **Zona de Pagos** | ⏳ EN DISEÑO | QR dinámico + Nequi/Daviplata/PSE/Llave + confirmación WhatsApp |
-| **F3-005** | 🧾 **Factura Electrónica DIAN** | ⏳ TODO | PTA Alegra API · XML UBL 2.1 · CUFE · PDF via Resend |
+| **F3-005** | 🧾 **Factura Electrónica DIAN** | 📋 ESTRATEGIA LISTA | PTA Alegra API · NO Contribuyente IVA (leyenda obligatoria) · CUFE · PDF via Resend |
+| **F3-005.1** | 📊 **Estrategia: No Responsable de IVA** | ✅ DOCUMENTADO | TRIBUTACION_NO_CONTRIBUYENTE.md + ESTRATEGIA_FACTURACION_MVP.html |
 | **F3-006** | 💬 **WhatsApp + Email Flows** | ✅ COMPLETADO | wa.me links en 3 templates + ContactPage + Modal post-orden + constantes centralizadas (04 Mar 2026) |
 | **F3-006.1** | 🗑️ **Limpiar UI — Remover "¿Quién eres tú?"** | ✅ COMPLETADO | HomePage: Eliminada BifurcacionSection + ProveedorModal (imports, estado, JSX) (04 Mar 2026) |
 | **F3-006.2** | 🧹 **Limpiar Código Huérfano** | ✅ COMPLETADO | Eliminados archivos: BifurcacionSection.tsx, ProveedorModal.tsx (sin referencias activas) (04 Mar 2026) |
@@ -209,4 +210,48 @@ Si todo se ejecuta correctamente:
 ---
 
 **Última actualización:** 04 Mar 2026 — F3-001 al F3-003 + F3-007 + Migración DB + Roles (F1-002, F1-003) completos.
-**Próxima acción:** F3-004 Zona de Pagos · F3-005 Factura DIAN · F3-006 WhatsApp/Email.
+**Próxima acción:** F3-004 Zona de Pagos · F3-005 Factura DIAN.
+
+---
+
+## 🔄 SESIÓN 04 MAR 2026 — Verificación F3-002 & F3-003
+
+| # | Tarea | Estado | Nota |
+|---|-------|--------|------|
+| **F3-002** | ⚙️ **AdminDashboard — Métricas KPI** | ✅ VERIFICADO | 4 KPI cards + Promise.all() + barras pedidos por estado + refresh button |
+| **F3-003** | 👤 **UserDashboard — Settings Funcional** | ✅ VERIFICADO | Inputs controlados + handleSaveSettings + sanitizeText + feedback visual |
+
+**Estado Actual:** Sistema de autenticación con admin user trabajando correctamente. DB consolidada en INIT_DATABASE.sql + NUCLEAR_FIX.sql (RLS desactivado para desarrollo).
+
+**Próximos 2 sprints:**
+- **Sprint 1:** F3-004 Zona de Pagos (QR + Nequi/Daviplata/PSE)
+- **Sprint 2:** F3-005 Factura Electrónica DIAN (PTA Alegra API)
+
+---
+
+## 📊 ANÁLISIS TRIBUTARIO — 04 Mar 2026
+
+### Hallazgo Crítico
+**Origen Sierra Nevada NO es Responsable de IVA**
+- Ingresos proyectados < 3.500 UVT (~$164M COP 2026)
+- Status: NO CONTRIBUYENTE de IVA
+- Declaración: Renta Anual Simplificada (no bimensual)
+
+### Impacto en F3-005 (Facturación)
+| Aspecto | Cambio |
+|---------|--------|
+| Cálculo de IVA | **0%** (no 19%) |
+| Leyenda en factura | "No Responsable de IVA — Art. 437 ET" (obligatoria) |
+| Checkout | NO mostrar desglose de IVA |
+| Backend payload | `iva_total: 0` (explícitamente) |
+| Reportes admin | IVA Generado = $0 siempre |
+
+### Documentación Generada
+- **TRIBUTACION_NO_CONTRIBUYENTE.md** — Guía técnica detallada con código
+- **ESTRATEGIA_FACTURACION_MVP.html** — Visualización ejecutiva
+
+### Escalabilidad
+Si ingresos superan $164M/año → Transición a **Responsable de IVA**:
+1. Cambiar régimen ante DIAN
+2. IVA = 19% en backend
+3. Comunicar cambio a clientes (precios suben)
