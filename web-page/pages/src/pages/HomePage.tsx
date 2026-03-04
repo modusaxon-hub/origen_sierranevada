@@ -370,15 +370,17 @@ const HomePage: React.FC = () => {
                                             {/* Design Element: Static circular ring */}
                                             <div className="hero-bottom-ring translate-y-[10px]"></div>
 
-                                            {/* Clean Image Area - Product floats independently */}
-                                            <img
-                                                src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
-                                                alt={currentProduct.name[lang]}
-                                                className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative z-20 animate-float-hero-pop translate-y-[30px]"
-                                            />
+                                            {/* Product Image Container - Handles static offset to avoid animation override */}
+                                            <div className="absolute inset-0 flex items-center justify-center translate-y-[65px] z-20">
+                                                <img
+                                                    src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                    alt={currentProduct.name[lang]}
+                                                    className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float-hero-pop"
+                                                />
+                                            </div>
 
-                                            {/* Subtle base shadow for better integration */}
-                                            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-4/5 h-[20px] bg-black/40 blur-2xl rounded-full -rotate-2 z-10"></div>
+                                            {/* Subtle base shadow for better integration - Adjust position for new image level */}
+                                            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-4/5 h-[30px] bg-black/40 blur-3xl rounded-full -rotate-2 z-10"></div>
                                         </div>
                                     </div>
 

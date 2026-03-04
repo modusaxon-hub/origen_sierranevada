@@ -136,7 +136,6 @@ const CheckoutPage: React.FC = () => {
                 .insert({
                     user_id: user?.id,
                     total_amount: finalTotal,
-                    currency: 'COP',
                     shipping_address: {
                         fullName: form.fullName,
                         email: form.email,

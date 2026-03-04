@@ -507,7 +507,7 @@ INSERT INTO
 VALUES (
         'cafetal',
         '{"es": "Café Malú", "en": "Malú Coffee"}',
-        18.00,
+        72000,
         'public/cafe_malu_black_bag_minca.png',
         50,
         true,
@@ -522,7 +522,7 @@ VALUES (
     (
         'cafetal',
         '{"es": "Sombra Sagrada", "en": "Sacred Shade"}',
-        24.00,
+        96000,
         'public/sombra_sagrada_luxury.png',
         30,
         true,

@@ -8,7 +8,7 @@ interface LanguageContextType {
     currency: Currency;
     toggleLanguage: () => void;
     t: (key: string, defaultText?: string) => string;
-    formatPrice: (priceUSD: number) => string;
+    formatPrice: (priceCOP: number) => string;
 }
 
 const translations: Record<string, Record<Language, string>> = {
