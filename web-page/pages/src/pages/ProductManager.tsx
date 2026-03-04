@@ -101,6 +101,7 @@ const ProductManager: React.FC = () => {
         setEditingProduct(p);
         setFormData({
             ...p,
+            origin: p.origin || 'Sierra Nevada de Santa Marta, Colombia',
             intrinsics: p.intrinsics || {
                 character: { es: '', en: '' },
                 personality: { es: '', en: '' },
