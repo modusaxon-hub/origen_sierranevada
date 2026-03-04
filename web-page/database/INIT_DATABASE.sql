@@ -177,6 +177,7 @@ CREATE TABLE public.orders (
         )
     ),
     total_amount NUMERIC NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'COP',
     shipping_address JSONB,
     contact_phone TEXT,
     tracking_number TEXT,

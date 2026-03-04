@@ -173,12 +173,23 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const formatPrice = (priceCOP: number) => {
         if (language === 'es') {
-            // Español = mostrar en COP (moneda base)
-            return `$${priceCOP.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
+            // Español = mostrar en COP (moneda base) con símbolo $ + código COP
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(priceCOP);
         } else {
             // English = mostrar en USD (convertir desde COP)
+            // Ratio aproximado: 1 USD ≈ 4000 COP (verificar con banco actual)
             const priceUSD = priceCOP / 4000;
-            return `USD ${priceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(priceUSD);
         }
     };
 

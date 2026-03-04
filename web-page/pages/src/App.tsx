@@ -32,6 +32,7 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const InvoicePrototype = lazy(() => import('./components/Invoice/InvoicePrototype'));
 
 // Loading Placeholder
 const PageLoader = () => (
@@ -75,6 +76,7 @@ const App: React.FC = () => {
                                     <Route path="/terms" element={<TermsPage />} />
                                     <Route path="/track/:orderId" element={<TrackOrderPage />} />
                                     <Route path="/contact" element={<ContactPage />} />
+                                    <Route path="/preview/invoice" element={<InvoicePrototype />} />
 
                                     {/* Customer Routes */}
                                     <Route path="/my-orders" element={

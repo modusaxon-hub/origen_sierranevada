@@ -130,7 +130,7 @@ const CheckoutPage: React.FC = () => {
                 .insert({
                     user_id: user?.id,
                     total_amount: finalTotal,
-                    currency: 'USD',
+                    currency: 'COP',
                     shipping_address: {
                         fullName: form.fullName,
                         email: form.email,
@@ -257,7 +257,7 @@ const CheckoutPage: React.FC = () => {
 
                         {/* WhatsApp Button (Primary) */}
                         <a href={getWhatsAppLinkWithContext('order', lastOrderId || '')}
-                           className="block w-full bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1a9a4a] text-white font-bold py-4 px-6 rounded-xl text-center uppercase transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20 mb-4">
+                            className="block w-full bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1a9a4a] text-white font-bold py-4 px-6 rounded-xl text-center uppercase transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20 mb-4">
                             💬 Confirmar por WhatsApp
                         </a>
 
@@ -266,7 +266,7 @@ const CheckoutPage: React.FC = () => {
                             setOrderSuccess(false);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        className="w-full border-2 border-[#C5A065] text-[#C5A065] font-bold py-3 px-6 rounded-xl uppercase tracking-widest hover:bg-[#C5A065] hover:text-black transition-all duration-300 mb-4">
+                            className="w-full border-2 border-[#C5A065] text-[#C5A065] font-bold py-3 px-6 rounded-xl uppercase tracking-widest hover:bg-[#C5A065] hover:text-black transition-all duration-300 mb-4">
                             Continuar sin WhatsApp
                         </button>
 
@@ -275,7 +275,7 @@ const CheckoutPage: React.FC = () => {
                             clearCart();
                             navigate('/');
                         }}
-                        className="w-full text-gray-400 hover:text-white font-bold py-3 px-6 uppercase tracking-widest text-sm transition-colors">
+                            className="w-full text-gray-400 hover:text-white font-bold py-3 px-6 uppercase tracking-widest text-sm transition-colors">
                             ← Volver al Inicio
                         </button>
                     </div>
