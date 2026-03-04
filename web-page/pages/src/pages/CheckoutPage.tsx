@@ -9,7 +9,9 @@ import { shippingService } from '@/services/shippingService';
 import { orderService } from '@/services/orderService';
 import { useLanguage } from '../contexts/LanguageContext';
 import TransferInstructions from '@/shared/components/TransferInstructions';
-import { getWhatsAppLinkWithContext } from '@/constants/contacts';
+import { getWhatsAppLinkWithContext, type OrderWhatsAppDetail } from '@/constants/contacts';
+import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
+import { sanitizeText } from '@/shared/utils/sanitize';
 
 // Lista de departamentos y sus ciudades principales
 const CITIES_BY_DEPARTMENT: Record<string, string[]> = {
@@ -56,8 +58,6 @@ const TIPOS_DOCUMENTO = [
     { value: 'PASAPORTE', label: 'Pasaporte' }
 ];
 
-const IVA_RATE = 0.19;
-
 interface CheckoutForm {
     fullName: string;
     docType: string;
@@ -81,6 +81,7 @@ const CheckoutPage: React.FC = () => {
     const [lastOrderId, setLastOrderId] = useState<string | null>(null);
     const [lastOrderTotal, setLastOrderTotal] = useState<number>(0);
     const [proofSuccess, setProofSuccess] = useState(false);
+    const [orderDetailData, setOrderDetailData] = useState<OrderWhatsAppDetail | null>(null);
 
     const [form, setForm] = useState<CheckoutForm>({
         fullName: user?.user_metadata?.full_name || '',
@@ -97,15 +98,16 @@ const CheckoutPage: React.FC = () => {
     const [shippingCost, setShippingCost] = useState(0);
 
     const precioExhibido = cartTotal;
-    const baseGravable = Math.round(precioExhibido / (1 + IVA_RATE));
-    const ivaIncluido = precioExhibido - baseGravable;
     const discount = user ? precioExhibido * 0.1 : 0;
     const finalTotal = precioExhibido - discount + shippingCost;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        // Sanitizar inputs para text/textarea
+        const sanitized = ['fullName', 'address', 'notes'].includes(name) ? sanitizeText(value) : value;
+
         setForm(prev => {
-            const newForm = { ...prev, [name]: value };
+            const newForm = { ...prev, [name]: sanitized };
             if (name === 'department') {
                 newForm.city = '';
                 setShippingCost(0);
@@ -118,9 +120,13 @@ const CheckoutPage: React.FC = () => {
         }
     };
 
+    const { blocked, trigger } = useSubmitThrottle(5000);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (cartItems.length === 0) return;
+        if (blocked) return; // Bloquear múltiples envíos en 5 segundos
+        trigger(); // Activar throttle
 
         setLoading(true);
 
@@ -138,6 +144,8 @@ const CheckoutPage: React.FC = () => {
                         city: form.city,
                         department: form.department,
                         phone: form.phone,
+                        docType: form.docType,
+                        docNumber: form.docNumber,
                     },
                     metadata: {
                         customer_email: form.email,
@@ -214,6 +222,28 @@ const CheckoutPage: React.FC = () => {
 
             setLastOrderId(order.id);
             setLastOrderTotal(finalTotal);
+
+            // Construir orderDetailData para WhatsApp detallado
+            const orderDetail: OrderWhatsAppDetail = {
+                orderId: order.id,
+                customerName: form.fullName,
+                customerPhone: form.phone,
+                address: form.address,
+                city: form.city,
+                department: form.department,
+                items: cartItems.map(i => ({
+                    name: i.name,
+                    quantity: i.qty,
+                    unitPrice: i.price,
+                    subtotal: i.price * i.qty
+                })),
+                subtotal: precioExhibido,
+                shipping: shippingCost,
+                discount: discount,
+                total: finalTotal
+            };
+            setOrderDetailData(orderDetail);
+
             setOrderSuccess(true);
             clearCart();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -292,7 +322,7 @@ const CheckoutPage: React.FC = () => {
                         </p>
                     </div>
 
-                    <TransferInstructions orderId={lastOrderId || ""} total={lastOrderTotal} />
+                    <TransferInstructions orderId={lastOrderId || ""} total={lastOrderTotal} orderDetail={orderDetailData || undefined} />
 
                     <div className="mt-8 bg-white/5 border border-[#C5A065]/30 rounded-2xl p-8 animate-slide-up">
                         <div className="flex items-center gap-4 mb-6">
@@ -483,16 +513,13 @@ const CheckoutPage: React.FC = () => {
                                         <span className="text-gray-400">{lang === 'es' ? 'Productos' : 'Products'}</span>
                                         <span>{formatPrice(precioExhibido)}</span>
                                     </div>
-                                    <div className="bg-white/5 rounded-lg p-3 space-y-2">
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">{lang === 'es' ? 'Desglose fiscal (IVA incluido)' : 'Tax breakdown (VAT included)'}</p>
-                                        <div className="flex justify-between text-xs text-gray-500">
-                                            <span>{lang === 'es' ? 'Base gravable' : 'Taxable base'}</span>
-                                            <span>{formatPrice(baseGravable)}</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs text-gray-500">
-                                            <span>IVA (19%)</span>
-                                            <span>{formatPrice(ivaIncluido)}</span>
-                                        </div>
+                                    <div className="bg-white/5 rounded-lg p-3">
+                                        <p className="text-[10px] text-gray-400 text-center">
+                                            {lang === 'es'
+                                                ? 'No Responsable de IVA — Art. 437 ET'
+                                                : 'Non-Liable for VAT — Art. 437 ET'
+                                            }
+                                        </p>
                                     </div>
                                     {discount > 0 && <div className="flex justify-between text-sm text-green-400"><span>{lang === 'es' ? 'Descuento Miembro (10%)' : 'Member Discount (10%)'}</span><span>-{formatPrice(discount)}</span></div>}
                                     <div className="flex justify-between text-sm">

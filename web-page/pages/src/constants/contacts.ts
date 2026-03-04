@@ -57,3 +57,62 @@ export const getWhatsAppLinkWithContext = (
     const message = getWhatsAppMessage(context, orderId);
     return getWhatsAppLink(message);
 };
+
+/**
+ * Interface para detalles completos de orden (F3-004)
+ */
+export interface OrderWhatsAppDetail {
+    orderId: string;
+    customerName: string;
+    customerPhone: string;
+    address: string;
+    city: string;
+    department: string;
+    items: Array<{
+        name: string;
+        quantity: number;
+        unitPrice: number;
+        subtotal: number;
+    }>;
+    subtotal: number;
+    shipping: number;
+    discount: number;
+    total: number;
+    proofUrl?: string;
+}
+
+/**
+ * Genera mensaje detallado de WhatsApp con lista completa de productos y datos de envío
+ * Utilizado para notificar al admin cuando cliente sube comprobante de pago
+ */
+export const getWhatsAppOrderDetailMessage = (detail: OrderWhatsAppDetail): string => {
+    const ref = detail.orderId.slice(0, 8).toUpperCase();
+    const itemLines = detail.items
+        .map(i => `• ${i.quantity}x ${i.name} — $${i.unitPrice.toLocaleString('es-CO')} = $${i.subtotal.toLocaleString('es-CO')}`)
+        .join('\n');
+
+    return [
+        `*COMPROBANTE DE PAGO — ORIGEN SIERRA NEVADA*`,
+        `Pedido: #${ref}`,
+        ``,
+        `*PRODUCTOS:*`,
+        itemLines,
+        ``,
+        `Subtotal: $${detail.subtotal.toLocaleString('es-CO')}`,
+        detail.discount > 0 ? `Descuento: -$${detail.discount.toLocaleString('es-CO')}` : null,
+        `Envío: ${detail.shipping === 0 ? 'GRATIS' : '$' + detail.shipping.toLocaleString('es-CO')}`,
+        `*TOTAL: $${detail.total.toLocaleString('es-CO')} COP*`,
+        ``,
+        `*ENVÍO A:*`,
+        `${detail.customerName}`,
+        `${detail.address}, ${detail.city}, ${detail.department}`,
+        `Tel: ${detail.customerPhone}`,
+        detail.proofUrl ? `\nComprobante: ${detail.proofUrl}` : `\nAdjunto comprobante en esta conversación.`
+    ].filter(Boolean).join('\n');
+};
+
+/**
+ * Genera URL completa con detalles detallados de la orden
+ */
+export const getWhatsAppOrderDetailLink = (detail: OrderWhatsAppDetail): string =>
+    getWhatsAppLink(getWhatsAppOrderDetailMessage(detail));

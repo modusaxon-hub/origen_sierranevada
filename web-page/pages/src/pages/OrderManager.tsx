@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { invoiceService } from '@/services/invoiceService';
 
 interface Order {
     id: string;
@@ -457,6 +458,50 @@ const OrderManager: React.FC = () => {
                                                             title="Confirmar como Pagado"
                                                         >
                                                             <span className="material-icons-outlined text-sm">check_circle</span>
+                                                        </button>
+                                                    )}
+                                                    {(order.status === 'paid' || order.status === 'shipped' || order.status === 'delivered') && (
+                                                        <button
+                                                            onClick={async () => {
+                                                                try {
+                                                                    const { data: existingInvoice } = await invoiceService.getInvoiceByOrderId(order.id);
+                                                                    if (existingInvoice) {
+                                                                        window.open(`/#/invoice/${order.id}`, '_blank');
+                                                                        return;
+                                                                    }
+                                                                    // Si no existe, generar
+                                                                    const { data: orderData } = await supabase
+                                                                        .from('orders')
+                                                                        .select('*, order_items(*), profiles(full_name, email)')
+                                                                        .eq('id', order.id)
+                                                                        .single();
+
+                                                                    if (!orderData) {
+                                                                        alert('No se encontró la orden');
+                                                                        return;
+                                                                    }
+
+                                                                    const customer = {
+                                                                        name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
+                                                                        docType: orderData.shipping_address?.docType || 'CC',
+                                                                        docNumber: orderData.shipping_address?.docNumber || '0',
+                                                                        address: orderData.shipping_address?.address || '',
+                                                                        city: orderData.shipping_address?.city || '',
+                                                                        department: orderData.shipping_address?.department || '',
+                                                                        email: orderData.shipping_address?.email || orderData.profiles?.email || '',
+                                                                        phone: orderData.shipping_address?.phone || ''
+                                                                    };
+
+                                                                    await invoiceService.generateInvoice(order.id, orderData as any, customer);
+                                                                    window.open(`/#/invoice/${order.id}`, '_blank');
+                                                                } catch (err) {
+                                                                    alert('Error al generar factura: ' + (err instanceof Error ? err.message : 'Error desconocido'));
+                                                                }
+                                                            }}
+                                                            className="h-8 w-8 bg-[#C5A065]/10 text-[#C5A065] rounded-lg hover:bg-[#C5A065] hover:text-black transition-all border border-[#C5A065]/20 font-bold text-[10px]"
+                                                            title="Ver/Generar Factura"
+                                                        >
+                                                            <span className="material-icons-outlined text-sm">receipt</span>
                                                         </button>
                                                     )}
                                                     <select

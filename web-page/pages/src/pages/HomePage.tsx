@@ -181,7 +181,7 @@ const HomePage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-[#050806] text-white">
-            <header className="relative min-h-[100vh] w-full overflow-hidden flex flex-col items-center justify-center pt-48 md:pt-48 lg:pt-36 xl:pt-40 [@media(orientation:landscape)_and_(max-height:800px)]:pt-32">
+            <header className="relative min-h-[100vh] w-full overflow-hidden flex flex-col items-center justify-center pt-32 md:pt-36 lg:pt-24 xl:pt-28 [@media(orientation:landscape)_and_(max-height:800px)]:pt-20">
 
                 {/* 1. ATMOSPHERIC BACKGROUND LAYERS */}
                 <div className="absolute inset-0 z-0 pointer-events-none">
@@ -366,25 +366,19 @@ const HomePage: React.FC = () => {
                                         onTouchMove={onTouchMove}
                                         onTouchEnd={onTouchEnd}
                                     >
-                                        <div className="relative w-[200px] h-[200px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] xl:w-[420px] xl:h-[420px] 2xl:w-[560px] 2xl:h-[560px] shrink-0 mx-auto flex items-center justify-center animate-float-hero-pop" key={currentProduct.id}>
-                                            {/* Aura Golden Flare */}
-                                            <div className="absolute inset-x-[-20%] inset-y-[-20%] gold-flare pointer-events-none"></div>
+                                        <div className="relative w-[180px] h-[225px] md:w-[250px] md:h-[315px] lg:w-[220px] lg:h-[285px] xl:w-[315px] xl:h-[415px] 2xl:w-[450px] 2xl:h-[570px] shrink-0 mx-auto flex items-center justify-center" key={currentProduct.id}>
+                                            {/* Design Element: Static circular ring */}
+                                            <div className="hero-bottom-ring translate-y-[10px]"></div>
 
-                                            {/* Minimal Portal Mask Container */}
-                                            <div className="absolute inset-[-10%] z-10 flex items-center justify-center pointer-events-none portal-mask-pop">
-                                                <div className="w-full h-full flex items-center justify-center">
-                                                    {/* Internal Ring - Two-Part Construction (Established Design) */}
-                                                    <div className="absolute inset-[-10%] w-full h-full flex items-center justify-center pointer-events-none transition-all duration-1000 group-hover:scale-105">
-                                                        {/* Upper Half - Defined Rim Light */}
-                                                        <div className="absolute inset-0 rounded-full border-[1.5px] border-[#C5A065]/40 [mask-image:linear-gradient(to_bottom,black_48%,transparent_52%)]"></div>
-                                                        {/* Lower Half - Subtle Backdrop */}
-                                                        <div className="absolute inset-0 rounded-full border border-[#C5A065]/10 [mask-image:linear-gradient(to_top,black_48%,transparent_52%)]"></div>
-                                                    </div>
+                                            {/* Clean Image Area - Product floats independently */}
+                                            <img
+                                                src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                alt={currentProduct.name[lang]}
+                                                className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative z-20 animate-float-hero-pop translate-y-[30px]"
+                                            />
 
-                                                    {/* Central Glowing Ritual Orb */}
-                                                    <div className="absolute inset-[25%] rounded-full bg-[#C5A065]/10 blur-3xl animate-pulse pointer-events-none"></div>
-                                                </div>
-                                            </div>
+                                            {/* Subtle base shadow for better integration */}
+                                            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-4/5 h-[20px] bg-black/40 blur-2xl rounded-full -rotate-2 z-10"></div>
                                         </div>
                                     </div>
 

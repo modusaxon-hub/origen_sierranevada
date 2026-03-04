@@ -73,7 +73,13 @@ const Catalog: React.FC = () => {
         return variant ? variant.price : product.price;
     };
 
-    const filteredProducts = products.filter(p => filter === 'all' || p.category === filter);
+    const filteredProducts = products.filter(p => {
+        if (filter === 'all') return true;
+        if (filter === 'coffee') return p.category === 'cafetal' || p.category === 'coffee';
+        if (filter === 'accessories') return p.category === 'accesorios' || p.category === 'accessories';
+        if (filter === 'derivatives') return p.category === 'antojitos' || p.category === 'derivatives';
+        return p.category === filter;
+    });
 
     return (
         <div className="min-h-screen bg-[#050806] text-white pt-32 font-sans overflow-x-hidden">
@@ -94,9 +100,9 @@ const Catalog: React.FC = () => {
                         <span className="text-[10px] text-[#C5A065] font-bold uppercase tracking-[0.4em]">Cosechas de Autor</span>
                     </div>
                     <h1 className="text-6xl md:text-7xl font-serif tracking-tighter animate-slide-up">
-                        {filter === 'coffee' ? 'Café de Especialidad' :
-                            filter === 'accessories' ? 'Accesorios de Ritual' :
-                                filter === 'derivatives' ? 'Derivados de la Sierra' : 'Catálogo de Origen'}
+                        {filter === 'coffee' || filter === 'cafetal' ? 'Café de Especialidad' :
+                            filter === 'accessories' || filter === 'accesorios' ? 'Accesorios de Ritual' :
+                                filter === 'derivatives' || filter === 'antojitos' ? 'Derivados de la Sierra' : 'Catálogo de Origen'}
                     </h1>
                     <p className="max-w-2xl mx-auto text-white/50 text-sm md:text-base leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
                         Cada producto es una pieza de colección. Cultivados, procesados y seleccionados bajo el estándar más exigente del misticismo de la Sierra Nevada.

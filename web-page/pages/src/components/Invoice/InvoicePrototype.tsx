@@ -1,139 +1,172 @@
 import React from 'react';
-import './InvoicePrototype.css';
 
 interface InvoiceItem {
-    id: string;
-    description: string;
+    name: string;
     quantity: number;
     unitPrice: number;
-    total: number;
+    subtotal: number;
 }
 
-interface InvoiceProps {
-    invoiceNumber: string;
-    date: string;
-    customerName: string;
-    customerNIT: string;
+interface InvoicePrototypeProps {
+    invoiceNumber?: string;
+    cufe?: string;
+    date?: string;
+    customerName?: string;
+    customerDocType?: string;
+    customerDocNumber?: string;
+    customerAddress?: string;
+    customerCity?: string;
+    customerEmail?: string;
     items: InvoiceItem[];
-    cufe: string;
-    qrUrl?: string;
+    subtotal: number;
+    shipping: number;
+    discount: number;
+    total: number;
+    orderId?: string;
 }
 
-const InvoicePrototype: React.FC<InvoiceProps> = ({
-    invoiceNumber = "000001",
-    date = new Date().toLocaleDateString('es-CO'),
-    customerName = "Cliente Ejemplo",
-    customerNIT = "123.456.789-0",
-    items = [
-        { id: '1', description: 'Café Malú - 340g', quantity: 1, unitPrice: 18000, total: 18000 },
-        { id: '2', description: 'Sombra Sagrada - 340g', quantity: 1, unitPrice: 24000, total: 24000 }
-    ],
-    cufe = "E7A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6",
-    qrUrl = "https://www.dian.gov.co/fiscalizacion/paginas/facturacion-electronica.aspx"
+const InvoicePrototype: React.FC<InvoicePrototypeProps> = ({
+    invoiceNumber = '000001',
+    cufe = 'CUFE_PLACEHOLDER',
+    date = new Date().toISOString().split('T')[0],
+    customerName = 'Cliente',
+    customerDocType = 'CC',
+    customerDocNumber = '0000000000',
+    customerAddress = 'Dirección no especificada',
+    customerCity = 'Ciudad',
+    customerEmail = 'cliente@example.com',
+    items,
+    subtotal,
+    shipping,
+    discount,
+    total,
+    orderId
 }) => {
-    const subtotal = items.reduce((acc, item) => acc + item.total, 0);
-    const total = subtotal; // No IVA
+    const verificationUrl = orderId ? `${window.location.origin}/#/track/${orderId}` : 'https://origensierranevada.com';
+    const verificationQr = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(verificationUrl)}&margin=2`;
 
     return (
-        <div className="invoice-container">
-            <div className="invoice-card glassmorphism">
-                {/* Header */}
-                <header className="invoice-header">
-                    <div className="brand-info">
-                        <h1 className="brand-name">ORIGEN</h1>
-                        <p className="brand-subtitle">SIERRA NEVADA</p>
-                        <div className="company-details">
-                            <p>CAFÉ ORIGEN SIERRA NEVADA E.U.</p>
-                            <p>NIT: 900.XXX.XXX-X</p>
-                            <p>Santa Marta, Magdalena - Colombia</p>
+        <div className="w-full bg-white text-black p-8 font-sans" style={{ fontSize: '12px', lineHeight: '1.4' }}>
+            <div className="border-b-2 border-[#141E16] pb-6 mb-6 flex justify-between items-start">
+                <div>
+                    <div className="text-2xl font-bold text-[#141E16] mb-1">ORIGEN</div>
+                    <div className="text-xs text-gray-600 font-semibold">SIERRA NEVADA</div>
+                    <div className="text-[10px] text-gray-500 mt-1">Café Premium de Alta Montaña</div>
+                </div>
+                <div className="text-right">
+                    <div className="text-sm font-bold text-[#C8AA6E] mb-2">FACTURA ELECTRÓNICA</div>
+                    <div className="text-xs text-gray-600">No. {invoiceNumber}</div>
+                    <div className="text-xs text-gray-600">Fecha: {date}</div>
+                </div>
+            </div>
+
+            <div className="bg-gray-100 p-3 rounded mb-6 border border-gray-300">
+                <div className="text-[9px] text-gray-500 uppercase font-bold mb-1">Código Único de Factura Electrónica</div>
+                <div className="font-mono text-[10px] break-all text-gray-700">{cufe}</div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 mb-8">
+                <div>
+                    <div className="text-[10px] font-bold text-[#141E16] uppercase mb-3">Emitido Por</div>
+                    <div className="text-xs mb-1 font-semibold">ORIGEN SIERRA NEVADA S.A.S.</div>
+                    <div className="text-[10px] text-gray-600 space-y-1">
+                        <div>NIT: [NIT_EMPRESA]</div>
+                        <div>Dirección: Sierra Nevada, Magdalena</div>
+                        <div>Teléfono: +57 310 740 5154</div>
+                        <div>Email: origensierranevadasm@gmail.com</div>
+                        <div className="mt-2 pt-2 border-t border-gray-300">
+                            <div className="text-[9px] text-gray-500 italic">
+                                Régimen Simple de Tributación — No Responsable de IVA (Art. 437 ET)
+                            </div>
                         </div>
                     </div>
-                    <div className="invoice-meta">
-                        <div className="invoice-badge">FACTURA ELECTRÓNICA DE VENTA</div>
-                        <h2 className="invoice-number">No. {invoiceNumber}</h2>
-                        <p className="invoice-date">Fecha: {date}</p>
-                    </div>
-                </header>
-
-                {/* Legal Legend Banner */}
-                <div className="legal-banner">
-                    <p><strong>NO RESPONSABLE DE IVA — Art. 437 ET</strong></p>
-                    <p className="legal-detail">Conforme al artículo 437 del Estatuto Tributario Colombiano, esta empresa no cumple con los requisitos para ser responsable del Impuesto al Valor Agregado.</p>
                 </div>
 
-                {/* Customer Info */}
-                <section className="customer-section">
-                    <div className="section-title">DETALLES DEL ADQUIRENTE</div>
-                    <div className="customer-info">
-                        <p><strong>NOMBRE:</strong> {customerName}</p>
-                        <p><strong>NIT/CC:</strong> {customerNIT}</p>
-                        <p><strong>DIRECCIÓN:</strong> Santa Marta, Magdalena</p>
+                <div>
+                    <div className="text-[10px] font-bold text-[#141E16] uppercase mb-3">Facturado A</div>
+                    <div className="text-xs mb-1 font-semibold">{customerName}</div>
+                    <div className="text-[10px] text-gray-600 space-y-1">
+                        <div>{customerDocType}: {customerDocNumber}</div>
+                        <div>{customerAddress}</div>
+                        <div>{customerCity}, Magdalena</div>
+                        <div>Email: {customerEmail}</div>
                     </div>
-                </section>
+                </div>
+            </div>
 
-                {/* Items Table */}
-                <table className="items-table">
+            <div className="mb-8">
+                <table className="w-full border-collapse">
                     <thead>
-                        <tr>
-                            <th>DESCRIPCIÓN</th>
-                            <th className="text-center">CANT.</th>
-                            <th className="text-right">VALOR UNIT.</th>
-                            <th className="text-right">TOTAL</th>
+                        <tr className="border-b-2 border-t-2 border-[#141E16]">
+                            <th className="text-left py-2 text-[10px] font-bold text-[#141E16] uppercase">Descripción</th>
+                            <th className="text-center py-2 text-[10px] font-bold text-[#141E16] uppercase">Cantidad</th>
+                            <th className="text-right py-2 text-[10px] font-bold text-[#141E16] uppercase">V. Unitario</th>
+                            <th className="text-right py-2 text-[10px] font-bold text-[#141E16] uppercase">V. Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.description}</td>
-                                <td className="text-center">{item.quantity}</td>
-                                <td className="text-right">${item.unitPrice.toLocaleString('es-CO')}</td>
-                                <td className="text-right">${item.total.toLocaleString('es-CO')}</td>
+                        {items.map((item, idx) => (
+                            <tr key={idx} className="border-b border-gray-200">
+                                <td className="py-3 text-[10px] text-gray-700">{item.name}</td>
+                                <td className="py-3 text-center text-[10px] text-gray-700">{item.quantity}</td>
+                                <td className="py-3 text-right text-[10px] text-gray-700">${item.unitPrice.toLocaleString('es-CO')}</td>
+                                <td className="py-3 text-right text-[10px] font-semibold text-[#141E16]">${item.subtotal.toLocaleString('es-CO')}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+            </div>
 
-                {/* Totals Section */}
-                <footer className="invoice-footer">
-                    <div className="footer-cols">
-                        <div className="digital-verification">
-                            <div className="qr-box">
-                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}`} alt="QR Code" />
-                            </div>
-                            <div className="cufe-container">
-                                <p className="cufe-label">CUFE (CÓDIGO ÚNICO DE FACTURACIÓN ELECTRÓNICA):</p>
-                                <p className="cufe-value">{cufe}</p>
-                            </div>
-                        </div>
-
-                        <div className="summary-box">
-                            <div className="summary-row">
-                                <span>SUBTOTAL</span>
-                                <span>${subtotal.toLocaleString('es-CO')}</span>
-                            </div>
-                            <div className="summary-row">
-                                <span>IVA (0%)</span>
-                                <span>$0</span>
-                            </div>
-                            <div className="summary-row total">
-                                <span>TOTAL A PAGAR</span>
-                                <span>${total.toLocaleString('es-CO')} COP</span>
-                            </div>
-                            <div className="currency-note">Moneda: Pesos Colombianos</div>
-                        </div>
+            <div className="flex justify-end mb-8">
+                <div className="w-64">
+                    <div className="flex justify-between text-[10px] mb-2">
+                        <span>Subtotal:</span>
+                        <span className="text-gray-700">${subtotal.toLocaleString('es-CO')}</span>
                     </div>
-                </footer>
-
-                <div className="resolution-info">
-                    <p>Resolución de Facturación DIAN No. 1876XXXXXXXX de 2026-01-01</p>
-                    <p>Numeración Autorizada desde 000001 hasta 100000</p>
+                    {discount > 0 && (
+                        <div className="flex justify-between text-[10px] mb-2 text-green-600">
+                            <span>Descuento:</span>
+                            <span>-${discount.toLocaleString('es-CO')}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between text-[10px] mb-2">
+                        <span>Envío:</span>
+                        <span className="text-gray-700">{shipping === 0 ? 'GRATIS' : `$${shipping.toLocaleString('es-CO')}`}</span>
+                    </div>
+                    <div className="flex justify-between text-[9px] mb-3 text-gray-500 italic border-t border-gray-300 pt-2">
+                        <span>IVA (0%):</span>
+                        <span>$0 — No Responsable Art. 437 ET</span>
+                    </div>
+                    <div className="flex justify-between border-t-2 border-[#141E16] pt-3">
+                        <span className="font-bold text-xs">TOTAL A PAGAR:</span>
+                        <span className="font-bold text-xs text-[#C8AA6E]">${total.toLocaleString('es-CO')} COP</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="print-controls no-print">
-                <button onClick={() => window.print()} className="print-btn">
-                    <span className="material-icons">print</span> Imprimir Factura
-                </button>
+            {orderId && (
+                <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-300">
+                    <div>
+                        <div className="text-[9px] text-gray-500 uppercase font-bold mb-2">Número de Orden</div>
+                        <div className="text-lg font-mono font-bold text-[#141E16]">#{orderId.slice(0, 8).toUpperCase()}</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-[9px] text-gray-500 uppercase font-bold mb-1">QR de Verificación</div>
+                        <img src={verificationQr} alt="QR Verificación" className="w-20 h-20 border border-gray-300" />
+                    </div>
+                </div>
+            )}
+
+            <div className="bg-gray-50 p-4 rounded text-[9px] text-gray-600 space-y-2 border border-gray-200">
+                <div>
+                    <span className="font-bold">Términos:</span> Válido como comprobante. Contacte dentro de 5 días si hay discrepancias.
+                </div>
+                <div>
+                    <span className="font-bold">Régimen:</span> Simple — Art. 437 ET. No responsable de IVA.
+                </div>
+                <div className="italic pt-2 border-t border-gray-300">
+                    Generado automáticamente. No requiere firma.
+                </div>
             </div>
         </div>
     );

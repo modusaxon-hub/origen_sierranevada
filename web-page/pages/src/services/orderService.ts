@@ -15,7 +15,7 @@ export interface OrderItem {
 export interface Order {
     id: string;
     created_at: string;
-    status: 'pending' | 'processing' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+    status: 'pending' | 'pending_payment' | 'processing' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
     total_amount: number;
     shipping_address: any;
     payment_method?: string;
@@ -120,18 +120,40 @@ export const orderService = {
 
     /**
      * Sube el comprobante de pago (imagen/pdf) a Supabase Storage
+     * Validación MIME + tamaño máximo 5MB
      */
     uploadPaymentProof: async (orderId: string, file: File) => {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `proof_${orderId}_${Date.now()}.${fileExt}`;
-        const filePath = `${orderId}/${fileName}`;
+        // Validación MIME (no solo extensión)
+        const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+        const MAX_BYTES = 5 * 1024 * 1024; // 5MB
+
+        if (!ALLOWED_MIME.includes(file.type)) {
+            return {
+                url: null,
+                error: { message: `Tipo de archivo no permitido: ${file.type}. Solo JPG, PNG, WEBP o PDF.` } as any
+            };
+        }
+
+        if (file.size > MAX_BYTES) {
+            return {
+                url: null,
+                error: { message: `Archivo excede 5MB. Tamaño actual: ${(file.size / 1024 / 1024).toFixed(2)}MB.` } as any
+            };
+        }
+
+        // Sanitizar nombre (nunca usar el nombre original del usuario)
+        const safeExt = ['jpg', 'jpeg', 'png', 'webp', 'pdf'].includes(file.name.split('.').pop()?.toLowerCase() || '')
+            ? file.name.split('.').pop()!.toLowerCase()
+            : 'jpg';
+        const safeFileName = `comprobante_${Date.now()}.${safeExt}`;
+        const filePath = `${orderId}/${safeFileName}`;
 
         // 1. Subir al bucket 'payments'
         const { data, error } = await supabase.storage
             .from('payments')
             .upload(filePath, file);
 
-        if (error) return { data: null, error };
+        if (error) return { url: null, error };
 
         // 2. Obtener URL pública
         const { data: { publicUrl } } = supabase.storage
@@ -139,14 +161,12 @@ export const orderService = {
             .getPublicUrl(filePath);
 
         // 3. Vincular URL al pedido en la tabla 'orders'
-        // Lo guardamos en el JSON de metadata para no alterar el esquema fijo
         const { data: order } = await supabase
             .from('orders')
             .select('metadata')
             .eq('id', orderId)
             .single();
 
-        // Parseamos los metadatos actuales por si vienen como string
         const currentMetadata = typeof order?.metadata === 'string'
             ? JSON.parse(order.metadata)
             : (order?.metadata || {});
