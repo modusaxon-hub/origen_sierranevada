@@ -189,16 +189,40 @@
             border-left: 3px solid #c8aa6e;
         }
 
-        /* Main content offset for sidebar */
-        main {
-            margin-left: 256px;
-            /* 64 * 4 = 256px (w-64) */
+        /* Documentation Isolation - Force hide common global site elements */
+        /* This ensures the brandbook is the focus even if rendered inside a layout */
+        header:not(.documentation-header),
+        .site-header,
+        .main-header,
+        .global-nav,
+        .site-navbar,
+        .global-header,
+        nav:not(#sidebar nav),
+        .user-profile-badge,
+        .cart-toggle {
+            display: none !important;
         }
 
-        @media (max-width: 768px) {
+        /* Shift content back to top since parent nav is hidden */
+        main {
+            margin-left: 256px;
+            padding-top: 0 !important;
+        }
+
+        @media (max-width: 1023px) {
             main {
-                margin-left: 0;
+                margin-left: 0 !important;
+                padding-top: 0 !important;
             }
+
+            #sidebar {
+                top: 0 !important;
+                height: 100vh !important;
+            }
+        }
+
+        .site-header:hover {
+            opacity: 1;
         }
 
         /* ========================================
@@ -210,7 +234,6 @@
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                color-adjust: exact !important;
             }
 
             /* Configuración de página */
@@ -466,7 +489,9 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-white selection:bg-gold/30">
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-white selection:bg-gold/30 brandbook-document">
+
     <!-- Mobile Menu Toggle Button -->
     <button class="lg:hidden fixed top-6 left-6 z-[60] bg-gold text-primary p-3 rounded-lg" id="sidebar-toggle">
         <span class="material-symbols-outlined text-2xl">menu</span>
@@ -482,7 +507,7 @@
 
     <!-- Sidebar Navigation -->
     <aside
-        class="sidebar fixed left-0 top-0 h-screen w-64 bg-primary border-r border-white/10 z-50 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300"
+        class="sidebar fixed left-0 top-20 h-[calc(100vh-80px)] w-64 bg-primary border-r border-white/10 z-50 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300"
         id="sidebar">
         <!-- Logo Section -->
         <div class="p-6 border-b border-white/10">
@@ -546,9 +571,10 @@
     <div class="sidebar-overlay fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-overlay"></div>
 
     <!-- Main Content Area -->
-    <main>
+    <main class="relative bg-background-dark">
         <!-- Hero Section -->
-        <section class="relative min-h-screen flex items-center justify-center pt-20">
+        <section class="relative min-h-screen flex items-center justify-center pt-10 pb-20">
+
             <div class="absolute inset-0 z-0 overflow-hidden">
                 <div class="w-full h-full bg-cover bg-center"
                     data-alt="Misty Sierra Nevada mountain range with coffee trees"
@@ -558,8 +584,9 @@
             <div class="relative z-10 text-center max-w-4xl px-6">
                 <p class="text-gold uppercase tracking-[0.5em] text-sm mb-6 animate-pulse">Manual de Identidad Visual
                 </p>
-                <h1 class="font-serif text-6xl md:text-8xl text-gold-gradient font-black leading-[1.1] mb-8">
-                    ORIGEN SIERRA NEVADA
+                <h1
+                    class="font-serif text-5xl md:text-7xl lg:text-8xl text-gold-gradient font-black leading-[1] mb-8 tracking-tighter">
+                    ORIGEN<br class="hidden md:block"> SIERRA NEVADA
                 </h1>
                 <p
                     class="font-sans text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed font-light italic">
@@ -754,10 +781,10 @@
 
             <!-- Logo Principal -->
             <div
-                class="bg-primary/50 backdrop-blur-sm border border-gold/20 rounded-2xl p-12 md:p-20 mb-12 animate-on-scroll">
-                <div class="max-w-2xl mx-auto">
+                class="bg-primary/50 backdrop-blur-sm border border-gold/20 rounded-2xl p-12 md:p-20 mb-12 animate-on-scroll aspect-video flex items-center justify-center overflow-hidden">
+                <div class="max-w-2xl w-full">
                     <img src="../03 - manual-identidad-visual/images/La-firma-de-la-tierra.svg"
-                        alt="Logo Origen Sierra Nevada" class="w-full h-auto">
+                        alt="Logo Origen Sierra Nevada" class="w-full h-auto object-contain">
                 </div>
             </div>
 
@@ -788,21 +815,22 @@
 
             <!-- Variantes -->
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-primary border border-gold/20 rounded-xl p-10 animate-on-scroll">
-                    <div class="mb-6 flex items-center justify-center min-h-[200px]">
+                <div
+                    class="bg-primary border border-gold/20 rounded-xl p-10 animate-on-scroll flex flex-col items-center">
+                    <div class="mb-6 flex items-center justify-center aspect-video w-full bg-black/20 rounded-lg p-8">
                         <img src="../03 - manual-identidad-visual/images/La-firma-de-la-tierra.svg" alt="Logo Principal"
-                            class="w-3/4 h-auto">
+                            class="max-w-full max-h-full object-contain">
                     </div>
-                    <h4 class="font-serif text-xl text-gold mb-2">Versión Principal</h4>
-                    <p class="text-white/50 text-sm">Dorado sobre fondo oscuro. Uso preferente.</p>
+                    <h4 class="font-serif text-xl text-gold mb-2 w-full text-center">Versión Principal</h4>
+                    <p class="text-white/50 text-sm w-full text-center">Dorado sobre fondo oscuro. Uso preferente.</p>
                 </div>
-                <div class="bg-mist border border-gold/20 rounded-xl p-10 animate-on-scroll">
-                    <div class="mb-6 flex items-center justify-center min-h-[200px]">
+                <div class="bg-mist border border-gold/20 rounded-xl p-10 animate-on-scroll flex flex-col items-center">
+                    <div class="mb-6 flex items-center justify-center aspect-video w-full bg-white/5 rounded-lg p-8">
                         <img src="../03 - manual-identidad-visual/images/La-firma-de-la-tierra.svg" alt="Logo Oscuro"
-                            class="w-3/4 h-auto" style="filter: brightness(0.3);">
+                            class="max-w-full max-h-full object-contain" style="filter: brightness(0.3);">
                     </div>
-                    <h4 class="font-serif text-xl text-gold mb-2">Versión Oscura</h4>
-                    <p class="text-charcoal/70 text-sm">Verde profundo sobre fondo claro.</p>
+                    <h4 class="font-serif text-xl text-gold mb-2 w-full text-center">Versión Oscura</h4>
+                    <p class="text-charcoal/70 text-sm w-full text-center">Verde profundo sobre fondo claro.</p>
                 </div>
             </div>
 
@@ -1214,7 +1242,7 @@
                 <!-- Icons -->
                 <div class="space-y-12">
                     <p class="text-[10px] uppercase tracking-widest text-white/40 mb-6">Sistemas de Iconografía</p>
-                    <div class="grid grid-cols-4 gap-8">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
                         <div class="flex flex-col items-center gap-4">
                             <div class="w-16 h-16 rounded-full border border-gold/30 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-gold text-3xl">coffee</span>
@@ -1266,21 +1294,22 @@
                     </div>
                     <div class="text-[10px] uppercase tracking-[0.4em] text-white/20 pb-2">Sierra Nevada Archive</div>
                 </div>
-                <div class="grid grid-cols-12 gap-4 h-[800px]">
-                    <div class="col-span-8 h-full rounded-2xl bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 h-auto md:h-[600px] lg:h-[800px]">
+                    <div class="md:col-span-8 h-[400px] md:h-full rounded-2xl bg-cover bg-center bg-primary/10 grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer overflow-hidden group"
                         data-alt="Dramatic close-up of dark roasted coffee beans"
                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMvYYkEsu7nANptIvRBQateOyhAzCVyCssO1BUD7B8u0NlP24C02uBAAUEwNyhDRw-tAqUgah1hn5oYt2LgY-ozNql0RprL3cCnVsmRgTkR3H2zglLPuBvH3lFHYGKw0SL-gZsSQgrLvs1sn3l3IIg5Rc-uaAthMavji5KS6a2ISpZoD9u4IY6bCi2dLN7gTVfjb5KZnJlPUXdefnvNWkxPoQQMB7yCHutCx8GcFJRtoKibP1VYeBLs11O1Dx4vbVWZf6QRpCLkTc');">
                         <div
-                            class="w-full h-full p-10 flex flex-col justify-end bg-gradient-to-t from-primary/80 to-transparent opacity-0 hover:opacity-100 transition-opacity">
-                            <p class="font-serif text-2xl">Texturas Terrenales</p>
+                            class="w-full h-full p-10 flex flex-col justify-end bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            <p class="font-serif text-2xl font-bold text-gold">Texturas Terrenales</p>
+                            <p class="text-xs uppercase tracking-[0.2em] text-white/60">Profundidad y Carácter</p>
                         </div>
                     </div>
-                    <div class="col-span-4 grid grid-rows-2 gap-4">
-                        <div class="rounded-2xl bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                    <div class="md:col-span-4 grid grid-cols-1 gap-4">
+                        <div class="rounded-2xl h-[300px] md:h-full bg-cover bg-center bg-primary/10 grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
                             data-alt="Steaming cup of espresso on a dark table"
                             style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAHK8cE5lgBwVJROSugbQWWt2SvbRdHeFIlWntB9iy3t2Gt4UAa1BH69zVxV71-VFad25HDm7mfQM5GiLaCe1XR4zOcF-04drKCrLdVBeOpWqcRH726rXn1oJhNw_zS0KE1Z_eJyuRVYgWsLzswuGIvsF54FpOb0ISGchE41GVp_AaNkGkZGYa-XuuXbYKCs1gwZRZVKpoT6ClY7wfpZs0sXDDTyxindJEaidMGxHJrYVC_E-ftJ-xoACNGqKWENXotO1mui76J0GE');">
                         </div>
-                        <div class="rounded-2xl bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                        <div class="rounded-2xl h-[300px] md:h-full bg-cover bg-center bg-primary/10 grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
                             data-alt="Mist covered coffee plantation in mountains"
                             style="background-image: url('images/coffee-plantation-mist.png');">
                         </div>

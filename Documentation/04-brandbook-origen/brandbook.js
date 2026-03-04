@@ -51,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const targetSection = document.querySelector(targetId);
 
             if (targetSection) {
-                const targetPosition = targetSection.offsetTop;
+                const offset = 40; // Small offset for alignment
+                const targetPosition = targetSection.offsetTop - offset;
 
                 window.scrollTo({
                     top: targetPosition,
@@ -169,24 +170,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ========================================
-    // 8. LOGO/ICON ROTATION ON SCROLL
+    // 8. LOGO ROTATION (MODIFIED FOR STABILITY)
     // ========================================
-    const logo = document.querySelector('.material-symbols-outlined');
+    const brandLogo = document.querySelector('aside .material-symbols-outlined'); // Specific logo icon
     let lastScrollTop = 0;
 
     window.addEventListener('scroll', function () {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop < 0) return; // Prevent bounce issues
 
-        if (scrollTop > lastScrollTop) {
-            // Scrolling down
-            if (logo) logo.style.transform = 'rotate(180deg)';
-        } else {
-            // Scrolling up
-            if (logo) logo.style.transform = 'rotate(0deg)';
+        if (scrollTop > lastScrollTop + 10) { // Add threshold for stability
+            if (brandLogo) brandLogo.style.transform = 'rotate(180deg)';
+        } else if (scrollTop < lastScrollTop - 10) {
+            if (brandLogo) brandLogo.style.transform = 'rotate(0deg)';
         }
-
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
+        lastScrollTop = scrollTop;
+    }, { passive: true });
 
     // ========================================
     // 9. PRELOAD ANIMATIONS ON PAGE LOAD

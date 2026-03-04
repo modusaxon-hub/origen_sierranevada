@@ -19,25 +19,25 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
     return (
         <div className="hidden lg:flex max-w-7xl mx-auto px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20">
             {/* Logo */}
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-                <Logo className="w-[320px] xl:w-[370px] h-auto shrink-0 drop-shadow-[0_0_25px_rgba(200,170,110,0.4)] brightness-110" />
-            </div>
+            <Link to="/" className="flex items-center gap-3 cursor-pointer">
+                <Logo className="w-[180px] xl:w-[240px] h-auto shrink-0 drop-shadow-[0_0_25px_rgba(200,170,110,0.4)] brightness-110" />
+            </Link>
 
             {/* Navigation Links */}
-            <div className="flex items-center space-x-12 font-display text-xs tracking-[0.3em] text-white/80">
+            <div className="flex items-center space-x-6 xl:space-x-10 font-display text-xs tracking-[0.3em] text-white/80">
                 <Link to="/" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Inicio</Link>
                 <Link to="/subscription" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Catálogo</Link>
                 <Link to="/guide" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Guía</Link>
                 {isAdmin && (
-                    <Link to="/admin" className="text-[#C8AA6E] border-2 border-[#C8AA6E]/50 px-4 py-2 rounded-lg bg-[#C8AA6E]/10 flex items-center gap-2 hover:bg-[#C8AA6E]/20 hover:border-[#C8AA6E] shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all duration-300 uppercase font-bold text-[10px]">
-                        <span className="material-icons-outlined text-sm">admin_panel_settings</span>
+                    <Link to="/admin" className="text-[#C8AA6E] border-2 border-[#C8AA6E]/50 px-3 py-1.5 rounded-lg bg-[#C8AA6E]/10 flex items-center gap-2 hover:bg-[#C8AA6E]/20 hover:border-[#C8AA6E] shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all duration-300 uppercase font-bold text-[9px]">
+                        <span className="material-icons-outlined text-xs">admin_panel_settings</span>
                         Admin
                     </Link>
                 )}
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-6 text-white">
+            <div className="flex items-center space-x-4 xl:space-x-6 text-white">
                 {user ? (
                     <UserDropdown />
                 ) : (

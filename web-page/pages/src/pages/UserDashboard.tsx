@@ -5,6 +5,7 @@ import { orderService, Order } from '@/services/orderService';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import Footer from '@/shared/components/Footer';
+import { sanitizeText } from '@/shared/utils/sanitize';
 
 const UserDashboard: React.FC = () => {
     const { user, isAdmin } = useAuth();
@@ -13,10 +14,20 @@ const UserDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'settings' | 'legal'>('overview');
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const [profileForm, setProfileForm] = useState({
+        nombre: user?.user_metadata?.full_name || '',
+        direccion: user?.user_metadata?.address || '',
+    });
+    const [savingProfile, setSavingProfile] = useState(false);
+    const [profileSaved, setProfileSaved] = useState(false);
 
     useEffect(() => {
         if (user) {
             fetchOrders();
+            setProfileForm({
+                nombre: user.user_metadata?.full_name || '',
+                direccion: user.user_metadata?.address || '',
+            });
         }
     }, [user]);
 
@@ -36,6 +47,21 @@ const UserDashboard: React.FC = () => {
 
     const getStatusConfig = (status: string) => {
         return orderService.getStatusConfig(status);
+    };
+
+    const handleSaveSettings = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return;
+        setSavingProfile(true);
+        const { error } = await authService.updateProfile(user.id, {
+            full_name: sanitizeText(profileForm.nombre),
+            address: sanitizeText(profileForm.direccion),
+        });
+        if (!error) {
+            setProfileSaved(true);
+            setTimeout(() => setProfileSaved(false), 3000);
+        }
+        setSavingProfile(false);
     };
 
     return (
@@ -243,13 +269,14 @@ const UserDashboard: React.FC = () => {
                         {activeTab === 'settings' && (
                             <div className="max-w-xl animate-in fade-in slide-in-from-bottom-5 duration-700">
                                 <h2 className="text-3xl font-serif mb-8">Gestión de Perfil</h2>
-                                <form className="space-y-8">
+                                <form onSubmit={handleSaveSettings} className="space-y-8">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3">
                                             <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Nombre de Ritual</label>
                                             <input
                                                 type="text"
-                                                defaultValue={user?.user_metadata?.full_name}
+                                                value={profileForm.nombre}
+                                                onChange={(e) => setProfileForm(prev => ({ ...prev, nombre: e.target.value }))}
                                                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
                                             />
                                         </div>
@@ -257,7 +284,7 @@ const UserDashboard: React.FC = () => {
                                             <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Identidad (Email)</label>
                                             <input
                                                 type="email"
-                                                defaultValue={user?.email}
+                                                value={user?.email || ''}
                                                 disabled
                                                 className="w-full bg-black border border-white/5 rounded-2xl px-6 py-4 text-white/20 cursor-not-allowed"
                                             />
@@ -269,14 +296,31 @@ const UserDashboard: React.FC = () => {
                                         <input
                                             type="text"
                                             placeholder="Ciudad, Calle, Edificio..."
-                                            defaultValue={user?.user_metadata?.address}
+                                            value={profileForm.direccion}
+                                            onChange={(e) => setProfileForm(prev => ({ ...prev, direccion: e.target.value }))}
                                             className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
                                         />
                                     </div>
 
-                                    <div className="pt-4">
-                                        <button className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em] hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all">
-                                            Preservar Cambios
+                                    <div className="pt-4 flex items-center gap-4">
+                                        <button
+                                            type="submit"
+                                            disabled={savingProfile}
+                                            className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em] hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        >
+                                            {savingProfile ? (
+                                                <>
+                                                    <span className="material-icons-outlined text-sm animate-spin">refresh</span>
+                                                    Guardando...
+                                                </>
+                                            ) : profileSaved ? (
+                                                <>
+                                                    <span className="material-icons-outlined text-sm">check</span>
+                                                    Cambios guardados
+                                                </>
+                                            ) : (
+                                                'Preservar Cambios'
+                                            )}
                                         </button>
                                     </div>
                                 </form>

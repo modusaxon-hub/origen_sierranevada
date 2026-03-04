@@ -9,6 +9,7 @@ import { shippingService } from '@/services/shippingService';
 import { orderService } from '@/services/orderService';
 import { useLanguage } from '../contexts/LanguageContext';
 import TransferInstructions from '@/shared/components/TransferInstructions';
+import { getWhatsAppLinkWithContext } from '@/constants/contacts';
 
 // Lista de departamentos y sus ciudades principales
 const CITIES_BY_DEPARTMENT: Record<string, string[]> = {
@@ -227,7 +228,59 @@ const CheckoutPage: React.FC = () => {
 
     if (orderSuccess) {
         return (
-            <div className="min-h-screen bg-[#0B120D] flex items-center justify-center p-6 pt-24">
+            <div className="min-h-screen bg-[#0B120D] flex items-center justify-center p-6 pt-24 relative">
+                {/* Modal WhatsApp para confirmar compra */}
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+                    <div className="w-full max-w-md bg-gradient-to-br from-[#0B120D] to-[#050806] border border-[#C5A065]/50 rounded-3xl p-10 shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-500">
+                        {/* Success Icon */}
+                        <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                            <span className="material-icons-outlined text-green-400 text-5xl">check_circle</span>
+                        </div>
+
+                        {/* Title */}
+                        <h2 className="text-3xl font-serif text-[#C5A065] text-center mb-4">¡Pedido Creado!</h2>
+
+                        {/* Order Info */}
+                        <div className="bg-white/5 border border-[#C5A065]/30 rounded-2xl p-6 mb-8 text-center">
+                            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Número de Orden</p>
+                            <p className="text-2xl font-mono text-white mb-6">#{lastOrderId?.slice(0, 8).toUpperCase()}</p>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Total Pagable</p>
+                            <p className="text-3xl font-serif text-[#C5A065]">{formatPrice(lastOrderTotal)}</p>
+                        </div>
+
+                        {/* Instructions */}
+                        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-8">
+                            <p className="text-sm text-white leading-relaxed">
+                                Confirma tu pago enviando el comprobante de transferencia por WhatsApp. Recibirás confirmación en minutos.
+                            </p>
+                        </div>
+
+                        {/* WhatsApp Button (Primary) */}
+                        <a href={getWhatsAppLinkWithContext('order', lastOrderId || '')}
+                           className="block w-full bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1a9a4a] text-white font-bold py-4 px-6 rounded-xl text-center uppercase transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20 mb-4">
+                            💬 Confirmar por WhatsApp
+                        </a>
+
+                        {/* Alternative Actions */}
+                        <button onClick={() => {
+                            setOrderSuccess(false);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="w-full border-2 border-[#C5A065] text-[#C5A065] font-bold py-3 px-6 rounded-xl uppercase tracking-widest hover:bg-[#C5A065] hover:text-black transition-all duration-300 mb-4">
+                            Continuar sin WhatsApp
+                        </button>
+
+                        <button onClick={() => {
+                            setOrderSuccess(false);
+                            clearCart();
+                            navigate('/');
+                        }}
+                        className="w-full text-gray-400 hover:text-white font-bold py-3 px-6 uppercase tracking-widest text-sm transition-colors">
+                            ← Volver al Inicio
+                        </button>
+                    </div>
+                </div>
+
                 <div className="w-full max-w-3xl">
                     <div className="text-center mb-8 animate-fade-in">
                         <div className="w-20 h-20 bg-[#C5A065]/20 rounded-full flex items-center justify-center mx-auto mb-6">

@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/services/supabaseClient';
-import { authService } from '@/services/authService';
+import { authService, ADMIN_EMAIL_WHITELIST } from '@/services/authService';
 
 interface AuthContextType {
     user: User | null;
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         // EMERGENCY WHITELIST: El administrador principal siempre tiene acceso por email
-        if (currentUser.email === 'origensierranevadasm@gmail.com') {
+        if (ADMIN_EMAIL_WHITELIST.includes(currentUser.email || '')) {
             setIsAdmin(true);
             setRoleChecked(true);
             return;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '@/services/authService';
 import { emailService } from '@/services/emailService';
+import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
 import { ShieldCheck, Eye, EyeOff, CheckCircle, Circle, UserPlus, ArrowRight } from 'lucide-react';
 import Logo from '@/shared/components/Logo';
 
@@ -20,6 +21,7 @@ const RegisterPage: React.FC = () => {
     const [success, setSuccess] = useState(false);
 
     const navigate = useNavigate();
+    const { blocked: throttleBlocked, trigger: triggerThrottle } = useSubmitThrottle(2000);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,11 +48,13 @@ const RegisterPage: React.FC = () => {
 
         if (formData.password !== formData.confirmPassword) {
             setError('Las contraseñas no coinciden.');
+            triggerThrottle();
             return;
         }
 
         if (!passwordCheck.isValid) {
             setError('La contraseña no cumple con los estándares de seguridad requeridos.');
+            triggerThrottle();
             return;
         }
 
@@ -66,6 +70,7 @@ const RegisterPage: React.FC = () => {
         if (signUpError) {
             setError(signUpError.message);
             setLoading(false);
+            triggerThrottle();
             return;
         }
 
@@ -114,7 +119,9 @@ const RegisterPage: React.FC = () => {
 
             <div className="w-full max-w-md bg-white/[0.01] backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-3xl shadow-2xl relative z-10">
                 <div className="text-center mb-10">
-                    <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
+                    <Link to="/">
+                        <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)] hover:opacity-80 transition-opacity" />
+                    </Link>
                     <h2 className="text-2xl font-serif text-white italic uppercase tracking-widest mb-2">Únete al Gremio</h2>
                     <p className="text-gray-500 text-sm font-light">Accede a tuestes exclusivos y herramientas de IA.</p>
                 </div>
@@ -251,10 +258,10 @@ const RegisterPage: React.FC = () => {
 
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || throttleBlocked}
                         className="w-full bg-white text-black font-bold uppercase tracking-[0.2em] py-4 rounded-xl hover:bg-[#C8AA6E] transition-all transform hover:-translate-y-1 disabled:opacity-50 flex items-center justify-center gap-3"
                     >
-                        {loading ? 'Creando ritual...' : <><UserPlus size={18} /> Crear Cuenta</>}
+                        {loading ? 'Creando ritual...' : throttleBlocked ? 'Espera 2 segundos' : <><UserPlus size={18} /> Crear Cuenta</>}
                     </button>
                 </form>
 

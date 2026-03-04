@@ -15,6 +15,8 @@ const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const BrewingGuidePage = lazy(() => import('./pages/BrewingGuidePage'));
 const AiLabPage = lazy(() => import('./pages/AiLabPage'));
 const LoginPage = lazy(() => import('./features/auth/pages/LoginPage'));
+const ForgotPasswordPage = lazy(() => import('./features/auth/pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./features/auth/pages/ResetPasswordPage'));
 const Brandbook = lazy(() => import('./pages/Brandbook'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const ProductManager = lazy(() => import('./pages/ProductManager'));
@@ -29,6 +31,7 @@ const MyOrdersPage = lazy(() => import('./pages/MyOrdersPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 // Loading Placeholder
 const PageLoader = () => (
@@ -65,10 +68,13 @@ const App: React.FC = () => {
                                     <Route path="/catalog" element={<Catalog />} />
                                     <Route path="/login" element={<LoginPage />} />
                                     <Route path="/register" element={<RegisterPage />} />
+                                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                                    <Route path="/reset-password" element={<ResetPasswordPage />} />
                                     <Route path="/checkout" element={<CheckoutPage />} />
                                     <Route path="/privacy" element={<PrivacyPolicyPage />} />
                                     <Route path="/terms" element={<TermsPage />} />
                                     <Route path="/track/:orderId" element={<TrackOrderPage />} />
+                                    <Route path="/contact" element={<ContactPage />} />
 
                                     {/* Customer Routes */}
                                     <Route path="/my-orders" element={

@@ -10,6 +10,9 @@ import SEO from '@/shared/components/SEO';
 import ProductDetailsModal from '@/shared/components/ProductDetailsModal';
 import { AccessoryCard } from '@/shared/components/AccessoryCard';
 import { AntojitoCard } from '@/shared/components/AntojitoCard';
+import HistoriaSection from './home/HistoriaSection';
+import MapaOrigenSection from './home/MapaOrigenSection';
+import TestimoniosSection from './home/TestimoniosSection';
 
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
@@ -565,6 +568,11 @@ const HomePage: React.FC = () => {
                     setTimeout(() => setSelectedModalProduct(null), 300); // Clear after fade out
                 }}
             />
+
+            <HistoriaSection />
+            <MapaOrigenSection />
+            <TestimoniosSection />
+
             <Footer />
         </div>
     );

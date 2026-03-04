@@ -2,6 +2,9 @@
 import { supabase } from './supabaseClient';
 import { UserRole, SecurityFlag } from '../types';
 
+// Admin whitelist — única fuente de verdad para emails con acceso admin
+export const ADMIN_EMAIL_WHITELIST = ['origensierranevadasm@gmail.com'];
+
 export const authService = {
     // Sign up creates a new user. 
     // NOTE: By default, Supabase requires email confirmation. 
@@ -138,5 +141,22 @@ export const authService = {
             .eq('id', userId);
 
         return { error };
+    },
+
+    sendPasswordReset: async (email: string) => {
+        return supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/#/reset-password`
+        });
+    },
+
+    updatePassword: async (newPassword: string) => {
+        return supabase.auth.updateUser({ password: newPassword });
+    },
+
+    updateProfile: async (userId: string, data: { full_name?: string; phone?: string; address?: string }) => {
+        return supabase
+            .from('profiles')
+            .update({ ...data, updated_at: new Date().toISOString() })
+            .eq('id', userId);
     }
 };

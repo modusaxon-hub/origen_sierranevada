@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getWhatsAppLink, getWhatsAppMessage, CONTACTS } from '@/constants/contacts';
 
 const BASE_URL = 'https://origen2025.share.zrok.io';
 const LOGO_URL = `${BASE_URL}/logo-origen-sierra-nevada.svg`;
@@ -118,6 +119,16 @@ export const emailService = {
                                     </div>
 
                                     <p style="font-size: 13px; color: rgba(255,255,255,0.4);">Prepárate para redescubrir lo que significa una verdadera taza de café.</p>
+
+                                    <div style="margin: 40px 0; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 24px;">
+                                        <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">
+                                            ¿Preguntas sobre tu acceso?
+                                        </p>
+                                        <a href="https://wa.me/${CONTACTS.whatsapp.number.replace('+', '')}?text=${encodeURIComponent(getWhatsAppMessage('support'))}"
+                                           style="background: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;">
+                                            💬 Contáctanos por WhatsApp
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="footer">
                                     <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.2);">© 2026 Origen Sierra Nevada SM • Santa Marta, Colombia</p>
@@ -208,6 +219,16 @@ export const emailService = {
 
                                     <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Recibirás una notificación cuando tu pedido sea despachado.</p>
                                     <a href="${BASE_URL}/#/account" style="display: inline-block; background: #C5A065; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 24px; font-size: 12px; text-transform: uppercase;">Rastrear mi pedido</a>
+
+                                    <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 20px;">
+                                        <p style="color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">
+                                            ¿Necesitas confirmar tu pago o tienes preguntas?
+                                        </p>
+                                        <a href="https://wa.me/${CONTACTS.whatsapp.number.replace('+', '')}?text=${encodeURIComponent('Hola, adjunto comprobante del pedido')}"
+                                           style="background: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">
+                                            💬 Confirmar por WhatsApp
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="footer">ORIGEN SIERRA NEVADA SM • SANTA MARTA, COLOMBIA</div>
                             </div>
@@ -318,11 +339,21 @@ export const emailService = {
                             <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.6);">
                                 Estamos trabajando para que disfrutes la esencia de la Sierra Nevada lo antes posible.
                             </p>
-                            
+
                             <div style="margin-top: 40px;">
                                 <a href="${BASE_URL}/#/track/${orderId}" style="background: #C5A065; color: black; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Ver Detalles del Pedido</a>
                             </div>
-                            
+
+                            <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 20px;">
+                                <p style="color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">
+                                    ¿Preguntas sobre tu envío?
+                                </p>
+                                <a href="https://wa.me/${CONTACTS.whatsapp.number.replace('+', '')}?text=${encodeURIComponent('Hola, tengo una pregunta sobre mi pedido')} "
+                                   style="background: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">
+                                    💬 Contáctanos por WhatsApp
+                                </a>
+                            </div>
+
                             <p style="margin-top: 50px; font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 2px;">
                                 ORIGEN SIERRA NEVADA SM • TRANSMITIENDO EL RITUAL DEL CAFÉ
                             </p>

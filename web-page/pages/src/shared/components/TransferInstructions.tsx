@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getWhatsAppLinkWithContext } from '@/constants/contacts';
 
 const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ orderId, total }) => {
     const { formatPrice } = useLanguage();
@@ -72,7 +73,7 @@ const TransferInstructions: React.FC<{ orderId: number, total: number }> = ({ or
                     Una vez realizado el pago, envía el comprobante a nuestro WhatsApp indicando tu número de pedido: <strong className="text-[#C5A065]">#{orderId}</strong>
                 </p>
                 <a
-                    href={`https://wa.me/573107405154?text=Hola,%20adjunto%20comprobante%20del%20pedido%20%23${orderId}`}
+                    href={getWhatsAppLinkWithContext('order', orderId.toString())}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 text-[#C5A065] hover:text-white transition-colors font-bold text-sm uppercase tracking-wider mt-2 border border-[#C5A065]/30 px-6 py-3 rounded-full hover:bg-[#C5A065] hover:text-black hover:border-transparent"

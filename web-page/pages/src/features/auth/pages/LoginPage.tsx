@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '@/services/authService';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
 import Logo from '@/shared/components/Logo';
 
 const LoginPage: React.FC = () => {
@@ -13,6 +14,7 @@ const LoginPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { refreshAuth } = useAuth();
+    const { blocked: throttleBlocked, trigger: triggerThrottle } = useSubmitThrottle(3000);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,6 +57,7 @@ const LoginPage: React.FC = () => {
         } catch (err: any) {
             console.error("Login Error:", err);
             setError(err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
+            triggerThrottle(); // Throttle en error para evitar spam
         } finally {
             // ALWAYS unlock the button
             setLoading(false);
@@ -67,7 +70,9 @@ const LoginPage: React.FC = () => {
 
                 <div className="text-center mb-10">
                     <div className="inline-block relative mb-8">
-                        <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)]" />
+                        <Link to="/">
+                            <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)] hover:opacity-80 transition-opacity" />
+                        </Link>
                     </div>
 
                     <h2 className="font-display text-3xl text-white mb-2 tracking-wide">Bienvenido</h2>
@@ -96,7 +101,7 @@ const LoginPage: React.FC = () => {
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <label className="block text-[#C5A065] text-xs uppercase tracking-widest font-bold ml-1">Contraseña</label>
-                            <a href="#" className="text-xs text-white/40 hover:text-[#C5A065] transition-colors underline decoration-white/20 hover:decoration-[#C5A065]">¿Olvidaste tu contraseña?</a>
+                            <Link to="/forgot-password" className="text-xs text-white/40 hover:text-[#C5A065] transition-colors underline decoration-white/20 hover:decoration-[#C5A065]">¿Olvidaste tu contraseña?</Link>
                         </div>
                         <div className="relative">
                             <input
@@ -120,10 +125,10 @@ const LoginPage: React.FC = () => {
 
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || throttleBlocked}
                         className="w-full bg-gradient-to-r from-[#C5A065] to-[#AA771C] text-black font-bold uppercase tracking-widest py-4 rounded-lg hover:shadow-[0_0_30px_rgba(197,160,101,0.3)] transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                     >
-                        {loading ? 'Verificando...' : 'Iniciar Sesión'}
+                        {loading ? 'Verificando...' : throttleBlocked ? 'Espera 3 segundos' : 'Iniciar Sesión'}
                     </button>
                 </form>
 

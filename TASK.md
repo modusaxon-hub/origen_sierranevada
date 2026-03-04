@@ -135,24 +135,29 @@ Si todo se ejecuta correctamente:
 | **RECON-001** | 🧠 **Brainstorming Pro — Ideas de Reconstrucción** | ✅ COMPLETADO | `BRAINSTORMING_RECONSTRUCCION.html` generado. 23 ideas, TOP 5 seleccionado |
 | **RECON-002** | ⚖️ **Compliance Legal + Factura Electrónica** | ✅ COMPLETADO | `COMPLIANCE_LEGAL.html` generado. Res.000042/2020 DIAN + Ley 1581 + WCAG 2.1 |
 | **RECON-003** | 🗺️ **Roadmap de Construcción — 4 Fases** | ✅ COMPLETADO | `ROADMAP_CONSTRUCCION.html` generado. 6 semanas, 12 módulos, 5 riesgos, checklist 16 items |
-| **F1-001** | 🏗️ **Arquitectura React Modular** | ⏳ EN PROCESO | Feature-folders + Zustand + Refactor src/ |
-| **F1-002** | 🗄️ **Supabase DB Schema** | ⏳ TODO | 10 tablas: users, orders, payments, invoices, financial_records, audit_logs... |
-| **F1-003** | 🔐 **RLS + Auth por roles** | ⏳ TODO | Admin / Cliente / Proveedor |
-| **F1-004** | 🎨 **Design Tokens (Brandbook → CSS)** | ⏳ TODO | Paleta #141E16/#C8AA6E + Playfair Display + Montserrat |
+| **F1-001** | 🏗️ **Arquitectura React Modular** | ✅ COMPLETADO | Feature-folders + Refactor src/ + vite-plugin-svgr → img URL |
+| **F1-002** | 🗄️ **Supabase DB Schema** | ✅ COMPLETADO | 12 tablas (F1/F2/F3) + Perfiles UUID + Seed de productos (04 Mar 2026) |
+| **F1-003** | 🔐 **RLS + Auth por roles (Multi-nivel)** | ✅ COMPLETADO | Administrador, Colaborador, Proveedor, Usuario (roles_setup.sql) |
+| **F1-004** | 🎨 **Design Tokens (Modus Axon AI)** | ✅ COMPLETADO | Paleta Obsidian Core / Cyber Green / Neural Purple (04 Mar 2026) |
 | **F1-005** | 📱 **PWA App Shell + Manifest** | ⏳ TODO | manifest.json + service worker + offline fallback |
-| **F1-006** | 📋 **AI_LOG_CUMPLIMIENTO.md** | ⏳ TODO | Bitácora de cumplimiento en raíz del proyecto |
-| **F2-001** | ✨ **Hero Carrusel Glassmorphism** | ⏳ TODO | Embla Carousel + parallax + glass cards flotantes |
-| **F2-002** | 🌐 **Secciones Landing** | ⏳ TODO | Despensa · Productos · Historia · Mapa origen · Testimonios |
-| **F2-003** | 🔀 **Bifurcación B2C + B2B** | ⏳ TODO | 2 CTAs: Comprador vs Proveedor |
-| **F2-004** | 📝 **Formulario Proveedores** | ⏳ TODO | Supabase + Resend notificación admin |
-| **F2-005** | 🍪 **CookieBanner + Compliance UI** | ⏳ TODO | Ley 1581 + logs consentimiento en Supabase |
-| **F3-001** | 🔑 **Auth Completo** | ⏳ TODO | Registro / Login / Recuperación / Redirección por rol |
-| **F3-002** | ⚙️ **Dashboard Admin** | ⏳ TODO | Métricas RT · Inventario · Pedidos · Usuarios |
-| **F3-003** | 👤 **Dashboard Cliente** | ⏳ TODO | Perfil · Historial · Facturas PDF · Solicitud datos |
-| **F3-004** | 💳 **Zona de Pagos** | ⏳ TODO | QR dinámico + Nequi/Daviplata/PSE/Llave + confirmación WhatsApp |
+| **F1-006** | 📋 **AI_LOG_CUMPLIMIENTO.md** | ✅ COMPLETADO | Bitácora de cumplimiento generada y actualizada |
+| **F2-001** | ✨ **Hero "Despensa Exhibidora"** | ✅ COMPLETADO | Despensa glassmorphism = hero section. CSS puro, sin carousel externo |
+| **F2-002** | 🌐 **Secciones Landing** | ✅ COMPLETADO | HistoriaSection + MapaOrigenSection + TestimoniosSection creadas (04 Mar 2026) |
+| **F2-003** | 🔀 **Bifurcación B2C + B2B** | ✅ COMPLETADO | BifurcacionSection.tsx — 2 cards glassmorphism, navigate('/catalog') + modal (04 Mar 2026) |
+| **F2-004** | 📝 **Formulario Proveedores** | ✅ COMPLETADO | ProveedorModal.tsx — 7 campos, Supabase insert + emailService.sendOrderNotification (04 Mar 2026) |
+| **F2-005** | 🍪 **CookieBanner + Compliance UI** | ✅ COMPLETADO | Ley 1581 + logs consentimiento incorporados (04 Mar 2026) |
+| **F2-006** | 🔍 **QA - Pruebas Funcionales F2** | ✅ COMPLETADO | Auditoría completa con reporte en Documentation/Technical/INFORME_PRUEBAS_F2.md (04 Mar 2026) |
+| **F3-001** | 🔑 **Auth Completo** | ✅ COMPLETADO | ForgotPasswordPage + ResetPasswordPage + authService funciones + whitelist unificada (04 Mar 2026) |
+| **F3-002** | ⚙️ **Dashboard Admin** | ✅ COMPLETADO | KPI cards: Ventas hoy/mes · Usuarios pendientes · Stock crítico + barras pedidos por estado (04 Mar 2026) |
+| **F3-003** | 👤 **Dashboard Cliente** | ✅ COMPLETADO | Settings tab funcional: inputs controlados + handleSaveSettings + sanitizeText + feedback (04 Mar 2026) |
+| **F3-003.1** | 📦 **Deploy a Staging** | ✅ COMPLETADO | Build optimizado copiado a htdocs/ — npm run build: 0 errores, 620 KB CSS, 520 KB JS (04 Mar 2026) |
+| **F3-004** | 💳 **Zona de Pagos** | ⏳ EN DISEÑO | QR dinámico + Nequi/Daviplata/PSE/Llave + confirmación WhatsApp |
 | **F3-005** | 🧾 **Factura Electrónica DIAN** | ⏳ TODO | PTA Alegra API · XML UBL 2.1 · CUFE · PDF via Resend |
-| **F3-006** | 💬 **WhatsApp + Email Flows** | ⏳ TODO | wa.me links + Resend: welcome → compra → factura |
-| **F3-007** | 🛡️ **Seguridad OWASP** | ⏳ TODO | CSP · Rate limiting · Inputs sanitizados · Audit logs |
+| **F3-006** | 💬 **WhatsApp + Email Flows** | ✅ COMPLETADO | wa.me links en 3 templates + ContactPage + Modal post-orden + constantes centralizadas (04 Mar 2026) |
+| **F3-006.1** | 🗑️ **Limpiar UI — Remover "¿Quién eres tú?"** | ✅ COMPLETADO | HomePage: Eliminada BifurcacionSection + ProveedorModal (imports, estado, JSX) (04 Mar 2026) |
+| **F3-006.2** | 🧹 **Limpiar Código Huérfano** | ✅ COMPLETADO | Eliminados archivos: BifurcacionSection.tsx, ProveedorModal.tsx (sin referencias activas) (04 Mar 2026) |
+| **F3-006.3** | 🔧 **Optimizar AdminDashboard** | ✅ COMPLETADO | Promise.all() para queries paralelas + cleanup en useEffect para evitar race conditions (04 Mar 2026) |
+| **F3-007** | 🛡️ **Seguridad OWASP** | ✅ COMPLETADO | useSubmitThrottle + sanitize.ts + CSP meta tag (04 Mar 2026) |
 | **F4-001** | 📊 **Sistema Financiero** | ⏳ TODO | Recharts · Flujo de caja · IVA · Export PDF/Excel |
 | **F4-002** | 📈 **Proyección de Crecimiento** | ⏳ TODO | 3/6/12 meses · 3 escenarios · Alerta stock crítico |
 | **F4-003** | 📉 **Big Data — GA4 + Patrones** | ⏳ TODO | Eventos personalizados + dashboard patrones de compra |
@@ -188,7 +193,7 @@ Si todo se ejecuta correctamente:
 | **LOGO-009** | 🛑 **Puerto fijo del servidor** | ✅ COMPLETADO | `port: 5000, strictPort: true` — URL permanente: http://127.0.0.1:5000 |
 | **LOGO-010** | 📄 **BUILD_PROJECT.html** | ✅ COMPLETADO | Bitácora técnica en `technical/BUILD_PROJECT.html` |
 
-**Última actualización:** 03 Mar 2026
+**Última actualización:** 04 Mar 2026 — Migración a Supabase dedicada + Sistema de Roles Multi-nivel completo.
 
 ---
 
@@ -203,5 +208,5 @@ Si todo se ejecuta correctamente:
 
 ---
 
-**Última actualización:** 03 Mar 2026
-**Próxima acción:** Iniciar F1-001 — Arquitectura React Modular
+**Última actualización:** 04 Mar 2026 — F3-001 al F3-003 + F3-007 + Migración DB + Roles (F1-002, F1-003) completos.
+**Próxima acción:** F3-004 Zona de Pagos · F3-005 Factura DIAN · F3-006 WhatsApp/Email.

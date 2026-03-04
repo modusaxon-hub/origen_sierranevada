@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Logo from '@/shared/components/Logo';
@@ -18,12 +18,12 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMobileMenuOpen, setIsMobileMenu
     return (
         <div className="w-full lg:hidden flex flex-col bg-background-dark/95 backdrop-blur-md border-b border-white/10 shadow-xl overflow-hidden">
             {/* Tier 1: Logo Throne (Centered) */}
-            <div
+            <Link
+                to="/"
                 className="w-full flex justify-center py-6 border-b border-[#C8AA6E]/20 cursor-pointer hover:bg-[#C8AA6E]/5 transition-all duration-300 active:scale-95"
-                onClick={() => navigate('/')}
             >
                 <Logo className="h-[28px] sm:h-[36px] md:h-[46px] w-auto object-contain drop-shadow-[0_0_20px_rgba(200,170,110,0.3)] brightness-110 hover:brightness-125 transition-all" />
-            </div>
+            </Link>
 
             {/* Tier 2: Icons & Actions */}
             <div className="w-full flex justify-between items-center px-4 py-2 bg-white/[0.02]">
