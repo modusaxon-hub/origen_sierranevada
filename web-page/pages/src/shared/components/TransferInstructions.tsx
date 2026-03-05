@@ -1,133 +1,113 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { getWhatsAppLinkWithContext, getWhatsAppOrderDetailLink, type OrderWhatsAppDetail } from '@/constants/contacts';
+import { getWhatsAppOrderDetailLink, getWhatsAppLinkWithContext, type OrderWhatsAppDetail } from '@/constants/contacts';
 
 interface TransferInstructionsProps {
-    orderId: string;  // FIX: cambio de number a string (es UUID)
+    orderId: string;
     total: number;
-    orderDetail?: OrderWhatsAppDetail;  // NUEVO: detalles completos para WhatsApp detallado
+    orderDetail?: OrderWhatsAppDetail;
+    onReadyToUpload?: () => void;
 }
 
-const TransferInstructions: React.FC<TransferInstructionsProps> = ({ orderId, total, orderDetail }) => {
+const NEQUI_NUMBER = '3107405154';
+const NEQUI_DISPLAY = '310 740 5154';
+
+const TransferInstructions: React.FC<TransferInstructionsProps> = ({
+    orderId,
+    total,
+    orderDetail,
+    onReadyToUpload,
+}) => {
     const { formatPrice } = useLanguage();
-    const [copiedNequi, setCopiedNequi] = useState(false);
-    const [copiedBanco, setCopiedBanco] = useState(false);
+    const [copied, setCopied] = useState(false);
 
-    // NUEVO: QR dinámico por orden (contiene Nequi + monto + referencia)
-    const qrData = encodeURIComponent(
-        `ORIGEN SIERRA NEVADA\nNequi: 3107405154\nMonto: $${total.toLocaleString('es-CO')} COP\nRef: ORD-${orderId.slice(0, 8).toUpperCase()}`
-    );
-    const dynamicQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}&margin=4&format=png`;
+    const ref = orderId.slice(0, 8).toUpperCase();
 
-    // NUEVO: Copy-to-clipboard funcional
-    const handleCopy = async (text: string, setter: (v: boolean) => void) => {
+    const whatsappLink = orderDetail
+        ? getWhatsAppOrderDetailLink(orderDetail)
+        : getWhatsAppLinkWithContext('order', orderId);
+
+    const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(NEQUI_NUMBER);
         } catch {
-            // Fallback para navegadores sin soporte
             const el = document.createElement('textarea');
-            el.value = text;
+            el.value = NEQUI_NUMBER;
             document.body.appendChild(el);
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
         }
-        setter(true);
-        setTimeout(() => setter(false), 2000);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
     };
 
-    // NUEVO: Usar WhatsApp detallado si viene orderDetail, si no usar el genérico
-    const whatsappLink = orderDetail
-        ? getWhatsAppOrderDetailLink(orderDetail)
-        : getWhatsAppLinkWithContext('order', orderId);
-
     return (
-        <div className="bg-[#1A261D] border border-[#C5A065]/30 rounded-2xl p-8 max-w-2xl mx-auto animate-fade-in relative overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A065]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div className="bg-[#1A261D] border border-[#C5A065]/30 rounded-2xl overflow-hidden max-w-2xl mx-auto">
 
-            <div className="text-center mb-8 relative z-10">
-                <div className="w-16 h-16 bg-[#C5A065]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#C5A065]/20">
-                    <span className="material-icons-outlined text-[#C5A065] text-3xl">account_balance</span>
+            {/* Header */}
+            <div className="bg-[#C5A065]/10 border-b border-[#C5A065]/20 px-6 py-4 flex items-center justify-between">
+                <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest">Orden #{ref}</p>
+                    <p className="text-2xl font-serif text-[#C5A065]">{formatPrice(total)}</p>
                 </div>
-                <h2 className="font-serif text-2xl text-[#C5A065] mb-2">Transferencia Bancaria</h2>
-                <p className="text-gray-400 text-sm">Realiza el pago a cualquiera de nuestras cuentas oficiales</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
-                {/* QR Code Section - ACTUALIZADO: QR dinámico */}
-                <div className="flex flex-col items-center justify-center bg-white/5 p-8 rounded-2xl border border-white/10 shadow-2xl">
-                    <div className="bg-white p-4 rounded-xl mb-4 shadow-[0_0_30px_rgba(255,255,255,0.1)] group transition-transform hover:scale-105 duration-500">
-                        <img
-                            src={dynamicQrUrl}
-                            alt="QR Pago Dinámico"
-                            className="w-48 h-48 object-contain contrast-[1.1] brightness-[1.05]"
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5A065] animate-pulse"></span>
-                        <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Escaneo de Alta Fidelidad</span>
-                    </div>
-                </div>
-
-                {/* Account Details Section - ACTUALIZADO: copy buttons funcionales */}
-                <div className="space-y-6">
-                    <div className="space-y-1">
-                        <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Total a Pagar</p>
-                        <p className="text-3xl font-serif text-white">{formatPrice(total)}</p>
-                    </div>
-
-                    <div className="h-px bg-white/10 w-full"></div>
-
-                    <div className="space-y-4">
-                        <div className="group">
-                            <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1 group-hover:text-[#C5A065] transition-colors">Bancolombia Ahorros</p>
-                            <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg border border-white/5 group-hover:border-[#C5A065]/30 transition-all">
-                                <span className="font-mono text-lg text-white tracking-wider">000-000-0000</span>
-                                <button
-                                    onClick={() => handleCopy('000-000-0000', setCopiedBanco)}
-                                    className="text-gray-500 hover:text-white transition-colors"
-                                    title="Copiar número de cuenta"
-                                >
-                                    <span className="material-icons-outlined text-sm">
-                                        {copiedBanco ? 'check' : 'content_copy'}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="group">
-                            <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1 group-hover:text-[#C5A065] transition-colors">Nequi</p>
-                            <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg border border-white/5 group-hover:border-[#C5A065]/30 transition-all">
-                                <span className="font-mono text-lg text-white tracking-wider">310 740 5154</span>
-                                <button
-                                    onClick={() => handleCopy('3107405154', setCopiedNequi)}
-                                    className="text-gray-500 hover:text-white transition-colors"
-                                    title="Copiar número Nequi"
-                                >
-                                    <span className="material-icons-outlined text-sm">
-                                        {copiedNequi ? 'check' : 'content_copy'}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-2 text-xs text-[#8B5CF6] bg-[#8B5CF6]/10 border border-[#8B5CF6]/30 px-3 py-1.5 rounded-full">
+                    <span>💜</span>
+                    <span className="font-bold">Nequi</span>
                 </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 text-center relative z-10">
-                <p className="text-sm text-gray-300 mb-2">
-                    Una vez realizado el pago, envía el comprobante a nuestro WhatsApp indicando tu número de pedido: <strong className="text-[#C5A065]">#{orderId.slice(0, 8).toUpperCase()}</strong>
-                </p>
+            <div className="p-6 space-y-5">
+
+                {/* Número Nequi */}
+                <div>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Envía tu pago a este número Nequi</p>
+                    <div className="flex items-center justify-between bg-black/40 border border-[#8B5CF6]/30 rounded-xl p-4">
+                        <span className="font-mono text-3xl text-white tracking-widest">{NEQUI_DISPLAY}</span>
+                        <button
+                            onClick={handleCopy}
+                            className="flex items-center gap-1.5 text-sm border px-4 py-2.5 rounded-lg transition-all font-bold"
+                            style={{
+                                borderColor: copied ? '#22c55e' : '#8B5CF6',
+                                color: copied ? '#22c55e' : '#A78BFA',
+                            }}
+                        >
+                            <span className="material-icons-outlined text-base">{copied ? 'check' : 'content_copy'}</span>
+                            {copied ? '¡Copiado!' : 'Copiar'}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Detalle */}
+                <div className="bg-black/20 rounded-xl px-5 py-4 flex flex-col sm:flex-row gap-4 sm:gap-8">
+                    <div>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Monto exacto</p>
+                        <p className="text-lg font-bold text-white">{formatPrice(total)}</p>
+                    </div>
+                    <div>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Referencia</p>
+                        <p className="text-lg font-bold text-[#C5A065]">ORD-{ref}</p>
+                    </div>
+                </div>
+
+                {/* Acciones */}
+                <button
+                    onClick={onReadyToUpload}
+                    className="w-full bg-[#C5A065] hover:bg-[#D4AF74] text-black font-bold py-4 px-6 rounded-xl uppercase tracking-widest text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-[#C5A065]/20"
+                >
+                    <span className="material-icons-outlined text-sm">cloud_upload</span>
+                    Ya Pagué — Subir Comprobante
+                </button>
+
                 <a
                     href={whatsappLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-[#C5A065] hover:text-white transition-colors font-bold text-sm uppercase tracking-wider mt-2 border border-[#C5A065]/30 px-6 py-3 rounded-full hover:bg-[#C5A065] hover:text-black hover:border-transparent"
+                    className="w-full flex items-center justify-center gap-2 border border-[#25D366]/40 text-[#25D366] hover:bg-[#25D366]/10 font-bold py-3 px-6 rounded-xl uppercase tracking-widest text-sm transition-all"
                 >
-                    <span className="material-icons-outlined">send</span>
-                    Enviar Comprobante
+                    <span className="material-icons-outlined text-sm">send</span>
+                    Enviar Comprobante por WhatsApp
                 </a>
             </div>
         </div>

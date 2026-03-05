@@ -20,9 +20,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMobileMenuOpen, setIsMobileMenu
             {/* Tier 1: Logo Throne (Centered) */}
             <Link
                 to="/"
-                className="w-full flex justify-center py-6 border-b border-[#C8AA6E]/20 cursor-pointer hover:bg-[#C8AA6E]/5 transition-all duration-300 active:scale-95"
+                className="w-full flex justify-center py-8 border-b border-[#C8AA6E]/20 cursor-pointer hover:bg-[#C8AA6E]/5 transition-all duration-500 active:scale-95"
             >
-                <Logo className="h-[28px] sm:h-[36px] md:h-[46px] w-auto object-contain drop-shadow-[0_0_20px_rgba(200,170,110,0.3)] brightness-110 hover:brightness-125 transition-all" />
+                <Logo className="h-[34px] sm:h-[46px] md:h-[56px] w-auto object-contain" />
             </Link>
 
             {/* Tier 2: Icons & Actions */}

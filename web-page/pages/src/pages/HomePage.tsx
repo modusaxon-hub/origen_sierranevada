@@ -367,20 +367,41 @@ const HomePage: React.FC = () => {
                                         onTouchEnd={onTouchEnd}
                                     >
                                         <div className="relative w-[180px] h-[225px] md:w-[250px] md:h-[315px] lg:w-[220px] lg:h-[285px] xl:w-[315px] xl:h-[415px] 2xl:w-[450px] 2xl:h-[570px] shrink-0 mx-auto flex items-center justify-center" key={currentProduct.id}>
-                                            {/* Design Element: Static circular ring */}
-                                            <div className="hero-bottom-ring translate-y-[10px]"></div>
 
-                                            {/* Product Image Container - Handles static offset to avoid animation override */}
-                                            <div className="absolute inset-0 flex items-center justify-center translate-y-[65px] z-20">
-                                                <img
-                                                    src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
-                                                    alt={currentProduct.name[lang]}
-                                                    className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float-hero-pop"
-                                                />
+                                            {/* Dual Ring Portal - Depth Effect with SVG Surgical Clip */}
+                                            <div className="absolute inset-0 flex items-center justify-center translate-y-[10px]">
+                                                <div className="relative w-full aspect-square">
+                                                    {/* SVG ClipPath Definition (Hidden) */}
+                                                    <svg width="0" height="0" className="absolute">
+                                                        <defs>
+                                                            <clipPath id="hero-surgical-clip" clipPathUnits="objectBoundingBox">
+                                                                {/* Path: Start far above (-10) to avoid any top clipping, then curve the bottom half */}
+                                                                <path d="M 0,-10 L 1,-10 L 1,0.5 A 0.5,0.5 0 0,1 0,0.5 Z" />
+                                                            </clipPath>
+                                                        </defs>
+                                                    </svg>
+
+                                                    {/* Background Layer: Top Half-Ring (Behind Product) */}
+                                                    <div className="hero-top-ring inset-0"></div>
+
+                                                    {/* Middle Layer: Product Image with SVG clip-path for bottom-only clipping */}
+                                                    <div className="hero-pop-svg-mask absolute inset-0">
+                                                        <div className="absolute inset-x-0 bottom-0 translate-y-[18%]">
+                                                            <img
+                                                                src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                                alt={currentProduct.name[lang]}
+                                                                className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float-hero-pop"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Foreground Layer: Bottom Half-Ring (In Front of Product) */}
+                                                    <div className="hero-bottom-ring inset-0"></div>
+                                                </div>
                                             </div>
 
-                                            {/* Subtle base shadow for better integration - Adjust position for new image level */}
-                                            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-4/5 h-[30px] bg-black/40 blur-3xl rounded-full -rotate-2 z-10"></div>
+                                            {/* Subtle base shadow - Restored to original aesthetic */}
+                                            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-4/5 h-[20px] bg-black/40 blur-2xl rounded-full -rotate-2 z-10"></div>
                                         </div>
                                     </div>
 

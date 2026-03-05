@@ -338,6 +338,17 @@ CREATE TRIGGER on_auth_user_created
 -- FASE 11: RLS POLICIES (Seguridad - SIN RECURSIÓN)
 -- ========================================================
 
+-- Función auxiliar para verificar admin SIN recursión (SECURITY DEFINER bypasea RLS)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql SECURITY DEFINER STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role_name = 'Administrador'
+  );
+$$;
+
 -- PROFILES TABLE
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
@@ -345,14 +356,7 @@ CREATE POLICY "profiles_own_read" ON public.profiles FOR
 SELECT USING (auth.uid () = id);
 
 CREATE POLICY "profiles_admin_read" ON public.profiles FOR
-SELECT USING (
-        auth.uid () IN (
-            SELECT id
-            FROM public.profiles
-            WHERE
-                role_name = 'Administrador'
-        )
-    );
+SELECT USING (public.is_admin());
 
 CREATE POLICY "profiles_own_update" ON public.profiles FOR
 UPDATE USING (auth.uid () = id)
@@ -360,14 +364,7 @@ WITH
     CHECK (auth.uid () = id);
 
 CREATE POLICY "profiles_admin_update" ON public.profiles FOR
-UPDATE USING (
-    auth.uid () IN (
-        SELECT id
-        FROM public.profiles
-        WHERE
-            role_name = 'Administrador'
-    )
-);
+UPDATE USING (public.is_admin());
 
 CREATE POLICY "profiles_own_insert" ON public.profiles FOR
 INSERT
@@ -425,7 +422,10 @@ CREATE POLICY "products_admin_delete" ON public.products FOR DELETE USING (
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "orders_own_read" ON public.orders FOR
-SELECT USING (auth.uid () = user_id);
+SELECT USING (
+    auth.uid () = user_id
+    OR user_id IS NULL
+);
 
 CREATE POLICY "orders_admin_read" ON public.orders FOR
 SELECT USING (
@@ -440,7 +440,10 @@ SELECT USING (
 CREATE POLICY "orders_own_insert" ON public.orders FOR
 INSERT
 WITH
-    CHECK (auth.uid () = user_id);
+    CHECK (
+        (auth.uid () IS NOT NULL AND auth.uid () = user_id)
+        OR (user_id IS NULL)
+    );
 
 -- ORDER_ITEMS TABLE
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
@@ -562,6 +565,7 @@ DROP POLICY IF EXISTS "Admins pueden subir imágenes de productos" ON storage.ob
 DROP POLICY IF EXISTS "Admins pueden actualizar imágenes de productos" ON storage.objects;
 
 DROP POLICY IF EXISTS "Admins pueden borrar imágenes de productos" ON storage.objects;
+DROP POLICY IF EXISTS "Usuarios autenticados pueden gestionar imágenes" ON storage.objects;
 
 -- 3. Crear políticas para el sistema de roles consolidado
 
@@ -591,31 +595,10 @@ WITH
 -- ========================================================
 -- FASE 15: DATOS DE PRUEBA (Perfiles y Muestra)
 -- ========================================================
-
--- Perfil de Administrador (UUID de ejemplo para desarrollo)
-INSERT INTO public.profiles (
-    id, email, full_name, role_name, status, phone, address
-) VALUES (
-    '00000000-0000-0000-0000-000000000001'::uuid,
-    'admin@origensierranevada.com',
-    'Administrador Origen',
-    'Administrador',
-    'active',
-    '+573107405154',
-    'Santa Marta, Colombia'
-) ON CONFLICT (id) DO NOTHING;
-
--- Usuarios de Prueba
-INSERT INTO public.profiles (
-    id, email, full_name, role_name, status
-) VALUES 
-(
-    '00000000-0000-0000-0000-000000000002'::uuid,
-    'cliente@origen.com',
-    'Cliente VIP Sierra',
-    'Usuario',
-    'active'
-) ON CONFLICT (id) DO NOTHING;
+-- NOTA: Los perfiles de usuarios reales se crean automáticamente:
+--   a) Por el trigger on_auth_user_created (nuevos registros)
+--   b) Por MIGRACIÓN 002 abajo (usuarios existentes sin perfil)
+-- NO insertar UUIDs falsos aquí — violan FK con auth.users
 
 -- ========================================================
 -- VERIFICACIÓN FINAL
@@ -636,9 +619,109 @@ SELECT
     ) as total_roles;
 
 -- ========================================================
+-- MIGRACIONES ACUMULADAS — 04 Mar 2026
+-- Aplicar en Supabase SQL Editor (idempotentes, seguros de re-ejecutar)
+-- ========================================================
+
+-- -------------------------------------------------------
+-- MIGRACIÓN 001: Permitir total_amount = 0 en orders
+-- Motivo: Necesario para pruebas de compra con precio cero
+-- -------------------------------------------------------
+ALTER TABLE public.orders
+    DROP CONSTRAINT IF EXISTS orders_total_amount_check;
+
+ALTER TABLE public.orders
+    ADD CONSTRAINT orders_total_amount_check
+    CHECK (total_amount >= 0);
+
+-- -------------------------------------------------------
+-- MIGRACIÓN 002: Insertar perfiles para usuarios existentes
+-- Motivo: El trigger handle_new_user() NO retroactivo
+--         Si el admin se registró antes del trigger, su perfil falta
+--         → FK violation en orders (orders_user_id_fkey)
+-- -------------------------------------------------------
+INSERT INTO public.profiles (id, email, full_name, role_name, status)
+SELECT
+    u.id,
+    u.email,
+    COALESCE(u.raw_user_meta_data->>'full_name', split_part(u.email, '@', 1)),
+    CASE
+        WHEN u.email = 'origensierranevadasm@gmail.com' THEN 'Administrador'
+        ELSE 'Usuario'
+    END,
+    'active'
+FROM auth.users u
+WHERE u.id NOT IN (SELECT id FROM public.profiles)
+ON CONFLICT (id) DO NOTHING;
+
+-- -------------------------------------------------------
+-- MIGRACIÓN 003: Corregir precios de productos
+-- Motivo: Seed inicial tenía precios en escala USD (18/24),
+--         debían estar en COP (72000/96000)
+-- -------------------------------------------------------
+UPDATE public.products
+SET price = 72000
+WHERE name->>'es' ILIKE '%Café Malú%' AND price < 1000;
+
+UPDATE public.products
+SET price = 96000
+WHERE name->>'es' ILIKE '%Sombra Sagrada%' AND price < 1000;
+
+-- -------------------------------------------------------
+-- MIGRACIÓN 004: Agregar columna contact_phone a orders si no existe
+-- Motivo: CheckoutPage ahora envía contact_phone
+-- -------------------------------------------------------
+ALTER TABLE public.orders
+    ADD COLUMN IF NOT EXISTS contact_phone TEXT;
+
+-- -------------------------------------------------------
+-- VERIFICACIÓN DE MIGRACIONES
+-- -------------------------------------------------------
+SELECT
+    '=== VERIFICACIÓN MIGRACIONES 04 Mar 2026 ===' AS info,
+    (SELECT COUNT(*) FROM public.profiles) AS total_perfiles,
+    (SELECT COUNT(*) FROM public.profiles WHERE role_name = 'Administrador') AS admins,
+    (SELECT COUNT(*) FROM public.products WHERE price >= 1000) AS productos_precio_valido,
+    (SELECT COUNT(*) FROM auth.users WHERE id NOT IN (SELECT id FROM public.profiles)) AS usuarios_sin_perfil;
+
+-- ========================================================
+-- MIGRACIÓN 005: Bucket 'payments' para comprobantes
+-- Ejecutar UNA SOLA VEZ en Supabase SQL Editor
+-- ========================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('payments', 'payments', false)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Subir comprobantes" ON storage.objects;
+DROP POLICY IF EXISTS "Admin ver comprobantes" ON storage.objects;
+DROP POLICY IF EXISTS "Cliente ver su comprobante" ON storage.objects;
+
+CREATE POLICY "Subir comprobantes"
+ON storage.objects FOR INSERT TO authenticated
+WITH CHECK (bucket_id = 'payments');
+
+CREATE POLICY "Admin ver comprobantes"
+ON storage.objects FOR SELECT TO authenticated
+USING (
+    bucket_id = 'payments'
+    AND auth.uid() IN (
+        SELECT id FROM public.profiles WHERE role_name = 'Administrador'
+    )
+);
+
+CREATE POLICY "Cliente ver su comprobante"
+ON storage.objects FOR SELECT TO authenticated
+USING (
+    bucket_id = 'payments'
+    AND (storage.foldername(name))[1] IN (
+        SELECT id::text FROM public.orders WHERE user_id = auth.uid()
+    )
+);
+
+-- ========================================================
 -- NOTAS
 -- ========================================================
 -- 1. Este archivo es la ÚNICA fuente de verdad para la DB.
--- 2. Ejecutarlo limpia la DB y la prepara con el esquema actual.
--- 3. Incluye soporte para moneda COP y carga de imágenes.
+-- 2. Las MIGRACIONES se ejecutan individualmente, nunca el archivo completo.
+-- 3. El archivo completo (FASE 0 al 14) solo se usa en DB nueva/vacía.
 -- ========================================================

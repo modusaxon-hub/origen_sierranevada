@@ -160,30 +160,11 @@ export const orderService = {
             .from('payments')
             .getPublicUrl(filePath);
 
-        // 3. Vincular URL al pedido en la tabla 'orders'
-        const { data: order } = await supabase
-            .from('orders')
-            .select('metadata')
-            .eq('id', orderId)
-            .single();
-
-        const currentMetadata = typeof order?.metadata === 'string'
-            ? JSON.parse(order.metadata)
-            : (order?.metadata || {});
-
-        const updatedMetadata = {
-            ...currentMetadata,
-            payment_proof_url: publicUrl,
-            proof_uploaded_at: new Date().toISOString()
-        };
-
+        // 3. Vincular URL al registro de pago (no usar metadata — columna no existe)
         const { error: updateError } = await supabase
-            .from('orders')
-            .update({
-                metadata: updatedMetadata,
-                status: 'pending' // Cambiamos a 'pending' (por confirmar) una vez subido
-            })
-            .eq('id', orderId);
+            .from('payments')
+            .update({ payment_evidence_url: publicUrl })
+            .eq('order_id', orderId);
 
         return { url: publicUrl, error: updateError };
     }

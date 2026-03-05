@@ -59,6 +59,11 @@ const OrderManager: React.FC = () => {
                     products (
                         name
                     )
+                ),
+                payments (
+                    payment_evidence_url,
+                    method,
+                    status
                 )
             `)
             .order('created_at', { ascending: false });
@@ -402,18 +407,19 @@ const OrderManager: React.FC = () => {
                                         <td className="px-6 py-6 text-center">
                                             <div className="flex flex-col items-center justify-center gap-2">
                                                 {(() => {
-                                                    const metadata = typeof order.metadata === 'string' ? JSON.parse(order.metadata) : order.metadata;
-                                                    let proofUrl = metadata?.payment_proof_url;
+                                                    // Buscar URL en payments[] (join) o en storage
+                                                    const paymentsArr = (order as any).payments as Array<{ payment_evidence_url?: string }> | undefined;
+                                                    const proofUrl = paymentsArr?.find(p => p.payment_evidence_url)?.payment_evidence_url || null;
 
                                                     if (proofUrl) {
                                                         return (
                                                             <div className="flex flex-col items-center mb-1">
                                                                 <span className="text-[7px] text-green-400 font-bold uppercase mb-1 flex items-center gap-1">
                                                                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
-                                                                    Pago Validable
+                                                                    Comprobante Recibido
                                                                 </span>
                                                                 <button
-                                                                    onClick={() => setSelectedProof(proofUrl || null)}
+                                                                    onClick={() => setSelectedProof(proofUrl)}
                                                                     className="flex items-center gap-2 px-4 py-2 bg-[#C5A065] text-black rounded-lg text-xs font-bold hover:bg-white transition-all shadow-lg hover:scale-105"
                                                                 >
                                                                     <span className="material-icons-outlined text-sm">receipt_long</span>
@@ -423,26 +429,25 @@ const OrderManager: React.FC = () => {
                                                         );
                                                     }
 
-                                                    // AUTO-DESCUBRIMIENTO: Si está pendiente, ofrecemos escanear el storage directamente
-                                                    if (order.status === 'pending' || order.status === 'pending_payment') {
+                                                    // Fallback: escanear bucket de storage directamente
+                                                    if (order.status === 'pending') {
                                                         return (
                                                             <div className="flex flex-col items-center mb-1">
                                                                 <button
                                                                     onClick={async (e) => {
                                                                         e.stopPropagation();
-                                                                        // Buscamos archivos en la carpeta del pedido
                                                                         const { data } = await supabase.storage.from('payments').list(order.id);
                                                                         if (data && data.length > 0) {
                                                                             const { data: { publicUrl } } = supabase.storage.from('payments').getPublicUrl(`${order.id}/${data[0].name}`);
                                                                             setSelectedProof(publicUrl);
                                                                         } else {
-                                                                            alert("Aún no hay archivos cargados para este pedido.");
+                                                                            alert("Aún no hay comprobante para este pedido.");
                                                                         }
                                                                     }}
                                                                     className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-[#C5A065]/50 text-[#C5A065] rounded-lg text-[10px] font-bold hover:bg-[#C5A065] hover:text-black transition-all shadow-md group"
                                                                 >
                                                                     <span className="material-icons-outlined text-sm group-hover:rotate-12 transition-transform">search_check</span>
-                                                                    ESCANEAR PAGO
+                                                                    BUSCAR COMPROBANTE
                                                                 </button>
                                                             </div>
                                                         );

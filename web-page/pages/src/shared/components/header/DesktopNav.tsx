@@ -19,8 +19,8 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
     return (
         <div className="hidden lg:flex max-w-7xl mx-auto px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 cursor-pointer">
-                <Logo className="w-[180px] xl:w-[240px] h-auto shrink-0 drop-shadow-[0_0_25px_rgba(200,170,110,0.4)] brightness-110" />
+            <Link to="/" className="flex items-center cursor-pointer shrink-0">
+                <Logo className="h-[36px] xl:h-[46px] w-auto" />
             </Link>
 
             {/* Navigation Links */}

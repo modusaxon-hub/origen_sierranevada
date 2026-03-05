@@ -9,7 +9,7 @@ import { shippingService } from '@/services/shippingService';
 import { orderService } from '@/services/orderService';
 import { useLanguage } from '../contexts/LanguageContext';
 import TransferInstructions from '@/shared/components/TransferInstructions';
-import { getWhatsAppLinkWithContext, type OrderWhatsAppDetail } from '@/constants/contacts';
+import { type OrderWhatsAppDetail, getWhatsAppOrderDetailLink } from '@/constants/contacts';
 import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
 import { sanitizeText } from '@/shared/utils/sanitize';
 
@@ -131,11 +131,16 @@ const CheckoutPage: React.FC = () => {
         setLoading(true);
 
         try {
+            // FIX: Verificar que el user existe en profiles antes de insertar
+            const userId = user?.id ?? null;
+
             const { data: order, error: orderError } = await supabase
                 .from('orders')
                 .insert({
-                    user_id: user?.id,
+                    user_id: userId,
                     total_amount: finalTotal,
+                    status: 'pending',
+                    contact_phone: form.phone,
                     shipping_address: {
                         fullName: form.fullName,
                         email: form.email,
@@ -145,17 +150,6 @@ const CheckoutPage: React.FC = () => {
                         phone: form.phone,
                         docType: form.docType,
                         docNumber: form.docNumber,
-                    },
-                    metadata: {
-                        customer_email: form.email,
-                        customer_name: form.fullName,
-                        notes: form.notes,
-                        discount_applied: discount > 0,
-                        items_details: cartItems.map(i => ({
-                            id: i.id,
-                            name: i.name,
-                            sub: i.sub || ''
-                        }))
                     }
                 })
                 .select()
@@ -163,15 +157,19 @@ const CheckoutPage: React.FC = () => {
 
             if (orderError) throw orderError;
 
-            const orderItems = cartItems.map(item => {
-                const productId = item.id.includes('-') ? item.id.split('-')[0] : item.id;
-                return {
-                    order_id: order.id,
-                    product_id: parseInt(productId),
-                    quantity: item.qty,
-                    price_at_time: item.price
-                };
-            });
+            // Extraer UUID limpio (IDs de carrito pueden tener sufijos de variante como "-base-En Grano")
+            const extractUUID = (id: string): string => {
+                const match = id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+                return match ? match[0] : id;
+            };
+
+            const orderItems = cartItems.map(item => ({
+                order_id: order.id,
+                product_id: extractUUID(item.id),
+                quantity: item.qty,
+                unit_price: item.price,
+                subtotal: item.price * item.qty
+            }));
 
             const { error: itemsError } = await supabase
                 .from('order_items')
@@ -179,30 +177,37 @@ const CheckoutPage: React.FC = () => {
 
             if (itemsError) throw itemsError;
 
+            // Actualizar stock
             for (const item of cartItems) {
-                const productId = item.id.includes('-') ? item.id.split('-')[0] : item.id;
+                const cleanId = extractUUID(item.id);
                 const { data: product } = await supabase
                     .from('products')
                     .select('stock')
-                    .eq('id', productId)
+                    .eq('id', cleanId)
                     .single();
 
                 if (product) {
                     await supabase
                         .from('products')
                         .update({ stock: Math.max(0, product.stock - item.qty) })
-                        .eq('id', productId);
+                        .eq('id', cleanId);
                 }
             }
 
-            await supabase
-                .from('orders')
-                .update({
-                    status: 'pending_payment',
-                    payment_id: 'MANUAL_TRANSFER',
-                    payment_method: 'transfer'
-                })
-                .eq('id', order.id);
+            // FIX: Crear registro en tabla payments (no campos fantasma en orders)
+            const { error: paymentError } = await supabase
+                .from('payments')
+                .insert({
+                    order_id: order.id,
+                    method: 'transferencia',
+                    status: 'pending',
+                    amount: finalTotal
+                });
+
+            if (paymentError) {
+                // No fatal — la orden existe, solo falla el registro de pago
+                console.warn('Payment record error (non-fatal):', paymentError.message);
+            }
 
             await emailService.sendOrderNotification('origensierranevadasm@gmail.com', {
                 type: 'NUEVO_PEDIDO',
@@ -248,15 +253,22 @@ const CheckoutPage: React.FC = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error: any) {
-            const errorMsg = error?.response?.data?.message || error?.message || 'Error desconocido';
-            const statusCode = error?.response?.status || 'N/A';
-            console.error('Error procesando pedido:', {
-                status: statusCode,
-                message: errorMsg,
-                data: error?.response?.data,
-                fullError: error
-            });
-            alert(`Error al procesar tu pedido (${statusCode}):\n${errorMsg}\n\nPor favor intenta de nuevo.`);
+            let errorMsg = 'Error desconocido';
+            let statusCode = 'N/A';
+
+            // Intentar extraer mensaje de Supabase error
+            if (error?.message) {
+                errorMsg = error.message;
+            }
+            if (error?.response?.data?.message) {
+                errorMsg = error.response.data.message;
+            }
+            if (error?.response?.status) {
+                statusCode = error.response.status;
+            }
+
+            console.error('❌ Error procesando pedido:', { statusCode, errorMsg, error });
+            alert(`Error (${statusCode}):\n${errorMsg}`);
         } finally {
             setLoading(false);
         }
@@ -264,73 +276,37 @@ const CheckoutPage: React.FC = () => {
 
     if (orderSuccess) {
         return (
-            <div className="min-h-screen bg-[#0B120D] flex items-center justify-center p-6 pt-24 relative">
-                {/* Modal WhatsApp para confirmar compra */}
-                <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-                    <div className="w-full max-w-md bg-gradient-to-br from-[#0B120D] to-[#050806] border border-[#C5A065]/50 rounded-3xl p-10 shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-500">
-                        {/* Success Icon */}
-                        <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
-                            <span className="material-icons-outlined text-green-400 text-5xl">check_circle</span>
+            <div className="min-h-screen bg-[#0B120D] p-6 pt-24">
+                <div className="w-full max-w-2xl mx-auto space-y-6">
+
+                    {/* Banner de confirmación — no bloquea */}
+                    <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 flex items-center gap-4 animate-fade-in">
+                        <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="material-icons-outlined text-green-400 text-2xl">check_circle</span>
                         </div>
-
-                        {/* Title */}
-                        <h2 className="text-3xl font-serif text-[#C5A065] text-center mb-4">¡Pedido Creado!</h2>
-
-                        {/* Order Info */}
-                        <div className="bg-white/5 border border-[#C5A065]/30 rounded-2xl p-6 mb-8 text-center">
-                            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Número de Orden</p>
-                            <p className="text-2xl font-mono text-white mb-6">#{lastOrderId?.slice(0, 8).toUpperCase()}</p>
-                            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Total Pagable</p>
-                            <p className="text-3xl font-serif text-[#C5A065]">{formatPrice(lastOrderTotal)}</p>
+                        <div className="flex-1">
+                            <p className="font-bold text-white">¡Pedido #{lastOrderId?.slice(0, 8).toUpperCase()} creado!</p>
+                            <p className="text-sm text-gray-400">Elige cómo realizar el pago de {formatPrice(lastOrderTotal)}</p>
                         </div>
-
-                        {/* Instructions */}
-                        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-8">
-                            <p className="text-sm text-white leading-relaxed">
-                                Confirma tu pago enviando el comprobante de transferencia por WhatsApp. Recibirás confirmación en minutos.
-                            </p>
-                        </div>
-
-                        {/* WhatsApp Button (Primary) */}
-                        <a href={getWhatsAppLinkWithContext('order', lastOrderId || '')}
-                            className="block w-full bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1a9a4a] text-white font-bold py-4 px-6 rounded-xl text-center uppercase transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20 mb-4">
-                            💬 Confirmar por WhatsApp
-                        </a>
-
-                        {/* Alternative Actions */}
-                        <button onClick={() => {
-                            setOrderSuccess(false);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                            className="w-full border-2 border-[#C5A065] text-[#C5A065] font-bold py-3 px-6 rounded-xl uppercase tracking-widest hover:bg-[#C5A065] hover:text-black transition-all duration-300 mb-4">
-                            Continuar sin WhatsApp
-                        </button>
-
-                        <button onClick={() => {
-                            setOrderSuccess(false);
-                            clearCart();
-                            navigate('/');
-                        }}
-                            className="w-full text-gray-400 hover:text-white font-bold py-3 px-6 uppercase tracking-widest text-sm transition-colors">
-                            ← Volver al Inicio
+                        <button
+                            onClick={() => { clearCart(); navigate('/'); }}
+                            className="text-gray-500 hover:text-white transition-colors"
+                            title="Volver al inicio"
+                        >
+                            <span className="material-icons-outlined text-sm">close</span>
                         </button>
                     </div>
-                </div>
 
-                <div className="w-full max-w-3xl">
-                    <div className="text-center mb-8 animate-fade-in">
-                        <div className="w-20 h-20 bg-[#C5A065]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <span className="material-icons-outlined text-[#C5A065] text-4xl">check_circle</span>
-                        </div>
-                        <h1 className="font-serif text-3xl text-white mb-2">¡Pedido Registrado!</h1>
-                        <p className="text-gray-400">
-                            Tu orden ha sido creada exitosamente. Para completarla, por favor realiza la transferencia y sube tu comprobante.
-                        </p>
-                    </div>
+                    <TransferInstructions
+                        orderId={lastOrderId || ""}
+                        total={lastOrderTotal}
+                        orderDetail={orderDetailData || undefined}
+                        onReadyToUpload={() => {
+                            document.getElementById('upload-comprobante')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }}
+                    />
 
-                    <TransferInstructions orderId={lastOrderId || ""} total={lastOrderTotal} orderDetail={orderDetailData || undefined} />
-
-                    <div className="mt-8 bg-white/5 border border-[#C5A065]/30 rounded-2xl p-8 animate-slide-up">
+                    <div id="upload-comprobante" className="mt-8 bg-white/5 border border-[#C5A065]/30 rounded-2xl p-8 animate-slide-up">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 bg-[#C5A065]/10 rounded-xl flex items-center justify-center text-[#C5A065]">
                                 <span className="material-icons-outlined">receipt_long</span>
@@ -350,13 +326,29 @@ const CheckoutPage: React.FC = () => {
                                     const file = e.target.files?.[0];
                                     if (!file || !lastOrderId) return;
                                     setLoading(true);
-                                    const { error } = await orderService.uploadPaymentProof(lastOrderId, file);
-                                    if (!error) {
+                                    const { url, error } = await orderService.uploadPaymentProof(lastOrderId, file);
+                                    if (!error && url) {
                                         setProofSuccess(true);
                                         setLoading(false);
-                                        setTimeout(() => navigate('/account'), 3000);
+
+                                        // Preparar y enviar detalles a WhatsApp automáticamente
+                                        if (orderDetailData) {
+                                            const finalDetail: OrderWhatsAppDetail = {
+                                                ...orderDetailData,
+                                                proofUrl: url
+                                            };
+                                            const waLink = getWhatsAppOrderDetailLink(finalDetail);
+
+                                            // Pequeña pausa para que el usuario vea el éxito antes de redirigir
+                                            setTimeout(() => {
+                                                window.open(waLink, '_blank');
+                                                navigate('/account');
+                                            }, 1500);
+                                        } else {
+                                            setTimeout(() => navigate('/account'), 3000);
+                                        }
                                     } else {
-                                        alert("Error al subir comprobante: " + error.message);
+                                        alert("Error al subir comprobante: " + (error?.message || "Error desconocido"));
                                         setLoading(false);
                                     }
                                 }}

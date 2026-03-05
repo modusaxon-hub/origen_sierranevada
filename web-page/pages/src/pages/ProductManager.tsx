@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { productService } from '@/services/productService';
 import { Product, ProductVariant, ProductPersonality } from '@/shared/types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Package, Palette, Sparkles, Heart, Zap } from 'lucide-react';
+import { Package, Palette, Sparkles, Heart, Zap, Wand2 } from 'lucide-react';
 import SystemFeedback from '@/shared/components/SystemFeedback';
+import ImageAIAssistant from '@/shared/components/ImageAIAssistant';
 
 // Constantes de configuración
 const CATEGORY_WEIGHTS: Record<string, string[]> = {
@@ -28,7 +29,9 @@ const ProductManager: React.FC = () => {
     const [showForm, setShowForm] = useState(false);
     const [activeLangTab, setActiveLangTab] = useState<'es' | 'en'>('es');
     const [saving, setSaving] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const [activeSection, setActiveSection] = useState<'basic' | 'personality' | 'variants'>('basic');
+    const [showAIAssistant, setShowAIAssistant] = useState(false);
 
     // Form state con todos los campos
     const [formData, setFormData] = useState<Partial<Product>>({
@@ -119,28 +122,50 @@ const ProductManager: React.FC = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isUploading) {
+            setFeedback({ msg: "Espera a que la imagen termine de subirse...", type: 'error' });
+            return;
+        }
+
         setSaving(true);
+        setFeedback({ msg: null, type: 'info' });
+
         try {
             let result;
             if (editingProduct) {
-                result = await productService.updateProduct(editingProduct.id, formData);
+                // Si es un producto de prueba (ID empieza con fallback-), forzamos creación de uno nuevo
+                if (editingProduct.id.startsWith('fallback-')) {
+                    const { id: _id, ...newProductData } = formData;
+                    result = await productService.createProduct(newProductData as any);
+                    if (!result.error) setFeedback({ msg: "¡Producto de prueba convertido a producto real!", type: 'success' });
+                } else {
+                    result = await productService.updateProduct(editingProduct.id, formData);
+                }
             } else {
                 result = await productService.createProduct(formData as any);
             }
 
             if (result.error) {
-                console.error("Supabase Error:", result.error);
-                setFeedback({ msg: `Error al guardar: ${result.error.message}`, type: 'error' });
+                console.error("Supabase Error Full:", result.error);
+                const errorMsg = (result.error as any).message || "Error desconocido";
+                setFeedback({ msg: `Error al guardar: ${errorMsg}`, type: 'error' });
                 return;
             }
 
             // Success
-            setFeedback({ msg: "¡Producto guardado correctamente!", type: 'success' });
-            resetForm();
-            fetchProducts();
-        } catch (err) {
-            console.error("Unexpected Error:", err);
-            setFeedback({ msg: "Ocurrió un error inesperado.", type: 'error' });
+            setFeedback({ msg: "¡Cambios guardados con éxito!", type: 'success' });
+
+            // Refrescar y cerrar después de un breve delay
+            setTimeout(() => {
+                resetForm();
+                fetchProducts();
+                setShowForm(false);
+            }, 1000);
+
+        } catch (err: any) {
+            console.error("Save Crash:", err);
+            setFeedback({ msg: `Error crítico: ${err.message}`, type: 'error' });
         } finally {
             setSaving(false);
         }
@@ -361,12 +386,18 @@ const ProductManager: React.FC = () => {
                                                                 const file = e.target.files?.[0];
                                                                 if (!file) return;
 
-                                                                // Show loading state if desired, or just wait
-                                                                const { data, error } = await productService.uploadImage(file);
-                                                                if (data) {
-                                                                    setFormData(prev => ({ ...prev, image_url: data }));
-                                                                } else {
-                                                                    alert('Error al subir imagen: ' + error?.message);
+                                                                setIsUploading(true);
+                                                                try {
+                                                                    const { data, error } = await productService.uploadImage(file);
+                                                                    if (data) {
+                                                                        setFormData(prev => ({ ...prev, image_url: data }));
+                                                                    } else if (error) {
+                                                                        setFeedback({ msg: 'Error al subir imagen: ' + error.message, type: 'error' });
+                                                                    }
+                                                                } catch (err) {
+                                                                    setFeedback({ msg: 'Error en la conexión al subir imagen', type: 'error' });
+                                                                } finally {
+                                                                    setIsUploading(false);
                                                                 }
                                                             }}
                                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -385,6 +416,17 @@ const ProductManager: React.FC = () => {
                                                         className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none text-xs text-white/50"
                                                         placeholder="O pega una URL externa..."
                                                     />
+
+                                                    {formData.image_url && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowAIAssistant(true)}
+                                                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 text-[#C8AA6E] hover:bg-[#C8AA6E]/20 transition-all group"
+                                                        >
+                                                            <Wand2 size={14} className="group-hover:rotate-12 transition-transform" />
+                                                            <span className="text-[10px] font-bold uppercase tracking-widest">Optimizar con Asistente IA</span>
+                                                        </button>
+                                                    )}
                                                 </div>
 
                                                 {formData.image_url && (
@@ -790,10 +832,10 @@ const ProductManager: React.FC = () => {
                             <div className="pt-12 border-t border-white/5 flex gap-4">
                                 <button
                                     type="submit"
-                                    disabled={saving}
+                                    disabled={saving || isUploading}
                                     className="flex-1 bg-gradient-to-r from-[#C8AA6E] to-[#AA771C] text-black font-bold uppercase tracking-widest py-5 rounded-2xl shadow-xl shadow-[#C8AA6E]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                                 >
-                                    {saving ? '💫 Guardando...' : (editingProduct ? '✨ Actualizar Producto' : '🚀 Publicar en Despensa')}
+                                    {isUploading ? '📤 Subiendo Foto...' : (saving ? '💫 Guardando...' : (editingProduct ? '✨ Actualizar Producto' : '🚀 Publicar en Despensa'))}
                                 </button>
                                 <button
                                     type="button"
@@ -901,6 +943,17 @@ const ProductManager: React.FC = () => {
                     animation: fade-in 0.3s ease-out;
                 }
             `}</style>
+            {/* Image AI Assistant Modal */}
+            <ImageAIAssistant
+                isOpen={showAIAssistant}
+                onClose={() => setShowAIAssistant(false)}
+                imageUrl={formData.image_url || ''}
+                onApply={(newUrl) => {
+                    setFormData(prev => ({ ...prev, image_url: newUrl }));
+                    setShowAIAssistant(false);
+                    setFeedback({ msg: "Imagen optimizada aplicada", type: 'success' });
+                }}
+            />
         </div>
     );
 };

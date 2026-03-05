@@ -7,12 +7,14 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className }) => {
     return (
-        <img
-            src={logoUrl}
-            alt="Origen Sierra Nevada"
-            className={className}
-            loading="eager"
-        />
+        <div className="relative animate-logo-entrance">
+            <img
+                src={logoUrl}
+                alt="Origen Sierra Nevada"
+                className={`${className} relative z-10`}
+                loading="eager"
+            />
+        </div>
     );
 };
 
