@@ -1,0 +1,19 @@
+pendiente del origen de admin/poductos
+crear filtro para que administrador busque productos por proveedor, marca, peso, tipo grano o molido.
+verficar presentaciones de poductos para abrir otra caja de texto o permitir agregar datos al seleccionar "otros".
+establecer la barra de pedidos pendientes con la gestión de administraor.
+revisar menú de brandbook.
+crear modelo de limpieza de información, y backup del proyecto
+realizar cruce de ventas por productos con proveedores y detalla a la hora de cierre cuanto pagar al proveedor de acuerdo a las pautas establecidas al aprovar un producto en la tienda.
+replantear las acciones en la bitacora de pedidos, colocar filtro para buscar pedidor por fecha también.
+revisa link de logo del footer.
+cambiar lo que dicen "nuestros rituales" por"nuestros clientes".
+revisar logo en el header en el panel de administrador
+revisar la finalidad del catalogo - si es posible crear el catalogo de suscripción, cuando el usuario elija suscribirse.
+hacer que guía y catálogo se muestren inactivos con candado al lado, mientras no tengamos 
+sesiones iniciadas.
+que la imágen tenga el tamaño de la tarjeta contenedora en accesorios.
+panel de proovedores, que ven, si el producto es para pago por venta de inventario!
+revisar si el logo se esta gestionando como componente en su totalidad, no es el mismo logo en web que en tablet y móbil!
+
+
