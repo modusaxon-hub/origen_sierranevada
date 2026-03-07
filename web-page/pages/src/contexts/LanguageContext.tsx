@@ -114,7 +114,7 @@ const translations: Record<string, Record<Language, string>> = {
 
     // Footer
     'footer.explore': { es: 'Explorar', en: 'Explore' },
-    'footer.join': { es: 'Únete al Ritual', en: 'Join the Ritual' },
+    'footer.join': { es: 'Únete a Nuestra Comunidad', en: 'Join Our Community' },
     'footer.desc': { es: 'Suscríbete para recibir consejos de preparación y acceso anticipado a funciones de IA.', en: 'Subscribe to receive brewing tips, exclusive single-origin drops, and early access to our AI features.' },
     'footer.rights': { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
     'footer.privacy': { es: 'Política de Privacidad', en: 'Privacy Policy' },

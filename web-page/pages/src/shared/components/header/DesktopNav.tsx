@@ -17,37 +17,38 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
     const { cartItems, setIsCartOpen } = useCart();
 
     return (
-        <div className="hidden lg:flex max-w-7xl mx-auto px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20">
+        <div className="hidden lg:flex max-w-7xl mx-auto px-6 xl:px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center cursor-pointer shrink-0">
-                <Logo className="h-[36px] xl:h-[46px] w-auto" />
+                <Logo className="h-[30px] xl:h-[46px] w-auto" />
             </Link>
 
             {/* Navigation Links */}
-            <div className="flex items-center space-x-6 xl:space-x-10 font-display text-xs tracking-[0.3em] text-white/80">
+            <div className="flex items-center space-x-4 xl:space-x-10 font-display text-[10px] xl:text-xs tracking-[0.2em] xl:tracking-[0.3em] text-white/80 whitespace-nowrap">
                 <Link to="/" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Inicio</Link>
                 <Link to="/subscription" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Catálogo</Link>
                 <Link to="/guide" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Guía</Link>
-                {isAdmin && (
-                    <Link to="/admin" className="text-[#C8AA6E] border-2 border-[#C8AA6E]/50 px-3 py-1.5 rounded-lg bg-[#C8AA6E]/10 flex items-center gap-2 hover:bg-[#C8AA6E]/20 hover:border-[#C8AA6E] shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all duration-300 uppercase font-bold text-[9px]">
-                        <span className="material-icons-outlined text-xs">admin_panel_settings</span>
-                        Admin
-                    </Link>
-                )}
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-4 xl:space-x-6 text-white">
+            <div className="flex items-center space-x-3 xl:space-x-6 text-white shrink-0">
+                {isAdmin && (
+                    <Link to="/admin" className="text-[#C8AA6E] border-2 border-[#C8AA6E]/50 px-2 xl:px-3 py-1 xl:py-1.5 rounded-lg bg-[#C8AA6E]/10 flex items-center gap-1 xl:gap-2 hover:bg-[#C8AA6E]/20 hover:border-[#C8AA6E] shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all duration-300 uppercase font-bold text-[8px] xl:text-[9px]">
+                        <span className="material-icons-outlined text-xs">admin_panel_settings</span>
+                        <span className="hidden xl:inline">Admin</span>
+                    </Link>
+                )}
+
                 {user ? (
                     <UserDropdown />
                 ) : (
                     <button
                         onClick={() => navigate('/login')}
-                        className="px-6 py-2.5 rounded-lg border-2 border-[#C8AA6E]/50 text-[#C8AA6E] font-bold text-xs uppercase tracking-widest hover:border-[#C8AA6E] hover:bg-[#C8AA6E]/20 transition-all duration-300 shadow-[0_0_15px_rgba(200,170,110,0.15)] hover:shadow-[0_0_25px_rgba(200,170,110,0.3)] flex items-center gap-2 active:scale-95"
+                        className="px-4 xl:px-6 py-2 xl:py-2.5 rounded-lg border-2 border-[#C8AA6E]/50 text-[#C8AA6E] font-bold text-[10px] xl:text-xs uppercase tracking-widest hover:border-[#C8AA6E] hover:bg-[#C8AA6E]/20 transition-all duration-300 shadow-[0_0_15px_rgba(200,170,110,0.15)] hover:shadow-[0_0_25px_rgba(200,170,110,0.3)] flex items-center gap-2 active:scale-95"
                         title="Iniciar Sesión"
                     >
                         <span className="material-icons-outlined text-base">login</span>
-                        Ingresar
+                        <span className="hidden xl:inline">Ingresar</span>
                     </button>
                 )}
 
@@ -74,7 +75,7 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
 
                 <button
                     onClick={toggleLanguage}
-                    className="px-3 py-2 rounded-lg border border-[#C8AA6E]/30 text-[#C8AA6E] text-[9px] font-bold uppercase tracking-widest hover:border-[#C8AA6E]/60 hover:bg-[#C8AA6E]/10 transition-all duration-300"
+                    className="px-2 xl:px-3 py-2 rounded-lg border border-[#C8AA6E]/30 text-[#C8AA6E] text-[9px] font-bold uppercase tracking-widest hover:border-[#C8AA6E]/60 hover:bg-[#C8AA6E]/10 transition-all duration-300"
                     title="Cambiar Idioma"
                 >
                     {language.toUpperCase()}

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "maintenance": "cat MAINTENANCE.md",
+    "backup-hint": "echo 'Instale Supabase CLI y use: supabase db dump --project-ref [REF_ID]'"
   },
   "dependencies": {
     "@google/genai": "^1.38.0",

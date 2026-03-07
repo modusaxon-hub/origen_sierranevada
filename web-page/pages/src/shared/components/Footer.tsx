@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
 
                 {/* Newsletter - Premium */}
                 <div className="md:col-span-2 lg:col-span-2 bg-[#C8AA6E]/5 backdrop-blur-md border border-[#C8AA6E]/20 rounded-xl p-8 hover:border-[#C8AA6E]/40 transition-all duration-300">
-                    <h3 className="font-display font-bold text-xs text-[#C8AA6E] uppercase tracking-[0.3em] mb-4">Únete a Nuestra Comunidad</h3>
+                    <h3 className="font-display font-bold text-xs text-[#C8AA6E] uppercase tracking-[0.3em] mb-4">{t('footer.join')}</h3>
                     <p className="text-[#F5F5F5]/70 text-sm mb-8 leading-relaxed">
                         Recibe noticias sobre nuevas colecciones, eventos exclusivos y promociones especiales directo a tu email.
                     </p>

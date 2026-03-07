@@ -41,6 +41,12 @@ const OrderManager: React.FC = () => {
     const [shippingFile, setShippingFile] = useState<File | null>(null);
     const [isShippingRunning, setIsShippingRunning] = useState(false);
 
+    // Estados para filtros
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
     const navigate = useNavigate();
 
     const fetchOrders = async () => {
@@ -231,6 +237,22 @@ const OrderManager: React.FC = () => {
         }
     };
 
+    const filteredOrders = orders.filter(order => {
+        const matchesSearch =
+            order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (order.profiles?.full_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (order.profiles?.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (order.shipping_address?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+
+        const orderDate = new Date(order.created_at);
+        const matchesStartDate = !startDate || orderDate >= new Date(startDate);
+        const matchesEndDate = !endDate || orderDate <= new Date(endDate + 'T23:59:59');
+
+        return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
+    });
+
     return (
         <div className="min-h-screen bg-[#0B120D] text-white pt-24 px-6 pb-20">
             {/* MODAL DE DESPACHO (DETALLES DE ENVÍO) */}
@@ -329,16 +351,82 @@ const OrderManager: React.FC = () => {
             )}
 
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center gap-4 mb-12">
+                <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4 mb-12">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigate('/admin')}
+                            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                        >
+                            <span className="material-icons-outlined">arrow_back</span>
+                        </button>
+                        <div>
+                            <h1 className="text-3xl font-serif text-[#C5A065]">Bitácora de Pedidos</h1>
+                            <p className="text-gray-400 text-sm">Registro de transacciones y rituales de compra</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div className="relative group">
+                            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm group-focus-within:text-[#C5A065]">search</span>
+                            <input
+                                type="text"
+                                placeholder="ID, Cliente o Email..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-[#C5A065] transition-all w-full md:w-64"
+                            />
+                        </div>
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-[#C5A065] transition-all cursor-pointer"
+                        >
+                            <option value="all" className="bg-[#0B120D]">Todos los Estados</option>
+                            <option value="pending_payment" className="bg-[#0B120D]">⏳ Esperando Pago</option>
+                            <option value="pending" className="bg-[#0B120D]">🧐 Por Confirmar</option>
+                            <option value="paid" className="bg-[#0B120D]">✅ Pagado</option>
+                            <option value="processing" className="bg-[#0B120D]">☕ Preparando</option>
+                            <option value="shipped" className="bg-[#0B120D]">🚚 Enviado</option>
+                            <option value="delivered" className="bg-[#0B120D]">🏠 Entregado</option>
+                            <option value="cancelled" className="bg-[#0B120D]">❌ Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Filtros de Fecha */}
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 flex flex-wrap gap-6 items-end">
+                    <div className="space-y-2">
+                        <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold block">Desde</label>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C5A065] transition-all"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold block">Hasta</label>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C5A065] transition-all"
+                        />
+                    </div>
                     <button
-                        onClick={() => navigate('/admin')}
-                        className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                        onClick={() => {
+                            setSearchTerm('');
+                            setStatusFilter('all');
+                            setStartDate('');
+                            setEndDate('');
+                        }}
+                        className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#C5A065] hover:bg-[#C5A065]/10 rounded-lg transition-all"
                     >
-                        <span className="material-icons-outlined">arrow_back</span>
+                        Limpiar Filtros
                     </button>
-                    <div>
-                        <h1 className="text-3xl font-serif text-[#C5A065]">Bitácora de Pedidos</h1>
-                        <p className="text-gray-400 text-sm">Registro de transacciones y rituales de compra</p>
+                    <div className="ml-auto text-right">
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Mostrando</p>
+                        <p className="text-[#C5A065] font-serif text-xl">{filteredOrders.length} <span className="text-sm font-sans text-gray-400 font-normal">pedidos</span></p>
                     </div>
                 </div>
 
@@ -348,191 +436,184 @@ const OrderManager: React.FC = () => {
                     </div>
                 ) : (
                     <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-[#C5A065]/10 text-[#C5A065] text-[10px] uppercase tracking-widest font-bold">
-                                    <th className="px-6 py-4">ID / Fecha</th>
-                                    <th className="px-6 py-4">Cliente</th>
-                                    <th className="px-6 py-4">Productos</th>
-                                    <th className="px-6 py-4">Total</th>
-                                    <th className="px-6 py-4">Envío</th>
-                                    <th className="px-6 py-4">Estado</th>
-                                    <th className="px-6 py-4 text-center">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5 text-sm">
-                                {orders.map(order => (
-                                    <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
-                                        <td className="px-6 py-6">
-                                            <p className="font-mono text-[10px] text-gray-500 mb-1">#{order.id.slice(0, 8)}</p>
-                                            <p className="text-xs text-gray-300">
-                                                {new Date(order.created_at).toLocaleDateString('es-CO', {
-                                                    day: '2-digit',
-                                                    month: 'short',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                })}
-                                            </p>
-                                        </td>
-                                        <td className="px-6 py-6">
-                                            <p className="text-white font-medium">{order.shipping_address?.fullName || order.profiles?.full_name}</p>
-                                            <p className="text-[10px] text-gray-500 uppercase">{order.profiles?.email || order.shipping_address?.email}</p>
-                                        </td>
-                                        <td className="px-6 py-6 font-mono text-xs text-gray-400">
-                                            <div className="space-y-1">
-                                                {order.order_items?.map((item, i) => (
-                                                    <div key={i}>
-                                                        {item.quantity}x {typeof (item.products?.name) === 'object' ? (item.products?.name?.es || item.products?.name?.en) : (item.products?.name || 'Producto')}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-6">
-                                            <p className="font-serif text-lg text-[#C5A065]">${order.total_amount.toFixed(2)}</p>
-                                        </td>
-                                        <td className="px-6 py-6">
-                                            <p className="text-gray-300 text-xs">{order.shipping_address?.city}, {order.shipping_address?.department}</p>
-                                            <p className="text-[10px] text-gray-500">{order.shipping_address?.address}</p>
-                                        </td>
-                                        <td className="px-6 py-6 font-bold">
-                                            <span className={`px-3 py-1 rounded-full text-[9px] uppercase tracking-tighter ${getStatusColor(order.status)}`}>
-                                                {order.status === 'pending_payment' ? '⏳ Esperando Pago' :
-                                                    order.status === 'pending' ? '🧐 Por Confirmar' :
-                                                        order.status === 'paid' ? '✅ Pagado' :
-                                                            order.status === 'processing' ? '☕ Preparando' :
-                                                                order.status === 'shipped' ? '🚚 Enviado' :
-                                                                    order.status === 'delivered' ? '🏠 Entregado' : '❌ Cancelado'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-6 text-center">
-                                            <div className="flex flex-col items-center justify-center gap-2">
-                                                {(() => {
-                                                    // Buscar URL en payments[] (join) o en storage
-                                                    const paymentsArr = (order as any).payments as Array<{ payment_evidence_url?: string }> | undefined;
-                                                    const proofUrl = paymentsArr?.find(p => p.payment_evidence_url)?.payment_evidence_url || null;
-
-                                                    if (proofUrl) {
-                                                        return (
-                                                            <div className="flex flex-col items-center mb-1">
-                                                                <span className="text-[7px] text-green-400 font-bold uppercase mb-1 flex items-center gap-1">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
-                                                                    Comprobante Recibido
-                                                                </span>
-                                                                <button
-                                                                    onClick={() => setSelectedProof(proofUrl)}
-                                                                    className="flex items-center gap-2 px-4 py-2 bg-[#C5A065] text-black rounded-lg text-xs font-bold hover:bg-white transition-all shadow-lg hover:scale-105"
-                                                                >
-                                                                    <span className="material-icons-outlined text-sm">receipt_long</span>
-                                                                    VER COMPROBANTE
-                                                                </button>
-                                                            </div>
-                                                        );
-                                                    }
-
-                                                    // Fallback: escanear bucket de storage directamente
-                                                    if (order.status === 'pending') {
-                                                        return (
-                                                            <div className="flex flex-col items-center mb-1">
-                                                                <button
-                                                                    onClick={async (e) => {
-                                                                        e.stopPropagation();
-                                                                        const { data } = await supabase.storage.from('payments').list(order.id);
-                                                                        if (data && data.length > 0) {
-                                                                            const { data: { publicUrl } } = supabase.storage.from('payments').getPublicUrl(`${order.id}/${data[0].name}`);
-                                                                            setSelectedProof(publicUrl);
-                                                                        } else {
-                                                                            alert("Aún no hay comprobante para este pedido.");
-                                                                        }
-                                                                    }}
-                                                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-[#C5A065]/50 text-[#C5A065] rounded-lg text-[10px] font-bold hover:bg-[#C5A065] hover:text-black transition-all shadow-md group"
-                                                                >
-                                                                    <span className="material-icons-outlined text-sm group-hover:rotate-12 transition-transform">search_check</span>
-                                                                    BUSCAR COMPROBANTE
-                                                                </button>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return null;
-                                                })()}
-
-                                                <div className="flex items-center justify-center gap-1.5">
-                                                    {(order.status === 'pending' || order.status === 'pending_payment') && (
-                                                        <button
-                                                            onClick={() => updateOrderStatus(order.id, 'paid')}
-                                                            className="h-8 w-8 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500 hover:text-white transition-all border border-green-500/20"
-                                                            title="Confirmar como Pagado"
-                                                        >
-                                                            <span className="material-icons-outlined text-sm">check_circle</span>
-                                                        </button>
-                                                    )}
-                                                    {(order.status === 'paid' || order.status === 'shipped' || order.status === 'delivered') && (
-                                                        <button
-                                                            onClick={async () => {
-                                                                try {
-                                                                    const { data: existingInvoice } = await invoiceService.getInvoiceByOrderId(order.id);
-                                                                    if (existingInvoice) {
-                                                                        window.open(`/#/invoice/${order.id}`, '_blank');
-                                                                        return;
-                                                                    }
-                                                                    // Si no existe, generar
-                                                                    const { data: orderData } = await supabase
-                                                                        .from('orders')
-                                                                        .select('*, order_items(*), profiles(full_name, email)')
-                                                                        .eq('id', order.id)
-                                                                        .single();
-
-                                                                    if (!orderData) {
-                                                                        alert('No se encontró la orden');
-                                                                        return;
-                                                                    }
-
-                                                                    const customer = {
-                                                                        name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
-                                                                        docType: orderData.shipping_address?.docType || 'CC',
-                                                                        docNumber: orderData.shipping_address?.docNumber || '0',
-                                                                        address: orderData.shipping_address?.address || '',
-                                                                        city: orderData.shipping_address?.city || '',
-                                                                        department: orderData.shipping_address?.department || '',
-                                                                        email: orderData.shipping_address?.email || orderData.profiles?.email || '',
-                                                                        phone: orderData.shipping_address?.phone || ''
-                                                                    };
-
-                                                                    await invoiceService.generateInvoice(order.id, orderData as any, customer);
-                                                                    window.open(`/#/invoice/${order.id}`, '_blank');
-                                                                } catch (err) {
-                                                                    alert('Error al generar factura: ' + (err instanceof Error ? err.message : 'Error desconocido'));
-                                                                }
-                                                            }}
-                                                            className="h-8 w-8 bg-[#C5A065]/10 text-[#C5A065] rounded-lg hover:bg-[#C5A065] hover:text-black transition-all border border-[#C5A065]/20 font-bold text-[10px]"
-                                                            title="Ver/Generar Factura"
-                                                        >
-                                                            <span className="material-icons-outlined text-sm">receipt</span>
-                                                        </button>
-                                                    )}
-                                                    <select
-                                                        className="h-8 bg-black/60 border border-white/10 rounded-lg px-2 py-0 text-[10px] text-white/80 focus:border-[#C5A065] outline-none cursor-pointer hover:bg-black/80 transition-colors"
-                                                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                                                        value={order.status}
-                                                    >
-                                                        <option value="pending_payment">⏳ Esperando Pago</option>
-                                                        <option value="pending">🧐 Por Confirmar</option>
-                                                        <option value="paid">✅ Pagado</option>
-                                                        <option value="processing">☕ Preparando</option>
-                                                        <option value="shipped">🚚 Enviado</option>
-                                                        <option value="delivered">🏠 Entregado</option>
-                                                        <option value="cancelled">❌ Cancelado</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </td>
+                        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-[#C5A065]/20 scrollbar-track-transparent">
+                            <table className="w-full text-left border-collapse min-w-[1000px] xl:min-w-0">
+                                <thead>
+                                    <tr className="bg-[#C5A065]/10 text-[#C5A065] text-[10px] uppercase tracking-widest font-bold">
+                                        <th className="px-6 py-4 whitespace-nowrap">ID / Fecha</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Cliente</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Productos</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Total</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Envío</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Estado</th>
+                                        <th className="px-6 py-4 text-center whitespace-nowrap">Acciones</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {orders.length === 0 && (
+                                </thead>
+                                <tbody className="divide-y divide-white/5 text-sm">
+                                    {filteredOrders.map(order => (
+                                        <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
+                                            <td className="px-6 py-6">
+                                                <p className="font-mono text-[10px] text-gray-500 mb-1">#{order.id.slice(0, 8)}</p>
+                                                <p className="text-xs text-gray-300">
+                                                    {new Date(order.created_at).toLocaleDateString('es-CO', {
+                                                        day: '2-digit',
+                                                        month: 'short',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })}
+                                                </p>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <p className="text-white font-medium">{order.shipping_address?.fullName || order.profiles?.full_name}</p>
+                                                <p className="text-[10px] text-gray-500 uppercase">{order.profiles?.email || order.shipping_address?.email}</p>
+                                            </td>
+                                            <td className="px-6 py-6 font-mono text-xs text-gray-400">
+                                                <div className="space-y-1">
+                                                    {order.order_items?.map((item, i) => (
+                                                        <div key={i}>
+                                                            {item.quantity}x {typeof (item.products?.name) === 'object' ? (item.products?.name?.es || item.products?.name?.en) : (item.products?.name || 'Producto')}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <p className="font-serif text-lg text-[#C5A065]">${order.total_amount.toFixed(2)}</p>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <p className="text-gray-300 text-xs">{order.shipping_address?.city}, {order.shipping_address?.department}</p>
+                                                <p className="text-[10px] text-gray-500">{order.shipping_address?.address}</p>
+                                            </td>
+                                            <td className="px-6 py-6 font-bold">
+                                                <span className={`px-3 py-1 rounded-full text-[9px] uppercase tracking-tighter ${getStatusColor(order.status)}`}>
+                                                    {order.status === 'pending_payment' ? '⏳ Esperando Pago' :
+                                                        order.status === 'pending' ? '🧐 Por Confirmar' :
+                                                            order.status === 'paid' ? '✅ Pagado' :
+                                                                order.status === 'processing' ? '☕ Preparando' :
+                                                                    order.status === 'shipped' ? '🚚 Enviado' :
+                                                                        order.status === 'delivered' ? '🏠 Entregado' : '❌ Cancelado'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-6 text-center">
+                                                <div className="flex flex-col items-center justify-center gap-2">
+                                                    {(() => {
+                                                        // Buscar URL en payments[] (join) o en storage
+                                                        const paymentsArr = (order as any).payments as Array<{ payment_evidence_url?: string }> | undefined;
+                                                        const proofUrl = paymentsArr?.find(p => p.payment_evidence_url)?.payment_evidence_url || null;
+
+                                                        if (proofUrl) {
+                                                            return (
+                                                                <div className="flex flex-col items-center mb-1">
+                                                                    <span className="text-[7px] text-green-400 font-bold uppercase mb-1 flex items-center gap-1">
+                                                                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
+                                                                        Comprobante Recibido
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={() => setSelectedProof(proofUrl)}
+                                                                        className="flex items-center gap-2 px-4 py-2 bg-[#C5A065] text-black rounded-lg text-xs font-bold hover:bg-white transition-all shadow-lg hover:scale-105"
+                                                                    >
+                                                                        <span className="material-icons-outlined text-sm">receipt_long</span>
+                                                                        VER COMPROBANTE
+                                                                    </button>
+                                                                </div>
+                                                            );
+                                                        }
+
+                                                        // Fallback: escanear bucket de storage directamente
+                                                        if (order.status === 'pending') {
+                                                            return (
+                                                                <div className="flex flex-col items-center mb-1">
+                                                                    <button
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            const { data } = await supabase.storage.from('payments').list(order.id);
+                                                                            if (data && data.length > 0) {
+                                                                                const { data: { publicUrl } } = supabase.storage.from('payments').getPublicUrl(`${order.id}/${data[0].name}`);
+                                                                                setSelectedProof(publicUrl);
+                                                                            } else {
+                                                                                alert("Aún no hay comprobante para este pedido.");
+                                                                            }
+                                                                        }}
+                                                                        className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-[#C5A065]/50 text-[#C5A065] rounded-lg text-[10px] font-bold hover:bg-[#C5A065] hover:text-black transition-all shadow-md group"
+                                                                    >
+                                                                        <span className="material-icons-outlined text-sm group-hover:rotate-12 transition-transform">search_check</span>
+                                                                        BUSCAR COMPROBANTE
+                                                                    </button>
+                                                                </div>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
+
+                                                    <div className="flex items-center justify-center gap-1.5">
+                                                        {(order.status === 'paid' || order.status === 'shipped' || order.status === 'delivered') && (
+                                                            <button
+                                                                onClick={async () => {
+                                                                    try {
+                                                                        const { data: existingInvoice } = await invoiceService.getInvoiceByOrderId(order.id);
+                                                                        if (existingInvoice) {
+                                                                            window.open(`/#/invoice/${order.id}`, '_blank');
+                                                                            return;
+                                                                        }
+                                                                        // Si no existe, generar
+                                                                        const { data: orderData } = await supabase
+                                                                            .from('orders')
+                                                                            .select('*, order_items(*), profiles(full_name, email)')
+                                                                            .eq('id', order.id)
+                                                                            .single();
+
+                                                                        if (!orderData) {
+                                                                            alert('No se encontró la orden');
+                                                                            return;
+                                                                        }
+
+                                                                        const customer = {
+                                                                            name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
+                                                                            docType: orderData.shipping_address?.docType || 'CC',
+                                                                            docNumber: orderData.shipping_address?.docNumber || '0',
+                                                                            address: orderData.shipping_address?.address || '',
+                                                                            city: orderData.shipping_address?.city || '',
+                                                                            department: orderData.shipping_address?.department || '',
+                                                                            email: orderData.shipping_address?.email || orderData.profiles?.email || '',
+                                                                            phone: orderData.shipping_address?.phone || ''
+                                                                        };
+
+                                                                        await invoiceService.generateInvoice(order.id, orderData as any, customer);
+                                                                        window.open(`/#/invoice/${order.id}`, '_blank');
+                                                                    } catch (err) {
+                                                                        alert('Error al generar factura: ' + (err instanceof Error ? err.message : 'Error desconocido'));
+                                                                    }
+                                                                }}
+                                                                className="h-8 w-8 bg-[#C5A065]/10 text-[#C5A065] rounded-lg hover:bg-[#C5A065] hover:text-black transition-all border border-[#C5A065]/20 font-bold text-[10px]"
+                                                                title="Ver/Generar Factura"
+                                                            >
+                                                                <span className="material-icons-outlined text-sm">receipt</span>
+                                                            </button>
+                                                        )}
+                                                        <select
+                                                            className="h-8 bg-black/60 border border-white/10 rounded-lg px-2 py-0 text-[10px] text-white/80 focus:border-[#C5A065] outline-none cursor-pointer hover:bg-black/80 transition-colors"
+                                                            onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                                                            value={order.status}
+                                                        >
+                                                            <option value="pending_payment">⏳ Esperando Pago</option>
+                                                            <option value="pending">🧐 Por Confirmar</option>
+                                                            <option value="paid">✅ Pagado</option>
+                                                            <option value="processing">☕ Preparando</option>
+                                                            <option value="shipped">🚚 Enviado</option>
+                                                            <option value="delivered">🏠 Entregado</option>
+                                                            <option value="cancelled">❌ Cancelado</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        {filteredOrders.length === 0 && (
                             <div className="py-20 text-center">
                                 <span className="material-icons-outlined text-6xl text-white/10 mb-4">shopping_basket</span>
-                                <p className="text-gray-500 italic">Aún no se han registrado rituales de compra.</p>
+                                <p className="text-gray-500 italic">No se encontraron pedidos que coincidan con los filtros.</p>
                             </div>
                         )}
                     </div>

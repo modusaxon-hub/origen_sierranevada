@@ -40,6 +40,7 @@ const HomePage: React.FC = () => {
     // Selección de variante y molienda - Ahora dinámico según producto
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
     const [selectedGrind, setSelectedGrind] = useState('En Grano');
+    const [customWeight, setCustomWeight] = useState<number>(0);
 
     // Specific state for modal product (to avoid conflict with viewerIdx)
     const [selectedModalProduct, setSelectedModalProduct] = useState<Product | null>(null);
@@ -138,9 +139,8 @@ const HomePage: React.FC = () => {
     const isCafetal = currentProduct?.category === 'cafetal' || currentProduct?.category === 'coffee';
     const finalPrice = (user && isCafetal) ? currentPrice * 0.9 : currentPrice;
 
-    // Obtener variantes disponibles (con stock)
+    // Obtener variantes disponibles (con stock) e incluir opción "Otros" para café
     const availableVariants = currentProduct?.variants?.filter(v => v.stock > 0) ?? [];
-    // Obtener opciones de molienda del producto
     const grindOptions = currentProduct?.intrinsics?.grind_options ?? ['En Grano', 'Molido'];
 
     // Touch Swipe Handlers (Only for Single View mainly)
@@ -165,15 +165,30 @@ const HomePage: React.FC = () => {
         if (!currentProduct) return;
 
         // Construir nombre con variante y molienda
-        const variantName = selectedVariant?.name ?? '';
+        const isOtros = selectedVariantId === 'otros';
+        const variantName = isOtros ? `${customWeight}g` : (selectedVariant?.name ?? '');
         const productName = currentProduct.name[lang] || currentProduct.name.es;
         const displayName = variantName ? `${productName} (${variantName})` : productName;
 
+        let price = finalPrice;
+        if (isOtros && customWeight > 0) {
+            // Calcular precio proporcional basado en la variante de 1kg o la última disponible
+            const baseVariant = availableVariants[availableVariants.length - 1]; // Usualmente la más grande
+            if (baseVariant) {
+                const baseWeightStr = baseVariant.name.replace('g', '').replace('kg', '000');
+                const baseWeight = parseInt(baseWeightStr);
+                if (baseWeight > 0) {
+                    price = (baseVariant.price / baseWeight) * customWeight;
+                    if (user && isCafetal) price *= 0.9;
+                }
+            }
+        }
+
         addToCart({
-            id: `${currentProduct.id}-${selectedVariantId || 'base'}-${selectedGrind}`,
+            id: `${currentProduct.id}-${selectedVariantId || 'base'}-${selectedGrind}-${isOtros ? customWeight : ''}`,
             name: displayName,
             sub: isCafetal ? `${selectedGrind} • ${currentProduct.badge?.[lang] || 'Premium'}` : (currentProduct.badge?.[lang] || 'Premium'),
-            price: finalPrice,
+            price: price,
             qty: 1,
             img: currentProduct.image_url || '/cafe_malu_full_composition.png'
         });
@@ -477,7 +492,29 @@ const HomePage: React.FC = () => {
                                                                 {variant.name}
                                                             </button>
                                                         ))}
+                                                        {isCafetal && (
+                                                            <button
+                                                                onClick={() => setSelectedVariantId('otros')}
+                                                                className={`px-3 py-1.5 text-[11px] font-bold tracking-widest transition-all duration-500 rounded-sm border ${selectedVariantId === 'otros'
+                                                                    ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200,170,110,0.3)]'
+                                                                    : 'border-white/10 text-white/40 hover:border-white/30'
+                                                                    }`}
+                                                            >
+                                                                {lang === 'es' ? 'OTROS' : 'CUSTOM'}
+                                                            </button>
+                                                        )}
                                                     </div>
+                                                    {selectedVariantId === 'otros' && (
+                                                        <div className="animate-fade-in pt-2">
+                                                            <input
+                                                                type="number"
+                                                                placeholder={lang === 'es' ? 'Cantidad en gramos' : 'Amount in grams'}
+                                                                className="bg-black/40 border border-[#C8AA6E]/30 rounded-sm px-4 py-2 text-xs text-white focus:outline-none focus:border-[#C8AA6E] w-full max-w-[200px]"
+                                                                value={customWeight || ''}
+                                                                onChange={(e) => setCustomWeight(parseInt(e.target.value) || 0)}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
 
@@ -577,14 +614,13 @@ const HomePage: React.FC = () => {
                 )}
             </header>
 
-            <ProductDetailsModal
-                product={selectedModalProduct || currentProduct}
-                isOpen={isDetailsOpen}
-                onClose={() => {
-                    setIsDetailsOpen(false);
-                    setTimeout(() => setSelectedModalProduct(null), 300); // Clear after fade out
-                }}
-            />
+            {selectedModalProduct && (
+                <ProductDetailsModal
+                    product={selectedModalProduct}
+                    isOpen={isDetailsOpen}
+                    onClose={() => setIsDetailsOpen(false)}
+                />
+            )}
 
             <HistoriaSection />
             <MapaOrigenSection />

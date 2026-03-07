@@ -21,14 +21,19 @@ const UserDropdown: React.FC = () => {
 
     return (
         <div ref={dropdownRef} className="relative">
+            {/* Profile Trigger - Compact for lg, Labeled for xl+ */}
             <div
                 onClick={() => setIsOpen(!isOpen)}
-                className="hidden xl:flex items-center gap-3 cursor-pointer hover:bg-[#C8AA6E]/10 transition-all duration-300 px-4 py-2 rounded-lg border border-[#C8AA6E]/20 hover:border-[#C8AA6E]/50"
+                className="flex items-center gap-2 lg:gap-3 cursor-pointer hover:bg-[#C8AA6E]/10 transition-all duration-300 px-3 xl:px-4 py-2 rounded-lg border border-[#C8AA6E]/20 hover:border-[#C8AA6E]/50"
                 title="Mi cuenta"
             >
-                <div className="text-right">
+                <div className="hidden xl:block text-right">
                     <p className="text-[9px] text-[#C8AA6E] uppercase tracking-widest font-bold">{isAdmin ? 'ADMIN' : 'USUARIO'}</p>
                     <p className="text-xs text-white max-w-[100px] truncate">{isAdmin ? 'Panel' : user.email?.split('@')[0]}</p>
+                </div>
+                {/* Fallback avatar/icon for lg screens */}
+                <div className="w-8 h-8 rounded-full border border-[#C8AA6E]/30 flex items-center justify-center bg-[#C8AA6E]/10 xl:hidden">
+                    <span className="material-icons-outlined text-[#C8AA6E] text-base">{isAdmin ? 'admin_panel_settings' : 'person'}</span>
                 </div>
                 <span className={`material-icons-outlined text-[#C8AA6E] text-sm transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>expand_more</span>
             </div>

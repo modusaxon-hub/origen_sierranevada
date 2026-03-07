@@ -90,15 +90,24 @@ const Brandbook: React.FC = () => {
                 Imprimir
             </button>
 
+            {/* Backdrop for mobile */}
+            {isSidebarOpen && (
+                <div
+                    className="no-print fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
             <aside className={`no-print fixed left-0 top-0 h-screen bg-[#141f16] border-r border-white/10 transition-all duration-300 z-50 flex flex-col ${isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full lg:w-20 lg:translate-x-0'}`}>
                 <div className="p-6 border-b border-white/10 flex items-center justify-between">
                     {isSidebarOpen && (
-                        <img
-                            src="/images/brandbook/logo-completo-origen-sierra-nevada.svg"
-                            alt="Logo"
-                            className="h-10 w-auto brightness-0 invert opacity-70"
-                        />
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                <span className="material-icons-outlined text-[#C8AA6E] text-lg">auto_awesome</span>
+                            </div>
+                            <span className="text-xs font-serif uppercase tracking-[0.3em] text-[#C8AA6E]">Manual</span>
+                        </div>
                     )}
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -113,6 +122,7 @@ const Brandbook: React.FC = () => {
                         <a
                             key={link.id}
                             href={`#${link.id}`}
+                            onClick={() => window.innerWidth < 1024 && setIsSidebarOpen(false)}
                             className={`flex items-center gap-4 px-4 py-3 rounded-lg text-xs uppercase tracking-widest transition-all border-l-3 border-transparent ${activeSection === link.id ? 'sidebar-link-active' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
                         >
                             {link.icon}
@@ -138,12 +148,10 @@ const Brandbook: React.FC = () => {
                     </div>
                 </nav>
 
-                {isSidebarOpen && (
-                    <div className="p-6 border-t border-white/10">
-                        <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-medium mb-1">Usuario</p>
-                        <p className="text-[11px] text-white/60 truncate">{user?.email}</p>
-                    </div>
-                )}
+                <div className="p-6 border-t border-white/10">
+                    <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-medium mb-1">Versión</p>
+                    <p className="text-[11px] text-[#C8AA6E] font-serif italic">1.2.0 - Sierra</p>
+                </div>
             </aside>
 
             {/* Main Content */}

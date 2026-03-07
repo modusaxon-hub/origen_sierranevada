@@ -45,18 +45,14 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
                     </p>
                 </div>
 
-                {/* Product Image (Floating) */}
-                <div className="flex-1 flex items-center justify-center relative my-2 md:my-4 group-hover:-translate-y-2 transition-transform duration-700 ease-out">
-                    <div className="relative w-4/5 aspect-square">
-                        {/* Glow effect */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/5 blur-[40px] rounded-full opacity-40"></div>
-
-                        <img
-                            src={product.image_url}
-                            alt={name}
-                            className="w-full h-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]"
-                        />
-                    </div>
+                {/* Product Image (Fills container) */}
+                <div className="flex-1 relative my-4 overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out">
+                    <img
+                        src={product.image_url}
+                        alt={name}
+                        className="w-full h-full object-cover filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
 
                 {/* Footer: Price & Button */}

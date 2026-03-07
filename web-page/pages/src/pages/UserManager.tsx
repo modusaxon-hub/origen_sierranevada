@@ -176,153 +176,159 @@ const UserManager: React.FC = () => {
                         <div className="overflow-x-auto">
                             {/* Pendientes Table Section (Conditional) */}
                             {filteredProfiles.some(p => p.status === 'pending') && (
-                                <div className="border-b-4 border-[#C5A065]/20">
+                                <div className="overflow-x-auto border-b-4 border-[#C5A065]/20">
                                     <div className="bg-[#C5A065]/5 p-4 flex items-center gap-3">
                                         <span className="material-icons-outlined text-[#C5A065]">pending_actions</span>
                                         <h3 className="text-[#C5A065] text-xs font-bold uppercase tracking-[0.2em]">Prioridad: Solicitudes por Autorizar</h3>
                                     </div>
-                                    <table className="w-full text-left border-collapse">
-                                        <tbody className="bg-[#C5A065]/5 divide-y divide-[#C5A065]/10">
-                                            {filteredProfiles.filter(p => p.status === 'pending').map((profile) => (
-                                                <tr key={profile.id} className="hover:bg-[#C5A065]/10 transition-colors">
-                                                    <td className="p-6">
-                                                        <div className="font-bold text-white mb-1">{profile.full_name || 'Nuevo Miembro'}</div>
-                                                        <div className="text-[#C5A065] text-xs">{profile.email}</div>
-                                                    </td>
-                                                    <td className="p-6">
-                                                        <span className="px-3 py-1 rounded-full bg-[#C5A065] text-black text-[10px] font-bold tracking-wider uppercase">
-                                                            ⏳ ESPERANDO RITUAL
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-6 text-white/40 text-xs">
-                                                        Solicitado: {new Date(profile.created_at).toLocaleDateString()}
-                                                    </td>
-                                                    <td className="p-6 text-right">
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); handleActivateUser(profile.id); }}
-                                                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-lg shadow-[#C5A065]/20 animate-bounce-slow"
-                                                        >
-                                                            <span className="material-icons-outlined text-sm">how_to_reg</span>
-                                                            Conceder Acceso
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <div className="min-w-[800px]">
+                                        <table className="w-full text-left border-collapse">
+                                            <tbody className="bg-[#C5A065]/5 divide-y divide-[#C5A065]/10">
+                                                {filteredProfiles.filter(p => p.status === 'pending').map((profile) => (
+                                                    <tr key={profile.id} className="hover:bg-[#C5A065]/10 transition-colors">
+                                                        <td className="p-6">
+                                                            <div className="font-bold text-white mb-1">{profile.full_name || 'Nuevo Miembro'}</div>
+                                                            <div className="text-[#C5A065] text-xs">{profile.email}</div>
+                                                        </td>
+                                                        <td className="p-6">
+                                                            <span className="px-3 py-1 rounded-full bg-[#C5A065] text-black text-[10px] font-bold tracking-wider uppercase">
+                                                                ⏳ ESPERANDO RITUAL
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-6 text-white/40 text-xs text-nowrap">
+                                                            Solicitado: {new Date(profile.created_at).toLocaleDateString()}
+                                                        </td>
+                                                        <td className="p-6 text-right">
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); handleActivateUser(profile.id); }}
+                                                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-lg shadow-[#C5A065]/20"
+                                                            >
+                                                                <span className="material-icons-outlined text-sm">how_to_reg</span>
+                                                                Conceder Acceso
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <div className="h-4 bg-black/40"></div>
                                 </div>
                             )}
 
                             {/* Main Directory Table */}
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="border-b border-white/10 bg-black/20 text-xs uppercase tracking-widest text-[#C5A065]">
-                                        <th className="p-6 font-bold">Directorio General</th>
-                                        <th className="p-6 font-bold">Rol</th>
-                                        <th className="p-6 font-bold">Ingreso</th>
-                                        <th className="p-6 font-bold text-right">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-sm divide-y divide-white/5">
-                                    {filteredProfiles.filter(p => p.status !== 'pending').map((profile) => (
-                                        <tr key={profile.id} className={`hover:bg-white/5 transition-colors ${profile.status === 'deleted' || profile.status === 'banned' ? 'opacity-50 grayscale-[0.5]' : ''}`}>
-                                            <td className="p-6">
-                                                <div className="flex items-center gap-3">
-                                                    <div>
-                                                        <div className="font-bold text-white mb-1 flex items-center gap-2">
-                                                            {profile.full_name || 'Sin Nombre'}
-                                                            {profile.security_notes && (
-                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-500 border border-orange-500/20 text-[9px]" title="Tiene antecedentes de seguridad">
-                                                                    <span className="material-icons-outlined text-[10px]">history</span>
-                                                                    ALERTA
+                            <div className="overflow-x-auto">
+                                <div className="min-w-[800px]">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="border-b border-white/10 bg-black/20 text-xs uppercase tracking-widest text-[#C5A065]">
+                                                <th className="p-6 font-bold">Directorio General</th>
+                                                <th className="p-6 font-bold">Rol</th>
+                                                <th className="p-6 font-bold">Ingreso</th>
+                                                <th className="p-6 font-bold text-right">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="text-sm divide-y divide-white/5">
+                                            {filteredProfiles.filter(p => p.status !== 'pending').map((profile) => (
+                                                <tr key={profile.id} className={`hover:bg-white/5 transition-colors ${profile.status === 'deleted' || profile.status === 'banned' ? 'opacity-50 grayscale-[0.5]' : ''}`}>
+                                                    <td className="p-6">
+                                                        <div className="flex items-center gap-3">
+                                                            <div>
+                                                                <div className="font-bold text-white mb-1 flex items-center gap-2">
+                                                                    {profile.full_name || 'Sin Nombre'}
+                                                                    {profile.security_notes && (
+                                                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-500 border border-orange-500/20 text-[9px]" title="Tiene antecedentes de seguridad">
+                                                                            <span className="material-icons-outlined text-[10px]">history</span>
+                                                                            ALERTA
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="text-white/40 text-xs">{profile.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-6">
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role_name === 'Administrador'
+                                                                ? 'bg-[#C5A065]/20 text-[#C5A065] border border-[#C5A065]/30'
+                                                                : profile.role_name === 'Colaborador'
+                                                                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                                                    : 'bg-white/10 text-white/60'
+                                                                }`}>
+                                                                {profile.role_name}
+                                                            </span>
+                                                            {profile.status === 'banned' && (
+                                                                <span className="w-fit px-2 py-0.5 rounded bg-red-500/20 text-red-500 text-[9px] font-bold uppercase border border-red-500/30">
+                                                                    ⚠️ {profile.security_flag || 'Baneado'}
+                                                                </span>
+                                                            )}
+                                                            {profile.status === 'pending' && (
+                                                                <span className="w-fit px-2 py-0.5 rounded bg-blue-500/20 text-blue-500 text-[9px] font-bold uppercase border border-blue-500/30">
+                                                                    ⏳ Pendiente Aprobar
+                                                                </span>
+                                                            )}
+                                                            {profile.status === 'deleted' && (
+                                                                <span className="w-fit px-2 py-0.5 rounded bg-zinc-500/20 text-zinc-500 text-[9px] font-bold uppercase border border-zinc-500/30">
+                                                                    🗑️ Eliminado
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <div className="text-white/40 text-xs">{profile.email}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="p-6">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role_name === 'Administrador'
-                                                        ? 'bg-[#C5A065]/20 text-[#C5A065] border border-[#C5A065]/30'
-                                                        : profile.role_name === 'Colaborador'
-                                                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                                                            : 'bg-white/10 text-white/60'
-                                                        }`}>
-                                                        {profile.role_name}
-                                                    </span>
-                                                    {profile.status === 'banned' && (
-                                                        <span className="w-fit px-2 py-0.5 rounded bg-red-500/20 text-red-500 text-[9px] font-bold uppercase border border-red-500/30">
-                                                            ⚠️ {profile.security_flag || 'Baneado'}
-                                                        </span>
-                                                    )}
-                                                    {profile.status === 'pending' && (
-                                                        <span className="w-fit px-2 py-0.5 rounded bg-blue-500/20 text-blue-500 text-[9px] font-bold uppercase border border-blue-500/30">
-                                                            ⏳ Pendiente Aprobar
-                                                        </span>
-                                                    )}
-                                                    {profile.status === 'deleted' && (
-                                                        <span className="w-fit px-2 py-0.5 rounded bg-zinc-500/20 text-zinc-500 text-[9px] font-bold uppercase border border-zinc-500/30">
-                                                            🗑️ Eliminado
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="p-6 text-white/40">
-                                                {new Date(profile.created_at).toLocaleDateString()}
-                                            </td>
-                                            <td className="p-6 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    {profile.status === 'pending' && (
-                                                        <button
-                                                            onClick={() => handleActivateUser(profile.id)}
-                                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-900/20"
-                                                        >
-                                                            <span className="material-icons-outlined text-sm">how_to_reg</span>
-                                                            Aprobar
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => handleRoleChange(profile.id, profile.role_name, profile.full_name)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black border border-white/10"
-                                                    >
-                                                        <span className="material-icons-outlined text-sm">manage_accounts</span>
-                                                        Gestionar
-                                                    </button>
-                                                    {profile.status === 'banned' || profile.status === 'deleted' ? (
-                                                        <button
-                                                            onClick={() => handleActivateUser(profile.id)}
-                                                            className="p-2 rounded-lg text-green-400 hover:bg-green-500/10 border border-transparent hover:border-green-500/20 transition-all"
-                                                            title="Reactivar Usuario"
-                                                        >
-                                                            <span className="material-icons-outlined text-sm">lock_open</span>
-                                                        </button>
-                                                    ) : (
-                                                        <div className="flex gap-1">
+                                                    </td>
+                                                    <td className="p-6 text-white/40 text-nowrap">
+                                                        {new Date(profile.created_at).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="p-6 text-right">
+                                                        <div className="flex justify-end gap-2">
+                                                            {profile.status === 'pending' && (
+                                                                <button
+                                                                    onClick={() => handleActivateUser(profile.id)}
+                                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-900/20"
+                                                                >
+                                                                    <span className="material-icons-outlined text-sm">how_to_reg</span>
+                                                                    Aprobar
+                                                                </button>
+                                                            )}
                                                             <button
-                                                                onClick={() => setBanModal({ isOpen: true, userId: profile.id, fullName: profile.full_name })}
-                                                                className="p-2 rounded-lg text-orange-400 hover:bg-orange-500/10 border border-transparent hover:border-orange-500/20 transition-all"
-                                                                title="Bloquear (Seguridad)"
+                                                                onClick={() => handleRoleChange(profile.id, profile.role_name, profile.full_name)}
+                                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black border border-white/10"
                                                             >
-                                                                <span className="material-icons-outlined text-sm">gavel</span>
+                                                                <span className="material-icons-outlined text-sm">manage_accounts</span>
+                                                                Gestionar
                                                             </button>
-                                                            <button
-                                                                onClick={() => setSoftDeleteModal({ isOpen: true, userId: profile.id, fullName: profile.full_name })}
-                                                                className="p-2 rounded-lg text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all"
-                                                                title="Eliminar de la lista"
-                                                            >
-                                                                <span className="material-icons-outlined text-sm">delete_outline</span>
-                                                            </button>
+                                                            {profile.status === 'banned' || profile.status === 'deleted' ? (
+                                                                <button
+                                                                    onClick={() => handleActivateUser(profile.id)}
+                                                                    className="p-2 rounded-lg text-green-400 hover:bg-green-500/10 border border-transparent hover:border-green-500/20 transition-all"
+                                                                    title="Reactivar Usuario"
+                                                                >
+                                                                    <span className="material-icons-outlined text-sm">lock_open</span>
+                                                                </button>
+                                                            ) : (
+                                                                <div className="flex gap-1 text-nowrap">
+                                                                    <button
+                                                                        onClick={() => setBanModal({ isOpen: true, userId: profile.id, fullName: profile.full_name })}
+                                                                        className="p-2 rounded-lg text-orange-400 hover:bg-orange-500/10 border border-transparent hover:border-orange-500/20 transition-all"
+                                                                        title="Bloquear (Seguridad)"
+                                                                    >
+                                                                        <span className="material-icons-outlined text-sm">gavel</span>
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => setSoftDeleteModal({ isOpen: true, userId: profile.id, fullName: profile.full_name })}
+                                                                        className="p-2 rounded-lg text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all"
+                                                                        title="Eliminar de la lista"
+                                                                    >
+                                                                        <span className="material-icons-outlined text-sm">delete_outline</span>
+                                                                    </button>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>

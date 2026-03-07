@@ -68,6 +68,9 @@ export interface Product {
     weight: number; // Peso en gramos
     origin: string; // Origen del café
     available: boolean; // Disponible para venta
+    brand?: string; // Marca del producto
+    provider_id?: string; // ID del proveedor (referencia a profiles.id)
+    grain_type?: string; // Tipo de grano (ej: Arábica, Honey, etc.)
 
     // Campos de personalidad y carácter
     intrinsics?: ProductPersonality;

@@ -1,5 +1,5 @@
 import React from 'react';
-import logoUrl from '@assets/logo/svg/origen-logo-completo.svg';
+import OrigenLogo from '@assets/logo/svg/origen-logo-completo.svg?react';
 
 interface LogoProps {
     className?: string;
@@ -8,11 +8,10 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({ className }) => {
     return (
         <div className="relative animate-logo-entrance">
-            <img
-                src={logoUrl}
-                alt="Origen Sierra Nevada"
+            <OrigenLogo
                 className={`${className} relative z-10`}
-                loading="eager"
+                role="img"
+                aria-label="Origen Sierra Nevada"
             />
         </div>
     );

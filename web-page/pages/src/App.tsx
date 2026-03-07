@@ -26,6 +26,7 @@ const RegisterPage = lazy(() => import('./features/auth/pages/RegisterPage'));
 const Catalog = lazy(() => import('./features/catalog/pages/CatalogPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const OrderManager = lazy(() => import('./pages/OrderManager'));
+const SalesReports = lazy(() => import('./pages/SalesReports'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
 const MyOrdersPage = lazy(() => import('./pages/MyOrdersPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
@@ -126,6 +127,14 @@ const App: React.FC = () => {
                                         element={
                                             <ProtectedRoute requireAdmin={true}>
                                                 <OrderManager />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/admin/reports"
+                                        element={
+                                            <ProtectedRoute requireAdmin={true}>
+                                                <SalesReports />
                                             </ProtectedRoute>
                                         }
                                     />

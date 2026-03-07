@@ -78,7 +78,7 @@ const TestimoniosSection: React.FC = () => {
                     <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-4">Comunidad</p>
                     <h2 className="font-serif text-5xl md:text-6xl text-white mb-4">
                         Lo que dicen<br />
-                        <span className="text-[#C8AA6E] italic">nuestros rituales</span>
+                        <span className="text-[#C8AA6E] italic">nuestros clientes</span>
                     </h2>
                     <p className="text-white/30 text-sm max-w-md mx-auto font-light">
                         Más de 500 familias ya tienen su café de la Sierra en casa.

@@ -14,15 +14,47 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
     const { addToCart } = useCart();
     const lang = (language as 'es' | 'en') || 'es';
     const [activeDetailTab, setActiveDetailTab] = useState<'story' | 'traceability'>('story');
+    const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
+    const [customWeight, setCustomWeight] = useState<number>(0);
 
-    if (!isOpen) return null;
+    // Sync state when product changes
+    React.useEffect(() => {
+        if (product && product.variants && product.variants.length > 0) {
+            setSelectedVariantId(product.variants[0].id);
+        } else {
+            setSelectedVariantId(null);
+        }
+        setCustomWeight(0);
+    }, [product?.id]);
+
+    if (!isOpen || !product) return null;
 
     const handleAddToCart = () => {
+        const isOtros = selectedVariantId === 'otros';
+        const variant = product.variants?.find(v => v.id === selectedVariantId);
+        const variantName = isOtros ? `${customWeight}g` : (variant?.name ?? '');
+        const productName = product.name[lang] || product.name.es;
+        const displayName = variantName ? `${productName} (${variantName})` : productName;
+
+        let price = variant ? variant.price : product.price;
+        if (isOtros && customWeight > 0) {
+            const baseVariant = product.variants && product.variants.length > 0
+                ? product.variants[product.variants.length - 1]
+                : null;
+            if (baseVariant) {
+                const baseWeightStr = baseVariant.name.replace('g', '').replace('kg', '000');
+                const baseWeight = parseInt(baseWeightStr);
+                if (baseWeight > 0) {
+                    price = (baseVariant.price / baseWeight) * customWeight;
+                }
+            }
+        }
+
         addToCart({
-            id: product.id,
-            name: product.name[lang] || product.name.es,
+            id: `${product.id}-${selectedVariantId || 'base'}-${isOtros ? customWeight : ''}`,
+            name: displayName,
             sub: product.badge?.[lang] || 'Premium',
-            price: product.price, // Note: price adjustment for users usually happens in the page level or cart context
+            price: price,
             qty: 1,
             img: product.image_url || '/cafe_malu_full_composition.png'
         });
@@ -79,14 +111,56 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                             </p>
 
                             {/* Accessory Specs if available (checking traits or plain metadata) */}
-                            {product.weight > 0 && (
-                                <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
-                                    <div>
-                                        <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest mb-1">{lang === 'es' ? 'Peso' : 'Weight'}</p>
-                                        <p className="text-xl font-serif text-white">{product.weight}g</p>
+                            {product.category === 'cafetal' || product.category === 'coffee' ? (
+                                <div className="space-y-6">
+                                    <div className="space-y-3">
+                                        <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-widest">{lang === 'es' ? 'Seleccionar Presentación' : 'Select Size'}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {product.variants?.map(v => (
+                                                <button
+                                                    key={v.id}
+                                                    onClick={() => setSelectedVariantId(v.id)}
+                                                    className={`px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all ${selectedVariantId === v.id
+                                                        ? 'bg-[#C8AA6E] text-black border-[#C8AA6E]'
+                                                        : 'border border-white/10 text-white/40 hover:border-white/30'
+                                                        }`}
+                                                >
+                                                    {v.name}
+                                                </button>
+                                            ))}
+                                            <button
+                                                onClick={() => setSelectedVariantId('otros')}
+                                                className={`px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all ${selectedVariantId === 'otros'
+                                                    ? 'bg-[#C8AA6E] text-black border-[#C8AA6E]'
+                                                    : 'border border-white/10 text-white/40 hover:border-white/30'
+                                                    }`}
+                                            >
+                                                {lang === 'es' ? 'OTROS' : 'CUSTOM'}
+                                            </button>
+                                        </div>
                                     </div>
-                                    {/* Feel free to add more metadata fields here if user requests */}
+
+                                    {selectedVariantId === 'otros' && (
+                                        <div className="animate-fade-in space-y-2">
+                                            <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest">{lang === 'es' ? 'Peso Personalizado (g)' : 'Custom Weight (g)'}</p>
+                                            <input
+                                                type="number"
+                                                className="bg-black/40 border border-[#C8AA6E]/30 rounded-sm px-4 py-2 text-xs text-white focus:outline-none focus:border-[#C8AA6E] w-full max-w-[200px]"
+                                                value={customWeight || ''}
+                                                onChange={(e) => setCustomWeight(parseInt(e.target.value) || 0)}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
+                            ) : (
+                                product.weight > 0 && (
+                                    <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
+                                        <div>
+                                            <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest mb-1">{lang === 'es' ? 'Peso' : 'Weight'}</p>
+                                            <p className="text-xl font-serif text-white">{product.weight}g</p>
+                                        </div>
+                                    </div>
+                                )
                             )}
                         </div>
                     ) : (
