@@ -1,41 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { supabase } from '@/services/supabaseClient';
 
-const TESTIMONIOS = [
-    {
-        nombre: 'María Camila R.',
-        ciudad: 'Bogotá',
-        rating: 5,
-        texto: 'Nunca pensé que un café pudiera hacerme sentir que estoy en la montaña. El Café Malú me dejó sin palabras: floral, brillante, con una acidez que se convierte en dulzura.',
-        compra: 'Café Malú Reserva · 500g',
-    },
-    {
-        nombre: 'Carlos A. Méndez',
-        ciudad: 'Medellín',
-        rating: 5,
-        texto: 'Trabajo con varios tostadores y Origen Sierra Nevada tiene algo diferente: la trazabilidad real. Sé exactamente de qué finca viene cada bolsa. Eso no tiene precio.',
-        compra: 'Suscripción Mensual · Canal B2B',
-    },
-    {
-        nombre: 'Valentina Torres',
-        ciudad: 'Cali',
-        rating: 5,
-        texto: 'El proceso de compra fue tan bueno como el café. Llegó en 2 días, empaque impecable y una nota de la finca de origen. Se los recomiendo a todos mis amigos.',
-        compra: 'San Pedro Natural · 250g',
-    },
-    {
-        nombre: 'Santiago López',
-        ciudad: 'Barranquilla',
-        rating: 5,
-        texto: 'El café de Minca es extraordinario para espresso. El perfil de cacao y canela lo convierte en el mejor "después del almuerzo" que he probado en años.',
-        compra: 'Minca Natural · Espresso',
-    },
-    {
-        nombre: 'Laura Jiménez',
-        ciudad: 'Cartagena',
-        rating: 5,
-        texto: 'Pedí el kit con el dripper Chemex y fue amor a primera vista. El café honey de San Pedro en pour over es simplemente transcendente. Gracias Origen.',
-        compra: 'Kit Barista · San Pedro Honey',
-    },
+// ── Tipos ──────────────────────────────────────
+interface Testimonio {
+    nombre: string;
+    ciudad: string;
+    rating: number;
+    texto: string;
+    compra: string;
+}
+
+const DEFAULT_TESTIMONIOS: Testimonio[] = [
+    { nombre: 'María Camila R.', ciudad: 'Bogotá', rating: 5, texto: 'Nunca pensé que un café pudiera hacerme sentir que estoy en la montaña. El Café Malú me dejó sin palabras: floral, brillante, con una acidez que se convierte en dulzura.', compra: 'Café Malú Reserva · 500g' },
+    { nombre: 'Carlos A. Méndez', ciudad: 'Medellín', rating: 5, texto: 'Trabajo con varios tostadores y Origen Sierra Nevada tiene algo diferente: la trazabilidad real. Sé exactamente de qué finca viene cada bolsa. Eso no tiene precio.', compra: 'Suscripción Mensual · Canal B2B' },
+    { nombre: 'Valentina Torres', ciudad: 'Cali', rating: 5, texto: 'El proceso de compra fue tan bueno como el café. Llegó en 2 días, empaque impecable y una nota de la finca de origen. Se los recomiendo a todos mis amigos.', compra: 'San Pedro Natural · 250g' },
+    { nombre: 'Santiago López', ciudad: 'Barranquilla', rating: 5, texto: 'El café de Minca es extraordinario para espresso. El perfil de cacao y canela lo convierte en el mejor "después del almuerzo" que he probado en años.', compra: 'Minca Natural · Espresso' },
+    { nombre: 'Laura Jiménez', ciudad: 'Cartagena', rating: 5, texto: 'Pedí el kit con el dripper Chemex y fue amor a primera vista. El café honey de San Pedro en pour over es simplemente transcendente. Gracias Origen.', compra: 'Kit Barista · San Pedro Honey' },
 ];
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
@@ -53,6 +33,24 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
 
 const TestimoniosSection: React.FC = () => {
     const sectionRef = useRef<HTMLElement>(null);
+    const [testimonios, setTestimonios] = useState<Testimonio[]>(DEFAULT_TESTIMONIOS);
+
+    // ── Cargar desde Supabase ──────────────────
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('site_configs')
+                    .select('data')
+                    .eq('id', 'testimonios')
+                    .single();
+                if (!error && data?.data?.list?.length > 0) {
+                    setTestimonios(data.data.list);
+                }
+            } catch { /* usa DEFAULT */ }
+        };
+        fetch();
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -64,7 +62,7 @@ const TestimoniosSection: React.FC = () => {
         const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
         targets?.forEach(el => observer.observe(el));
         return () => observer.disconnect();
-    }, []);
+    }, [testimonios]);
 
     return (
         <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#141E16]/40 overflow-hidden">
@@ -87,7 +85,7 @@ const TestimoniosSection: React.FC = () => {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                    {TESTIMONIOS.map((t, idx) => (
+                    {testimonios.map((t, idx) => (
                         <div
                             key={idx}
                             className="animate-on-scroll group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 md:p-7 flex flex-col hover:border-[#C8AA6E]/20 hover:bg-[#141E16]/40 transition-all duration-500"

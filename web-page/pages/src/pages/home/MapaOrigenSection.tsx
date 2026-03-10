@@ -1,44 +1,46 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { supabase } from '@/services/supabaseClient';
 
-const FINCAS = [
-    {
-        nombre: 'La Jagua',
-        municipio: 'La Jagua de Ibirico',
-        departamento: 'Magdalena',
-        altitud: '1.980',
-        perfil: 'Floral · Cítrico · Té negro',
-        proceso: 'Lavado',
-        notas: 'Jazmín · Bergamota · Durazno',
-        icon: 'spa',
-        color: '#C8AA6E',
-    },
-    {
-        nombre: 'San Pedro',
-        municipio: 'San Pedro de la Sierra',
-        departamento: 'Magdalena',
-        altitud: '2.200',
-        perfil: 'Frutal · Brillante · Dulce',
-        proceso: 'Honey',
-        notas: 'Mora · Maracuyá · Panela',
-        icon: 'local_florist',
-        color: '#E5CF9E',
-    },
-    {
-        nombre: 'Minca',
-        municipio: 'Santa Marta · Minca',
-        departamento: 'Magdalena',
-        altitud: '1.600',
-        perfil: 'Cacao · Especiado · Denso',
-        proceso: 'Natural',
-        notas: 'Chocolate · Canela · Uva pasa',
-        icon: 'eco',
-        color: '#A07840',
-    },
+// ── Tipos ──────────────────────────────────────
+interface Finca {
+    nombre: string;
+    municipio: string;
+    departamento: string;
+    altitud: string;
+    perfil: string;
+    proceso: string;
+    notas: string;
+    icon: string;
+    color: string;
+}
+
+const DEFAULT_FINCAS: Finca[] = [
+    { nombre: 'La Jagua', municipio: 'La Jagua de Ibirico', departamento: 'Magdalena', altitud: '1.980', perfil: 'Floral · Cítrico · Té negro', proceso: 'Lavado', notas: 'Jazmín · Bergamota · Durazno', icon: 'spa', color: '#C8AA6E' },
+    { nombre: 'San Pedro', municipio: 'San Pedro de la Sierra', departamento: 'Magdalena', altitud: '2.200', perfil: 'Frutal · Brillante · Dulce', proceso: 'Honey', notas: 'Mora · Maracuyá · Panela', icon: 'local_florist', color: '#E5CF9E' },
+    { nombre: 'Minca', municipio: 'Santa Marta · Minca', departamento: 'Magdalena', altitud: '1.600', perfil: 'Cacao · Especiado · Denso', proceso: 'Natural', notas: 'Chocolate · Canela · Uva pasa', icon: 'eco', color: '#A07840' },
 ];
 
 const MapaOrigenSection: React.FC = () => {
     const sectionRef = useRef<HTMLElement>(null);
     const [activeIdx, setActiveIdx] = useState(0);
+    const [fincas, setFincas] = useState<Finca[]>(DEFAULT_FINCAS);
+
+    // ── Cargar fincas desde Supabase ──────────────
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('site_configs')
+                    .select('data')
+                    .eq('id', 'fincas')
+                    .single();
+                if (!error && data?.data?.list?.length > 0) {
+                    setFincas(data.data.list);
+                }
+            } catch { /* usa DEFAULT */ }
+        };
+        fetch();
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -50,9 +52,9 @@ const MapaOrigenSection: React.FC = () => {
         const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
         targets?.forEach(el => observer.observe(el));
         return () => observer.disconnect();
-    }, []);
+    }, [fincas]);
 
-    const activeFinca = FINCAS[activeIdx];
+    const activeFinca = fincas[activeIdx] ?? fincas[0];
 
     return (
         <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#050806] overflow-hidden">
@@ -73,7 +75,7 @@ const MapaOrigenSection: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
-                    {FINCAS.map((finca, idx) => (
+                    {fincas.map((finca, idx) => (
                         <button
                             key={idx}
                             onClick={() => setActiveIdx(idx)}
@@ -118,49 +120,51 @@ const MapaOrigenSection: React.FC = () => {
                 </div>
 
                 {/* Detail panel */}
-                <div className="animate-on-scroll rounded-2xl border border-[#C8AA6E]/20 bg-[#141E16]/60 backdrop-blur-xl p-8 md:p-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                        {/* Left: Info */}
-                        <div>
-                            <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.5em] font-bold mb-2">Finca Activa</p>
-                            <h3 className="font-serif text-4xl text-[#C8AA6E] mb-1">{activeFinca.nombre}</h3>
-                            <p className="text-white/30 text-xs uppercase tracking-widest mb-6">{activeFinca.departamento} · {activeFinca.altitud} msnm</p>
+                {activeFinca && (
+                    <div className="animate-on-scroll rounded-2xl border border-[#C8AA6E]/20 bg-[#141E16]/60 backdrop-blur-xl p-8 md:p-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            {/* Left: Info */}
+                            <div>
+                                <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.5em] font-bold mb-2">Finca Activa</p>
+                                <h3 className="font-serif text-4xl text-[#C8AA6E] mb-1">{activeFinca.nombre}</h3>
+                                <p className="text-white/30 text-xs uppercase tracking-widest mb-6">{activeFinca.departamento} · {activeFinca.altitud} msnm</p>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Perfil de Taza</p>
-                                    <p className="text-white/70 text-sm">{activeFinca.perfil}</p>
-                                </div>
-                                <div>
-                                    <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Notas de Cata</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {activeFinca.notas.split(' · ').map((nota, i) => (
-                                            <span key={i} className="px-3 py-1 rounded-full border border-[#C8AA6E]/20 text-[#C8AA6E]/80 text-xs font-serif italic">
-                                                {nota}
-                                            </span>
-                                        ))}
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Perfil de Taza</p>
+                                        <p className="text-white/70 text-sm">{activeFinca.perfil}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Notas de Cata</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {activeFinca.notas.split(' · ').map((nota, i) => (
+                                                <span key={i} className="px-3 py-1 rounded-full border border-[#C8AA6E]/20 text-[#C8AA6E]/80 text-xs font-serif italic">
+                                                    {nota}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Right: Visual Sierra Nevada representation */}
-                        <div className="relative h-48 md:h-64 rounded-xl overflow-hidden">
-                            <div
-                                className="w-full h-full bg-cover bg-center animate-ken-burns opacity-60"
-                                style={{
-                                    backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDThTiqynQIa-ilci3zIhgZChfLRM4f1wVfnxQes6Pgbt0fiENkSzRaEZqeH4DzTvfxMFSudxYZ8J23n4DcT2DVwzwcO1Dx_V3l9HhmRxJ2ko0IXGCyQHBgTyhraGqBG9UOv1uCuRxnQduF8GWIZs4CUyl_cSMpUCI99JCX-1juZTytNwl3HJeatheVPkxiyN2uUtqT8XJ_0H8BTnQfmUQWp2rhFuQES4wiAYO54PSXRxb8KFLJjI2B-VL6R3b51Yp8mPPyvhxZqCM')`
-                                }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#141E16] via-transparent to-transparent" />
-                            {/* Coordinates badge */}
-                            <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg px-3 py-2">
-                                <p className="text-[9px] text-[#C8AA6E] uppercase tracking-widest font-bold">Coordenadas</p>
-                                <p className="text-white/60 font-mono text-xs">10.8° N · 74.0° W</p>
+                            {/* Right: Visual */}
+                            <div className="relative h-48 md:h-64 rounded-xl overflow-hidden">
+                                <div
+                                    className="w-full h-full bg-cover bg-center animate-ken-burns opacity-60"
+                                    style={{
+                                        backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDThTiqynQIa-ilci3zIhgZChfLRM4f1wVfnxQes6Pgbt0fiENkSzRaEZqeH4DzTvfxMFSudxYZ8J23n4DcT2DVwzwcO1Dx_V3l9HhmRxJ2ko0IXGCyQHBgTyhraGqBG9UOv1uCuRxnQduF8GWIZs4CUyl_cSMpUCI99JCX-1juZTytNwl3HJeatheVPkxiyN2uUtqT8XJ_0H8BTnQfmUQWp2rhFuQES4wiAYO54PSXRxb8KFLJjI2B-VL6R3b51Yp8mPPyvhxZqCM')`
+                                    }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#141E16] via-transparent to-transparent" />
+                                {/* Coordinates badge */}
+                                <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg px-3 py-2">
+                                    <p className="text-[9px] text-[#C8AA6E] uppercase tracking-widest font-bold">Coordenadas</p>
+                                    <p className="text-white/60 font-mono text-xs">10.8° N · 74.0° W</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </section>
     );
