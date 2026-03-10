@@ -9,7 +9,6 @@ import { Product } from '@/shared/types';
 import SEO from '@/shared/components/SEO';
 import ProductDetailsModal from '@/shared/components/ProductDetailsModal';
 import { AccessoryCard } from '@/shared/components/AccessoryCard';
-import { AntojitoCard } from '@/shared/components/AntojitoCard';
 import HistoriaSection from './home/HistoriaSection';
 import MapaOrigenSection from './home/MapaOrigenSection';
 import TestimoniosSection from './home/TestimoniosSection';
@@ -356,16 +355,15 @@ const HomePage: React.FC = () => {
                                         <div
                                             className="flex transition-transform duration-700 ease-out will-change-transform"
                                             style={{
-                                                // 3 items per viewport breakpoint
-                                                transform: `translateX(-${viewerIdx * (100 / (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1))}%)`
+                                                transform: `translateX(-${viewerIdx * (100 / (window.innerWidth >= 1280 ? 4 : window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1))}%)`
                                             }}
                                         >
                                             {viewerProducts.map(product => (
                                                 <div
                                                     key={product.id}
-                                                    className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 p-4 md:p-8"
+                                                    className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-3 md:p-4"
                                                 >
-                                                    <AntojitoCard
+                                                    <AccessoryCard
                                                         product={product}
                                                         onClick={() => {
                                                             setSelectedModalProduct(product);
