@@ -35,6 +35,7 @@ const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const InvoicePrototype = lazy(() => import('./components/Invoice/InvoicePrototype'));
 const InvoicePage = lazy(() => import('./pages/InvoicePage'));
+const SiteContentManager = lazy(() => import('./pages/SiteContentManager'));
 
 // Loading Placeholder
 const PageLoader = () => (
@@ -53,6 +54,114 @@ const ScrollToTop = () => {
     return null;
 };
 
+const AppContent: React.FC = () => {
+    const location = useLocation();
+    const isAdminPath = location.pathname.startsWith('/admin') || location.pathname.startsWith('/brandbook');
+    const isInvoicePath = location.pathname.startsWith('/invoice') || location.pathname.startsWith('/preview/invoice');
+    const isAuthPath = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
+
+    return (
+        <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-body transition-colors duration-300">
+            {(!isAdminPath && !isInvoicePath) && <Header />}
+            <Suspense fallback={<PageLoader />}>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/guide" element={<BrewingGuidePage />} />
+                    <Route path="/ai-lab" element={<AiLabPage />} />
+                    <Route path="/catalog" element={<Catalog />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/track/:orderId" element={<TrackOrderPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/preview/invoice" element={<InvoicePrototype />} />
+                    <Route path="/invoice/:orderId" element={
+                        <ProtectedRoute requireAdmin={false}>
+                            <InvoicePage />
+                        </ProtectedRoute>
+                    } />
+
+                    {/* Customer Routes */}
+                    <Route path="/my-orders" element={
+                        <ProtectedRoute requireAdmin={false}>
+                            <MyOrdersPage />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/account" element={
+                        <ProtectedRoute requireAdmin={false}>
+                            <UserDashboard />
+                        </ProtectedRoute>
+                    } />
+
+                    {/* Protected Routes */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <AdminDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/products"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <ProductManager />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/users"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <UserManager />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/orders"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <OrderManager />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/reports"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <SalesReports />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/content"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <SiteContentManager />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/brandbook"
+                        element={
+                            <ProtectedRoute requireAdmin={true}>
+                                <Brandbook />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Suspense>
+            <ChatWidget />
+            <CookieBanner />
+        </div>
+    );
+};
+
 const App: React.FC = () => {
     return (
         <AuthProvider>
@@ -60,97 +169,7 @@ const App: React.FC = () => {
                 <CartProvider>
                     <HashRouter>
                         <ScrollToTop />
-                        <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-body transition-colors duration-300">
-                            <Header />
-                            <Suspense fallback={<PageLoader />}>
-                                <Routes>
-                                    <Route path="/" element={<HomePage />} />
-                                    <Route path="/subscription" element={<SubscriptionPage />} />
-                                    <Route path="/guide" element={<BrewingGuidePage />} />
-                                    <Route path="/ai-lab" element={<AiLabPage />} />
-                                    <Route path="/catalog" element={<Catalog />} />
-                                    <Route path="/login" element={<LoginPage />} />
-                                    <Route path="/register" element={<RegisterPage />} />
-                                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                                    <Route path="/reset-password" element={<ResetPasswordPage />} />
-                                    <Route path="/checkout" element={<CheckoutPage />} />
-                                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                                    <Route path="/terms" element={<TermsPage />} />
-                                    <Route path="/track/:orderId" element={<TrackOrderPage />} />
-                                    <Route path="/contact" element={<ContactPage />} />
-                                    <Route path="/preview/invoice" element={<InvoicePrototype />} />
-                                    <Route path="/invoice/:orderId" element={
-                                        <ProtectedRoute requireAdmin={false}>
-                                            <InvoicePage />
-                                        </ProtectedRoute>
-                                    } />
-
-                                    {/* Customer Routes */}
-                                    <Route path="/my-orders" element={
-                                        <ProtectedRoute requireAdmin={false}>
-                                            <MyOrdersPage />
-                                        </ProtectedRoute>
-                                    } />
-                                    <Route path="/account" element={
-                                        <ProtectedRoute requireAdmin={false}>
-                                            <UserDashboard />
-                                        </ProtectedRoute>
-                                    } />
-
-                                    {/* Protected Routes */}
-                                    <Route
-                                        path="/admin"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <AdminDashboard />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/admin/products"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <ProductManager />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/admin/users"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <UserManager />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/admin/orders"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <OrderManager />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/admin/reports"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <SalesReports />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/brandbook"
-                                        element={
-                                            <ProtectedRoute requireAdmin={true}>
-                                                <Brandbook />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                </Routes>
-                            </Suspense>
-                            <ChatWidget />
-                            <CookieBanner />
-                        </div>
+                        <AppContent />
                     </HashRouter>
                 </CartProvider>
             </LanguageProvider>

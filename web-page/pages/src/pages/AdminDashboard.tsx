@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { authService } from '@/services/authService';
 import { supabase } from '@/services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../shared/components/Logo';
+import AdminHeader from '@/shared/components/AdminHeader';
 
 const AdminDashboard: React.FC = () => {
     const { user } = useAuth();
@@ -113,30 +113,15 @@ const AdminDashboard: React.FC = () => {
         };
     }, []);
 
+    const pendingOrdersCount = (metrics.ordersByStatus.pending || 0) + (metrics.ordersByStatus.pending_payment || 0);
+
     return (
         <div className="min-h-screen bg-[#0B120D] text-white font-sans selection:bg-[#C5A065] selection:text-black">
-            <header className="fixed top-0 w-full z-50 bg-[#0B120D]/90 backdrop-blur-md border-b border-[#C5A065]/20">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-                    <div className="flex items-center gap-4 cursor-pointer group" onClick={() => navigate('/')}>
-                        <Logo className="w-[170px] h-auto group-hover:opacity-80 transition-opacity" />
-                        <span className="text-[#C5A065] text-xl font-serif tracking-wide border-l border-[#C5A065]/30 pl-4 group-hover:text-white transition-colors">
-                            ORIGEN ADMIN
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-6">
-                        <button onClick={() => navigate('/')} className="p-2 text-white/60 hover:text-[#C5A065] transition-colors border-r border-white/10 pr-4 mr-2">
-                            <span className="material-icons-outlined text-2xl">storefront</span>
-                        </button>
-                        <div className="text-right hidden sm:block">
-                            <p className="text-xs text-[#C5A065] uppercase tracking-widest font-bold">Administrador</p>
-                            <p className="text-sm text-gray-300">{user?.email}</p>
-                        </div>
-                        <button onClick={handleLogout} className="text-xs text-red-400 hover:text-red-300 underline tracking-wide transition-colors">
-                            Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader
+                title="ORIGEN ADMIN"
+                pendingOrdersCount={pendingOrdersCount}
+                pendingUsersCount={pendingCount}
+            />
 
             <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -179,7 +164,7 @@ const AdminDashboard: React.FC = () => {
 
                 <section className="mb-16">
                     <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-serif text-white uppercase tracking-tight">Métricas del Ritual</h2>
+                        <h2 className="text-2xl font-serif text-white uppercase tracking-tight">Métricas de Ventas</h2>
                         <button onClick={fetchMetrics} disabled={metrics.metricsLoading} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-[#C5A065]/30 rounded-lg text-[#C5A065] hover:bg-[#C5A065]/10 transition-all disabled:opacity-50">
                             <span className={`material-icons-outlined text-sm ${metrics.metricsLoading ? 'animate-spin' : ''}`}>refresh</span>
                             Actualizar
@@ -275,6 +260,13 @@ const AdminDashboard: React.FC = () => {
                         <h3 className="text-2xl font-serif text-white mb-4">Usuarios</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Administra roles y clientes.</p>
                         <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Equipo <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                    </div>
+
+                    <div onClick={() => navigate('/admin/content')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065]">article</span></div>
+                        <h3 className="text-2xl font-serif text-white mb-4">Contenido del Sitio</h3>
+                        <p className="text-gray-400 font-light mb-6 text-sm">Edita Historia, Fincas y Testimonios.</p>
+                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
                     <div onClick={() => navigate('/brandbook')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
