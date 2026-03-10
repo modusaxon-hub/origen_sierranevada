@@ -15,8 +15,6 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
     const lang = (language as 'es' | 'en') || 'es';
     const [activeDetailTab, setActiveDetailTab] = useState<'story' | 'traceability'>('story');
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
-    const [customWeight, setCustomWeight] = useState<number>(0);
-
     // Sync state when product changes
     React.useEffect(() => {
         if (product && product.variants && product.variants.length > 0) {
@@ -24,37 +22,30 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
         } else {
             setSelectedVariantId(null);
         }
-        setCustomWeight(0);
     }, [product?.id]);
 
     if (!isOpen || !product) return null;
+    const selectedVariant = product.variants?.find(v => v.id === selectedVariantId);
 
     const handleAddToCart = () => {
-        const isOtros = selectedVariantId === 'otros';
-        const variant = product.variants?.find(v => v.id === selectedVariantId);
-        const variantName = isOtros ? `${customWeight}g` : (variant?.name ?? '');
-        const productName = product.name[lang] || product.name.es;
-        const displayName = variantName ? `${productName} (${variantName})` : productName;
+        const variantName = selectedVariant?.name ?? '';
+        const productName = product.name[lang] || product.name.es || product.name.en;
 
-        let price = variant ? variant.price : product.price;
-        if (isOtros && customWeight > 0) {
-            const baseVariant = product.variants && product.variants.length > 0
-                ? product.variants[product.variants.length - 1]
-                : null;
-            if (baseVariant) {
-                const baseWeightStr = baseVariant.name.replace('g', '').replace('kg', '000');
-                const baseWeight = parseInt(baseWeightStr);
-                if (baseWeight > 0) {
-                    price = (baseVariant.price / baseWeight) * customWeight;
-                }
-            }
+        let extraInfo = '';
+        if (selectedVariant?.grind) {
+            const grindText = selectedVariant.grind.includes('Molido') ? 'Molido' : selectedVariant.grind;
+            extraInfo = `[${grindText}]`;
+        } else if (selectedVariant?.units_per_package) {
+            extraInfo = `(${selectedVariant.units_per_package} uds x ${selectedVariant.weight_per_unit || ''}g)`;
         }
 
+        const displayName = `${productName} ${variantName} ${extraInfo}`.trim();
+
         addToCart({
-            id: `${product.id}-${selectedVariantId || 'base'}-${isOtros ? customWeight : ''}`,
+            id: `${product.id}-${selectedVariantId || 'base'}`,
             name: displayName,
-            sub: product.badge?.[lang] || 'Premium',
-            price: price,
+            sub: product.badge?.[lang] || 'Origen Sierra Nevada',
+            price: selectedVariant ? selectedVariant.price : product.price,
             qty: 1,
             img: product.image_url || '/cafe_malu_full_composition.png'
         });
@@ -110,47 +101,35 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                                 {product.description[lang] || product.description.es}
                             </p>
 
-                            {/* Accessory Specs if available (checking traits or plain metadata) */}
-                            {product.category === 'cafetal' || product.category === 'coffee' ? (
+                            {/* Specs/Variants if available */}
+                            {product.variants && product.variants.length > 0 ? (
                                 <div className="space-y-6">
                                     <div className="space-y-3">
                                         <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-widest">{lang === 'es' ? 'Seleccionar Presentación' : 'Select Size'}</p>
                                         <div className="flex flex-wrap gap-2">
-                                            {product.variants?.map(v => (
+                                            {product.variants?.filter(v => {
+                                                if (product.variants?.some(v => v.grind) && selectedVariant?.grind) {
+                                                    const cGrind = selectedVariant.grind.includes('Molido') ? 'Molido' : selectedVariant.grind;
+                                                    const vGrind = v.grind ? (v.grind.includes('Molido') ? 'Molido' : v.grind) : cGrind;
+                                                    return vGrind === cGrind;
+                                                }
+                                                return true;
+                                            }).map(v => (
                                                 <button
                                                     key={v.id}
                                                     onClick={() => setSelectedVariantId(v.id)}
-                                                    className={`px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all ${selectedVariantId === v.id
+                                                    className={`px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all flex flex-col items-center justify-center ${selectedVariantId === v.id
                                                         ? 'bg-[#C8AA6E] text-black border-[#C8AA6E]'
                                                         : 'border border-white/10 text-white/40 hover:border-white/30'
                                                         }`}
                                                 >
-                                                    {v.name}
+                                                    <span>{v.name}</span>
+                                                    {v.grind && <span className="opacity-70 text-[8px] mt-0.5 whitespace-nowrap leading-none">{v.grind.includes('Molido') ? 'Molido' : v.grind}</span>}
+                                                    {v.units_per_package && <span className="opacity-70 text-[8px] mt-0.5 leading-none">{v.units_per_package} uds</span>}
                                                 </button>
                                             ))}
-                                            <button
-                                                onClick={() => setSelectedVariantId('otros')}
-                                                className={`px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all ${selectedVariantId === 'otros'
-                                                    ? 'bg-[#C8AA6E] text-black border-[#C8AA6E]'
-                                                    : 'border border-white/10 text-white/40 hover:border-white/30'
-                                                    }`}
-                                            >
-                                                {lang === 'es' ? 'OTROS' : 'CUSTOM'}
-                                            </button>
                                         </div>
                                     </div>
-
-                                    {selectedVariantId === 'otros' && (
-                                        <div className="animate-fade-in space-y-2">
-                                            <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest">{lang === 'es' ? 'Peso Personalizado (g)' : 'Custom Weight (g)'}</p>
-                                            <input
-                                                type="number"
-                                                className="bg-black/40 border border-[#C8AA6E]/30 rounded-sm px-4 py-2 text-xs text-white focus:outline-none focus:border-[#C8AA6E] w-full max-w-[200px]"
-                                                value={customWeight || ''}
-                                                onChange={(e) => setCustomWeight(parseInt(e.target.value) || 0)}
-                                            />
-                                        </div>
-                                    )}
                                 </div>
                             ) : (
                                 product.weight > 0 && (
@@ -189,39 +168,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                                         </div>
                                     ))}
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/5">
-                                    <div className="space-y-4">
-                                        <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-[0.3em]">{lang === 'es' ? 'Perfiles de Molienda' : 'Grind Profiles'}</p>
-                                        <div className="space-y-4">
-                                            <div className="flex gap-4 items-start">
-                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">settings_input_component</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Fina' : 'Fine'}</p>
-                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Espresso o Greca. Extrae la máxima intensidad.' : 'Ideal for Espresso or Moka pot. Extracts maximum intensity.'}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-4 items-start">
-                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">coffee_maker</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Media' : 'Medium'}</p>
-                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Filtrados, Chemex o V60. Equilibrio perfecto.' : 'Ideal for Filtered, Chemex or V60. Perfect balance.'}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-4 items-start">
-                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                                                    <span className="material-icons-outlined text-[#C8AA6E] text-sm">filter_vintage</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-white text-xs font-bold uppercase tracking-wider mb-1">{lang === 'es' ? 'Gruesa' : 'Coarse'}</p>
-                                                    <p className="text-[10px] text-white/40 leading-relaxed">{lang === 'es' ? 'Ideal para Prensa Francesa o Cold Brew. Dulzura prolongada.' : 'Ideal for French Press or Cold Brew. Lingering sweetness.'}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="pt-8 border-t border-white/5">
                                     <div className="p-6 md:p-8 border border-white/5 rounded-xl md:rounded-2xl bg-white/[0.01] flex flex-col justify-center">
                                         <p className="text-xs md:text-sm text-white/40 italic leading-relaxed text-center">
                                             {lang === 'es'
@@ -238,13 +185,16 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                 {/* Footer Action */}
                 <div className="p-6 md:p-8 border-t border-white/5 bg-black/40 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <span className="text-[9px] text-white/20 uppercase tracking-[0.4em] text-center sm:text-left">
-                        {lang === 'es' ? 'Ritual Consagrado • Lote Limitado' : 'Consecrated Ritual • Limited Batch'}
+                        {lang === 'es' ? 'Cosecha Consagrada • Lote Limitado' : 'Consecrated Harvest • Limited Batch'}
                     </span>
                     <button
                         onClick={handleAddToCart}
-                        className="w-full sm:w-auto bg-[#C5A065] text-black px-10 py-3 text-[10px] font-bold uppercase tracking-widest rounded transition-all hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)] transform active:scale-95 shadow-lg shadow-primary/20"
+                        disabled={!product.available || (product.variants && product.variants.length > 0 && !selectedVariantId) || (selectedVariant && selectedVariant.stock <= 0)}
+                        className="w-full sm:w-auto bg-[#C5A065] text-black px-10 py-3 text-[10px] font-bold uppercase tracking-widest rounded transition-all hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)] transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed disabled:transform-none"
                     >
-                        {lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART'}
+                        {!product.available || (selectedVariant && selectedVariant.stock <= 0)
+                            ? (lang === 'es' ? 'AGOTADO' : 'OUT OF STOCK')
+                            : (lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART')}
                     </button>
                 </div>
             </div>

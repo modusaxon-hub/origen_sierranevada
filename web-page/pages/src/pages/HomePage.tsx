@@ -40,6 +40,7 @@ const HomePage: React.FC = () => {
     // Selección de variante y molienda - Ahora dinámico según producto
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
     const [selectedGrind, setSelectedGrind] = useState('En Grano');
+    const [selectedSubGrind, setSelectedSubGrind] = useState('Media');
     const [customWeight, setCustomWeight] = useState<number>(0);
 
     // Specific state for modal product (to avoid conflict with viewerIdx)
@@ -123,13 +124,11 @@ const HomePage: React.FC = () => {
         } else {
             setSelectedVariantId(null);
         }
-        // Resetear molienda al primer valor disponible
-        const grindOptions = currentProduct?.intrinsics?.grind_options;
-        if (grindOptions && grindOptions.length > 0) {
-            setSelectedGrind(grindOptions[0]);
-        } else {
-            setSelectedGrind('En Grano');
-        }
+        // Resetear molienda
+        const variantsWithStock = currentProduct?.variants?.filter(v => v.stock > 0) || [];
+        const hasEnGrano = variantsWithStock.some(v => !v.grind || v.grind === 'En Grano');
+        setSelectedGrind(hasEnGrano ? 'En Grano' : 'Molido');
+        setSelectedSubGrind('Media');
     }, [currentProduct?.id]);
 
     // Obtener variante seleccionada y precio actual
@@ -139,9 +138,37 @@ const HomePage: React.FC = () => {
     const isCafetal = currentProduct?.category === 'cafetal' || currentProduct?.category === 'coffee';
     const finalPrice = (user && isCafetal) ? currentPrice * 0.9 : currentPrice;
 
-    // Obtener variantes disponibles (con stock) e incluir opción "Otros" para café
-    const availableVariants = currentProduct?.variants?.filter(v => v.stock > 0) ?? [];
-    const grindOptions = currentProduct?.intrinsics?.grind_options ?? ['En Grano', 'Molido'];
+    // Obtener todas las variantes (sin filtrar por stock para que sean visibles en selectores)
+    const availableVariants = currentProduct?.variants || [];
+
+    // Calcular sub-moliendas disponibles
+    const availableSubGrinds = ['Fina', 'Media', 'Gruesa'].filter(grosor =>
+        availableVariants.some(v => v.grind === `Molido ${grosor}`)
+    );
+
+    // Mantener sincronizado selectedVariantId al cambiar el tipo de molienda
+    useEffect(() => {
+        if (isCafetal && availableVariants.length > 0) {
+            const validVariants = availableVariants.filter(v => {
+                const variantGrindMatch = v.grind ? (v.grind.includes('Molido') ? 'Molido' : v.grind) : null;
+                if (variantGrindMatch) {
+                    if (variantGrindMatch === 'Molido' && selectedGrind === 'Molido') {
+                        if (availableSubGrinds.length > 0 && v.grind.includes('Molido ')) {
+                            return v.grind === `Molido ${selectedSubGrind}`;
+                        }
+                        return true;
+                    }
+                    return variantGrindMatch === selectedGrind;
+                }
+                return true;
+            });
+            if (validVariants.length > 0 && !validVariants.some(v => v.id === selectedVariantId)) {
+                setSelectedVariantId(validVariants[0].id);
+            }
+        }
+    }, [selectedGrind, selectedSubGrind, availableVariants, isCafetal, selectedVariantId]);
+    const grindOptions = currentProduct?.intrinsics?.grind_options || [];
+
 
     // Touch Swipe Handlers (Only for Single View mainly)
     const onTouchStart = (e: React.TouchEvent) => {
@@ -164,31 +191,38 @@ const HomePage: React.FC = () => {
     const handleAddToCart = () => {
         if (!currentProduct) return;
 
-        // Construir nombre con variante y molienda
-        const isOtros = selectedVariantId === 'otros';
-        const variantName = isOtros ? `${customWeight}g` : (selectedVariant?.name ?? '');
-        const productName = currentProduct.name[lang] || currentProduct.name.es;
-        const displayName = variantName ? `${productName} (${variantName})` : productName;
+        // Construir nombre con variante y molienda inteligente
+        const variantName = selectedVariant?.name ?? '';
+        const productName = currentProduct.name[lang] || currentProduct.name.es || currentProduct.name.en;
 
-        let price = finalPrice;
-        if (isOtros && customWeight > 0) {
-            // Calcular precio proporcional basado en la variante de 1kg o la última disponible
-            const baseVariant = availableVariants[availableVariants.length - 1]; // Usualmente la más grande
-            if (baseVariant) {
-                const baseWeightStr = baseVariant.name.replace('g', '').replace('kg', '000');
-                const baseWeight = parseInt(baseWeightStr);
-                if (baseWeight > 0) {
-                    price = (baseVariant.price / baseWeight) * customWeight;
-                    if (user && isCafetal) price *= 0.9;
-                }
+        let extraInfo = '';
+        if (isCafetal) {
+            let finalGrind = selectedGrind;
+            if (selectedGrind === 'Molido' && availableSubGrinds.length > 0 && selectedSubGrind) {
+                finalGrind = `Molido ${selectedSubGrind}`;
             }
+            extraInfo = `[${finalGrind}]`;
+        } else if (selectedVariant?.units_per_package) {
+            extraInfo = `(${selectedVariant.units_per_package} uds x ${selectedVariant.weight_per_unit || ''}g)`;
         }
 
+        const displayName = `${productName} ${variantName} ${extraInfo}`.trim();
+
+        // Subtítulo descriptivo basado en la categoría
+        const badge = currentProduct.badge?.[lang] || currentProduct.badge?.[lang === 'es' ? 'en' : 'es'] || 'Origen Sierra Nevada';
+
+        // Determinar si es un producto legado que NECESITA el selector genérico
+        const isLegacyGrind = isCafetal && grindOptions.length > 0 && !availableVariants.some(v => v.grind);
+
+        const subInfo = isLegacyGrind
+            ? `${selectedGrind} • ${badge}`
+            : badge;
+
         addToCart({
-            id: `${currentProduct.id}-${selectedVariantId || 'base'}-${selectedGrind}-${isOtros ? customWeight : ''}`,
+            id: isLegacyGrind ? `${currentProduct.id}-${selectedVariantId || 'base'}-${selectedGrind}` : `${currentProduct.id}-${selectedVariantId || 'base'}`,
             name: displayName,
-            sub: isCafetal ? `${selectedGrind} • ${currentProduct.badge?.[lang] || 'Premium'}` : (currentProduct.badge?.[lang] || 'Premium'),
-            price: price,
+            sub: subInfo,
+            price: finalPrice,
             qty: 1,
             img: currentProduct.image_url || '/cafe_malu_full_composition.png'
         });
@@ -442,32 +476,68 @@ const HomePage: React.FC = () => {
                                                 </div>
                                             </div>
 
-                                            {/* SENSORY PROFILE */}
-                                            {currentProduct.tags?.[lang] && currentProduct.tags[lang].length > 0 && (
-                                                <div className="py-4 border-y border-white/5 w-full flex flex-col gap-2">
-                                                    <span className="text-[9px] text-[#C8AA6E]/60 uppercase tracking-[0.6em] font-bold block">Perfil Sensorial del Terroir</span>
-                                                    <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2">
-                                                        {currentProduct.tags[lang].map((tag, i) => (
-                                                            <div key={i} className="flex flex-col group cursor-default">
-                                                                <span className="text-[14px] md:text-[16px] font-serif text-[#C5A065] group-hover:text-[#EAE2B7] transition-colors italic tracking-widest">{tag}</span>
-                                                                <span className="h-[1px] w-0 group-hover:w-full bg-[#C8AA6E] transition-all duration-700"></span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
 
                                             <p className="text-white/40 text-sm md:text-base leading-relaxed italic max-w-md font-light text-justify mx-auto lg:mx-0">
                                                 "{currentProduct.description[lang]}"
-                                                <button onClick={() => setIsDetailsOpen(true)} className="ml-2 text-[#C8AA6E] hover:text-white transition-colors decoration-[#C8AA6E]/30 underline underline-offset-4 text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1 group">
-                                                    {lang === 'es' ? 'Conoce más' : 'Read more'}
-                                                    <span className="material-icons-outlined text-[14px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                                </button>
                                             </p>
                                         </div>
 
                                         {/* VARIATION SELECTORS */}
                                         <div className="w-full space-y-6">
+                                            {/* Selector Dinámico de Molienda Inteligente (Molido / En Grano) */}
+                                            {isCafetal && availableVariants.length > 0 && (
+                                                <div className="space-y-4">
+                                                    <div className="space-y-2">
+                                                        <span className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-bold block text-center lg:text-left">
+                                                            {lang === 'es' ? 'Tipo de Molienda' : 'Grind Type'}
+                                                        </span>
+                                                        <div className="flex justify-center lg:justify-start gap-2 max-w-sm mx-auto lg:mx-0 w-full">
+                                                            {['En Grano', 'Molido'].map(gType => {
+                                                                const hasStock = availableVariants.some(v => !v.grind || (v.grind.includes('Molido') ? 'Molido' : v.grind) === gType);
+                                                                return (
+                                                                    <button
+                                                                        key={gType}
+                                                                        onClick={() => hasStock && setSelectedGrind(gType)}
+                                                                        disabled={!hasStock}
+                                                                        className={`flex-1 py-1.5 text-[11px] font-bold tracking-widest transition-all rounded-sm border flex items-center justify-center ${selectedGrind === gType
+                                                                            ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200,170,110,0.3)]'
+                                                                            : hasStock
+                                                                                ? 'border-white/10 text-white/40 hover:border-white/30'
+                                                                                : 'border-white/5 text-white/20 opacity-40 cursor-not-allowed'
+                                                                            }`}
+                                                                    >
+                                                                        {gType}
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Selector secundario de grosor de molienda si elige Molido */}
+                                                    {selectedGrind === 'Molido' && availableSubGrinds.length > 0 && (
+                                                        <div className="space-y-2 animate-fade-in">
+                                                            <span className="text-[10px] text-[#C8AA6E]/60 uppercase tracking-[0.4em] font-bold block text-center lg:text-left">
+                                                                {lang === 'es' ? 'Grosor de Molienda' : 'Grind Size'}
+                                                            </span>
+                                                            <div className="flex justify-center lg:justify-start gap-2 max-w-sm mx-auto lg:mx-0">
+                                                                {availableSubGrinds.map(grosor => (
+                                                                    <button
+                                                                        key={grosor}
+                                                                        onClick={() => setSelectedSubGrind(grosor)}
+                                                                        className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest transition-all rounded-sm border flex items-center justify-center ${selectedSubGrind === grosor
+                                                                            ? 'bg-white/10 border-[#C8AA6E] text-[#C8AA6E]'
+                                                                            : 'border-white/5 text-white/30 hover:border-white/20'
+                                                                            }`}
+                                                                    >
+                                                                        {grosor}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
                                             {/* Selector de Presentación/Gramaje - Dinámico */}
                                             {availableVariants.length > 0 && (
                                                 <div className="space-y-2">
@@ -479,47 +549,45 @@ const HomePage: React.FC = () => {
                                                             {selectedVariant?.name || ''}
                                                         </span>
                                                     </div>
-                                                    <div className="flex flex-wrap justify-center lg:justify-start gap-2">
-                                                        {availableVariants.map(variant => (
-                                                            <button
-                                                                key={variant.id}
-                                                                onClick={() => setSelectedVariantId(variant.id)}
-                                                                className={`px-3 py-1.5 text-[11px] font-bold tracking-widest transition-all duration-500 rounded-sm border ${selectedVariantId === variant.id
-                                                                    ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200,170,110,0.3)]'
-                                                                    : 'border-white/10 text-white/40 hover:border-white/30'
-                                                                    }`}
-                                                            >
-                                                                {variant.name}
-                                                            </button>
-                                                        ))}
-                                                        {isCafetal && (
-                                                            <button
-                                                                onClick={() => setSelectedVariantId('otros')}
-                                                                className={`px-3 py-1.5 text-[11px] font-bold tracking-widest transition-all duration-500 rounded-sm border ${selectedVariantId === 'otros'
-                                                                    ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200,170,110,0.3)]'
-                                                                    : 'border-white/10 text-white/40 hover:border-white/30'
-                                                                    }`}
-                                                            >
-                                                                {lang === 'es' ? 'OTROS' : 'CUSTOM'}
-                                                            </button>
-                                                        )}
+                                                    <div className="flex flex-wrap justify-center lg:justify-start gap-2 max-w-sm mx-auto lg:mx-0">
+                                                        {availableVariants
+                                                            .filter(variant => {
+                                                                if (isCafetal) {
+                                                                    // Match the currently selected grind (En Grano or Molido)
+                                                                    const variantGrindMatch = variant.grind ? (variant.grind.includes('Molido') ? 'Molido' : variant.grind) : null;
+                                                                    if (variantGrindMatch) {
+                                                                        if (variantGrindMatch === 'Molido' && selectedGrind === 'Molido') {
+                                                                            if (availableSubGrinds.length > 0 && variant.grind.includes('Molido ')) {
+                                                                                return variant.grind === `Molido ${selectedSubGrind}`;
+                                                                            }
+                                                                            return true;
+                                                                        }
+                                                                        return variantGrindMatch === selectedGrind;
+                                                                    }
+                                                                    // If variant grind is empty, it works for BOTH
+                                                                    return true;
+                                                                }
+                                                                return true;
+                                                            })
+                                                            .map(variant => (
+                                                                <button
+                                                                    key={variant.id}
+                                                                    onClick={() => setSelectedVariantId(variant.id)}
+                                                                    className={`px-3 py-1.5 min-w-[60px] text-[11px] font-bold tracking-widest transition-all duration-500 rounded-sm border flex flex-col items-center justify-center ${selectedVariantId === variant.id
+                                                                        ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200,170,110,0.3)]'
+                                                                        : 'border-white/10 text-white/40 hover:border-white/30'
+                                                                        }`}
+                                                                >
+                                                                    <span>{variant.name}</span>
+                                                                    {variant.units_per_package && <span className="opacity-70 text-[8px] mt-0.5">{variant.units_per_package} uds</span>}
+                                                                </button>
+                                                            ))}
                                                     </div>
-                                                    {selectedVariantId === 'otros' && (
-                                                        <div className="animate-fade-in pt-2">
-                                                            <input
-                                                                type="number"
-                                                                placeholder={lang === 'es' ? 'Cantidad en gramos' : 'Amount in grams'}
-                                                                className="bg-black/40 border border-[#C8AA6E]/30 rounded-sm px-4 py-2 text-xs text-white focus:outline-none focus:border-[#C8AA6E] w-full max-w-[200px]"
-                                                                value={customWeight || ''}
-                                                                onChange={(e) => setCustomWeight(parseInt(e.target.value) || 0)}
-                                                            />
-                                                        </div>
-                                                    )}
                                                 </div>
                                             )}
 
-                                            {/* Selector de Molienda - Solo para Café, Dinámico */}
-                                            {isCafetal && grindOptions.length > 0 && (
+                                            {/* Selector genérico de Molienda - Se oculta si las presentaciones ya definen su propia molienda por stock */}
+                                            {isCafetal && grindOptions.length > 0 && !availableVariants.some(v => v.grind) && (
                                                 <div className="flex gap-12 max-w-lg mx-auto lg:mx-0">
                                                     <div className="space-y-2 flex-1">
                                                         <span className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-bold block">
@@ -564,10 +632,12 @@ const HomePage: React.FC = () => {
                                             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm mx-auto lg:mx-0">
                                                 <button
                                                     onClick={handleAddToCart}
-                                                    disabled={availableVariants.length > 0 && !selectedVariantId}
-                                                    className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
+                                                    disabled={(availableVariants.length > 0 && !selectedVariantId) || availableVariants.length === 0 || !currentProduct?.available || (selectedVariant && selectedVariant.stock <= 0)}
+                                                    className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:border-gray-700 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
                                                 >
-                                                    {lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART'}
+                                                    {(!currentProduct?.available || availableVariants.length === 0 || (selectedVariant && selectedVariant.stock <= 0))
+                                                        ? (lang === 'es' ? 'AGOTADO' : 'OUT OF STOCK')
+                                                        : (lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART')}
                                                 </button>
                                             </div>
                                         </div>
