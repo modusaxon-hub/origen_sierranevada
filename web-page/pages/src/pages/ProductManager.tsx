@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { productService } from '@/services/productService';
-import { Product, ProductVariant, ProductPersonality } from '@/shared/types';
+import { supabase } from '@/services/supabaseClient';
+import { Product, ProductVariant } from '@/shared/types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Package, Palette, Sparkles, Heart, Zap, Wand2 } from 'lucide-react';
+import { Package, Palette, Sparkles, Heart, Zap, Wand2, X, RotateCcw, Box } from 'lucide-react';
+import AdminHeader from '@/shared/components/AdminHeader';
 import SystemFeedback from '@/shared/components/SystemFeedback';
 import ImageAIAssistant from '@/shared/components/ImageAIAssistant';
+import { authService } from '@/services/authService';
 
 // Constantes de configuración
 const CATEGORY_WEIGHTS: Record<string, string[]> = {
@@ -15,14 +19,15 @@ const CATEGORY_WEIGHTS: Record<string, string[]> = {
 
 const GRIND_OPTIONS = [
     'En Grano',
-    'Molido Fino (Espresso)',
-    'Molido Medio (Goteo/Filtro)',
-    'Molido Grueso (Prensa Francesa)',
-    'Molido Extra Fino (Turco)'
+    'Molido',
+    'Molido Fina',
+    'Molido Media',
+    'Molido Gruesa'
 ];
 
 const ProductManager: React.FC = () => {
     const { formatPrice } = useLanguage();
+    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -32,6 +37,8 @@ const ProductManager: React.FC = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [activeSection, setActiveSection] = useState<'basic' | 'personality' | 'variants'>('basic');
     const [showAIAssistant, setShowAIAssistant] = useState(false);
+    const [pendingUsersCount, setPendingUsersCount] = useState(0);
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
 
     // Form state con todos los campos
     const [formData, setFormData] = useState<Partial<Product>>({
@@ -66,8 +73,25 @@ const ProductManager: React.FC = () => {
         setLoading(false);
     };
 
+    const fetchCounts = async () => {
+        try {
+            const { data: profiles } = await authService.getAllProfiles();
+            if (profiles) {
+                setPendingUsersCount((profiles as any[]).filter(p => p.status === 'pending').length);
+            }
+            const { count } = await supabase
+                .from('orders')
+                .select('*', { count: 'exact', head: true })
+                .in('status', ['pending', 'pending_payment']);
+            setPendingOrdersCount(count || 0);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     useEffect(() => {
         fetchProducts();
+        fetchCounts();
     }, []);
 
     const resetForm = () => {
@@ -132,18 +156,48 @@ const ProductManager: React.FC = () => {
         setFeedback({ msg: null, type: 'info' });
 
         try {
+            // Inteligencia de Sincronización Automática
+            let totalStock = 0;
+            let basePrice = formData.price || 0;
+            let hasValidVariant = false;
+
+            if (formData.variants && formData.variants.length > 0) {
+                // Calcular stock total de las variantes
+                totalStock = formData.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+
+                // Sincronizar precio base con la variante más económica que tenga stock
+                const variantsWithStock = formData.variants.filter(v => (v.stock || 0) > 0);
+                if (variantsWithStock.length > 0) {
+                    basePrice = Math.min(...variantsWithStock.map(v => v.price));
+                    hasValidVariant = true;
+                } else if (formData.variants.length > 0) {
+                    // Si ninguna tiene stock, aún tomamos el precio de la más económica para catálogo
+                    basePrice = Math.min(...formData.variants.map(v => v.price));
+                }
+            } else {
+                totalStock = formData.stock || 0;
+                if (totalStock > 0) hasValidVariant = true;
+            }
+
+            const dataToSave = {
+                ...formData,
+                price: basePrice,
+                stock: totalStock,
+                available: hasValidVariant && !!formData.image_url
+            };
+
             let result;
             if (editingProduct) {
                 // Si es un producto de prueba (ID empieza con fallback-), forzamos creación de uno nuevo
                 if (editingProduct.id.startsWith('fallback-')) {
-                    const { id: _id, ...newProductData } = formData;
+                    const { id: _id, ...newProductData } = dataToSave;
                     result = await productService.createProduct(newProductData as any);
                     if (!result.error) setFeedback({ msg: "¡Producto de prueba convertido a producto real!", type: 'success' });
                 } else {
-                    result = await productService.updateProduct(editingProduct.id, formData);
+                    result = await productService.updateProduct(editingProduct.id, dataToSave);
                 }
             } else {
-                result = await productService.createProduct(formData as any);
+                result = await productService.createProduct(dataToSave as any);
             }
 
             if (result.error) {
@@ -204,21 +258,35 @@ const ProductManager: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050806] text-white pt-32 pb-20 px-6 font-sans">
+        <div className="min-h-screen bg-[#050806] text-white selection:bg-[#C8AA6E] selection:text-black font-sans">
+            <AdminHeader
+                title="DESPENSA CENTRAL"
+                pendingOrdersCount={pendingOrdersCount}
+                pendingUsersCount={pendingUsersCount}
+            />
+
             <SystemFeedback
                 message={feedback.msg}
                 type={feedback.type}
                 onClose={() => setFeedback({ ...feedback, msg: null })}
             />
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto pt-32 pb-20 px-6">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white/[0.02] border border-white/10 p-8 rounded-3xl backdrop-blur-xl">
-                    <div className="space-y-2">
-                        <div className="inline-block px-3 py-1 bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 rounded-full">
-                            <span className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-[0.2em]">Despensa Central</span>
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={() => navigate('/admin')}
+                            className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-[#C8AA6E] hover:text-black transition-all group"
+                        >
+                            <span className="material-icons-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                        </button>
+                        <div className="space-y-2">
+                            <div className="inline-block px-3 py-1 bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 rounded-full">
+                                <span className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-[0.2em]">Despensa Central</span>
+                            </div>
+                            <h1 className="text-4xl font-serif text-white tracking-tight">Maestro de Productos</h1>
+                            <p className="text-white/40 text-sm">Gestiona el alma de cada producto desde aquí</p>
                         </div>
-                        <h1 className="text-4xl font-serif text-white tracking-tight">Maestro de Productos</h1>
-                        <p className="text-white/40 text-sm">Gestiona el alma de cada producto desde aquí</p>
                     </div>
 
                     {!showForm && (
@@ -262,6 +330,31 @@ const ProductManager: React.FC = () => {
                                 </button>
                             </div>
 
+                            {/* Category Selection - PROMINENTE */}
+                            <div className="bg-gradient-to-br from-[#C8AA6E]/10 to-transparent border border-[#C8AA6E]/30 rounded-2xl p-6 mb-8">
+                                <label className="text-sm text-[#C8AA6E] uppercase tracking-widest font-bold mb-4 block">
+                                    Selecciona la Despensa
+                                </label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {Object.entries(categoryNames).map(([key, { label, icon, color }]) => (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, category: key as any }))}
+                                            className={`p-6 rounded-xl border-2 transition-all duration-300 ${formData.category === key
+                                                ? 'border-[#C8AA6E] bg-[#C8AA6E]/10 scale-105'
+                                                : 'border-white/10 bg-white/5 hover:border-white/30'
+                                                }`}
+                                        >
+                                            <div className="text-4xl mb-2">{icon}</div>
+                                            <div className="text-sm font-bold uppercase tracking-wider" style={{ color }}>
+                                                {label}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* Section Navigation */}
                             <div className="flex gap-2">
                                 <button
@@ -292,31 +385,6 @@ const ProductManager: React.FC = () => {
                             {/* SECTION: Basic Information */}
                             {activeSection === 'basic' && (
                                 <div className="space-y-8 animate-fade-in">
-                                    {/* Category Selection - PROMINENTE */}
-                                    <div className="bg-gradient-to-br from-[#C8AA6E]/10 to-transparent border border-[#C8AA6E]/30 rounded-2xl p-6">
-                                        <label className="text-sm text-[#C8AA6E] uppercase tracking-widest font-bold mb-4 block">
-                                            Selecciona la Despensa
-                                        </label>
-                                        <div className="grid grid-cols-3 gap-4">
-                                            {Object.entries(categoryNames).map(([key, { label, icon, color }]) => (
-                                                <button
-                                                    key={key}
-                                                    type="button"
-                                                    onClick={() => setFormData(prev => ({ ...prev, category: key as any }))}
-                                                    className={`p-6 rounded-xl border-2 transition-all duration-300 ${formData.category === key
-                                                        ? 'border-[#C8AA6E] bg-[#C8AA6E]/10 scale-105'
-                                                        : 'border-white/10 bg-white/5 hover:border-white/30'
-                                                        }`}
-                                                >
-                                                    <div className="text-4xl mb-2">{icon}</div>
-                                                    <div className="text-sm font-bold uppercase tracking-wider" style={{ color }}>
-                                                        {label}
-                                                    </div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
                                     {/* Campos básicos en grid */}
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                         {/* Columna izquierda */}
@@ -450,44 +518,7 @@ const ProductManager: React.FC = () => {
                                                 )}
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                        Precio Base (COP)
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.price}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
-                                                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                        Stock Disponible
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        value={formData.stock}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) }))}
-                                                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                        Peso (gramos)
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        value={formData.weight}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, weight: parseInt(e.target.value) }))}
-                                                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none"
-                                                    />
-                                                </div>
+                                            <div className="grid grid-cols-1 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
                                                         Puntaje SCA
@@ -678,57 +709,7 @@ const ProductManager: React.FC = () => {
                                 </div>
                             )}
 
-                            {/* SECTION: Attributes (Molienda & Características) */}
-                            {activeSection === 'personality' && formData.category === 'cafetal' && (
-                                <div className="space-y-6 animate-fade-in border-t border-white/10 pt-6 mt-6">
-                                    <h3 className="text-xl font-serif text-[#C8AA6E] flex items-center gap-2">
-                                        <span className="material-icons-outlined">settings_suggest</span>
-                                        Opciones de Molienda
-                                    </h3>
-                                    <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                                        <p className="text-xs text-white/50 mb-4 uppercase tracking-widest">Selecciona las moliendas disponibles para este café:</p>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {GRIND_OPTIONS.map((gOption) => (
-                                                <label key={gOption} className="flex items-center gap-3 cursor-pointer group">
-                                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${formData.intrinsics?.grind_options?.includes(gOption)
-                                                        ? 'bg-[#C8AA6E] border-[#C8AA6E]'
-                                                        : 'border-white/20 group-hover:border-[#C8AA6E]'
-                                                        }`}>
-                                                        {formData.intrinsics?.grind_options?.includes(gOption) && (
-                                                            <span className="material-icons-outlined text-black text-xs font-bold">check</span>
-                                                        )}
-                                                    </div>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="hidden"
-                                                        checked={formData.intrinsics?.grind_options?.includes(gOption) || false}
-                                                        onChange={(e) => {
-                                                            const current = formData.intrinsics?.grind_options || [];
-                                                            let next;
-                                                            if (e.target.checked) {
-                                                                next = [...current, gOption];
-                                                            } else {
-                                                                next = current.filter(o => o !== gOption);
-                                                            }
-                                                            setFormData(prev => ({
-                                                                ...prev,
-                                                                intrinsics: {
-                                                                    ...prev.intrinsics,
-                                                                    grind_options: next
-                                                                }
-                                                            }));
-                                                        }}
-                                                    />
-                                                    <span className={`text-sm ${formData.intrinsics?.grind_options?.includes(gOption) ? 'text-white' : 'text-white/50 group-hover:text-white/80'
-                                                        } transition-colors`}>
-                                                        {gOption}
-                                                    </span>
-                                                </label>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            {/* Opciones de Molienda eliminadas: se gestionan por presentación (variante) directamente */}
 
                             {/* SECTION: Variants */}
                             {activeSection === 'variants' && (
@@ -762,20 +743,49 @@ const ProductManager: React.FC = () => {
                                                         </label>
                                                         {formData.category && CATEGORY_WEIGHTS[formData.category] ? (
                                                             <div className="relative">
-                                                                <select
-                                                                    value={v.name}
-                                                                    onChange={(e) => updateVariant(i, 'name', e.target.value)}
-                                                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none appearance-none text-white"
-                                                                >
-                                                                    <option value="" className="bg-[#1A261D] text-gray-400">Seleccionar...</option>
-                                                                    {CATEGORY_WEIGHTS[formData.category].map(opt => (
-                                                                        <option key={opt} value={opt} className="bg-[#1A261D] text-white">{opt}</option>
-                                                                    ))}
-                                                                    <option value="custom" className="bg-[#1A261D] text-[#C8AA6E] font-bold">✒️ Otro (Escribir manual)</option>
-                                                                </select>
-                                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                                    <span className="material-icons-outlined text-white/40 text-sm">expand_more</span>
-                                                                </div>
+                                                                {(!CATEGORY_WEIGHTS[formData.category].includes(v.name) && v.name !== 'custom' && v.name !== '') || v.name === 'custom' ? (
+                                                                    <div className="flex gap-2">
+                                                                        <div className="relative flex-1">
+                                                                            <input
+                                                                                autoFocus
+                                                                                value={v.name === 'custom' ? '' : v.name}
+                                                                                onChange={(e) => updateVariant(i, 'name', e.target.value)}
+                                                                                placeholder="Ej: 125 gr, 1 Litro..."
+                                                                                className="w-full bg-white/5 border border-[#C8AA6E] rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#C8AA6E] outline-none text-white shadow-[0_0_15px_rgba(200,170,110,0.1)]"
+                                                                            />
+                                                                            {v.name === 'custom' && (
+                                                                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                                                    <span className="text-[8px] text-[#C8AA6E] animate-pulse">ESCRIBE...</span>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => updateVariant(i, 'name', '')}
+                                                                            className="p-2 bg-white/5 border border-white/10 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-all"
+                                                                            title="Volver a la lista"
+                                                                        >
+                                                                            <RotateCcw size={14} />
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <select
+                                                                        value={v.name}
+                                                                        onChange={(e) => updateVariant(i, 'name', e.target.value)}
+                                                                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none appearance-none text-white"
+                                                                    >
+                                                                        <option value="" className="bg-[#1A261D] text-gray-400">Seleccionar...</option>
+                                                                        {CATEGORY_WEIGHTS[formData.category].map(opt => (
+                                                                            <option key={opt} value={opt} className="bg-[#1A261D] text-white">{opt}</option>
+                                                                        ))}
+                                                                        <option value="custom" className="bg-[#1A261D] text-[#C8AA6E] font-bold">✒️ Otro (Escribir manual)</option>
+                                                                    </select>
+                                                                )}
+                                                                {!((!CATEGORY_WEIGHTS[formData.category].includes(v.name) && v.name !== 'custom' && v.name !== '') || v.name === 'custom') && (
+                                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                                        <span className="material-icons-outlined text-white/40 text-sm">expand_more</span>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         ) : (
                                                             <input
@@ -785,13 +795,6 @@ const ProductManager: React.FC = () => {
                                                                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none"
                                                             />
                                                         )}
-
-                                                        {/* Fallback para entrada manual si elige 'custom' o no coincide con la lista, pero por simplicidad permitimos editar si no está en la lista si quisiéramos complegidad. 
-                                                            Por ahora, si el usuario elige 'custom' podríamos mostrar un input extra, pero vamos a mantenerlo simple: 
-                                                            vamos a permitir que el select tenga un input si es necesario, o simplemente el usuario elige de la lista.
-                                                            Para satisfacer el requerimiento estricto de lista desplegable, lo dejamos así. 
-                                                            Si el valor actual NO está en la lista (legacy), debería mostrarse o permitir cambiarlo. 
-                                                        */}
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
@@ -801,6 +804,7 @@ const ProductManager: React.FC = () => {
                                                                 value={v.price}
                                                                 onChange={(e) => updateVariant(i, 'price', parseFloat(e.target.value))}
                                                                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none"
+                                                                placeholder="0"
                                                             />
                                                         </div>
                                                         <div className="space-y-1">
@@ -810,9 +814,52 @@ const ProductManager: React.FC = () => {
                                                                 value={v.stock}
                                                                 onChange={(e) => updateVariant(i, 'stock', parseInt(e.target.value))}
                                                                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none"
+                                                                placeholder="0"
                                                             />
                                                         </div>
                                                     </div>
+
+                                                    {/* Inteligencia por Categoría */}
+                                                    {formData.category === 'cafetal' && (
+                                                        <div className="space-y-1">
+                                                            <label className="text-[9px] uppercase tracking-widest text-[#C8AA6E]">Molienda Específica</label>
+                                                            <select
+                                                                value={v.grind || ''}
+                                                                onChange={(e) => updateVariant(i, 'grind', e.target.value)}
+                                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#C8AA6E] outline-none text-white/70"
+                                                            >
+                                                                <option value="">Cualquier molienda</option>
+                                                                {GRIND_OPTIONS.map(opt => (
+                                                                    <option key={opt} value={opt} className="bg-[#1A261D]">{opt}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    )}
+
+                                                    {formData.category === 'antojitos' && (
+                                                        <div className="grid grid-cols-2 gap-4 pt-1">
+                                                            <div className="space-y-1">
+                                                                <label className="text-[9px] uppercase tracking-widest text-[#6EC8BD]">Unds x Pack</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={v.units_per_package || ''}
+                                                                    onChange={(e) => updateVariant(i, 'units_per_package', parseInt(e.target.value))}
+                                                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#6EC8BD] outline-none"
+                                                                    placeholder="Ej: 12"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[9px] uppercase tracking-widest text-[#6EC8BD]">Peso Und (g)</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={v.weight_per_unit || ''}
+                                                                    onChange={(e) => updateVariant(i, 'weight_per_unit', parseInt(e.target.value))}
+                                                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-[#6EC8BD] outline-none"
+                                                                    placeholder="Ej: 5"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}

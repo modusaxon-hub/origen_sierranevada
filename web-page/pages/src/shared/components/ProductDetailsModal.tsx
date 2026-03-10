@@ -160,7 +160,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                                         { label: lang === 'es' ? 'Origen' : 'Origin', val: product.origin || 'Sierra Nevada' },
                                         { label: lang === 'es' ? 'Altitud' : 'Altitude', val: '1,500 - 1,900 msnm' },
                                         { label: lang === 'es' ? 'Procesamiento' : 'Processing', val: 'Lavado / Proceso Natural' },
-                                        { label: lang === 'es' ? 'Tipo' : 'Type', val: product.intrinsics?.grind_options?.join(', ') || (lang === 'es' ? 'En Grano' : 'Whole Bean') }
+                                        { label: lang === 'es' ? 'Tipo' : 'Type', val: product.variants?.find(v => v.grind)?.grind || (lang === 'es' ? 'En Grano / Molido' : 'Whole Bean / Ground') }
                                     ].map((item, i) => (
                                         <div key={i} className="space-y-2">
                                             <p className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-widest">{item.label}</p>

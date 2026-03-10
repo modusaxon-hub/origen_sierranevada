@@ -63,7 +63,6 @@ const HomePage: React.FC = () => {
             origin: 'Sierra Nevada',
             available: true,
             intrinsics: {
-                grind_options: ['En Grano', 'Molido'],
                 character: { es: 'Elegante', en: 'Elegant' }
             }
         }
@@ -166,7 +165,6 @@ const HomePage: React.FC = () => {
             }
         }
     }, [selectedGrind, selectedSubGrind, availableVariants, isCafetal, selectedVariantId]);
-    const grindOptions = currentProduct?.intrinsics?.grind_options || [];
 
 
     // Touch Swipe Handlers (Only for Single View mainly)
@@ -210,17 +208,10 @@ const HomePage: React.FC = () => {
         // Subtítulo descriptivo basado en la categoría
         const badge = currentProduct.badge?.[lang] || currentProduct.badge?.[lang === 'es' ? 'en' : 'es'] || 'Origen Sierra Nevada';
 
-        // Determinar si es un producto legado que NECESITA el selector genérico
-        const isLegacyGrind = isCafetal && grindOptions.length > 0 && !availableVariants.some(v => v.grind);
-
-        const subInfo = isLegacyGrind
-            ? `${selectedGrind} • ${badge}`
-            : badge;
-
         addToCart({
-            id: isLegacyGrind ? `${currentProduct.id}-${selectedVariantId || 'base'}-${selectedGrind}` : `${currentProduct.id}-${selectedVariantId || 'base'}`,
+            id: `${currentProduct.id}-${selectedVariantId || 'base'}`,
             name: displayName,
-            sub: subInfo,
+            sub: badge,
             price: finalPrice,
             qty: 1,
             img: currentProduct.image_url || '/cafe_malu_full_composition.png'
@@ -584,30 +575,6 @@ const HomePage: React.FC = () => {
                                                 </div>
                                             )}
 
-                                            {/* Selector genérico de Molienda - Se oculta si las presentaciones ya definen su propia molienda por stock */}
-                                            {isCafetal && grindOptions.length > 0 && !availableVariants.some(v => v.grind) && (
-                                                <div className="flex gap-12 max-w-lg mx-auto lg:mx-0">
-                                                    <div className="space-y-2 flex-1">
-                                                        <span className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-bold block">
-                                                            {lang === 'es' ? 'Molienda' : 'Grind'}
-                                                        </span>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {grindOptions.map(grind => (
-                                                                <button
-                                                                    key={grind}
-                                                                    onClick={() => setSelectedGrind(grind)}
-                                                                    className={`flex-1 min-w-[80px] py-2 text-[11px] font-bold tracking-widest transition-all border rounded-sm ${selectedGrind === grind
-                                                                        ? 'bg-white/10 border-[#C8AA6E] text-white'
-                                                                        : 'border-white/5 text-white/20 hover:border-white/20'
-                                                                        }`}
-                                                                >
-                                                                    {grind}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
 
                                         {/* CHECKOUT */}
