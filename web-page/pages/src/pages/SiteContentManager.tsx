@@ -58,14 +58,14 @@ const DEFAULT_TESTIMONIOS: Testimonio[] = [
 const MATERIAL_ICONS = ['spa', 'local_florist', 'eco', 'terrain', 'coffee', 'water_drop', 'nature', 'grass', 'park', 'cloud', 'bolt', 'star', 'favorite'];
 const PROCESO_OPTIONS = ['Lavado', 'Honey', 'Natural', 'Anaeróbico', 'Carbónico', 'Doble Fermentación'];
 
-function InputRow({ label, value, onChange, multiline = false }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
-    const cls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm';
+function InputRow({ label, value, onChange, multiline = false, placeholder = '' }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string }) {
+    const cls = 'w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#C5A065] focus:bg-[#1E2E21] focus:outline-none transition-all text-sm';
     return (
         <div>
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-1 block">{label}</label>
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">{label}</label>
             {multiline
-                ? <textarea className={cls + ' resize-none h-24'} value={value} onChange={e => onChange(e.target.value)} />
-                : <input className={cls} value={value} onChange={e => onChange(e.target.value)} />}
+                ? <textarea className={cls + ' resize-none h-24'} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
+                : <input className={cls} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />}
         </div>
     );
 }
@@ -244,13 +244,13 @@ const SiteContentManager: React.FC = () => {
                         ))}
 
                         <div className="pt-4 border-t border-white/10">
-                            <p className="text-[9px] text-white/20 uppercase tracking-widest font-bold mb-3 px-1">Acceso rápido</p>
+                            <p className="text-[9px] text-white/40 uppercase tracking-widest font-bold mb-3 px-1">Acceso rápido</p>
                             {[
                                 { label: 'Productos', icon: 'inventory_2', path: '/admin/products' },
                                 { label: 'Pedidos', icon: 'shopping_bag', path: '/admin/orders' },
                                 { label: 'Usuarios', icon: 'group', path: '/admin/users' },
                             ].map(item => (
-                                <button key={item.path} onClick={() => navigate(item.path)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-all text-[11px] font-bold uppercase tracking-widest">
+                                <button key={item.path} onClick={() => navigate(item.path)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/55 hover:text-white hover:bg-white/5 transition-all text-[11px] font-bold uppercase tracking-widest">
                                     <span className="material-icons-outlined text-sm">{item.icon}</span>
                                     {item.label}
                                 </button>
@@ -269,7 +269,7 @@ const SiteContentManager: React.FC = () => {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h2 className="text-2xl font-serif text-white">Sección Historia</h2>
-                                        <p className="text-white/30 text-sm mt-1">Textos, estadísticas y fotografía de fondo del bloque "Nace en las nubes".</p>
+                                        <p className="text-white/50 text-sm mt-1">Textos, estadísticas y fotografía de fondo del bloque "Nace en las nubes".</p>
                                     </div>
                                     <button
                                         onClick={() => upsert('historia', historia)}
@@ -326,9 +326,9 @@ const SiteContentManager: React.FC = () => {
                                                 <select
                                                     value={stat.icon}
                                                     onChange={e => updateStat(i, 'icon', e.target.value)}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm"
+                                                    className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm"
                                                 >
-                                                    {MATERIAL_ICONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
+                                                    {MATERIAL_ICONS.map(ic => <option key={ic} value={ic} className="bg-[#1A261D] text-white">{ic}</option>)}
                                                 </select>
                                             </div>
                                         </div>
@@ -345,7 +345,7 @@ const SiteContentManager: React.FC = () => {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h2 className="text-2xl font-serif text-white">Sección Terroir · Fincas</h2>
-                                        <p className="text-white/30 text-sm mt-1">Agrega, edita o elimina las fincas de origen que aparecen en el mapa interactivo.</p>
+                                        <p className="text-white/50 text-sm mt-1">Agrega, edita o elimina las fincas de origen que aparecen en el mapa interactivo.</p>
                                     </div>
                                     <div className="flex gap-3">
                                         <button
@@ -385,18 +385,18 @@ const SiteContentManager: React.FC = () => {
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <InputRow label="Perfil de taza" value={fincaForm.perfil} onChange={v => setFincaForm(p => p && ({ ...p, perfil: v }))} />
                                                         <div>
-                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-1 block">Proceso</label>
-                                                            <select value={fincaForm.proceso} onChange={e => setFincaForm(p => p && ({ ...p, proceso: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
-                                                                {PROCESO_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">Proceso</label>
+                                                            <select value={fincaForm.proceso} onChange={e => setFincaForm(p => p && ({ ...p, proceso: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
+                                                                {PROCESO_OPTIONS.map(o => <option key={o} value={o} className="bg-[#1A261D] text-white">{o}</option>)}
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <InputRow label="Notas de cata (separadas por · )" value={fincaForm.notas} onChange={v => setFincaForm(p => p && ({ ...p, notas: v }))} />
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div>
-                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-1 block">Ícono</label>
-                                                            <select value={fincaForm.icon} onChange={e => setFincaForm(p => p && ({ ...p, icon: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
-                                                                {MATERIAL_ICONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
+                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">Ícono</label>
+                                                            <select value={fincaForm.icon} onChange={e => setFincaForm(p => p && ({ ...p, icon: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
+                                                                {MATERIAL_ICONS.map(ic => <option key={ic} value={ic} className="bg-[#1A261D] text-white">{ic}</option>)}
                                                             </select>
                                                         </div>
                                                         <InputRow label="Color (hex)" value={fincaForm.color} onChange={v => setFincaForm(p => p && ({ ...p, color: v }))} />
@@ -417,8 +417,8 @@ const SiteContentManager: React.FC = () => {
                                                             <span className="material-icons-outlined text-sm" style={{ color: finca.color }}>{finca.icon}</span>
                                                             <h3 className="font-serif text-xl text-white">{finca.nombre || 'Sin nombre'}</h3>
                                                         </div>
-                                                        <p className="text-white/30 text-xs">{finca.municipio} · {finca.altitud} msnm</p>
-                                                        <p className="text-white/40 text-xs mt-1">{finca.proceso} · {finca.perfil}</p>
+                                                        <p className="text-white/50 text-xs">{finca.municipio} · {finca.altitud} msnm</p>
+                                                        <p className="text-white/50 text-xs mt-1">{finca.proceso} · {finca.perfil}</p>
                                                     </div>
                                                     <button onClick={() => startEditFinca(idx)} className="p-2 rounded-lg bg-white/5 hover:bg-[#C5A065]/20 text-white/40 hover:text-[#C5A065] transition-all">
                                                         <span className="material-icons-outlined text-sm">edit</span>
@@ -502,7 +502,7 @@ const SiteContentManager: React.FC = () => {
                                                         </div>
                                                         <p className="text-white/60 text-xs italic mb-2 line-clamp-2">"{t.texto}"</p>
                                                         <p className="text-white font-bold text-sm">{t.nombre || 'Sin nombre'}</p>
-                                                        <p className="text-white/30 text-[10px]">{t.ciudad} · {t.compra}</p>
+                                                        <p className="text-white/50 text-[10px]">{t.ciudad} · {t.compra}</p>
                                                     </div>
                                                     <button onClick={() => startEditTest(idx)} className="shrink-0 p-2 rounded-lg bg-white/5 hover:bg-[#C5A065]/20 text-white/40 hover:text-[#C5A065] transition-all">
                                                         <span className="material-icons-outlined text-sm">edit</span>
