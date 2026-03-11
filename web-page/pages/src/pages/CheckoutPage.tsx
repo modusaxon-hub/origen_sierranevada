@@ -12,6 +12,7 @@ import TransferInstructions from '@/shared/components/TransferInstructions';
 import { type OrderWhatsAppDetail, getWhatsAppOrderDetailLink } from '@/constants/contacts';
 import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
 import { sanitizeText } from '@/shared/utils/sanitize';
+import InstitutionalModal from '@/shared/components/InstitutionalModal';
 
 // Lista de departamentos y sus ciudades principales
 const CITIES_BY_DEPARTMENT: Record<string, string[]> = {
@@ -82,6 +83,11 @@ const CheckoutPage: React.FC = () => {
     const [lastOrderTotal, setLastOrderTotal] = useState<number>(0);
     const [proofSuccess, setProofSuccess] = useState(false);
     const [orderDetailData, setOrderDetailData] = useState<OrderWhatsAppDetail | null>(null);
+    const [institutionalModal, setInstitutionalModal] = useState<{
+        title: string;
+        message: string | React.ReactNode;
+        type: 'success' | 'info' | 'error' | 'warning';
+    } | null>(null);
 
     const [form, setForm] = useState<CheckoutForm>({
         fullName: user?.user_metadata?.full_name || '',
@@ -131,6 +137,46 @@ const CheckoutPage: React.FC = () => {
         setLoading(true);
 
         try {
+            // 1. VALIDACIÓN EN TIEMPO REAL: Antes de insertar, verificar stock fresco en DB
+            const stockChecks = await Promise.all(cartItems.map(async item => {
+                const parts = item.id.split('-');
+                const productId = parts[0];
+                const variantId = parts.length > 1 ? parts[1] : null;
+
+                if (variantId) {
+                    const { data: v } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                    return { ...item, dbStock: v?.stock ?? 0, productId, variantId };
+                } else {
+                    const { data: p } = await supabase.from('products').select('stock').eq('id', productId).single();
+                    return { ...item, dbStock: p?.stock ?? 0, productId, variantId: null };
+                }
+            }));
+
+            const stockErrors = stockChecks.filter(check => check.qty > check.dbStock);
+            if (stockErrors.length > 0) {
+                setInstitutionalModal({
+                    title: lang === 'es' ? 'Existencias Insuficientes' : 'Insufficient Stock',
+                    message: (
+                        <div className="space-y-2">
+                            <p>{lang === 'es' ? 'Lo sentimos, algunos elementos de tu carrito ya no están disponibles en la cantidad solicitada:' : 'Sorry, some items in your cart are no longer available in the requested quantity:'}</p>
+                            <ul className="list-disc pl-5 space-y-1">
+                                {stockErrors.map(err => (
+                                    <li key={err.id} className="text-sm font-bold">
+                                        {err.name}: {err.dbStock} {lang === 'es' ? 'disponibles' : 'available'} (solicitaste {err.qty})
+                                    </li>
+                                ))}
+                            </ul>
+                            <p className="text-xs text-amber-500 font-semibold mt-4 italic">
+                                {lang === 'es' ? '* Por favor ajusta las cantidades en el carrito antes de continuar.' : '* Please adjust quantities in your cart before continuing.'}
+                            </p>
+                        </div>
+                    ),
+                    type: 'warning'
+                });
+                setLoading(false);
+                return;
+            }
+
             // FIX: Verificar que el user existe en profiles antes de insertar
             const userId = user?.id ?? null;
 
@@ -157,15 +203,11 @@ const CheckoutPage: React.FC = () => {
 
             if (orderError) throw orderError;
 
-            // Extraer UUID limpio (IDs de carrito pueden tener sufijos de variante como "-base-En Grano")
-            const extractUUID = (id: string): string => {
-                const match = id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
-                return match ? match[0] : id;
-            };
-
-            const orderItems = cartItems.map(item => ({
+            // 2. CREACIÓN DE ITEMS: Manejar variants correctamente
+            const orderItems = stockChecks.map(item => ({
                 order_id: order.id,
-                product_id: extractUUID(item.id),
+                product_id: item.productId,
+                variant_id: item.variantId,
                 quantity: item.qty,
                 unit_price: item.price,
                 subtotal: item.price * item.qty
@@ -177,22 +219,8 @@ const CheckoutPage: React.FC = () => {
 
             if (itemsError) throw itemsError;
 
-            // Actualizar stock
-            for (const item of cartItems) {
-                const cleanId = extractUUID(item.id);
-                const { data: product } = await supabase
-                    .from('products')
-                    .select('stock')
-                    .eq('id', cleanId)
-                    .single();
-
-                if (product) {
-                    await supabase
-                        .from('products')
-                        .update({ stock: Math.max(0, product.stock - item.qty) })
-                        .eq('id', cleanId);
-                }
-            }
+            // NOTA: La sustracción de stock ahora se realiza AUTOMÁTICAMENTE via Trigger en PostgreSQL
+            // al insertar en la tabla 'order_items'. No se requiere bucle manual.
 
             // FIX: Crear registro en tabla payments (no campos fantasma en orders)
             const { error: paymentError } = await supabase
@@ -268,7 +296,11 @@ const CheckoutPage: React.FC = () => {
             }
 
             console.error('❌ Error procesando pedido:', { statusCode, errorMsg, error });
-            alert(`Error (${statusCode}):\n${errorMsg}`);
+            setInstitutionalModal({
+                title: `Error (${statusCode})`,
+                message: errorMsg,
+                type: 'error'
+            });
         } finally {
             setLoading(false);
         }
@@ -348,7 +380,11 @@ const CheckoutPage: React.FC = () => {
                                             setTimeout(() => navigate('/account'), 3000);
                                         }
                                     } else {
-                                        alert("Error al subir comprobante: " + (error?.message || "Error desconocido"));
+                                        setInstitutionalModal({
+                                            title: "Error de Carga",
+                                            message: "No se pudo subir el comprobante: " + (error?.message || "Error desconocido"),
+                                            type: 'error'
+                                        });
                                         setLoading(false);
                                     }
                                 }}
@@ -384,6 +420,13 @@ const CheckoutPage: React.FC = () => {
                         <button onClick={() => navigate('/')} className="text-[#C5A065] hover:text-white underline transition-colors text-xs uppercase tracking-widest">Volver al inicio</button>
                     </div>
                 </div>
+                <InstitutionalModal
+                    isOpen={!!institutionalModal}
+                    onClose={() => setInstitutionalModal(null)}
+                    title={institutionalModal?.title || ''}
+                    message={institutionalModal?.message || ''}
+                    type={institutionalModal?.type}
+                />
             </div>
         );
     }
@@ -391,7 +434,7 @@ const CheckoutPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#0B120D] text-white pt-32 pb-20 px-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="font-serif text-4xl md:text-5xl text-[#C5A065] mb-12 text-center">Finalizar Ritual</h1>
+                <h1 className="font-serif text-4xl md:text-5xl text-[#C5A065] mb-12 text-center">Finalizar Pedido</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-7 space-y-8">
                         <form onSubmit={handleSubmit} id="checkout-form" className="space-y-6 bg-white/5 border border-white/10 p-8 rounded-2xl">
@@ -536,7 +579,7 @@ const CheckoutPage: React.FC = () => {
                                 <button form="checkout-form" disabled={loading || cartItems.length === 0} className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-[#C5A065]/20 hover:scale-[1.02]'}`}>
                                     {loading ? <span className="flex items-center justify-center gap-2"><span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>Procesando...</span> : 'Pagar y Finalizar'}
                                 </button>
-                                <p className="text-[9px] text-gray-500 text-center mt-4 leading-relaxed">Al completar este ritual, aceptas nuestros términos de servicio y políticas de privacidad.</p>
+                                <p className="text-[9px] text-gray-500 text-center mt-4 leading-relaxed">Al completar este pedido, aceptas nuestros términos de servicio y políticas de privacidad.</p>
                             </div>
                         </div>
                     </div>

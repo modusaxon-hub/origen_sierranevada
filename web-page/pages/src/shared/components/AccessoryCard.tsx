@@ -62,21 +62,29 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
                         {formatPrice(product.price)}
                     </span>
 
-                    {/* Button: Standard Cookie Banner Style */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
+                            if ((product.stock ?? 0) <= 0) return;
                             addToCart({
                                 id: product.id,
                                 name: name,
+                                sub: product.category,
                                 price: product.price,
-                                image: product.image_url,
-                                qty: 1
+                                img: product.image_url,
+                                qty: 1,
+                                maxStock: product.stock
                             });
                         }}
-                        className="px-8 py-3 rounded bg-[#C5A065] text-black text-xs font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)] transition-all transform hover:scale-105 active:scale-95 w-full md:w-auto min-w-[140px]"
+                        disabled={(product.stock ?? 0) <= 0}
+                        className={`px-8 py-3 rounded text-xs font-bold uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 w-full md:w-auto min-w-[140px] ${(product.stock ?? 0) <= 0
+                                ? 'bg-gray-500/20 text-white/20 cursor-not-allowed'
+                                : 'bg-[#C5A065] text-black hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)]'
+                            }`}
                     >
-                        {language === 'es' ? 'COMPRAR' : 'BUY NOW'}
+                        {(product.stock ?? 0) <= 0
+                            ? (language === 'es' ? 'AGOTADO' : 'SOLD OUT')
+                            : (language === 'es' ? 'COMPRAR' : 'BUY NOW')}
                     </button>
                 </div>
             </div>

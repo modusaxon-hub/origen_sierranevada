@@ -41,13 +41,16 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
 
         const displayName = `${productName} ${variantName} ${extraInfo}`.trim();
 
+        const stock = selectedVariant ? selectedVariant.stock : product.stock;
+
         addToCart({
             id: `${product.id}-${selectedVariantId || 'base'}`,
             name: displayName,
             sub: product.badge?.[lang] || 'Origen Sierra Nevada',
             price: selectedVariant ? selectedVariant.price : product.price,
             qty: 1,
-            img: product.image_url || '/cafe_malu_full_composition.png'
+            img: product.image_url || '/cafe_malu_full_composition.png',
+            maxStock: stock
         });
         onClose();
     };
