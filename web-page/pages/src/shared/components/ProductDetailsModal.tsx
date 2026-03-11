@@ -44,7 +44,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
         const stock = selectedVariant ? selectedVariant.stock : product.stock;
 
         addToCart({
-            id: `${product.id}-${selectedVariantId || 'base'}`,
+            id: selectedVariantId ? `${product.id}:${selectedVariantId}` : product.id,
             name: displayName,
             sub: product.badge?.[lang] || 'Origen Sierra Nevada',
             price: selectedVariant ? selectedVariant.price : product.price,

@@ -139,11 +139,19 @@ const CheckoutPage: React.FC = () => {
         try {
             // 1. VALIDACIÓN EN TIEMPO REAL: Antes de insertar, verificar stock fresco en DB
             const stockChecks = await Promise.all(cartItems.map(async item => {
-                const parts = item.id.split('-');
-                const productId = parts[0];
-                const variantId = parts.length > 1 ? parts[1] : null;
+                // El ID puede ser un UUID simple o un compuesto PRODUCT_ID:VARIANT_ID
+                // Usamos : como delimitador para no chocar con los guiones de los UUID
+                const compositeParts = item.id.split(':');
+                let productId = compositeParts[0];
+                let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
 
-                if (variantId) {
+                // Fallback para IDs antiguos que usaban '-' como separador (UUIDs miden 36 chars)
+                if (compositeParts.length === 1 && item.id.length > 36) {
+                    productId = item.id.substring(0, 36);
+                    variantId = item.id.substring(37); // Saltar el '-' original
+                }
+
+                if (variantId && variantId !== 'base') {
                     const { data: v } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
                     return { ...item, dbStock: v?.stock ?? 0, productId, variantId };
                 } else {

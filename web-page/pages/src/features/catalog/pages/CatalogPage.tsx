@@ -63,16 +63,21 @@ const Catalog: React.FC = () => {
         const variantId = selectedVariants[product.id];
         const variant = product.variants?.find(v => v.id === variantId);
 
+        // Validar stock antes de agregar
+        const stock = variant ? variant.stock : product.stock;
+        if (stock !== undefined && stock <= 0) return;
+
         const price = variant ? variant.price : product.price;
         const nameSuffix = variant ? ` (${variant.name})` : '';
 
         addToCart({
-            id: variant ? `${product.id}-${variant.id}` : product.id,
+            id: variant ? `${product.id}:${variant.id}` : product.id,
             name: (product.name[lang] || product.name.es) + nameSuffix,
             sub: `${product.score ? `SCA ${product.score} • ` : ''}${product.badge?.[lang] || ''}`,
             price: user ? price * 0.9 : price,
             qty: 1,
-            img: product.image_url || '/cafe_malu_waterfall_minca.png'
+            img: product.image_url || '/cafe_malu_waterfall_minca.png',
+            maxStock: stock,
         });
     };
 
@@ -108,8 +113,8 @@ const Catalog: React.FC = () => {
                 <LockedOverlay
                     title={lang === 'es' ? 'Catálogo Reservado' : 'Reserved Catalog'}
                     message={lang === 'es'
-                        ? 'Explora nuestras cosechas de autor iniciando sesión en tu cuenta de Ritual Socio.'
-                        : 'Explore our signature harvests by logging into your Ritual Member account.'}
+                        ? 'Explora nuestras cosechas de autor iniciando sesión en tu cuenta de Socio.'
+                        : 'Explore our signature harvests by logging into your Member account.'}
                 />
             )}
 
@@ -132,7 +137,7 @@ const Catalog: React.FC = () => {
                         </div>
                         <h1 className="text-6xl md:text-7xl font-serif tracking-tighter animate-slide-up">
                             {filter === 'coffee' || filter === 'cafetal' ? 'Café de Especialidad' :
-                                filter === 'accessories' || filter === 'accesorios' ? 'Accesorios de Ritual' :
+                                filter === 'accessories' || filter === 'accesorios' ? 'Accesorios de Café' :
                                     filter === 'derivatives' || filter === 'antojitos' ? 'Derivados de la Sierra' : 'Catálogo de Origen'}
                         </h1>
                     </header>
@@ -287,7 +292,7 @@ const Catalog: React.FC = () => {
                                         <div className="flex items-end justify-between pt-4 border-t border-white/5">
                                             <div className="space-y-1">
                                                 {user && (
-                                                    <p className="text-[9px] text-[#C5A065] font-bold uppercase tracking-widest">Ritual Socio -10%</p>
+                                                    <p className="text-[9px] text-[#C5A065] font-bold uppercase tracking-widest">Socio -10%</p>
                                                 )}
                                                 <div className="flex items-center gap-3">
                                                     <span className={`text-3xl font-display ${user ? 'text-[#C5A065]' : 'text-white'}`}>
@@ -304,7 +309,7 @@ const Catalog: React.FC = () => {
                                             <button
                                                 onClick={() => handleAddToCart(product)}
                                                 className="w-14 h-14 rounded-full bg-[#C5A065] text-black flex items-center justify-center hover:bg-white hover:scale-110 active:scale-95 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,101,0.2)]"
-                                                title="Añadir al Ritual"
+                                                title="Añadir al Pedido"
                                             >
                                                 <span className="material-icons-outlined text-xl">add_shopping_cart</span>
                                             </button>
