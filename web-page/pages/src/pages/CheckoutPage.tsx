@@ -532,28 +532,39 @@ const CheckoutPage: React.FC = () => {
                             <div className="bg-white/5 border border-white/10 p-8 rounded-2xl">
                                 <h2 className="font-serif text-2xl text-white mb-6 border-b border-white/10 pb-4">Tu Selección</h2>
                                 <div className="space-y-4 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                                    {cartItems.map(item => (
-                                        <div key={item.id} className="flex justify-between items-center gap-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 p-1">
-                                                    <img src={item.img} alt={item.name} className="w-full h-full object-contain" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-bold text-white leading-tight">{item.name}</p>
-                                                    <div className="flex gap-2 items-center">
-                                                        <p className="text-[10px] text-gray-500 uppercase">{item.qty} unidad(es)</p>
-                                                        {item.sub && (
-                                                            <>
-                                                                <span className="text-[10px] text-gray-700">•</span>
-                                                                <p className="text-[10px] text-[#C5A065] font-bold uppercase tracking-tighter">{item.sub}</p>
-                                                            </>
-                                                        )}
+                                    {cartItems.map(item => {
+                                        const isOverStock = item.maxStock !== undefined && item.qty > item.maxStock;
+                                        return (
+                                            <div key={item.id} className="space-y-2">
+                                                <div className="flex justify-between items-center gap-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-12 h-12 bg-white/5 rounded-lg border p-1 transition-colors ${isOverStock ? 'border-red-500/50 bg-red-500/10' : 'border-white/10'}`}>
+                                                            <img src={item.img} alt={item.name} className="w-full h-full object-contain" />
+                                                        </div>
+                                                        <div>
+                                                            <p className={`text-sm font-bold leading-tight transition-colors ${isOverStock ? 'text-red-400' : 'text-white'}`}>{item.name}</p>
+                                                            <div className="flex gap-2 items-center">
+                                                                <p className={`text-[10px] uppercase font-bold ${isOverStock ? 'text-red-500' : 'text-gray-500'}`}>{item.qty} unidad(es)</p>
+                                                                {item.sub && (
+                                                                    <>
+                                                                        <span className="text-[10px] text-gray-700">•</span>
+                                                                        <p className="text-[10px] text-[#C5A065] font-bold uppercase tracking-tighter">{item.sub}</p>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <p className="text-sm font-bold text-[#C5A065]">{formatPrice(item.price * item.qty)}</p>
                                                 </div>
+                                                {isOverStock && (
+                                                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2 flex items-center gap-2 animate-pulse">
+                                                        <span className="material-icons-outlined text-red-500 text-sm">warning</span>
+                                                        <p className="text-[9px] text-red-400 font-bold uppercase">Stock insuficiente: {item.maxStock} disponibles</p>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <p className="text-sm font-bold text-[#C5A065]">{formatPrice(item.price * item.qty)}</p>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                     {cartItems.length === 0 && <p className="text-gray-500 italic text-center py-4">Tu carrito está vacío</p>}
                                 </div>
 
@@ -584,8 +595,13 @@ const CheckoutPage: React.FC = () => {
                                     <p className="text-[10px] text-gray-500 text-center italic">{lang === 'es' ? 'Los precios exhibidos ya incluyen IVA' : 'Displayed prices already include VAT'}</p>
                                 </div>
 
-                                <button form="checkout-form" disabled={loading || cartItems.length === 0} className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-[#C5A065]/20 hover:scale-[1.02]'}`}>
-                                    {loading ? <span className="flex items-center justify-center gap-2"><span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>Procesando...</span> : 'Pagar y Finalizar'}
+                                <button
+                                    form="checkout-form"
+                                    disabled={loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock)}
+                                    className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-[#C5A065]/20 hover:scale-[1.02]'}`}
+                                >
+                                    {loading ? <span className="flex items-center justify-center gap-2"><span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>Procesando...</span> :
+                                        cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'Corregir Stock' : 'Pagar y Finalizar'}
                                 </button>
                                 <p className="text-[9px] text-gray-500 text-center mt-4 leading-relaxed">Al completar este pedido, aceptas nuestros términos de servicio y políticas de privacidad.</p>
                             </div>
