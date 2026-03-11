@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { authService } from '@/services/authService';
-import { LogOut, ArrowLeft, Printer, Sidebar, Columns, Type, Palette, MessageSquare, Image, Smartphone, HelpCircle } from 'lucide-react';
+import { LogOut, ArrowLeft, Printer, Sidebar, Columns, Type, Palette, MessageSquare, Image, Smartphone, HelpCircle, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Brandbook: React.FC = () => {
@@ -340,7 +340,7 @@ const Brandbook: React.FC = () => {
                                     <span className="w-8 h-px bg-[#C8AA6E]/30"></span>
                                     Jerarquía Editorial
                                 </p>
-                                <h1 className="font-serif text-6xl text-white mb-6">El Ritual del Origen</h1>
+                                <h1 className="font-serif text-6xl text-white mb-6">La Experiencia del Origen</h1>
                                 <h2 className="font-sans text-xs uppercase tracking-[0.5em] text-white/30 mb-10 font-bold">Capítulo II: La Cota de Oro</h2>
                                 <p className="font-sans text-lg text-white/60 leading-relaxed font-light">
                                     En las faldas de la Sierra Nevada, donde la brisa del Caribe se encuentra con las cumbres nevadas,
@@ -358,6 +358,154 @@ const Brandbook: React.FC = () => {
                                     <p className="text-[10px] text-white/20 uppercase tracking-widest font-bold">CTA Principal</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Tono de Voz */}
+                <section id="voice" className="py-32 px-6 max-w-7xl mx-auto border-y border-white/5">
+                    <div className="grid lg:grid-cols-2 gap-24 items-center">
+                        <div>
+                            <h2 className="font-serif text-5xl text-[#C8AA6E] mb-8">Tono de Voz</h2>
+                            <p className="text-white/50 text-xl leading-relaxed font-light italic mb-12">
+                                "Nuestra voz no solo habla de café; susurra historias de la montaña colombiana con la autoridad de un experto y la calidez de un anfitrión."
+                            </p>
+                            <div className="space-y-6">
+                                {[
+                                    { t: 'Sofisticado pero Cercano', d: 'Evitamos la arrogancia técnica. Usamos un lenguaje refinado que invita a aprender, no que excluye.' },
+                                    { t: 'Evocador y Sensorial', d: 'Describimos aromas y paisajes. Queremos que el lector sienta la brisa de la Sierra y el calor de la taza.' },
+                                    { t: 'Auténtico y Honesto', d: 'No usamos superlativos vacíos. Hablamos de procesos reales, de la tierra y del trabajo humano.' }
+                                ].map((item, i) => (
+                                    <div key={i} className="flex gap-4">
+                                        <div className="w-8 h-8 rounded-full bg-[#C8AA6E]/10 flex items-center justify-center shrink-0">
+                                            <span className="material-icons-outlined text-xs text-[#C8AA6E]">check</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-1">{item.t}</h4>
+                                            <p className="text-white/40 text-sm leading-relaxed">{item.d}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-[#141E16] border border-[#C8AA6E]/20 rounded-3xl p-12 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8 opacity-10">
+                                <MessageSquare size={120} />
+                            </div>
+                            <div className="space-y-8 relative z-10">
+                                <div className="p-6 bg-white/5 rounded-2xl border-l-4 border-[#C8AA6E]">
+                                    <p className="text-[10px] uppercase tracking-widest text-[#C8AA6E] mb-4 font-bold">Ejemplo Correcto</p>
+                                    <p className="font-serif text-lg italic text-white/80">"Descubre el equilibrio perfecto entre la acidez cítrica y las notas a chocolate negro, un regalo de la Cota de Oro."</p>
+                                </div>
+                                <div className="p-6 bg-red-500/5 rounded-2xl border-l-4 border-red-500/30">
+                                    <p className="text-[10px] uppercase tracking-widest text-red-500/50 mb-4 font-bold">Ejemplo Incorrecto</p>
+                                    <p className="font-serif text-lg italic text-white/30">"Compra el mejor café barato de Colombia. Calidad garantizada al mejor precio del mercado."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* UI Elements */}
+                <section id="ui" className="py-32 px-6 max-w-7xl mx-auto">
+                    <div className="text-center mb-24">
+                        <h2 className="font-serif text-5xl text-[#C8AA6E] mb-6">Elementos UI</h2>
+                        <p className="text-white/40 max-w-2xl mx-auto font-light">
+                            Un sistema visual digital que prioriza el espacio negativo, la tipografía jerárquica y los acabados metálicos.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Buttons Card */}
+                        <div className="bg-white/30 backdrop-blur-md rounded-3xl p-10 border border-white/10">
+                            <h4 className="text-[10px] uppercase tracking-widest text-[#C8AA6E] font-black mb-10 text-center">Botones de Acción</h4>
+                            <div className="space-y-6 flex flex-col items-center">
+                                <button className="w-full py-4 bg-[#C8AA6E] text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-[#C8AA6E]/20">Principal</button>
+                                <button className="w-full py-4 border border-[#C8AA6E]/30 text-[#C8AA6E] text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#C8AA6E]/10">Secundario</button>
+                                <button className="text-[#C8AA6E] text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-2 group">
+                                    Link de Acción
+                                    <span className="material-icons-outlined text-xs group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Cards Showcase */}
+                        <div className="bg-[#141E16] rounded-3xl p-10 border border-white/5 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-10 text-center">Tarjetas de Producto</h4>
+                            <div className="bg-white/5 rounded-2xl p-6 border border-white/10 relative overflow-hidden group">
+                                <div className="absolute top-4 right-4 text-[#C8AA6E] opacity-50"><Package size={16} /></div>
+                                <div className="w-20 h-20 bg-white/10 rounded-xl mb-6 flex items-center justify-center">
+                                    <span className="material-icons-outlined text-white/20">image</span>
+                                </div>
+                                <h5 className="font-serif text-lg text-white mb-1">Nombre Café</h5>
+                                <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-widest mb-4">Gourmet Edition</p>
+                                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-full bg-[#C8AA6E] w-2/3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Badges & Inputs */}
+                        <div className="bg-white/5 rounded-3xl p-10 border border-white/10">
+                            <h4 className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-10 text-center">Badges & Inputs</h4>
+                            <div className="space-y-8">
+                                <div className="flex flex-wrap gap-2 justify-center">
+                                    <span className="px-3 py-1 bg-[#C8AA6E]/10 text-[#C8AA6E] text-[8px] font-black uppercase tracking-widest rounded-full border border-[#C8AA6E]/20">Procesado</span>
+                                    <span className="px-3 py-1 bg-green-500/10 text-green-400 text-[8px] font-black uppercase tracking-widest rounded-full border border-green-500/20">En Stock</span>
+                                </div>
+                                <div className="space-y-4">
+                                    <input
+                                        type="text"
+                                        placeholder="INPUT STYLE"
+                                        readOnly
+                                        className="w-full bg-transparent border-b border-white/10 py-2 text-[10px] uppercase tracking-widest text-white outline-none focus:border-[#C8AA6E]"
+                                    />
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-4 h-4 rounded border border-[#C8AA6E] flex items-center justify-center">
+                                            <div className="w-2 h-2 bg-[#C8AA6E] rounded-[1px]"></div>
+                                        </div>
+                                        <span className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Checkbox Style</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Photography Style */}
+                <section id="photography" className="py-32 px-6 max-w-7xl mx-auto border-t border-white/5">
+                    <div className="grid lg:grid-cols-2 gap-24 items-center">
+                        <div className="order-2 lg:order-1 grid grid-cols-2 gap-4">
+                            <div className="aspect-square bg-white/[0.02] border border-white/5 rounded-3xl flex items-center justify-center group overflow-hidden">
+                                <Image size={40} className="text-white/10 group-hover:scale-110 transition-transform duration-500" />
+                            </div>
+                            <div className="aspect-[3/4] bg-white/[0.02] border border-white/5 rounded-3xl translate-y-8 flex items-center justify-center group overflow-hidden">
+                                <Image size={40} className="text-white/10 group-hover:scale-110 transition-transform duration-500" />
+                            </div>
+                            <div className="aspect-[3/4] bg-white/[0.02] border border-white/5 rounded-3xl -translate-y-8 flex items-center justify-center group overflow-hidden">
+                                <Image size={40} className="text-white/10 group-hover:scale-110 transition-transform duration-500" />
+                            </div>
+                            <div className="aspect-square bg-white/[0.02] border border-white/5 rounded-3xl flex items-center justify-center group overflow-hidden">
+                                <Image size={40} className="text-white/10 group-hover:scale-110 transition-transform duration-500" />
+                            </div>
+                        </div>
+                        <div className="order-1 lg:order-2">
+                            <h2 className="font-serif text-5xl text-[#C8AA6E] mb-8">Estilo Fotográfico</h2>
+                            <p className="text-white/50 text-xl leading-relaxed font-light italic mb-12">
+                                Capturando la "Cota de Oro" a través de luz natural, texturas orgánicas y una paleta de color terrosa.
+                            </p>
+                            <ul className="space-y-6">
+                                {[
+                                    { t: 'Iluminación Natural', d: 'Preferimos la luz de "Hora Dorada" o luz filtrada por la neblina. Sombras suaves pero definidas.' },
+                                    { t: 'Enfoque en Texturas', d: 'Primeros planos de granos, hojas de café y manos trabajadoras. El detalle vende la calidad.' },
+                                    { t: 'Composiciones Editoriales', d: 'Mucho aire alrededor del sujeto. Minimalismo que transmite exclusividad.' }
+                                ].map((item, i) => (
+                                    <li key={i} className="group border-l border-white/10 pl-8 hover:border-[#C8AA6E] transition-colors">
+                                        <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-1 group-hover:text-[#C8AA6E] transition-colors">{item.t}</h4>
+                                        <p className="text-white/40 text-sm leading-relaxed">{item.d}</p>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </section>

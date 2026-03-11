@@ -50,8 +50,8 @@ const BrewingGuidePage: React.FC = () => {
                 <LockedOverlay
                     title={language === 'es' ? 'Acceso Reservado' : 'Reserved Access'}
                     message={language === 'es'
-                        ? 'Nuestros rituales y guías de preparación son exclusivos para los miembros de la comunidad Origen.'
-                        : 'Our rituals and brewing guides are exclusive to Origen community members.'}
+                        ? 'Nuestras experiencias y guías de preparación son exclusivos para los miembros de la comunidad Origen.'
+                        : 'Our experiences and brewing guides are exclusive to Origen community members.'}
                 />
             )}
             <div className={!user ? 'blur-xl pointer-events-none select-none' : ''}>

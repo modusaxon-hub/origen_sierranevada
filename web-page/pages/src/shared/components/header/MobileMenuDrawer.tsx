@@ -46,9 +46,6 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
                     </button>
                 )}
 
-                <Link to="/" className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3" onClick={onClose}>{t('nav.home')}</Link>
-
-                <Link to="/catalog" className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3" onClick={onClose}>Catálogo</Link>
 
                 {user && !isAdmin && (
                     <Link to="/my-orders" onClick={onClose} className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3 flex items-center justify-between">

@@ -7,6 +7,7 @@ import { authService, ADMIN_EMAIL_WHITELIST } from '@/services/authService';
 interface AuthContextType {
     user: User | null;
     isAdmin: boolean;
+    userRole: string | null;
     loading: boolean;
     roleChecked: boolean;
     refreshAuth: () => Promise<void>;
@@ -15,6 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     user: null,
     isAdmin: false,
+    userRole: null,
     loading: true,
     roleChecked: false,
     refreshAuth: async () => { },
@@ -23,12 +25,14 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [roleChecked, setRoleChecked] = useState(false);
 
     const checkUserRole = async (currentUser: User | null) => {
         if (!currentUser) {
             setIsAdmin(false);
+            setUserRole(null);
             setRoleChecked(true);
             return;
         }
@@ -36,19 +40,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // EMERGENCY WHITELIST: El administrador principal siempre tiene acceso por email
         if (ADMIN_EMAIL_WHITELIST.includes(currentUser.email || '')) {
             setIsAdmin(true);
+            setUserRole('Administrador');
             setRoleChecked(true);
             return;
         }
 
         try {
-            const adminPromise = authService.checkIsAdmin(currentUser.id);
-            const timeoutPromise = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 3000));
+            const rolePromise = supabase
+                .from('profiles')
+                .select('role_name')
+                .eq('id', currentUser.id)
+                .single();
+            const timeoutPromise = new Promise<{ data: null }>((resolve) => setTimeout(() => resolve({ data: null }), 3000));
 
-            const adminStatus = await Promise.race([adminPromise, timeoutPromise]);
-            setIsAdmin(adminStatus);
+            const { data } = await Promise.race([rolePromise, timeoutPromise]);
+            const role = data?.role_name || 'Usuario';
+            setUserRole(role);
+            setIsAdmin(role === 'Administrador');
         } catch (e) {
             console.error("Role check failed", e);
             setIsAdmin(false);
+            setUserRole(null);
         } finally {
             setRoleChecked(true);
         }
@@ -63,6 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error("Error refreshing auth:", error);
             setUser(null);
             setIsAdmin(false);
+            setUserRole(null);
             setRoleChecked(true);
         } finally {
             setLoading(false);
@@ -80,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 } else {
                     setUser(null);
                     setIsAdmin(false);
+                    setUserRole(null);
                     setRoleChecked(true);
                 }
                 setLoading(false);
@@ -95,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isAdmin, loading, roleChecked, refreshAuth }}>
+        <AuthContext.Provider value={{ user, isAdmin, userRole, loading, roleChecked, refreshAuth }}>
             {children}
         </AuthContext.Provider>
     );

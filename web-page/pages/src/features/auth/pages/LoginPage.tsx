@@ -69,11 +69,7 @@ const LoginPage: React.FC = () => {
             <div className="w-full max-w-md bg-zinc-900/50 backdrop-blur-md border border-[#C5A065]/20 p-8 rounded-2xl shadow-[0_0_50px_rgba(197,160,101,0.1)]">
 
                 <div className="text-center mb-10">
-                    <div className="inline-block relative mb-8">
-                        <Link to="/">
-                            <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)] hover:opacity-80 transition-opacity" />
-                        </Link>
-                    </div>
+                    <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)]" />
 
                     <h2 className="font-display text-3xl text-white mb-2 tracking-wide">Bienvenido</h2>
                     <p className="text-white/60 text-sm font-light">Ingresa y vive la mejor Experiencia.</p>
@@ -126,20 +122,20 @@ const LoginPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading || throttleBlocked}
-                        className="w-full bg-gradient-to-r from-[#C5A065] to-[#AA771C] text-black font-bold uppercase tracking-widest py-4 rounded-lg hover:shadow-[0_0_30px_rgba(197,160,101,0.3)] transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] text-xs py-4 rounded-xl hover:shadow-[0_0_30px_rgba(200,170,110,0.3)] transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed mt-2 active:scale-95"
                     >
                         {loading ? 'Verificando...' : throttleBlocked ? 'Espera 3 segundos' : 'Iniciar Sesión'}
                     </button>
                 </form>
 
                 <div className="mt-8 text-center border-t border-white/5 pt-6">
-                    <p className="text-white/40 text-sm">
+                    <p className="text-white/40 text-xs uppercase tracking-widest">
                         ¿Aún no eres parte del Origen?{' '}
-                        <button onClick={() => navigate('/register')} className="text-[#C5A065] font-bold hover:text-white transition-colors underline decoration-[#C5A065]/50 hover:decoration-white">
+                        <button onClick={() => navigate('/register')} className="text-[#C8AA6E] font-bold hover:text-white transition-colors ml-2">
                             Crea tu cuenta aquí
                         </button>
                     </p>
-                    <p className="text-white/20 text-xs mt-4">Sistema seguro protegido por criptografía</p>
+                    <p className="text-white/10 text-[10px] uppercase tracking-[0.2em] mt-6">Sistema seguro de acceso</p>
                 </div>
 
             </div>

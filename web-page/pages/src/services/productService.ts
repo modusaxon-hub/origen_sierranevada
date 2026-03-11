@@ -43,6 +43,9 @@ export const productService = {
                     name: v.name,
                     price: v.price,
                     stock: v.stock,
+                    grind: v.grind || null,
+                    units_per_package: v.units_per_package || null,
+                    weight_per_unit: v.weight_per_unit || null
                 }))
             );
             if (variantError) return { data: null, error: variantError };
@@ -72,6 +75,9 @@ export const productService = {
                         name: v.name,
                         price: v.price,
                         stock: v.stock,
+                        grind: v.grind || null,
+                        units_per_package: v.units_per_package || null,
+                        weight_per_unit: v.weight_per_unit || null
                     }))
                 );
                 if (insError) return { data: null, error: insError };
@@ -93,7 +99,10 @@ export const productService = {
     },
 
     uploadImage: async (file: File) => {
-        const fileExt = file.name.split('.').pop();
+        let fileExt = file.name.split('.').pop() || 'png';
+        // Limpiamos los caracteres especiales para evitar errores en Supabase como "Invalid key"
+        fileExt = fileExt.replace(/[^a-zA-Z0-9]/g, '');
+
         const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
         const filePath = `${fileName}`;
 

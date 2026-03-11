@@ -1,6 +1,6 @@
 # TASK.md — Origen Sierra Nevada
 
-Bitácora viva del proyecto. Actualizado: 2026-03-03
+Bitácora viva del proyecto. Actualizado: 2026-03-09
 
 ---
 
@@ -375,8 +375,8 @@ npm run dev
 - CheckoutPage.tsx: Removida insert `currency: 'COP'` (columna inexistente)
 - **Razón:** Product prices estaban en escala incorrecta; converting USD prices as if COP caused 400-4000x misrepresentation
 
-#### ⏳ Tarea Pendiente (DB Migration)
-- [ ] Ejecutar UPDATE en Supabase para aplicar cambios de precios
+#### ✅ Tarea Finalizada (DB Migration)
+- [x] Ejecutar UPDATE en Supabase para aplicar cambios de precios (Realizado: 2026-03-09)
 - [ ] Verificar cambios en checkout local
 - [ ] Test end-to-end: Seleccionar producto → ver precio → checkout → ver QR con monto correcto
 
@@ -446,3 +446,10 @@ Si ingresos superan $164M/año → Transición a **Responsable de IVA**:
 
 **Última actualización:** 04 Mar 2026, 16:30 (Tarde)
 **Status:** F3-004 + F3-005 completados · Auditoría precios completa · Awaiting DB migration
+
+---
+
+## 🔄 SESIÓN 09 MAR 2026 — COMPLIANCE & DB FIX
+- ✅ **Legal:** Generado `technical/COMPLIANCE_LEGAL.md` integrando Ley 1581 (Habeas Data), DIAN (Art. 437 ET), y Estatuto del Consumidor.
+- ✅ **DB Fix:** Ejecutado UPDATE en Supabase Prod para corregir precios (72000/96000 COP).
+- ⚙️ **Ref:** Sincronizado con NotebookLM para validación de normativas.

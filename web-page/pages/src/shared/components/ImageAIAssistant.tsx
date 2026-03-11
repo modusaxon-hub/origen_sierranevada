@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, Crop, Maximize, Check, X, Wand2, Loader2 } from 'lucide-react';
 import { analyzeImage, editImage } from '@/services/geminiService';
+import SystemFeedback from '@/shared/components/SystemFeedback';
 
 interface ImageAIAssistantProps {
     isOpen: boolean;
@@ -13,6 +14,7 @@ const ImageAIAssistant: React.FC<ImageAIAssistantProps> = ({ isOpen, onClose, on
     const [currentImage, setCurrentImage] = useState(imageUrl);
     const [processing, setProcessing] = useState(false);
     const [step, setStep] = useState<'preview' | 'editing'>('preview');
+    const [feedback, setFeedback] = useState<{ msg: string | null; type: 'success' | 'error' | 'info' }>({ msg: null, type: 'info' });
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -70,7 +72,7 @@ const ImageAIAssistant: React.FC<ImageAIAssistantProps> = ({ isOpen, onClose, on
             }
         } catch (error) {
             console.error("AI Assistant Error:", error);
-            alert("Error con la IA: Asegúrate de que la API KEY esté configurada.");
+            setFeedback({ msg: "Error con la IA: Asegúrate de que la API KEY esté configurada en el entorno.", type: 'error' });
         } finally {
             setProcessing(false);
         }
@@ -78,6 +80,11 @@ const ImageAIAssistant: React.FC<ImageAIAssistantProps> = ({ isOpen, onClose, on
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-2xl animate-fade-in">
+            <SystemFeedback
+                message={feedback.msg}
+                type={feedback.type}
+                onClose={() => setFeedback({ ...feedback, msg: null })}
+            />
             <div className="bg-[#0A0F0C] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col md:flex-row h-[90vh] md:h-auto max-h-[90vh]">
 
                 {/* Visual Area */}

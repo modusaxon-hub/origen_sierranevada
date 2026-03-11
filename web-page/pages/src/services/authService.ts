@@ -25,33 +25,91 @@ export const authService = {
     },
 
     signIn: async (email: string, password: string) => {
+        // En un entorno de producción, el conteo de intentos debería ocurrir en un Edge Function
+        // o mediante un trigger para mayor seguridad, pero aquí implementamos la lógica solicitada.
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
 
-        if (data.user) {
-            // Check if profile is active
+        // 1. Manejo de Intentos Fallidos
+        if (error && error.message === 'Invalid login credentials') {
+            // Buscamos el perfil por email para actualizar los intentos
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('status')
-                .eq('id', data.user.id)
+                .select('id, login_attempts, status')
+                .eq('email', email)
                 .single();
 
-            if (profile && profile.status !== 'active') {
-                await supabase.auth.signOut(); // Block session
-                let message = `Tu cuenta está en estado: ${profile.status}.`;
+            if (profile && profile.status === 'active') {
+                const newAttempts = (profile.login_attempts || 0) + 1;
 
-                if (profile.status === 'pending') {
-                    message = "Tu ritual está en proceso. Tu cuenta está en espera de autorización por parte de nuestros sumilleres.";
-                } else if (profile.status === 'banned') {
-                    message = "Esta cuenta ha sido restringida por motivos de seguridad.";
+                await supabase
+                    .from('profiles')
+                    .update({
+                        login_attempts: newAttempts,
+                        last_failed_attempt: new Date().toISOString()
+                    })
+                    .eq('id', profile.id);
+
+                if (newAttempts >= 5) {
+                    // Disparar protocolo de recuperación tras 5 intentos
+                    await supabase.auth.resetPasswordForEmail(email, {
+                        redirectTo: `${window.location.origin}/#/reset-password`
+                    });
+
+                    return {
+                        data: { user: null, session: null },
+                        error: {
+                            message: "Demasiados intentos fallidos. Por seguridad, hemos enviado un enlace de recuperación a tu correo.",
+                            isLocked: true
+                        } as any
+                    };
                 }
 
                 return {
-                    data: { user: null, session: null },
-                    error: { message } as any
+                    data,
+                    error: {
+                        message: `Contraseña incorrecta. Intento ${newAttempts} de 5.`,
+                        attemptsLeft: 5 - newAttempts
+                    } as any
                 };
+            }
+        }
+
+        // 2. Manejo de Éxito y Reseteo de Intentos
+        if (data.user) {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('status, login_attempts')
+                .eq('id', data.user.id)
+                .single();
+
+            if (profile) {
+                // Resetear intentos en login exitoso
+                if (profile.login_attempts > 0) {
+                    await supabase
+                        .from('profiles')
+                        .update({ login_attempts: 0 })
+                        .eq('id', data.user.id);
+                }
+
+                if (profile.status !== 'active') {
+                    await supabase.auth.signOut();
+                    let message = `Tu cuenta está en estado: ${profile.status}.`;
+
+                    if (profile.status === 'pending') {
+                        message = "Tu acceso está en proceso. Tu cuenta está en espera de autorización por parte de nuestros sumilleres.";
+                    } else if (profile.status === 'banned') {
+                        message = "Esta cuenta ha sido restringida por motivos de seguridad.";
+                    }
+
+                    return {
+                        data: { user: null, session: null },
+                        error: { message } as any
+                    };
+                }
             }
         }
 
@@ -118,6 +176,13 @@ export const authService = {
             .eq('id', userId);
 
         return { error };
+    },
+
+    deleteUserForever: async (userId: string) => {
+        const { data, error } = await supabase
+            .rpc('delete_user_permanently', { target_id: userId });
+
+        return { data, error };
     },
 
     activateUser: async (userId: string) => {

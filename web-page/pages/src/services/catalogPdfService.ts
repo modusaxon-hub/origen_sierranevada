@@ -7,7 +7,7 @@
  */
 
 import jsPDF from 'jspdf';
-import { Product, ProductCategory } from '../types';
+import { Product, ProductCategory } from '../shared/types';
 
 interface CatalogOptions {
     language?: 'es' | 'en';

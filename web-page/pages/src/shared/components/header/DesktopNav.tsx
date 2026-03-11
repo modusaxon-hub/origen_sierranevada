@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import Logo from '@/shared/components/Logo';
 import UserDropdown from './UserDropdown';
+import TrackOrderModal from './TrackOrderModal';
 
 interface DesktopNavProps {
     onSearchOpen: () => void;
@@ -15,20 +16,14 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
     const { user, isAdmin } = useAuth();
     const { language, toggleLanguage } = useLanguage();
     const { cartItems, setIsCartOpen } = useCart();
+    const [isTrackModalOpen, setIsTrackModalOpen] = React.useState(false);
 
     return (
         <div className="hidden lg:flex max-w-7xl mx-auto px-6 xl:px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20 gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center cursor-pointer shrink-0">
-                <Logo className="h-[30px] xl:h-[46px] w-auto" />
-            </Link>
+            <Logo className="h-[30px] xl:h-[46px] w-auto" />
 
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-4 xl:space-x-10 font-display text-[10px] xl:text-xs tracking-[0.2em] xl:tracking-[0.3em] text-white/80 whitespace-nowrap">
-                <Link to="/" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Inicio</Link>
-                <Link to="/subscription" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Catálogo</Link>
-                <Link to="/guide" className="hover:text-[#C8AA6E] transition-colors duration-300 hover:border-b-2 hover:border-[#C8AA6E]/50 pb-1 uppercase">Guía</Link>
-            </div>
+            {/* Navigation Links removidos por solicitud de landing page pura */}
 
             {/* Actions */}
             <div className="flex items-center space-x-3 xl:space-x-6 text-white shrink-0">
@@ -51,6 +46,14 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
                         <span className="hidden xl:inline">Ingresar</span>
                     </button>
                 )}
+
+                <button
+                    onClick={() => setIsTrackModalOpen(true)}
+                    className="p-2.5 rounded-lg hover:bg-[#C8AA6E]/15 hover:text-[#C8AA6E] text-white/70 transition-all duration-300 hover:shadow-[0_0_10px_rgba(200,170,110,0.2)]"
+                    title="Rastrear mi pedido"
+                >
+                    <span className="material-icons-outlined">radar</span>
+                </button>
 
                 <button
                     onClick={onSearchOpen}
@@ -90,6 +93,7 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
                     <span className="material-icons-outlined hidden dark:block text-[#C8AA6E]">light_mode</span>
                 </button>
             </div>
+            <TrackOrderModal isOpen={isTrackModalOpen} onClose={() => setIsTrackModalOpen(false)} />
         </div>
     );
 };

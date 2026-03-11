@@ -4,7 +4,7 @@ export interface OrderItem {
     id: string;
     product_id: number;
     quantity: number;
-    price_at_time: number;
+    unit_price: number;
     product_name?: { es: string; en: string };
     products?: {
         name: any;
@@ -20,6 +20,7 @@ export interface Order {
     shipping_address: any;
     payment_method?: string;
     order_items: OrderItem[];
+    profiles?: { email: string };
     metadata?: any;
 }
 
@@ -33,6 +34,7 @@ export const orderService = {
             .from('orders')
             .select(`
                 *,
+                profiles:user_id (email),
                 order_items (
                     *,
                     products (
@@ -55,6 +57,7 @@ export const orderService = {
             .from('orders')
             .select(`
                 *,
+                profiles:user_id (email),
                 order_items (
                     *,
                     products (*)
@@ -74,43 +77,43 @@ export const orderService = {
             'pending_payment': {
                 label: 'Esperando Pago',
                 color: 'text-orange-400',
-                bgColor: 'bg-orange-500/20',
+                bgColor: 'bg-orange-500/10',
                 icon: 'hourglass_empty'
             },
             'pending': {
                 label: 'Por Confirmar',
                 color: 'text-yellow-400',
-                bgColor: 'bg-yellow-500/20',
+                bgColor: 'bg-yellow-500/10',
                 icon: 'pending'
-            },
-            'processing': {
-                label: 'En Preparación',
-                color: 'text-blue-400',
-                bgColor: 'bg-blue-500/20',
-                icon: 'inventory_2'
             },
             'paid': {
                 label: 'Pagado',
-                color: 'text-green-400',
-                bgColor: 'bg-green-500/20',
+                color: 'text-emerald-400',
+                bgColor: 'bg-emerald-500/10',
                 icon: 'check_circle'
             },
+            'processing': {
+                label: 'Preparando',
+                color: 'text-cyan-400',
+                bgColor: 'bg-cyan-500/10',
+                icon: 'coffee'
+            },
             'shipped': {
-                label: 'En Camino',
-                color: 'text-orange-400',
-                bgColor: 'bg-orange-500/20',
+                label: 'Enviado',
+                color: 'text-sky-400',
+                bgColor: 'bg-sky-500/10',
                 icon: 'local_shipping'
             },
             'delivered': {
                 label: 'Entregado',
-                color: 'text-green-400',
-                bgColor: 'bg-green-500/20',
-                icon: 'task_alt'
+                color: 'text-purple-400',
+                bgColor: 'bg-purple-500/10',
+                icon: 'home'
             },
             'cancelled': {
                 label: 'Cancelado',
-                color: 'text-red-400',
-                bgColor: 'bg-red-500/20',
+                color: 'text-rose-400',
+                bgColor: 'bg-rose-500/10',
                 icon: 'cancel'
             }
         };

@@ -95,17 +95,22 @@ const RegisterPage: React.FC = () => {
                         <CheckCircle size={48} />
                     </div>
 
-                    <h2 className="font-serif text-3xl text-white italic mb-6 italic tracking-tight uppercase">¡Bienvenido al Origen!</h2>
-                    <p className="text-gray-400 mb-10 leading-relaxed font-light italic">
-                        Es un placer tenerte con nosotros. Tu solicitud ha pasado a nuestra <span className="text-[#C8AA6E] font-medium">Fase de Bienvenida</span>.
-                        Te avisaremos en cuanto tu perfil esté habilitado para iniciar el ritual de la mejor experiencia cafetera.
+                    <h2 className="font-serif text-3xl text-white italic mb-6 tracking-tight uppercase">¡Bienvenido al Origen!</h2>
+                    <p className="text-gray-400 mb-8 leading-relaxed font-light italic text-sm">
+                        Es un placer recibirte. Tu perfil ha entrado en nuestro <span className="text-[#C8AA6E] font-medium italic">Círculo de Espera</span> mientras nuestros fundadores habilitan tu acceso.
                     </p>
 
+                    <div className="bg-[#C8AA6E]/5 border border-[#C8AA6E]/20 rounded-2xl p-6 mb-10 text-left">
+                        <p className="text-white/80 text-xs leading-relaxed italic">
+                            Para asegurar la máxima calidad y exclusividad, un administrador aprobará tu acceso en las próximas <span className="text-[#C8AA6E] font-bold">24 a 48 horas</span>. Recibirás un correo de confirmación.
+                        </p>
+                    </div>
+
                     <button
-                        onClick={() => navigate('/login')}
-                        className="w-full bg-[#C8AA6E] text-black font-bold uppercase tracking-widest py-4 rounded-xl hover:bg-white transition-all flex items-center justify-center gap-3 group"
+                        onClick={() => navigate('/')}
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-[10px] hover:shadow-[0_0_25px_rgba(200,170,110,0.3)] transition-all flex items-center justify-center gap-3 group active:scale-95"
                     >
-                        Ir a Iniciar Sesión
+                        Volver al Inicio
                         <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                     </button>
                 </div>
@@ -119,10 +124,8 @@ const RegisterPage: React.FC = () => {
 
             <div className="w-full max-w-md bg-white/[0.01] backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-3xl shadow-2xl relative z-10">
                 <div className="text-center mb-10">
-                    <Link to="/">
-                        <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)] hover:opacity-80 transition-opacity" />
-                    </Link>
-                    <h2 className="text-2xl font-serif text-white italic uppercase tracking-widest mb-2">Únete al Gremio</h2>
+                    <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
+                    <h2 className="text-2xl font-serif text-white italic uppercase tracking-widest mb-2">Únete a Nosotros</h2>
                     <p className="text-gray-500 text-sm font-light">Accede a tuestes exclusivos y herramientas de IA.</p>
                 </div>
 
@@ -169,7 +172,7 @@ const RegisterPage: React.FC = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-[#C8AA6E]/50 transition-all text-sm"
-                                placeholder="ritual@cafemalu.com"
+                                placeholder="hola@cafemalu.com"
                                 required
                             />
                         </div>
@@ -259,15 +262,15 @@ const RegisterPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading || throttleBlocked}
-                        className="w-full bg-white text-black font-bold uppercase tracking-[0.2em] py-4 rounded-xl hover:bg-[#C8AA6E] transition-all transform hover:-translate-y-1 disabled:opacity-50 flex items-center justify-center gap-3"
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] py-4 rounded-xl hover:shadow-[0_0_20px_rgba(200,170,110,0.3)] transition-all transform hover:-translate-y-1 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
                     >
-                        {loading ? 'Creando ritual...' : throttleBlocked ? 'Espera 2 segundos' : <><UserPlus size={18} /> Crear Cuenta</>}
+                        {loading ? 'Registrando Usuario...' : throttleBlocked ? 'Espera un momento' : <><UserPlus size={18} /> Crear Cuenta</>}
                     </button>
                 </form>
 
                 <div className="mt-10 text-center border-t border-white/5 pt-8">
                     <p className="text-gray-500 text-xs uppercase tracking-widest">
-                        ¿Ya eres del gremio?{' '}
+                        ¿Ya tienes cuenta?{' '}
                         <button onClick={() => navigate('/login')} className="text-[#C8AA6E] font-bold hover:text-white transition-colors ml-2">
                             Inicia Sesión
                         </button>

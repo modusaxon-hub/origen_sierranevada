@@ -4,8 +4,62 @@ import { authService } from '@/services/authService';
 import { orderService, Order } from '@/services/orderService';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '@/services/supabaseClient';
 import Footer from '@/shared/components/Footer';
 import { sanitizeText } from '@/shared/utils/sanitize';
+
+// Order Timeline Component
+const ORDER_STEPS = [
+    { status: 'pending', label: 'Confirmado', icon: 'pending' },
+    { status: 'paid', label: 'Pagado', icon: 'check_circle' },
+    { status: 'shipped', label: 'En Camino', icon: 'local_shipping' },
+    { status: 'delivered', label: 'Entregado', icon: 'home' },
+];
+
+const OrderTimeline: React.FC<{ status: string }> = ({ status }) => {
+    const currentIdx = ORDER_STEPS.findIndex(s => s.status === status);
+    const isCancelled = status === 'cancelled';
+
+    if (isCancelled) {
+        return (
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
+                <span className="material-icons-outlined text-rose-400 text-sm">cancel</span>
+                <span className="text-rose-400 text-[10px] font-bold uppercase tracking-widest">Pedido Cancelado</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex items-center gap-0 mt-4 pt-4 border-t border-white/5 w-full">
+            {ORDER_STEPS.map((step, idx) => {
+                const isCompleted = idx <= currentIdx;
+                const isActive = idx === currentIdx;
+                return (
+                    <React.Fragment key={step.status}>
+                        <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all
+                                ${isCompleted
+                                    ? 'bg-[#C5A065] border-[#C5A065] text-black shadow-[0_0_10px_rgba(197,160,101,0.4)]'
+                                    : 'bg-white/5 border-white/10 text-white/20'
+                                } ${isActive ? 'ring-2 ring-[#C5A065]/40 ring-offset-1 ring-offset-[#050806]' : ''}`}
+                            >
+                                <span className="material-icons-outlined text-sm">{step.icon}</span>
+                            </div>
+                            <span className={`text-[8px] font-bold uppercase tracking-[0.1em] text-center leading-tight
+                                ${isCompleted ? 'text-[#C5A065]' : 'text-white/20'}`}>
+                                {step.label}
+                            </span>
+                        </div>
+                        {idx < ORDER_STEPS.length - 1 && (
+                            <div className={`flex-1 h-px mx-1 transition-all
+                                ${idx < currentIdx ? 'bg-[#C5A065]' : 'bg-white/10'}`} />
+                        )}
+                    </React.Fragment>
+                );
+            })}
+        </div>
+    );
+};
 
 const UserDashboard: React.FC = () => {
     const { user, isAdmin } = useAuth();
@@ -17,19 +71,38 @@ const UserDashboard: React.FC = () => {
     const [profileForm, setProfileForm] = useState({
         nombre: user?.user_metadata?.full_name || '',
         direccion: user?.user_metadata?.address || '',
+        telefono: '',
     });
     const [savingProfile, setSavingProfile] = useState(false);
     const [profileSaved, setProfileSaved] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
+    const [notifPrefs, setNotifPrefs] = useState({ orderUpdates: true, promotions: false });
 
     useEffect(() => {
         if (user) {
             fetchOrders();
-            setProfileForm({
-                nombre: user.user_metadata?.full_name || '',
-                direccion: user.user_metadata?.address || '',
-            });
+            fetchProfile();
         }
     }, [user]);
+
+    const fetchProfile = async () => {
+        if (!user) return;
+        const { data } = await supabase
+            .from('profiles')
+            .select('full_name, phone, address, avatar_url, notification_prefs')
+            .eq('id', user.id)
+            .single();
+        if (data) {
+            setAvatarUrl(data.avatar_url || null);
+            setProfileForm({
+                nombre: data.full_name || user.user_metadata?.full_name || '',
+                direccion: data.address || user.user_metadata?.address || '',
+                telefono: data.phone || '',
+            });
+            setNotifPrefs(data.notification_prefs || { orderUpdates: true, promotions: false });
+        }
+    };
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -56,12 +129,50 @@ const UserDashboard: React.FC = () => {
         const { error } = await authService.updateProfile(user.id, {
             full_name: sanitizeText(profileForm.nombre),
             address: sanitizeText(profileForm.direccion),
+            phone: sanitizeText(profileForm.telefono),
         });
         if (!error) {
             setProfileSaved(true);
             setTimeout(() => setProfileSaved(false), 3000);
         }
         setSavingProfile(false);
+    };
+
+    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !user) return;
+
+        const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!ALLOWED.includes(file.type)) return;
+        if (file.size > 2 * 1024 * 1024) return;
+
+        setUploadingAvatar(true);
+        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const filePath = `${user.id}/avatar.${ext}`;
+
+        const { error } = await supabase.storage
+            .from('avatars')
+            .upload(filePath, file, { upsert: true });
+
+        if (!error) {
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            await supabase.from('profiles')
+                .update({ avatar_url: publicUrl })
+                .eq('id', user.id);
+
+            setAvatarUrl(publicUrl + `?t=${Date.now()}`);
+        }
+        setUploadingAvatar(false);
+    };
+
+    const handleNotifToggle = async (key: 'orderUpdates' | 'promotions') => {
+        if (!user) return;
+        const updated = { ...notifPrefs, [key]: !notifPrefs[key] };
+        setNotifPrefs(updated);
+        await supabase.from('profiles').update({ notification_prefs: updated }).eq('id', user.id);
     };
 
     return (
@@ -148,12 +259,28 @@ const UserDashboard: React.FC = () => {
                                     </div>
                                 </div>
 
+                                {/* Quick Stats */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {[
+                                        { label: 'Total Pedidos', value: orders.length, icon: 'inventory_2', color: 'text-white' },
+                                        { label: 'Completados', value: orders.filter(o => o.status === 'delivered').length, icon: 'home', color: 'text-purple-400' },
+                                        { label: 'En Tránsito', value: orders.filter(o => o.status === 'shipped').length, icon: 'local_shipping', color: 'text-sky-400' },
+                                        { label: 'Gasto Total', value: formatPrice(orders.reduce((s, o) => s + o.total_amount, 0)), icon: 'payments', color: 'text-[#C5A065]' },
+                                    ].map((stat, i) => (
+                                        <div key={i} className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all">
+                                            <span className={`material-icons-outlined text-2xl mb-3 block ${stat.color}`}>{stat.icon}</span>
+                                            <p className={`text-xl font-serif ${stat.color}`}>{stat.value}</p>
+                                            <p className="text-[9px] text-white/30 uppercase tracking-widest font-bold mt-1">{stat.label}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:border-white/20 transition-all">
                                         <div className="w-12 h-12 rounded-2xl bg-[#C5A065]/10 flex items-center justify-center text-[#C5A065] mb-6">
                                             <span className="material-icons-outlined">stars</span>
                                         </div>
-                                        <h3 className="text-xl font-serif mb-2">Mi Nivel de Ritual</h3>
+                                        <h3 className="text-xl font-serif mb-2">Mi Nivel de Socio</h3>
                                         <p className="text-white/40 text-sm mb-6">Estás en el nivel <strong>Semilla</strong>. Realiza 2 pedidos más para subir a <strong>Brote</strong>.</p>
                                         <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                             <div className="h-full bg-[#C5A065] w-1/3 shadow-[0_0_10px_#C5A065]"></div>
@@ -176,6 +303,35 @@ const UserDashboard: React.FC = () => {
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Recent Orders */}
+                                {orders.length > 0 && (
+                                    <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+                                        <div className="flex justify-between items-center mb-6">
+                                            <h3 className="text-lg font-serif">Últimos Pedidos</h3>
+                                            <button onClick={() => setActiveTab('orders')} className="text-[10px] font-bold uppercase tracking-widest text-[#C5A065] hover:text-white transition-colors">
+                                                Ver todos
+                                            </button>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {orders.slice(0, 3).map(order => {
+                                                const st = getStatusConfig(order.status);
+                                                return (
+                                                    <div key={order.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={`material-icons-outlined text-lg ${st.color}`}>{st.icon}</span>
+                                                            <div>
+                                                                <p className="text-xs font-bold text-white">#{order.id.slice(0, 8).toUpperCase()}</p>
+                                                                <p className="text-[10px] text-white/40">{new Date(order.created_at).toLocaleDateString('es-ES')}</p>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-sm font-serif text-[#C5A065]">{formatPrice(order.total_amount)}</p>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -221,7 +377,7 @@ const UserDashboard: React.FC = () => {
 
                                                         {/* Total Area */}
                                                         <div className="text-center md:text-right px-8 border-l border-white/5 hidden md:block">
-                                                            <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Total del Ritual</p>
+                                                            <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Total del Pedido</p>
                                                             <p className="text-2xl font-serif text-[#C5A065]">{formatPrice(order.total_amount)}</p>
                                                         </div>
 
@@ -238,10 +394,27 @@ const UserDashboard: React.FC = () => {
                                                                     Comprobante
                                                                 </a>
                                                             )}
-                                                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all">
+                                                            {['paid', 'shipped', 'delivered'].includes(order.status) && (
+                                                                <button
+                                                                    onClick={() => navigate(`/invoice/${order.id}`)}
+                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-[#C5A065] font-bold uppercase tracking-widest hover:bg-[#C5A065]/10 hover:border-[#C5A065]/30 transition-all"
+                                                                >
+                                                                    <span className="material-icons-outlined text-xs">receipt_long</span>
+                                                                    Factura
+                                                                </button>
+                                                            )}
+                                                            <button
+                                                                onClick={() => navigate(`/invoice/${order.id}`)}
+                                                                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all"
+                                                            >
                                                                 <span className="material-icons-outlined">chevron_right</span>
                                                             </button>
                                                         </div>
+                                                    </div>
+
+                                                    {/* Order Timeline */}
+                                                    <div className="px-8 pb-6">
+                                                        <OrderTimeline status={order.status} />
                                                     </div>
                                                 </div>
                                             );
@@ -269,10 +442,38 @@ const UserDashboard: React.FC = () => {
                         {activeTab === 'settings' && (
                             <div className="max-w-xl animate-in fade-in slide-in-from-bottom-5 duration-700">
                                 <h2 className="text-3xl font-serif mb-8">Gestión de Perfil</h2>
+
+                                {/* Avatar Upload Section */}
+                                <div className="flex items-center gap-8 mb-10 p-6 bg-white/[0.03] border border-white/10 rounded-2xl">
+                                    <div className="relative flex-shrink-0">
+                                        <div className="w-24 h-24 rounded-full border-2 border-[#C5A065]/30 overflow-hidden bg-white/5 flex items-center justify-center">
+                                            {avatarUrl ? (
+                                                <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="material-icons-outlined text-4xl text-white/20">person</span>
+                                            )}
+                                        </div>
+                                        {uploadingAvatar && (
+                                            <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center">
+                                                <div className="w-6 h-6 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 space-y-3">
+                                        <h3 className="font-bold text-sm uppercase tracking-widest text-white">Foto de Perfil</h3>
+                                        <p className="text-[11px] text-white/40">JPG, PNG o WebP · máx 2MB</p>
+                                        <label className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-[#C5A065]/10 hover:border-[#C5A065]/30 transition-all text-[10px] font-bold uppercase tracking-widest text-[#C5A065]">
+                                            <span className="material-icons-outlined text-sm">upload</span>
+                                            Cambiar Foto
+                                            <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
+                                        </label>
+                                    </div>
+                                </div>
+
                                 <form onSubmit={handleSaveSettings} className="space-y-8">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3">
-                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Nombre de Ritual</label>
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Nombre Completo</label>
                                             <input
                                                 type="text"
                                                 value={profileForm.nombre}
@@ -289,6 +490,17 @@ const UserDashboard: React.FC = () => {
                                                 className="w-full bg-black border border-white/5 rounded-2xl px-6 py-4 text-white/20 cursor-not-allowed"
                                             />
                                         </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Teléfono</label>
+                                        <input
+                                            type="tel"
+                                            placeholder="+57 300 000 0000"
+                                            value={profileForm.telefono}
+                                            onChange={(e) => setProfileForm(prev => ({ ...prev, telefono: e.target.value }))}
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
+                                        />
                                     </div>
 
                                     <div className="space-y-3">
@@ -324,6 +536,32 @@ const UserDashboard: React.FC = () => {
                                         </button>
                                     </div>
                                 </form>
+
+                                {/* Notification Preferences */}
+                                <div className="mt-10 pt-8 border-t border-white/10 space-y-4">
+                                    <h3 className="text-lg font-serif mb-4">Preferencias de Notificación</h3>
+                                    {[
+                                        { key: 'orderUpdates' as const, label: 'Actualizaciones de Pedidos', desc: 'Estado de envíos y confirmaciones.' },
+                                        { key: 'promotions' as const, label: 'Promociones y Novedades', desc: 'Descuentos y nuevos lanzamientos.' },
+                                    ].map(({ key, label, desc }) => (
+                                        <div key={key} className="flex items-center justify-between p-5 bg-white/[0.03] border border-white/10 rounded-2xl">
+                                            <div>
+                                                <p className="font-bold text-sm uppercase tracking-widest">{label}</p>
+                                                <p className="text-[11px] text-white/40">{desc}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => handleNotifToggle(key)}
+                                                className={`w-12 h-6 rounded-full transition-all relative flex-shrink-0 border ${notifPrefs[key]
+                                                    ? 'bg-[#C5A065] border-[#C5A065]'
+                                                    : 'bg-white/5 border-white/20'
+                                                    }`}
+                                            >
+                                                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all shadow-sm ${notifPrefs[key] ? 'left-6' : 'left-0.5'
+                                                    }`} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
 

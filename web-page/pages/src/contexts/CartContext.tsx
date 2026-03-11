@@ -90,20 +90,32 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [cartItems]);
 
     const addToCart = async (newItem: CartItem) => {
+        // PERCEIVED PERFORMANCE: Open drawer immediately while validation happens
+        setIsCartOpen(true);
+
         // Validación inmediata ante click
         let stockToEnforce = newItem.maxStock;
 
         // Si no tenemos stock, intentamos buscarlo una vez más antes de insertar
         if (stockToEnforce === undefined) {
             const compositeParts = newItem.id.split(':');
-            const productId = compositeParts[0];
-            const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+            let productId = compositeParts[0];
+            let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+
+            // Fallback para IDs con guión (Legacy)
+            if (compositeParts.length === 1 && newItem.id.length > 36) {
+                productId = newItem.id.substring(0, 36);
+                variantId = newItem.id.substring(37);
+            }
+
+            // Limpieza: si variantId es 'base', tratarlo como nulo
+            if (variantId === 'base') variantId = null;
 
             try {
-                if (variantId && variantId !== 'base' && variantId.length === 36) {
+                if (variantId && variantId.length === 36) {
                     const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
                     if (data) stockToEnforce = data.stock;
-                } else {
+                } else if (productId && productId.length === 36) {
                     const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
                     if (data) stockToEnforce = data.stock;
                 }
@@ -123,10 +135,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                         : item
                 );
             }
-            const clampedQty = Math.min(newItem.qty, stockToEnforce ?? Infinity);
+            const clampedQty = Math.max(1, Math.min(newItem.qty, stockToEnforce ?? Infinity));
             return [...prev, { ...newItem, qty: clampedQty, maxStock: stockToEnforce }];
         });
-        setIsCartOpen(true);
     };
 
     const removeFromCart = (id: string) => {

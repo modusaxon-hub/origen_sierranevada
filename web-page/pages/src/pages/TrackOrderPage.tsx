@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderService, Order } from '@/services/orderService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '@/services/supabaseClient';
 
 const TrackOrderPage: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -20,6 +21,27 @@ const TrackOrderPage: React.FC = () => {
             setLoading(false);
         };
         fetchOrder();
+
+        // Suscripción en tiempo real: Actualiza automáticamente cuando el admin cambia el estado
+        const channel = supabase
+            .channel(`order-track-${orderId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'orders',
+                    filter: `id=eq.${orderId}`
+                },
+                (payload) => {
+                    setOrder(prev => prev ? { ...prev, ...payload.new } : null);
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [orderId]);
 
     if (loading) {
@@ -37,7 +59,7 @@ const TrackOrderPage: React.FC = () => {
                 <span className="material-icons-outlined text-6xl text-red-500/20 mb-6">error_outline</span>
                 <h1 className="text-3xl font-serif text-white mb-4 uppercase tracking-tighter">Vínculo Perdido</h1>
                 <p className="text-white/40 max-w-xs mb-8 font-light">
-                    No hemos podido encontrar el ritual asociado a este código. Por favor verifica tu enlace.
+                    No hemos podido encontrar el pedido asociado a este código. Por favor verifica tu enlace.
                 </p>
                 <button
                     onClick={() => navigate('/')}
@@ -49,17 +71,15 @@ const TrackOrderPage: React.FC = () => {
         );
     }
 
-    const config = orderService.getStatusConfig(order.status);
     const steps = [
-        { id: 'pending_payment', label: 'Esperando Pago', icon: 'payments' },
-        { id: 'paid', label: 'Pago Confirmado', icon: 'check_circle' },
-        { id: 'processing', label: 'En Preparación', icon: 'inventory_2' },
-        { id: 'shipped', label: 'En Camino', icon: 'local_shipping' },
-        { id: 'delivered', label: 'Entregado', icon: 'task_alt' }
+        { ids: ['pending', 'pending_payment'], label: 'Recibido', icon: 'receipt_long' },
+        { ids: ['paid'], label: 'Confirmado', icon: 'check_circle' },
+        { ids: ['processing'], label: 'Preparando', icon: 'coffee' },
+        { ids: ['shipped'], label: 'En Camino', icon: 'local_shipping' },
+        { ids: ['delivered'], label: 'Entregado', icon: 'home' }
     ];
 
-    const currentStepIndex = steps.findIndex(s => s.id === order.status);
-    // Fallback if status is 'pending' or others
+    const currentStepIndex = steps.findIndex(s => s.ids.includes(order.status as any));
     const effectiveStepIndex = currentStepIndex === -1 ? 0 : currentStepIndex;
 
     return (
@@ -67,7 +87,7 @@ const TrackOrderPage: React.FC = () => {
             <div className="max-w-4xl mx-auto">
                 <header className="text-center mb-16 animate-fade-in">
                     <div className="inline-block px-4 py-1 rounded-full bg-[#C5A065]/10 border border-[#C5A065]/20 mb-4">
-                        <span className="text-[10px] font-bold text-[#C5A065] uppercase tracking-widest">Seguimiento de Ritual</span>
+                        <span className="text-[10px] font-bold text-[#C5A065] uppercase tracking-widest">Seguimiento de Pedido</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-serif text-white mb-2 italic">Pedido #{order.id.slice(0, 8)}</h1>
                     <p className="text-white/40 font-light uppercase tracking-[0.2em] text-[10px]">Iniciado el {new Date(order.created_at).toLocaleDateString()}</p>
@@ -93,8 +113,8 @@ const TrackOrderPage: React.FC = () => {
                                 return (
                                     <div key={idx} className="flex flex-col items-center gap-4 z-10">
                                         <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 border-2 ${isCompleted
-                                                ? 'bg-[#C5A065] border-[#C5A065] text-black shadow-[0_0_20px_rgba(197,160,101,0.4)]'
-                                                : 'bg-[#050806] border-white/10 text-white/20'
+                                            ? 'bg-[#C5A065] border-[#C5A065] text-black shadow-[0_0_20px_rgba(197,160,101,0.4)]'
+                                            : 'bg-[#050806] border-white/10 text-white/20'
                                             }`}>
                                             <span className="material-icons-outlined text-xl">{step.icon}</span>
                                         </div>
@@ -107,6 +127,42 @@ const TrackOrderPage: React.FC = () => {
                             })}
                         </div>
                     </div>
+
+                    {/* MOSTRAR INFORMACIÓN DE DESPACHO SI EXISTE */}
+                    {(order.shipping_details?.note || order.shipping_details?.receipt_url) && (
+                        <div className="mb-12 p-8 bg-[#C5A065]/5 border border-[#C5A065]/20 rounded-2xl animate-fade-in relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#C5A065]/5 blur-3xl pointer-events-none"></div>
+                            <h3 className="text-xs font-bold text-[#C5A065] uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <span className="material-icons-outlined text-sm">local_shipping</span>
+                                Información de Envío
+                            </h3>
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                <div className="space-y-2">
+                                    {order.shipping_details?.note && (
+                                        <p className="text-white/80 text-sm font-light italic leading-relaxed tracking-tight">
+                                            "{order.shipping_details.note}"
+                                        </p>
+                                    )}
+                                    {order.shipping_details?.shipped_at && (
+                                        <p className="text-[9px] text-[#C5A065]/60 uppercase tracking-widest">
+                                            Despachado el {new Date(order.shipping_details.shipped_at).toLocaleDateString()}
+                                        </p>
+                                    )}
+                                </div>
+                                {order.shipping_details?.receipt_url && (
+                                    <a
+                                        href={order.shipping_details.receipt_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex-shrink-0 px-6 py-3 bg-[#C5A065]/20 hover:bg-[#C5A065] text-[#C5A065] hover:text-black border border-[#C5A065]/30 rounded-xl transition-all duration-300 flex items-center gap-3 group/btn shadow-xl shadow-[#C5A065]/5"
+                                    >
+                                        <span className="text-[10px] font-bold uppercase tracking-widest">Ver Guía de Envío</span>
+                                        <span className="material-icons-outlined text-sm group-hover/btn:translate-x-1 transition-transform">open_in_new</span>
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8 border-t border-white/5">
                         <section>
@@ -130,11 +186,11 @@ const TrackOrderPage: React.FC = () => {
                                 {order.order_items?.map((item, i) => (
                                     <div key={i} className="flex justify-between text-sm">
                                         <span className="text-white/60 font-light">{item.quantity}x {typeof item.products?.name === 'object' ? (item.products?.name[lang] || item.products?.name.es) : (item.products?.name || 'Producto')}</span>
-                                        <span className="text-white font-mono">{formatPrice(item.price_at_time * item.quantity)}</span>
+                                        <span className="text-white font-mono">{formatPrice(item.unit_price * item.quantity)}</span>
                                     </div>
                                 ))}
                                 <div className="flex justify-between pt-4 border-t border-white/5 text-lg font-serif">
-                                    <span className="text-white italic">Total Ritual</span>
+                                    <span className="text-white italic">Total Pedido</span>
                                     <span className="text-[#C5A065] font-bold">{formatPrice(order.total_amount)}</span>
                                 </div>
                             </div>

@@ -78,8 +78,8 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
                         }}
                         disabled={(product.stock ?? 0) <= 0}
                         className={`px-8 py-3 rounded text-xs font-bold uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 w-full md:w-auto min-w-[140px] ${(product.stock ?? 0) <= 0
-                                ? 'bg-gray-500/20 text-white/20 cursor-not-allowed'
-                                : 'bg-[#C5A065] text-black hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)]'
+                            ? 'bg-gray-500/20 text-white/20 cursor-not-allowed'
+                            : 'bg-[#C5A065] text-black hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)]'
                             }`}
                     >
                         {(product.stock ?? 0) <= 0

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { emailService } from '@/services/emailService';
 import { CONTACTS, getWhatsAppLink } from '@/constants/contacts';
 import Footer from '@/shared/components/Footer';
+import InstitutionalModal from '@/shared/components/InstitutionalModal';
 
 const ContactPage: React.FC = () => {
     const navigate = useNavigate();
@@ -15,6 +16,11 @@ const ContactPage: React.FC = () => {
     });
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [institutionalModal, setInstitutionalModal] = useState<{
+        title: string;
+        message: string | React.ReactNode;
+        type: 'success' | 'info' | 'error' | 'warning';
+    } | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +49,11 @@ const ContactPage: React.FC = () => {
             }, 3000);
         } catch (error) {
             console.error('Error sending contact form:', error);
-            alert('Error al enviar el mensaje. Por favor intenta nuevamente.');
+            setInstitutionalModal({
+                title: 'Error de Envío',
+                message: 'No pudimos enviar tu mensaje en este momento. Por favor, intenta de nuevo más tarde o contáctanos por WhatsApp.',
+                type: 'error'
+            });
         } finally {
             setLoading(false);
         }
@@ -70,7 +80,7 @@ const ContactPage: React.FC = () => {
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                     {/* WhatsApp Card */}
                     <a href={getWhatsAppLink('Hola, me gustaría conocer más sobre Origen Sierra Nevada')}
-                       className="group relative bg-gradient-to-br from-[#25D366]/20 to-[#20BA5A]/10 border border-[#25D366]/50 hover:border-[#25D366] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,211,102,0.2)] cursor-pointer">
+                        className="group relative bg-gradient-to-br from-[#25D366]/20 to-[#20BA5A]/10 border border-[#25D366]/50 hover:border-[#25D366] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,211,102,0.2)] cursor-pointer">
                         <div className="absolute top-0 right-0 p-6 opacity-30 group-hover:opacity-100 transition-opacity">
                             <span className="text-5xl">💬</span>
                         </div>
@@ -86,7 +96,7 @@ const ContactPage: React.FC = () => {
 
                     {/* Email Card */}
                     <a href={`mailto:${CONTACTS.email.support}`}
-                       className="group relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/20 hover:border-[#C5A065] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)]">
+                        className="group relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/20 hover:border-[#C5A065] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)]">
                         <div className="absolute top-0 right-0 p-6 opacity-30 group-hover:opacity-100 transition-opacity">
                             <span className="text-5xl">📧</span>
                         </div>
@@ -219,12 +229,12 @@ const ContactPage: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-[#C5A065] hover:bg-white text-black font-bold py-5 px-6 rounded-xl uppercase tracking-[0.2em] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full bg-[#C8AA6E] text-black font-display font-bold py-5 px-6 rounded-xl uppercase tracking-[0.2em] hover:shadow-[0_0_25px_rgba(200,170,110,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-95"
                                 >
                                     {loading ? (
                                         <>
                                             <span className="material-icons-outlined text-sm animate-spin">refresh</span>
-                                            Enviando...
+                                            Enviando Mensaje...
                                         </>
                                     ) : (
                                         <>
@@ -265,6 +275,13 @@ const ContactPage: React.FC = () => {
             </div>
 
             <Footer />
+            <InstitutionalModal
+                isOpen={!!institutionalModal}
+                onClose={() => setInstitutionalModal(null)}
+                title={institutionalModal?.title || ''}
+                message={institutionalModal?.message || ''}
+                type={institutionalModal?.type}
+            />
         </div>
     );
 };

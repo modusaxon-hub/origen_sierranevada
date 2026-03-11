@@ -25,7 +25,7 @@ const MyOrdersPage: React.FC = () => {
             setError(null);
 
             try {
-                const { data, error: fetchError } = await orderService.getUserOrders();
+                const { data, error: fetchError } = await orderService.getUserOrders(user.id);
 
                 if (fetchError) {
                     console.error('Error fetching orders:', fetchError);

@@ -30,6 +30,24 @@
     --animate-float-hero-pop: float-hero-pop 5s ease-in-out infinite;
     --animate-logo-aura: logo-aura 4s ease-in-out infinite;
     --animate-logo-entrance: logo-entrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    --animate-fade-in: fade-in 0.3s ease-out forwards;
+    --animate-scale-up: scale-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes scale-up {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
 
     @keyframes logo-aura {
 

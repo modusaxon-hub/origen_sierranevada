@@ -117,7 +117,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                                     </div>
                                     <div className="text-right">
                                         <div className="text-white/60 text-sm">Precio unitario</div>
-                                        <div className="text-[#C8AA6E] font-medium">{formatPrice(item.price_at_time)}</div>
+                                        <div className="text-[#C8AA6E] font-medium">{formatPrice(item.unit_price)}</div>
                                     </div>
                                 </div>
                             );

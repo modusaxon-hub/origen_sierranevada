@@ -209,12 +209,13 @@ const HomePage: React.FC = () => {
         const badge = currentProduct.badge?.[lang] || currentProduct.badge?.[lang === 'es' ? 'en' : 'es'] || 'Origen Sierra Nevada';
 
         addToCart({
-            id: `${currentProduct.id}-${selectedVariantId || 'base'}`,
+            id: `${currentProduct.id}:${selectedVariantId || 'base'}`,
             name: displayName,
             sub: badge,
             price: finalPrice,
             qty: 1,
-            img: currentProduct.image_url || '/cafe_malu_full_composition.png'
+            img: currentProduct.image_url || '/cafe_malu_full_composition.png',
+            maxStock: selectedVariant?.stock ?? currentProduct.stock
         });
     };
 
@@ -597,10 +598,17 @@ const HomePage: React.FC = () => {
                                             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm mx-auto lg:mx-0">
                                                 <button
                                                     onClick={handleAddToCart}
-                                                    disabled={(availableVariants.length > 0 && !selectedVariantId) || availableVariants.length === 0 || !currentProduct?.available || (selectedVariant && selectedVariant.stock <= 0)}
+                                                    disabled={
+                                                        (currentProduct?.variants && currentProduct.variants.length > 0 && !selectedVariantId) ||
+                                                        !currentProduct?.available ||
+                                                        (currentProduct?.variants && currentProduct.variants.length > 0 ? (selectedVariant && selectedVariant.stock <= 0) : (currentProduct && (currentProduct.stock ?? 0) <= 0))
+                                                    }
                                                     className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:border-gray-700 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
                                                 >
-                                                    {(!currentProduct?.available || availableVariants.length === 0 || (selectedVariant && selectedVariant.stock <= 0))
+                                                    {(
+                                                        !currentProduct?.available ||
+                                                        (currentProduct?.variants && currentProduct.variants.length > 0 ? (selectedVariant && selectedVariant.stock <= 0) : (currentProduct && (currentProduct.stock ?? 0) <= 0))
+                                                    )
                                                         ? (lang === 'es' ? 'AGOTADO' : 'OUT OF STOCK')
                                                         : (lang === 'es' ? 'AÑADIR AL CARRITO' : 'ADD TO CART')}
                                                 </button>

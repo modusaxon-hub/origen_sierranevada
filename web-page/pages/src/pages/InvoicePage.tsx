@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/services/supabaseClient';
 import { orderService } from '@/services/orderService';
 import { invoiceService } from '@/services/invoiceService';
@@ -27,18 +27,20 @@ interface OrderData {
     order_items: Array<{
         product_id: number;
         quantity: number;
-        price_at_time: number;
+        unit_price: number;
         products: {
             name: any;
             image_url: string;
         };
     }>;
     total_amount: number;
+    profiles?: { email: string };
     metadata?: any;
 }
 
 const InvoicePage: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
+    const navigate = useNavigate();
     const [invoice, setInvoice] = useState<InvoiceData | null>(null);
     const [order, setOrder] = useState<OrderData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -86,7 +88,7 @@ const InvoicePage: React.FC = () => {
                             address: customerFromShipping.address,
                             city: customerFromShipping.city,
                             department: customerFromShipping.department,
-                            email: orderData.customer_email || customerFromShipping.city,
+                            email: orderData.profiles?.email || 'cliente@origensierranevada.com',
                             phone: customerFromShipping.phone
                         }
                     );
@@ -150,8 +152,8 @@ const InvoicePage: React.FC = () => {
             ? item.products.name
             : item.products.name?.es || 'Producto',
         quantity: item.quantity,
-        unitPrice: item.price_at_time,
-        subtotal: item.quantity * item.price_at_time
+        unitPrice: item.unit_price,
+        subtotal: item.quantity * item.unit_price
     }));
 
     // Calcular subtotal, envío y descuento desde metadata o estimados
@@ -175,7 +177,13 @@ const InvoicePage: React.FC = () => {
                             Imprimir
                         </button>
                         <button
-                            onClick={() => window.history.back()}
+                            onClick={() => {
+                                if (window.history.length > 1) {
+                                    navigate(-1);
+                                } else {
+                                    window.close();
+                                }
+                            }}
                             className="flex items-center gap-2 px-6 py-3 border border-[#C5A065] text-[#C5A065] font-bold rounded-lg hover:bg-[#C5A065]/10 transition-colors"
                         >
                             <span className="material-icons-outlined">arrow_back</span>
@@ -194,7 +202,7 @@ const InvoicePage: React.FC = () => {
                     customerDocNumber={order.shipping_address.docNumber}
                     customerAddress={order.shipping_address.address}
                     customerCity={order.shipping_address.city}
-                    customerEmail={order.customer_email}
+                    customerEmail={order.profiles?.email || 'cliente@origensierranevada.com'}
                     items={items}
                     subtotal={subtotal}
                     shipping={shipping}

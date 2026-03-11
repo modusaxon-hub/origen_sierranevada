@@ -57,7 +57,7 @@ const translations: Record<string, Record<Language, string>> = {
 
     // Subscription
     'sub.hero_sub': { es: 'Más que raro. Único.', en: 'More Than Rare. Unique.' },
-    'sub.hero_title': { es: 'Crea Tu Ritual de Café', en: 'Build Your Personal Coffee Ritual' },
+    'sub.hero_title': { es: 'Crea Tu Momento de Café', en: 'Build Your Personal Coffee Experience' },
     'sub.step.1': { es: 'Perfil', en: 'Profile' },
     'sub.step.2': { es: 'Formato', en: 'Format' },
     'sub.step.3': { es: 'Frecuencia', en: 'Frequency' },
@@ -124,7 +124,7 @@ const translations: Record<string, Record<Language, string>> = {
     'footer.sub_btn': { es: 'Suscribirse', en: 'Subscribe' },
     'footer.sub_success': { es: '¡Suscrito!', en: 'Subscribed!' },
     'footer.check_email_hint': { es: 'Por favor revisa tu bandeja de entrada para confirmar.', en: 'Please check your inbox to confirm.' },
-    'footer.brand_desc': { es: 'Trayendo el espíritu de la montaña a tu ritual matutino. Cultivado de manera sostenible, de origen ético y tostado a la perfección.', en: 'Bringing the spirit of the mountain to your morning ritual. Sustainably grown, ethically sourced, and roasted to perfection.' },
+    'footer.brand_desc': { es: 'Trayendo el espíritu de la montaña a tu momento matutino. Cultivado de manera sostenible, de origen ético y tostado a la perfección.', en: 'Bringing the spirit of the mountain to your morning coffee. Sustainably grown, ethically sourced, and roasted to perfection.' },
     'footer.privacy_note': { es: '* Respetamos tu privacidad. Sin spam, solo café.', en: '* We respect your privacy. No spam, just coffee.' },
     'footer.habeas_data_label': { es: 'Acepto recibir información y el tratamiento de mis datos según la Política de Privacidad.', en: 'I agree to receive information and the processing of my data according to the Privacy Policy.' },
 

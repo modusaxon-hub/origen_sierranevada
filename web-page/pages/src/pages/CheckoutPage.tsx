@@ -13,6 +13,7 @@ import { type OrderWhatsAppDetail, getWhatsAppOrderDetailLink } from '@/constant
 import { useSubmitThrottle } from '@/hooks/useSubmitThrottle';
 import { sanitizeText } from '@/shared/utils/sanitize';
 import InstitutionalModal from '@/shared/components/InstitutionalModal';
+import { useRef } from 'react';
 
 // Lista de departamentos y sus ciudades principales
 const CITIES_BY_DEPARTMENT: Record<string, string[]> = {
@@ -88,6 +89,7 @@ const CheckoutPage: React.FC = () => {
         message: string | React.ReactNode;
         type: 'success' | 'info' | 'error' | 'warning';
     } | null>(null);
+    const formRef = useRef<HTMLFormElement>(null);
 
     const [form, setForm] = useState<CheckoutForm>({
         fullName: user?.user_metadata?.full_name || '',
@@ -129,11 +131,42 @@ const CheckoutPage: React.FC = () => {
     const { blocked, trigger } = useSubmitThrottle(5000);
 
     const handleSubmit = async (e: React.FormEvent) => {
+        console.log('🚀 Iniciando proceso de pago — Cart items:', cartItems.length);
         e.preventDefault();
-        if (cartItems.length === 0) return;
-        if (blocked) return; // Bloquear múltiples envíos en 5 segundos
-        trigger(); // Activar throttle
 
+        if (cartItems.length === 0) {
+            console.warn('⚠️ Intento de pago con carrito vacío.');
+            return;
+        }
+
+        // 0. VALIDACIÓN EXPLÍCITA (Para mejor UX que globos del navegador)
+        const missingFields = [];
+        if (!(form.fullName || '').trim()) missingFields.push(lang === 'es' ? 'Nombre Completo' : 'Full Name');
+        if (!(form.email || '').trim()) missingFields.push(lang === 'es' ? 'Email' : 'Email');
+        if (!(form.docNumber || '').trim()) missingFields.push(lang === 'es' ? 'Número de Documento' : 'Document Number');
+        if (!(form.phone || '').trim()) missingFields.push(lang === 'es' ? 'Teléfono' : 'Phone Number');
+        if (!(form.address || '').trim()) missingFields.push(lang === 'es' ? 'Dirección' : 'Address');
+        if (!form.department) missingFields.push(lang === 'es' ? 'Departamento' : 'Department');
+        if (!form.city) missingFields.push(lang === 'es' ? 'Ciudad' : 'City');
+
+        if (missingFields.length > 0) {
+            console.log('❌ Validación fallida - Campos faltantes:', missingFields);
+            setInstitutionalModal({
+                title: lang === 'es' ? 'Información Faltante' : 'Missing Information',
+                message: (
+                    <div className="space-y-2">
+                        <p>{lang === 'es' ? 'Por favor completa los siguientes campos obligatorios para continuar:' : 'Please complete the following required fields to continue:'}</p>
+                        <ul className="list-disc pl-5 text-sm text-amber-400 font-bold">
+                            {missingFields.map(f => <li key={f}>{f}</li>)}
+                        </ul>
+                    </div>
+                ),
+                type: 'warning'
+            });
+            return;
+        }
+
+        trigger(); // Activar throttle después de validación básica
         setLoading(true);
 
         try {
@@ -445,7 +478,7 @@ const CheckoutPage: React.FC = () => {
                 <h1 className="font-serif text-4xl md:text-5xl text-[#C5A065] mb-12 text-center">Finalizar Pedido</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-7 space-y-8">
-                        <form onSubmit={handleSubmit} id="checkout-form" className="space-y-6 bg-white/5 border border-white/10 p-8 rounded-2xl">
+                        <form ref={formRef} onSubmit={handleSubmit} id="checkout-form" className="space-y-6 bg-white/5 border border-white/10 p-8 rounded-2xl">
                             <h2 className="font-serif text-2xl text-white mb-6 border-b border-white/10 pb-4">Información de Envío</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
@@ -584,8 +617,8 @@ const CheckoutPage: React.FC = () => {
                                     {discount > 0 && <div className="flex justify-between text-sm text-green-400"><span>{lang === 'es' ? 'Descuento Miembro (10%)' : 'Member Discount (10%)'}</span><span>-{formatPrice(discount)}</span></div>}
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-400">{lang === 'es' ? 'Envío' : 'Shipping'}</span>
-                                        <span className={shippingCost === 0 && form.city ? "text-green-400 font-bold text-xs" : "text-white"}>
-                                            {form.city ? (shippingCost === 0 ? (lang === 'es' ? '¡GRATIS!' : 'FREE!') : formatPrice(shippingCost)) : (lang === 'es' ? 'Según destino' : 'Based on location')}
+                                        <span className={shippingCost === 0 && form.city ? "text-orange-400 font-bold text-[10px]" : "text-white"}>
+                                            {form.city ? (shippingCost === 0 ? (lang === 'es' ? 'Envío de acuerdo al destino' : 'Shipping based on destination') : formatPrice(shippingCost)) : (lang === 'es' ? 'Según destino' : 'Based on location')}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-xl font-serif pt-4 border-t border-white/10">
@@ -596,7 +629,11 @@ const CheckoutPage: React.FC = () => {
                                 </div>
 
                                 <button
-                                    form="checkout-form"
+                                    onClick={() => {
+                                        // No longer conditionally blocking the call if the ref is not ready
+                                        handleSubmit({ preventDefault: () => { } } as any);
+                                    }}
+                                    type="button"
                                     disabled={loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock)}
                                     className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-[#C5A065]/20 hover:scale-[1.02]'}`}
                                 >
@@ -609,6 +646,13 @@ const CheckoutPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <InstitutionalModal
+                isOpen={!!institutionalModal}
+                onClose={() => setInstitutionalModal(null)}
+                title={institutionalModal?.title || ''}
+                message={institutionalModal?.message || ''}
+                type={institutionalModal?.type}
+            />
         </div>
     );
 };

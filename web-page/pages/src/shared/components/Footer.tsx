@@ -9,15 +9,24 @@ const Footer: React.FC = () => {
     const { t, language } = useLanguage();
     const [email, setEmail] = useState('');
     const [consent, setConsent] = useState(false);
-    const [status, setStatus] = useState<'idle' | 'success'>('idle');
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
     const handleSubscribe = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!consent) return;
+        if (!consent || loading) return;
+
+        setLoading(true);
+        setStatus('idle');
+
         if (email) {
             try {
                 // Guardar en DB
-                await supabase.from('newsletter_subscribers').insert([{ email }]);
+                const { error: dbError } = await supabase.from('newsletter_subscribers').insert([{ email }]);
+
+                if (dbError && dbError.code !== '23505') { // 23505 is unique violation (already subscribed)
+                    throw dbError;
+                }
 
                 // Enviar correo
                 const emailResult = await emailService.sendNewsletterWelcome(email);
@@ -25,16 +34,17 @@ const Footer: React.FC = () => {
                 if (emailResult.success) {
                     setStatus('success');
                 } else {
-                    console.error('Email error:', emailResult.error);
-                    // Fallback para modo desarrollo donde Resend puede fallar
-                    alert('Suscripción registrada en sistema. Nota: El correo de bienvenida falló (Posible restricción de modo prueba del proveedor).');
-                    setStatus('success'); // Visualmente éxito porque se guardó en DB
+                    console.warn('Suscripción procesada, pero el correo podría tardar:', emailResult.error);
+                    setStatus('success'); // Still show success to user if DB worked
                 }
 
                 setEmail('');
-                setTimeout(() => setStatus('idle'), 5000);
+                setTimeout(() => setStatus('idle'), 6000);
             } catch (error) {
-                console.error(error);
+                console.error('Error in subscription:', error);
+                setStatus('error');
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -53,9 +63,7 @@ const Footer: React.FC = () => {
                 <div className="lg:col-span-1 text-center md:text-left group">
                     <span className="font-accent text-[10px] tracking-[0.4em] text-[#C8AA6E] mb-6 block uppercase font-bold">Desde 2025</span>
                     <div className="mb-8">
-                        <Link to="/" className="block hover:opacity-80 transition-opacity">
-                            <Logo className="w-full max-w-[255px] h-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)]" />
-                        </Link>
+                        <Logo className="w-full max-w-[255px] h-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)]" />
                     </div>
                     <p className="text-[#F5F5F5]/70 text-sm leading-relaxed mb-8 font-light">
                         Café de altura, cultivado en las montañas más puras de Colombia. Origen, sabor, propósito.
@@ -80,10 +88,9 @@ const Footer: React.FC = () => {
                 <div className="lg:col-span-1 text-center md:text-left">
                     <h3 className="font-display font-bold text-xs text-[#C8AA6E] uppercase tracking-[0.3em] mb-8 font-bold">Explorar</h3>
                     <ul className="space-y-4 text-sm">
-                        <li><a href="#/" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.home')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></a></li>
-                        <li><a href="#/subscription" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.sub')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></a></li>
-                        <li><a href="#/guide" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.guide')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></a></li>
-                        <li><a href="#/ai-lab" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.ai')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></a></li>
+                        <li><Link to="/" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.home')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></Link></li>
+                        {/* Enlaces de Suscripción y Guía removidos por solicitud de landing page pura */}
+                        <li><Link to="/ai-lab" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.ai')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></Link></li>
                     </ul>
                 </div>
 
@@ -106,12 +113,18 @@ const Footer: React.FC = () => {
                             />
                             <button
                                 type="submit"
-                                disabled={!consent}
-                                className={`px-8 py-3.5 font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-300 font-display ${status === 'success'
+                                disabled={!consent || loading}
+                                className={`px-8 py-3.5 font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-300 font-display flex items-center justify-center gap-2 ${status === 'success'
                                     ? 'bg-green-600/80 text-white shadow-[0_0_15px_rgba(34,197,94,0.3)]'
                                     : 'bg-[#C8AA6E]/90 hover:bg-[#C8AA6E] text-[#141E16] disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_0_25px_rgba(200,170,110,0.4)] active:scale-95'}`}
                             >
-                                {status === 'success' ? '✓ Suscrito' : 'Suscribirse'}
+                                {loading ? (
+                                    <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></span>
+                                ) : status === 'success' ? (
+                                    '✓ Suscrito'
+                                ) : (
+                                    'Suscribirse'
+                                )}
                             </button>
                         </div>
 

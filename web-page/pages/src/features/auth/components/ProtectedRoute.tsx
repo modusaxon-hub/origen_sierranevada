@@ -8,13 +8,14 @@ import Logo from '@/shared/components/Logo';
 interface ProtectedRouteProps {
     children: React.ReactNode;
     requireAdmin?: boolean;
+    requiredRole?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin = false }) => {
-    const { user, isAdmin, loading, roleChecked } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin = false, requiredRole }) => {
+    const { user, isAdmin, userRole, loading, roleChecked } = useAuth();
     const location = useLocation();
 
-    if (loading || (requireAdmin && !roleChecked)) {
+    if (loading || ((requireAdmin || requiredRole) && !roleChecked)) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-[#050806]">
                 <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
@@ -39,7 +40,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                 </div>
                 <h1 className="text-3xl font-serif text-white mb-4 uppercase tracking-tight">Acceso Restringido</h1>
                 <p className="text-white/40 max-w-xs mb-8 font-light leading-relaxed">
-                    Tu ritual de usuario no tiene las autorizaciones necesarias para entrar en esta cámara.
+                    Tu perfil de usuario no tiene las autorizaciones necesarias para entrar en esta cámara.
                 </p>
                 <div className="flex flex-col gap-4">
                     <button
@@ -55,6 +56,26 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                         Reintentar Validación
                     </button>
                 </div>
+            </div>
+        );
+    }
+
+    if (requiredRole && userRole !== requiredRole && !isAdmin) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-[#050806] text-center p-8">
+                <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-8 border border-amber-500/20">
+                    <span className="material-icons-outlined text-4xl text-amber-500">storefront</span>
+                </div>
+                <h1 className="text-3xl font-serif text-white mb-4 uppercase tracking-tight">Acceso Exclusivo</h1>
+                <p className="text-white/40 max-w-xs mb-8 font-light leading-relaxed">
+                    Esta sección está reservada para proveedores de la plataforma.
+                </p>
+                <button
+                    onClick={() => window.location.href = '#/'}
+                    className="px-8 py-3 bg-[#C5A065] text-black rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-white transition-all shadow-xl"
+                >
+                    Volver al Inicio
+                </button>
             </div>
         );
     }

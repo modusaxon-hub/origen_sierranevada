@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import TrackOrderModal from './TrackOrderModal';
 
 const UserDropdown: React.FC = () => {
     const { user, isAdmin } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+    const [isTrackModalOpen, setIsTrackModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -58,6 +60,17 @@ const UserDropdown: React.FC = () => {
                         </Link>
                     )}
 
+                    <button
+                        onClick={() => { setIsTrackModalOpen(true); setIsOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group/item text-left"
+                    >
+                        <span className="material-icons-outlined text-[#C8AA6E] group-hover/item:scale-110 transition-transform">radar</span>
+                        <div className="flex-1">
+                            <p className="text-sm text-white font-medium">Rastrear Pedido</p>
+                            <p className="text-xs text-white/40">Estado en tiempo real</p>
+                        </div>
+                    </button>
+
                     <Link
                         to={isAdmin ? '/admin' : '/account'}
                         onClick={() => setIsOpen(false)}
@@ -87,6 +100,7 @@ const UserDropdown: React.FC = () => {
                     </div>
                 </div>
             )}
+            <TrackOrderModal isOpen={isTrackModalOpen} onClose={() => setIsTrackModalOpen(false)} />
         </div>
     );
 };

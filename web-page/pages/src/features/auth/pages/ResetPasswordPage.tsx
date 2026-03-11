@@ -150,7 +150,7 @@ const ResetPasswordPage: React.FC = () => {
                     <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.6em] font-bold mb-3">Resetear Contraseña</p>
                     <h2 className="font-serif text-3xl text-white mb-2">Nueva Contraseña</h2>
                     <p className="text-white/40 text-sm font-light">
-                        Elige una contraseña fuerte para tu ritual.
+                        Elige una contraseña fuerte para tu acceso.
                     </p>
                 </div>
 
