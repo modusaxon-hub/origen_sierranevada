@@ -1,17 +1,22 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-// We use a getter to ensure we always get the fresh key if updated via aistudio
+// Getter centralizado para el cliente de IA. 
+// ADVERTENCIA: En producción, esto debe ser reemplazado por una llamada a Edge Functions para proteger la API Key.
 const getAiClient = (apiKey?: string) => {
-    const key = apiKey || process.env.API_KEY;
-    if (!key) throw new Error("API Key not found");
+    // @ts-ignore - Soporte para Vite y Process
+    const key = apiKey || import.meta.env?.VITE_GEMINI_API_KEY || process?.env?.API_KEY;
+    if (!key) throw new Error("AI Configuration Error: Missing API Key");
     return new GoogleGenAI({ apiKey: key });
 };
+
+// Placeholder para migración futura a Edge Functions:
+// const callAiBridge = async (action: string, params: any) => { ... }
 
 // 1. Chat Bot
 export const sendChatMessage = async (history: { role: string; parts: { text: string }[] }[], newMessage: string, language: 'es' | 'en' = 'es') => {
     const ai = getAiClient();
     const model = "gemini-3-pro-preview";
-    
+
     const instructions = {
         es: "Eres un barista experto de Origen Sierra Nevada. Conoces sobre orígenes de café, métodos de preparación (V60, Prensa Francesa, Espresso) y perfiles de sabor. Mantén las respuestas elegantes, concisas y útiles.",
         en: "You are an expert barista for Origen Sierra Nevada. You are knowledgeable about coffee origins, brewing methods (V60, French Press, Espresso), and flavor profiles. Keep answers elegant, concise, and helpful."
@@ -100,8 +105,8 @@ export const editImage = async (file: File, prompt: string) => {
 
 // 5. Generate Video (Veo)
 export const generateVideo = async (
-    prompt: string, 
-    aspectRatio: "16:9" | "9:16", 
+    prompt: string,
+    aspectRatio: "16:9" | "9:16",
     imageFile?: File
 ) => {
     // Check for API key selection
@@ -114,7 +119,7 @@ export const generateVideo = async (
         }
     }
 
-    const ai = getAiClient(); 
+    const ai = getAiClient();
     const model = "veo-3.1-fast-generate-preview";
 
     let requestConfig: any = {

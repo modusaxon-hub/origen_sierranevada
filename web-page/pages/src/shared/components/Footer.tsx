@@ -139,7 +139,7 @@ const Footer: React.FC = () => {
                                 required
                             />
                             <label htmlFor="newsletter-consent" className="text-[10px] text-[#F5F5F5]/60 leading-tight cursor-pointer hover:text-[#F5F5F5]/80 transition-colors">
-                                Acepto recibir comunicaciones de Origen Sierra Nevada y confirmo que he leído la {' '}<a href="#/privacy" className="text-[#C8AA6E] hover:underline">Política de Privacidad</a>
+                                Acepto recibir comunicaciones de Origen Sierra Nevada y confirmo que he leído la {' '}<Link to="/privacy" className="text-[#C8AA6E] hover:underline">Política de Privacidad</Link>
                             </label>
                         </div>
                         {status === 'success' && (
@@ -158,18 +158,18 @@ const Footer: React.FC = () => {
                         <p className="text-[9px] mt-2 text-[#F5F5F5]/40">Cultivado en los picos más altos de Colombia • Certificado de calidad premium</p>
                     </div>
                     <div className="flex space-x-8 mt-6 md:mt-0 text-[#F5F5F5]/50">
-                        <a className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" href="#/privacy">
+                        <Link className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" to="/privacy">
                             Privacidad
                             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span>
-                        </a>
-                        <a className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" href="#/terms">
+                        </Link>
+                        <Link className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" to="/terms">
                             Términos
                             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span>
-                        </a>
-                        <a className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" href="#/contact">
+                        </Link>
+                        <Link className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" to="/contact">
                             Contacto
                             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

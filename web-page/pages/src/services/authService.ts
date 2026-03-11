@@ -2,8 +2,7 @@
 import { supabase } from './supabaseClient';
 import { UserRole, SecurityFlag } from '@/shared/types';
 
-// Admin whitelist — única fuente de verdad para emails con acceso admin
-export const ADMIN_EMAIL_WHITELIST = ['origensierranevadasm@gmail.com'];
+// La gestión de administradores ahora se maneja exclusivamente mediante roles en la base de datos (public.profiles).
 
 export const authService = {
     // Sign up creates a new user. 
