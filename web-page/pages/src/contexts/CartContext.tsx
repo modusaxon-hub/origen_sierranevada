@@ -36,57 +36,78 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const [isCartOpen, setIsCartOpen] = useState(false);
 
-    // Sync Fresh Stock on Mount
-    useEffect(() => {
-        const syncStock = async () => {
-            if (cartItems.length === 0) return;
+    // Sync Fresh Stock from Supabase
+    const syncStock = async (items: CartItem[]) => {
+        if (items.length === 0) return items;
 
-            const updatedItems = await Promise.all(cartItems.map(async item => {
-                try {
-                    const compositeParts = item.id.split(':');
-                    let productId = compositeParts[0];
-                    let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+        try {
+            const updatedItems = await Promise.all(items.map(async item => {
+                const compositeParts = item.id.split(':');
+                let productId = compositeParts[0];
+                let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
 
-                    // Support old dash-separated IDs (UUID = 36 chars)
-                    if (compositeParts.length === 1 && item.id.length > 36) {
-                        productId = item.id.substring(0, 36);
-                        variantId = item.id.substring(37);
-                    }
-
-                    let freshStock = 0;
-                    if (variantId && variantId !== 'base') {
-                        const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                        freshStock = data?.stock ?? 0;
-                    } else {
-                        const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
-                        freshStock = data?.stock ?? 0;
-                    }
-
-                    return { ...item, maxStock: freshStock, qty: Math.min(item.qty, freshStock) };
-                } catch (e) {
-                    return item;
+                // Support old dash-separated IDs (UUID = 36 chars)
+                if (compositeParts.length === 1 && item.id.length > 36) {
+                    productId = item.id.substring(0, 36);
+                    variantId = item.id.substring(37);
                 }
+
+                let freshStock = 0;
+                if (variantId && variantId !== 'base' && variantId.length === 36) {
+                    const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                    freshStock = data?.stock ?? 0;
+                } else {
+                    const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
+                    freshStock = data?.stock ?? 0;
+                }
+
+                return { ...item, maxStock: freshStock, qty: Math.min(item.qty, freshStock) };
             }));
+            return updatedItems;
+        } catch (e) {
+            return items;
+        }
+    };
 
-            // Only update if there are changes to avoid infinite loop
-            const hasChanges = JSON.stringify(updatedItems) !== JSON.stringify(cartItems);
-            if (hasChanges) {
-                setCartItems(updatedItems);
-            }
-        };
-
-        syncStock();
-    }, []); // Only on mount
+    // Auto-Sync whenever cart is opened
+    useEffect(() => {
+        if (isCartOpen && cartItems.length > 0) {
+            syncStock(cartItems).then(updated => {
+                // Only set if items actually changed (prevent loops)
+                if (JSON.stringify(updated) !== JSON.stringify(cartItems)) {
+                    setCartItems(updated);
+                }
+            });
+        }
+    }, [isCartOpen]);
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToCart = (newItem: CartItem) => {
+    const addToCart = async (newItem: CartItem) => {
+        // Validación inmediata ante click
+        let stockToEnforce = newItem.maxStock ?? 0;
+
+        // Si no tenemos stock, intentamos buscarlo una vez más antes de insertar
+        if (newItem.maxStock === undefined) {
+            const compositeParts = newItem.id.split(':');
+            const productId = compositeParts[0];
+            const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+
+            if (variantId && variantId !== 'base' && variantId.length === 36) {
+                const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                stockToEnforce = data?.stock ?? 0;
+            } else {
+                const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
+                stockToEnforce = data?.stock ?? 0;
+            }
+        }
+
         setCartItems(prev => {
             const existing = prev.find(item => item.id === newItem.id);
             if (existing) {
-                const maxAllowed = newItem.maxStock ?? existing.maxStock ?? Infinity;
+                const maxAllowed = stockToEnforce || existing.maxStock || Infinity;
                 const newQty = Math.min(existing.qty + newItem.qty, maxAllowed);
                 return prev.map(item =>
                     item.id === newItem.id
@@ -94,28 +115,50 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                         : item
                 );
             }
-            // Limitar qty inicial al stock disponible
-            const maxAllowed = newItem.maxStock ?? Infinity;
-            const clampedQty = Math.min(newItem.qty, maxAllowed);
-            return [...prev, { ...newItem, qty: clampedQty }];
+            const clampedQty = Math.min(newItem.qty, stockToEnforce || Infinity);
+            return [...prev, { ...newItem, qty: clampedQty, maxStock: stockToEnforce }];
         });
-        setIsCartOpen(true); // Auto open cart on add
+        setIsCartOpen(true);
     };
 
     const removeFromCart = (id: string) => {
         setCartItems(prev => prev.filter(item => item.id !== id));
     };
 
-    const updateQty = (id: string, newQty: number) => {
+    const updateQty = async (id: string, newQty: number) => {
         if (newQty < 1) {
             removeFromCart(id);
             return;
         }
-        setCartItems(prev => prev.map(item => {
-            if (item.id !== id) return item;
-            const maxAllowed = item.maxStock ?? Infinity;
-            return { ...item, qty: Math.min(newQty, maxAllowed) };
-        }));
+
+        // Si es un incremento, verificamos stock fresco para evitar sobreventa por "spam click"
+        const currentItem = cartItems.find(i => i.id === id);
+        if (newQty > (currentItem?.qty || 0)) {
+            const compositeParts = id.split(':');
+            const productId = compositeParts[0];
+            const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+
+            let freshStock = 0;
+            if (variantId && variantId !== 'base' && variantId.length === 36) {
+                const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                freshStock = data?.stock ?? 0;
+            } else {
+                const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
+                freshStock = data?.stock ?? 0;
+            }
+
+            setCartItems(prev => prev.map(item => {
+                if (item.id !== id) return item;
+                return { ...item, maxStock: freshStock, qty: Math.min(newQty, freshStock) };
+            }));
+        } else {
+            // Decremento no requiere verificación de stock
+            setCartItems(prev => prev.map(item => {
+                if (item.id !== id) return item;
+                // For decrements, we don't need to re-fetch maxStock, just update qty
+                return { ...item, qty: newQty };
+            }));
+        }
     };
 
     const clearCart = () => setCartItems([]);

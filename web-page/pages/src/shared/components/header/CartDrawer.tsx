@@ -38,17 +38,26 @@ const CartDrawer: React.FC = () => {
                                 <div className="flex-1 text-left">
                                     <h3 className="font-display text-gray-900 dark:text-white text-sm leading-tight">{item.name}</h3>
                                     <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-tight">{item.sub}</p>
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10">
-                                            <button onClick={() => updateQty(item.id, item.qty - 1)} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
-                                                <span className="material-icons-outlined text-sm">remove</span>
-                                            </button>
-                                            <span className="w-8 text-center text-xs font-bold text-gray-900 dark:text-white">{item.qty}</span>
-                                            <button onClick={() => updateQty(item.id, item.qty + 1)} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
-                                                <span className="material-icons-outlined text-sm">add</span>
-                                            </button>
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10">
+                                                <button onClick={() => updateQty(item.id, item.qty - 1)} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                                                    <span className="material-icons-outlined text-sm">remove</span>
+                                                </button>
+                                                <span className="w-8 text-center text-xs font-bold text-gray-900 dark:text-white">{item.qty}</span>
+                                                <button
+                                                    onClick={() => updateQty(item.id, item.qty + 1)}
+                                                    disabled={item.maxStock !== undefined && item.qty >= item.maxStock}
+                                                    className={`w-8 h-8 flex items-center justify-center transition-colors ${item.maxStock !== undefined && item.qty >= item.maxStock ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed bg-red-500/5' : 'text-gray-500 hover:text-primary'}`}
+                                                >
+                                                    <span className="material-icons-outlined text-sm">add</span>
+                                                </button>
+                                            </div>
+                                            <span className="font-bold text-primary text-sm">{formatPrice(item.price * item.qty)}</span>
                                         </div>
-                                        <span className="font-bold text-primary text-sm">{formatPrice(item.price * item.qty)}</span>
+                                        {item.maxStock && item.qty >= item.maxStock && (
+                                            <p className="text-[9px] text-orange-500 dark:text-orange-400 font-bold uppercase tracking-wider mt-1">Stock máx: {item.maxStock} uds</p>
+                                        )}
                                     </div>
                                 </div>
                                 <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500 p-2 transition-colors">
