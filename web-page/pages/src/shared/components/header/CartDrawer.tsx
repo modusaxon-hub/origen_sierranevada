@@ -55,7 +55,7 @@ const CartDrawer: React.FC = () => {
                                             </div>
                                             <span className="font-bold text-primary text-sm">{formatPrice(item.price * item.qty)}</span>
                                         </div>
-                                        {item.maxStock && item.qty >= item.maxStock && (
+                                        {item.maxStock !== undefined && item.maxStock > 0 && item.qty >= item.maxStock && (
                                             <p className="text-[9px] text-orange-500 dark:text-orange-400 font-bold uppercase tracking-wider mt-1">Stock máx: {item.maxStock} uds</p>
                                         )}
                                     </div>

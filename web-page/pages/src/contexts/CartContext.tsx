@@ -52,13 +52,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     variantId = item.id.substring(37);
                 }
 
-                let freshStock = 0;
-                if (variantId && variantId !== 'base' && variantId.length === 36) {
-                    const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                    freshStock = data?.stock ?? 0;
-                } else {
-                    const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
-                    freshStock = data?.stock ?? 0;
+                let freshStock = item.maxStock || 0; // Initialize with existing maxStock or 0
+                try {
+                    if (variantId && variantId !== 'base' && variantId.length === 36) {
+                        const { data, error } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                        if (!error && data) freshStock = data.stock; // Only update if no error and data exists
+                    } else {
+                        const { data, error } = await supabase.from('products').select('stock').eq('id', productId).single();
+                        if (!error && data) freshStock = data.stock; // Only update if no error and data exists
+                    }
+                } catch (e) {
+                    console.error("Stock sync error:", e);
                 }
 
                 return { ...item, maxStock: freshStock, qty: Math.min(item.qty, freshStock) };
@@ -95,12 +99,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const productId = compositeParts[0];
             const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
 
-            if (variantId && variantId !== 'base' && variantId.length === 36) {
-                const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                stockToEnforce = data?.stock ?? 0;
-            } else {
-                const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
-                stockToEnforce = data?.stock ?? 0;
+            try {
+                if (variantId && variantId !== 'base' && variantId.length === 36) {
+                    const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                    if (data) stockToEnforce = data.stock;
+                } else {
+                    const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
+                    if (data) stockToEnforce = data.stock;
+                }
+            } catch (e) {
+                console.error("Error fetching stock in addToCart:", e);
             }
         }
 
@@ -138,13 +146,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const productId = compositeParts[0];
             const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
 
-            let freshStock = 0;
-            if (variantId && variantId !== 'base' && variantId.length === 36) {
-                const { data } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                freshStock = data?.stock ?? 0;
-            } else {
-                const { data } = await supabase.from('products').select('stock').eq('id', productId).single();
-                freshStock = data?.stock ?? 0;
+            let freshStock = currentItem.maxStock || currentItem.qty;
+            try {
+                if (variantId && variantId !== 'base' && variantId.length === 36) {
+                    const { data, error } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
+                    if (!error && data) freshStock = data.stock;
+                } else {
+                    const { data, error } = await supabase.from('products').select('stock').eq('id', productId).single();
+                    if (!error && data) freshStock = data.stock;
+                }
+            } catch (e) {
+                console.error("Error fetching fresh stock in updateQty:", e);
             }
 
             setCartItems(prev => prev.map(item => {
