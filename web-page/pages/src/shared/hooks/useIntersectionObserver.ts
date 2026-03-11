@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, RefObject } from 'react';
 
 /**
  * Observa si un elemento entra en el viewport.
@@ -6,7 +6,7 @@ import React, { useRef, useState, useEffect } from 'react';
  */
 export const useIntersectionObserver = (
     options?: IntersectionObserverInit
-): [React.RefObject<HTMLElement>, boolean] => {
+): [RefObject<HTMLElement>, boolean] => {
     const ref = useRef<HTMLElement>(null);
     const [isIntersecting, setIsIntersecting] = useState(false);
 

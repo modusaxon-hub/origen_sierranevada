@@ -21,7 +21,9 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
     return (
         <div className="hidden lg:flex max-w-7xl mx-auto px-6 xl:px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20 gap-4">
             {/* Logo */}
-            <Logo className="h-[30px] xl:h-[46px] w-auto" />
+            <Link to="/" className="hover:opacity-80 transition-opacity duration-300 cursor-pointer">
+                <Logo className="h-[30px] xl:h-[46px] w-auto" />
+            </Link>
 
             {/* Navigation Links removidos por solicitud de landing page pura */}
 

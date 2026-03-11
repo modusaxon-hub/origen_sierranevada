@@ -1,6 +1,6 @@
 
 import { supabase } from './supabaseClient';
-import { Product } from '../shared/types';
+import { Product } from '@/shared/types';
 type ProductInput = Omit<Product, 'id' | 'created_at'>;
 
 export const PRODUCTS_TABLE = 'products';

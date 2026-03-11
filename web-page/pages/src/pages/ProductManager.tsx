@@ -44,6 +44,7 @@ const ProductManager: React.FC = () => {
     const [showAIAssistant, setShowAIAssistant] = useState(false);
     const [pendingUsersCount, setPendingUsersCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState<'all' | 'cafetal' | 'accesorios' | 'antojitos'>('all');
 
     // Form state con todos los campos
     const [formData, setFormData] = useState<Partial<Product>>({
@@ -73,9 +74,23 @@ const ProductManager: React.FC = () => {
 
     const fetchProducts = async () => {
         setLoading(true);
-        const { data, error } = await productService.getAllProducts();
-        if (!error) setProducts(data);
-        setLoading(false);
+        try {
+            const { data, error } = selectedCategory === 'all'
+                ? await productService.getAllProducts(100)
+                : await productService.getProductsByCategory(selectedCategory);
+
+            if (error) {
+                console.error("Error fetching products:", error);
+                setFeedback({ msg: "Error al cargar productos: " + error.message, type: 'error' });
+            } else {
+                setProducts(data || []);
+            }
+        } catch (err: any) {
+            console.error("Fetch Crash:", err);
+            setFeedback({ msg: "Error crítico al cargar: " + err.message, type: 'error' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const fetchCounts = async () => {
@@ -97,7 +112,7 @@ const ProductManager: React.FC = () => {
     useEffect(() => {
         fetchProducts();
         fetchCounts();
-    }, []);
+    }, [selectedCategory]);
 
     const resetForm = () => {
         setFormData({
@@ -257,6 +272,7 @@ const ProductManager: React.FC = () => {
     };
 
     const categoryNames = {
+        all: { label: 'Todas', icon: '🌟', color: '#C8AA6E' },
         cafetal: { label: 'Cafetal', icon: '☕', color: '#C8AA6E' },
         accesorios: { label: 'Accesorios', icon: '🎨', color: '#8B7355' },
         antojitos: { label: 'Antojitos', icon: '🍫', color: '#6F4E37' }
@@ -297,7 +313,7 @@ const ProductManager: React.FC = () => {
                     {!showForm && (
                         <button
                             onClick={() => setShowForm(true)}
-                            className="bg-[#C5A065] text-black px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all flex items-center gap-2"
+                            className="bg-[#C8AA6E] text-black px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(200,170,110,0.3)] transition-all flex items-center gap-2"
                         >
                             <Sparkles size={16} />
                             Crear Nuevo Producto
@@ -1027,72 +1043,103 @@ const ProductManager: React.FC = () => {
                     </div>
                 )}
 
+                {/* Category Filter */}
+                {!showForm && (
+                    <div className="mb-12 flex gap-4 justify-center">
+                        {Object.entries(categoryNames).map(([key, { label, icon, color }]) => (
+                            <button
+                                key={key}
+                                onClick={() => setSelectedCategory(key as any)}
+                                style={{
+                                    backgroundColor: selectedCategory === key ? color : 'transparent',
+                                    borderColor: selectedCategory === key ? color : 'rgba(255,255,255,0.1)'
+                                }}
+                                className={`px-6 py-3 rounded-lg font-bold uppercase text-xs tracking-widest transition-all border-2 ${selectedCategory === key
+                                    ? 'text-black shadow-lg shadow-white/5'
+                                    : 'bg-white/5 text-white/60 hover:text-white'
+                                    }`}
+                            >
+                                <span className="mr-2">{icon}</span>
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
                 {/* Products List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {loading ? (
                         [1, 2, 3].map(i => (
                             <div key={i} className="h-64 bg-white/5 rounded-3xl animate-pulse"></div>
                         ))
-                    ) : products.map((p) => {
-                        const catInfo = categoryNames[p.category] || {
-                            label: p.category || 'Desconocido',
-                            icon: '📦',
-                            color: '#888888'
-                        };
-                        return (
-                            <div key={p.id} className="group bg-white/[0.02] border border-white/10 rounded-3xl overflow-hidden hover:border-[#C8AA6E]/50 transition-all duration-500 cursor-pointer flex flex-col">
-                                <div className="aspect-video relative overflow-hidden bg-black/40 p-6 flex items-center justify-center">
-                                    <img
-                                        src={p.image_url || '/logo-origen-sierra-nevada.svg'}
-                                        className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-700"
-                                        alt={p.name.es}
-                                    />
-                                    <div className="absolute top-4 left-4">
-                                        <span className="bg-black/60 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/10 text-white/80 flex items-center gap-1">
-                                            <span>{catInfo.icon}</span>
-                                            {catInfo.label}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <h3 className="text-xl font-serif text-white mb-2">{p.name.es}</h3>
-                                    <p className="text-white/30 text-xs line-clamp-2 mb-4 font-light">{p.description.es}</p>
-
-                                    {p.intrinsics?.personality?.es && (
-                                        <div className="mb-4 text-xs text-purple-400/80 italic">
-                                            💫 {p.intrinsics.personality.es}
-                                        </div>
-                                    )}
-
-                                    <div className="mt-auto flex justify-between items-center pt-4 border-t border-white/5">
-                                        <div className="flex flex-col">
-                                            <span className="text-xs text-white/40 uppercase tracking-widest">Desde</span>
-                                            <span className="text-[#C8AA6E] font-serif text-lg">{formatPrice(p.price)}</span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleEdit(p)}
-                                                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C8AA6E] hover:text-black hover:border-[#C8AA6E] transition-all"
-                                            >
-                                                <span className="material-icons-outlined text-base">edit</span>
-                                            </button>
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm('¿Eliminar este producto?')) {
-                                                        await productService.deleteProduct(p.id);
-                                                        fetchProducts();
-                                                    }
-                                                }}
-                                                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
-                                            >
-                                                <span className="material-icons-outlined text-base">delete</span>
-                                            </button>
+                    ) : products.length > 0 ? (
+                        products.map((p) => {
+                            const catInfo = categoryNames[p.category as keyof typeof categoryNames] || {
+                                label: p.category || 'Desconocido',
+                                icon: '📦',
+                                color: '#888888'
+                            };
+                            return (
+                                <div key={p.id} className="group bg-white/[0.02] border border-white/10 rounded-3xl overflow-hidden hover:border-[#C8AA6E]/50 transition-all duration-500 cursor-pointer flex flex-col">
+                                    <div className="aspect-video relative overflow-hidden bg-black/40 p-6 flex items-center justify-center">
+                                        <img
+                                            src={p.image_url || '/logo-origen-sierra-nevada.svg'}
+                                            className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-700"
+                                            alt={p.name.es}
+                                        />
+                                        <div className="absolute top-4 left-4">
+                                            <span className="bg-black/60 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/10 text-white/80 flex items-center gap-1">
+                                                <span>{catInfo.icon}</span>
+                                                {catInfo.label}
+                                            </span>
                                         </div>
                                     </div>
+                                    <div className="p-6 flex-1 flex flex-col">
+                                        <h3 className="text-xl font-serif text-white mb-2">{p.name.es}</h3>
+                                        <p className="text-white/30 text-xs line-clamp-2 mb-4 font-light">{p.description.es}</p>
+
+                                        {p.intrinsics?.personality?.es && (
+                                            <div className="mb-4 text-xs text-purple-400/80 italic">
+                                                💫 {p.intrinsics.personality.es}
+                                            </div>
+                                        )}
+
+                                        <div className="mt-auto flex justify-between items-center pt-4 border-t border-white/5">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-white/40 uppercase tracking-widest">Desde</span>
+                                                <span className="text-[#C8AA6E] font-serif text-lg">{formatPrice(p.price)}</span>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(p)}
+                                                    className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C8AA6E] hover:text-black hover:border-[#C8AA6E] transition-all"
+                                                >
+                                                    <span className="material-icons-outlined text-base">edit</span>
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (window.confirm('¿Eliminar este producto?')) {
+                                                            await productService.deleteProduct(p.id);
+                                                            fetchProducts();
+                                                        }
+                                                    }}
+                                                    className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
+                                                >
+                                                    <span className="material-icons-outlined text-base">delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    ) : (
+                        <div className="col-span-full py-20 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-3xl">
+                            <Box className="w-12 h-12 text-white/10 mx-auto mb-4" />
+                            <h3 className="text-xl font-serif text-white/40">No hay productos en esta despensa</h3>
+                            <p className="text-white/20 text-sm mt-2">Prueba cambiando el filtro o agrega un nuevo producto</p>
+                        </div>
+                    )}
                 </div>
             </div>
 

@@ -3,27 +3,78 @@ import { supabase } from './supabaseClient';
 import { Product, ProductVariant } from '../shared/types';
 
 export const productService = {
-    getAllProducts: async () => {
+    getAllProducts: async (limit: number = 100, offset: number = 0) => {
+        // Optimized: Load products WITHOUT variants first
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_variants(*)')
-            .order('created_at', { ascending: false });
+            .select('*')
+            .order('created_at', { ascending: false })
+            .range(offset, offset + limit - 1);
 
-        if (data) {
-            data.forEach((p: any) => { p.variants = p.product_variants || []; });
+        if (error || !data) {
+            return { data: [] as Product[], error };
         }
-        return { data: data as Product[] || [], error };
+
+        // Then fetch variants only if needed (lazy loading)
+        const productsWithVariants = await Promise.all(
+            (data as any[]).map(async (p) => {
+                const { data: variants } = await supabase
+                    .from('product_variants')
+                    .select('*')
+                    .eq('product_id', p.id);
+                return { ...p, variants: variants || [] };
+            })
+        );
+
+        return { data: productsWithVariants as Product[], error: null };
+    },
+
+    getProductsByCategory: async (category: string, limit: number = 100) => {
+        // Optimized: Filter by category server-side
+        const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .eq('category', category)
+            .order('created_at', { ascending: false })
+            .limit(limit);
+
+        if (error || !data) {
+            return { data: [] as Product[], error };
+        }
+
+        // Lazy load variants
+        const productsWithVariants = await Promise.all(
+            (data as any[]).map(async (p) => {
+                const { data: variants } = await supabase
+                    .from('product_variants')
+                    .select('*')
+                    .eq('product_id', p.id);
+                return { ...p, variants: variants || [] };
+            })
+        );
+
+        return { data: productsWithVariants as Product[], error: null };
     },
 
     getProductById: async (id: string) => {
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_variants(*)')
+            .select('id, name, description, category, price, stock, image_url, available, created_at, color, mask_type, badge, score, origin, story, tags, intrinsics')
             .eq('id', id)
             .single();
 
-        if (data) (data as any).variants = (data as any).product_variants || [];
-        return { data: data as Product | null, error };
+        if (!data) return { data: null, error };
+
+        // Load variants for this product
+        const { data: variants } = await supabase
+            .from('product_variants')
+            .select('*')
+            .eq('product_id', id);
+
+        return {
+            data: { ...data, variants: variants || [] } as Product | null,
+            error
+        };
     },
 
     createProduct: async (product: Omit<Product, 'id' | 'created_at'>) => {

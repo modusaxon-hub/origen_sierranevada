@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services/authService';
 import Logo from '@/shared/components/Logo';
@@ -20,13 +20,15 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
     };
 
     return (
-        <header className="fixed top-0 w-full z-[100] bg-[#0B120D]/95 backdrop-blur-xl border-b border-[#C5A065]/20">
+        <header className="fixed top-0 w-full z-[100] bg-[#0B120D]/95 backdrop-blur-xl border-b border-[#C8AA6E]/20">
             <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                 <div className="flex items-center gap-4 group">
-                    <Logo className="w-[140px] md:w-[170px] h-auto group-hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0" />
+                    <Link to="/admin" className="hover:opacity-80 transition-opacity duration-300">
+                        <Logo className="w-[140px] md:w-[170px] h-auto group-hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0" />
+                    </Link>
                     <span
                         onClick={() => navigate('/admin')}
-                        className="cursor-pointer text-[#C5A065] text-lg md:text-xl font-serif tracking-wide border-l border-[#C5A065]/30 pl-4 group-hover:text-white transition-colors uppercase"
+                        className="cursor-pointer text-[#C8AA6E] text-lg md:text-xl font-serif tracking-wide border-l border-[#C8AA6E]/30 pl-4 group-hover:text-white transition-colors uppercase"
                     >
                         {title}
                     </span>
@@ -51,11 +53,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
                             {pendingUsersCount > 0 && (
                                 <button
                                     onClick={() => navigate('/admin/users')}
-                                    className="relative p-2 bg-[#C5A065]/10 text-[#C5A065] rounded-lg hover:bg-[#C5A065]/20 transition-all"
+                                    className="relative p-2 bg-[#C8AA6E]/10 text-[#C8AA6E] rounded-lg hover:bg-[#C8AA6E]/20 transition-all"
                                     title={`${pendingUsersCount} usuarios pendientes`}
                                 >
                                     <span className="material-icons-outlined text-xl">person_add</span>
-                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C5A065] text-black text-[10px] font-black rounded-full flex items-center justify-center">
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C8AA6E] text-black text-[10px] font-black rounded-full flex items-center justify-center">
                                         {pendingUsersCount}
                                     </span>
                                 </button>
@@ -65,14 +67,14 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
 
                     <button
                         onClick={() => navigate('/')}
-                        className="p-2 text-white/40 hover:text-[#C5A065] transition-colors"
+                        className="p-2 text-white/40 hover:text-[#C8AA6E] transition-colors"
                         title="Ver Tienda"
                     >
                         <span className="material-icons-outlined text-2xl">storefront</span>
                     </button>
 
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-black">ADMINISTRADOR</p>
+                        <p className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-black">ADMINISTRADOR</p>
                         <p className="text-xs text-white/60 font-medium truncate max-w-[120px]">{user?.email}</p>
                     </div>
 

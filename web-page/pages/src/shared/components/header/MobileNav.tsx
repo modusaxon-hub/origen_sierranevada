@@ -21,7 +21,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMobileMenuOpen, setIsMobileMenu
         <div className="w-full lg:hidden flex flex-col bg-background-dark/95 backdrop-blur-md border-b border-white/10 shadow-xl overflow-hidden">
             {/* Tier 1: Logo Throne (Centered) */}
             <div className="w-full flex justify-center py-8 border-b border-[#C8AA6E]/20">
-                <Logo className="h-[34px] sm:h-[46px] md:h-[56px] w-auto" />
+                <Link to="/" className="hover:opacity-80 transition-opacity duration-300 cursor-pointer">
+                    <Logo className="h-[34px] sm:h-[46px] md:h-[56px] w-auto" />
+                </Link>
             </div>
 
             {/* Tier 2: Icons & Actions */}
