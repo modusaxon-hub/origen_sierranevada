@@ -36,6 +36,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'));
 const InvoicePrototype = lazy(() => import('./components/Invoice/InvoicePrototype'));
 const InvoicePage = lazy(() => import('./pages/InvoicePage'));
 const SiteContentManager = lazy(() => import('./pages/SiteContentManager'));
+const ProveedorDashboard = lazy(() => import('./pages/ProveedorDashboard'));
 
 // Loading Placeholder
 const PageLoader = () => (
@@ -56,7 +57,7 @@ const ScrollToTop = () => {
 
 const AppContent: React.FC = () => {
     const location = useLocation();
-    const isAdminPath = location.pathname.startsWith('/admin') || location.pathname.startsWith('/brandbook');
+    const isAdminPath = location.pathname.startsWith('/admin') || location.pathname.startsWith('/brandbook') || location.pathname.startsWith('/proveedor');
     const isInvoicePath = location.pathname.startsWith('/invoice') || location.pathname.startsWith('/preview/invoice');
     const isAuthPath = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
 
@@ -82,6 +83,13 @@ const AppContent: React.FC = () => {
                     <Route path="/invoice/:orderId" element={
                         <ProtectedRoute requireAdmin={false}>
                             <InvoicePage />
+                        </ProtectedRoute>
+                    } />
+
+                    {/* Proveedor Route */}
+                    <Route path="/proveedor" element={
+                        <ProtectedRoute requireAdmin={false} requiredRole="Proveedor">
+                            <ProveedorDashboard />
                         </ProtectedRoute>
                     } />
 

@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services/authService';
 import { emailService } from '@/services/emailService';
-
+import AdminHeader from '@/shared/components/AdminHeader';
+import { supabase } from '@/services/supabaseClient';
 import { UserRole, SecurityFlag, UserStatus } from '@/shared/types';
+import InstitutionalModal from '@/shared/components/InstitutionalModal';
+import ConfirmModal from '@/shared/components/ConfirmModal';
 
 interface Profile {
     id: string;
@@ -28,6 +31,12 @@ const UserManager: React.FC = () => {
     const [securityFlag, setSecurityFlag] = useState<SecurityFlag>('n/a');
     const [securityNotes, setSecurityNotes] = useState('');
     const [showHidden, setShowHidden] = useState(false);
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [institutionalModal, setInstitutionalModal] = useState<{
+        title: string;
+        message: string | React.ReactNode;
+        type: 'success' | 'info' | 'error' | 'warning';
+    } | null>(null);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -41,8 +50,19 @@ const UserManager: React.FC = () => {
         setLoading(false);
     };
 
+    const fetchPendingOrders = async () => {
+        const { data } = await supabase
+            .from('orders')
+            .select('status')
+            .in('status', ['pending', 'pending_payment']);
+        if (data) {
+            setPendingOrdersCount(data.length);
+        }
+    };
+
     useEffect(() => {
         fetchUsers();
+        fetchPendingOrders();
     }, []);
 
     const handleRoleChange = (userId: string, currentRole: UserRole, fullName: string) => {
@@ -66,7 +86,17 @@ const UserManager: React.FC = () => {
 
         if (error) {
             setError("Error al actualizar rol: " + error.message);
+            setInstitutionalModal({
+                title: "Error de Sistema",
+                message: "No se pudo actualizar el rol: " + error.message,
+                type: 'error'
+            });
         } else {
+            setInstitutionalModal({
+                title: "Rol Actualizado",
+                message: `Rol de ${confirmModal.fullName} actualizado a ${newRole} exitosamente.`,
+                type: 'success'
+            });
             // Optimistic update
             setProfiles(profiles.map(p => p.id === userId ? { ...p, role_name: newRole } : p));
         }
@@ -89,17 +119,36 @@ const UserManager: React.FC = () => {
 
     const handleActivateUser = async (userId: string) => {
         const userProfile = profiles.find(p => p.id === userId);
+        const name = userProfile?.full_name || 'el usuario';
 
-        const { error } = await authService.activateUser(userId);
-        if (error) {
-            setError("Error al reactivar usuario: " + error.message);
-        } else {
-            // If user was pending, send the EPIC approval email
-            if (userProfile && userProfile.status === 'pending') {
-                emailService.sendApprovalEmail(userProfile.email, userProfile.full_name)
-                    .catch(e => console.error("Error sending approval email:", e));
+        try {
+            const { error } = await authService.activateUser(userId);
+            if (error) {
+                setError("Error al reactivar usuario: " + error.message);
+                setInstitutionalModal({
+                    title: "Error de Activación",
+                    message: error.message,
+                    type: 'error'
+                });
+            } else {
+                // If user was pending, send the EPIC approval email
+                if (userProfile && (userProfile.status as string) === 'pending') {
+                    emailService.sendApprovalEmail(userProfile.email, userProfile.full_name)
+                        .catch(e => console.error("Error enviando correo de aprobación:", e));
+                }
+                setInstitutionalModal({
+                    title: "Acceso Concedido",
+                    message: `¡El usuario ${name} ahora puede ingresar al sistema!`,
+                    type: 'success'
+                });
+                fetchUsers();
             }
-            fetchUsers();
+        } catch (err: any) {
+            setInstitutionalModal({
+                title: "Error Crítico",
+                message: err.message,
+                type: 'error'
+            });
         }
     };
 
@@ -107,9 +156,9 @@ const UserManager: React.FC = () => {
         if (!softDeleteModal) return;
         const { userId } = softDeleteModal;
 
-        const { error } = await authService.banUser(userId, 'eliminacion', 'Eliminado manualmente del panel principal.');
+        const { error } = await authService.deleteUserForever(userId);
         if (error) {
-            setError("Error al eliminar: " + error.message);
+            setError("Error al eliminar permanentemente: " + error.message);
         } else {
             setSoftDeleteModal(null);
             fetchUsers();
@@ -121,17 +170,16 @@ const UserManager: React.FC = () => {
         return p.status !== 'deleted' && p.status !== 'banned';
     });
 
+    // Calculate pending users
+    const pendingUsersCount = profiles.filter(p => p.status === 'pending').length;
+
     return (
         <div className="min-h-screen bg-[#0B120D] text-white font-sans">
-            {/* Header */}
-            <header className="fixed top-0 w-full z-50 bg-[#0B120D]/90 backdrop-blur-md border-b border-[#C5A065]/20">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/admin')}>
-                        <span className="material-icons-outlined text-[#C5A065]">arrow_back</span>
-                        <h1 className="text-[#C5A065] text-xl font-serif tracking-wide">Gestión de Usuarios</h1>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader
+                title="GESTIÓN DE USUARIOS"
+                pendingOrdersCount={pendingOrdersCount}
+                pendingUsersCount={pendingUsersCount}
+            />
 
             <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
@@ -144,7 +192,7 @@ const UserManager: React.FC = () => {
                             onClick={() => setShowHidden(!showHidden)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-xs font-bold uppercase tracking-wider ${showHidden
                                 ? 'bg-[#C5A065]/20 border-[#C5A065] text-[#C5A065]'
-                                : 'bg-white/5 border-white/10 text-white/60 hover:text-white'}`}
+                                : 'bg-white/5 border-white/10 text-white/60 hover:border-[#C5A065]/50 hover:text-white'}`}
                         >
                             <span className="material-icons-outlined text-sm">{showHidden ? 'visibility' : 'visibility_off'}</span>
                             {showHidden ? 'Mostrando Todo' : 'Ver Archivos'}
@@ -192,7 +240,7 @@ const UserManager: React.FC = () => {
                                                         </td>
                                                         <td className="p-6">
                                                             <span className="px-3 py-1 rounded-full bg-[#C5A065] text-black text-[10px] font-bold tracking-wider uppercase">
-                                                                ⏳ ESPERANDO RITUAL
+                                                                ⏳ ESPERANDO APROBACIÓN
                                                             </span>
                                                         </td>
                                                         <td className="p-6 text-white/40 text-xs text-nowrap">
@@ -201,7 +249,7 @@ const UserManager: React.FC = () => {
                                                         <td className="p-6 text-right">
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleActivateUser(profile.id); }}
-                                                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-lg shadow-[#C5A065]/20"
+                                                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C5A065] text-black hover:bg-[#D4B483] transform active:scale-95 shadow-lg shadow-[#C5A065]/20"
                                                             >
                                                                 <span className="material-icons-outlined text-sm">how_to_reg</span>
                                                                 Conceder Acceso
@@ -221,7 +269,7 @@ const UserManager: React.FC = () => {
                                 <div className="min-w-[800px]">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
-                                            <tr className="border-b border-white/10 bg-black/20 text-xs uppercase tracking-widest text-[#C5A065]">
+                                            <tr className="border-b border-white/10 bg-black/20 text-xs uppercase tracking-widest text-[#C8AA6E]">
                                                 <th className="p-6 font-bold">Directorio General</th>
                                                 <th className="p-6 font-bold">Rol</th>
                                                 <th className="p-6 font-bold">Ingreso</th>
@@ -252,8 +300,10 @@ const UserManager: React.FC = () => {
                                                             <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role_name === 'Administrador'
                                                                 ? 'bg-[#C5A065]/20 text-[#C5A065] border border-[#C5A065]/30'
                                                                 : profile.role_name === 'Colaborador'
-                                                                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                                                                    : 'bg-white/10 text-white/60'
+                                                                    ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                                                                    : profile.role_name === 'Proveedor'
+                                                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                                        : 'bg-white/10 text-white/60'
                                                                 }`}>
                                                                 {profile.role_name}
                                                             </span>
@@ -282,7 +332,7 @@ const UserManager: React.FC = () => {
                                                             {profile.status === 'pending' && (
                                                                 <button
                                                                     onClick={() => handleActivateUser(profile.id)}
-                                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-900/20"
+                                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-900/20"
                                                                 >
                                                                     <span className="material-icons-outlined text-sm">how_to_reg</span>
                                                                     Aprobar
@@ -290,7 +340,7 @@ const UserManager: React.FC = () => {
                                                             )}
                                                             <button
                                                                 onClick={() => handleRoleChange(profile.id, profile.role_name, profile.full_name)}
-                                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black border border-white/10"
+                                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black hover:border-transparent border border-white/10"
                                                             >
                                                                 <span className="material-icons-outlined text-sm">manage_accounts</span>
                                                                 Gestionar
@@ -355,6 +405,7 @@ const UserManager: React.FC = () => {
                                     {[
                                         { id: 'Usuario', label: 'Usuario (Cliente)', desc: 'Acceso estándar a tienda y pedidos.', icon: 'person' },
                                         { id: 'Colaborador', label: 'Colaborador', desc: 'Personal operativo (Almacén, Recepción).', icon: 'engineering' },
+                                        { id: 'Proveedor', label: 'Proveedor', desc: 'Productores de café, gestión de stock propio y fincas.', icon: 'storefront' },
                                         { id: 'Administrador', label: 'Administrador', desc: 'Control total de la plataforma.', icon: 'security' }
                                     ].map((r) => (
                                         <button
@@ -472,32 +523,24 @@ const UserManager: React.FC = () => {
             )}
 
             {/* Soft Delete Modal */}
-            {softDeleteModal?.isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSoftDeleteModal(null)} />
-                    <div className="relative bg-[#0F1611] border border-white/10 rounded-3xl w-full max-w-sm p-8 shadow-2xl animate-scale-up">
-                        <div className="text-center space-y-6">
-                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto border border-white/10">
-                                <span className="material-icons-outlined text-white/40 text-3xl">delete_sweep</span>
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-serif text-white">¿Eliminar del Directorio?</h3>
-                                <p className="text-gray-400 text-sm">
-                                    El usuario <span className="text-white font-bold">{softDeleteModal.fullName}</span> dejará de ser visible en el panel. Podrás restaurarlo desde los archivos en cualquier momento.
-                                </p>
-                            </div>
-                            <div className="flex gap-4 pt-4">
-                                <button onClick={() => setSoftDeleteModal(null)} className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-white/60 hover:text-white text-xs font-bold uppercase">
-                                    Cancelar
-                                </button>
-                                <button onClick={handleSoftDelete} className="flex-1 px-4 py-3 rounded-xl bg-white text-black hover:bg-gray-200 transition-all text-xs font-bold uppercase shadow-lg">
-                                    Eliminar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ConfirmModal
+                isOpen={!!softDeleteModal?.isOpen}
+                onClose={() => setSoftDeleteModal(null)}
+                onConfirm={handleSoftDelete}
+                title="¿Eliminar Permanentemente?"
+                message={`El usuario ${softDeleteModal?.fullName} será eliminado de forma definitiva de la base de datos y de la autenticación. Esta acción no se puede deshacer.`}
+                type="danger"
+                confirmText="CONFIRMAR ELIMINACIÓN"
+            />
+
+            {/* Institutional Alertas */}
+            <InstitutionalModal
+                isOpen={!!institutionalModal}
+                onClose={() => setInstitutionalModal(null)}
+                title={institutionalModal?.title || ''}
+                message={institutionalModal?.message || ''}
+                type={institutionalModal?.type}
+            />
         </div>
     );
 };
