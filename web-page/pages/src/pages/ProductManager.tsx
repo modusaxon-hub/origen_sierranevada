@@ -25,6 +25,11 @@ const GRIND_OPTIONS = [
     'Molido Gruesa'
 ];
 
+const EMPTY_SUPPLIER = {
+    nombre: '', nit: '', contacto: '', telefono: '', email: '',
+    costo_unitario: 0, condiciones_pago: '', referencia_interna: '', notas_proveedor: ''
+};
+
 const ProductManager: React.FC = () => {
     const { formatPrice } = useLanguage();
     const navigate = useNavigate();
@@ -590,6 +595,132 @@ const ProductManager: React.FC = () => {
                                                 <label htmlFor="available" className="text-sm text-white/80">
                                                     Producto disponible para venta
                                                 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* ── SUPPLIER / PROVEEDOR (interno) ── */}
+                                    <div className="border border-amber-600/20 bg-amber-950/10 rounded-2xl overflow-hidden">
+                                        {/* Header */}
+                                        <div className="flex items-center gap-3 px-6 py-4 border-b border-amber-600/10">
+                                            <span className="material-icons-outlined text-amber-400/70 text-lg">storefront</span>
+                                            <div className="flex-1">
+                                                <h3 className="text-sm font-bold text-amber-400/90 uppercase tracking-widest">Datos del Proveedor</h3>
+                                                <p className="text-amber-400/40 text-[10px] mt-0.5">Uso interno · No visible para el cliente · Se cruza con dashboard de proveedor y reportes de ventas</p>
+                                            </div>
+                                            <span className="px-2 py-0.5 bg-amber-600/10 border border-amber-600/20 rounded-full text-[9px] font-bold text-amber-400/70 uppercase tracking-widest">Admin Only</span>
+                                        </div>
+
+                                        {/* Fields */}
+                                        <div className="p-6 space-y-5">
+                                            {/* Fila 1: Nombre + NIT */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Razón Social / Nombre</label>
+                                                    <input
+                                                        value={formData.supplier?.nombre || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, nombre: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm"
+                                                        placeholder="Ej: Cafés Arhuaco SAS"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">NIT / Identificación Fiscal</label>
+                                                    <input
+                                                        value={formData.supplier?.nit || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, nit: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm font-mono"
+                                                        placeholder="900.123.456-7"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Fila 2: Contacto + Teléfono + Email */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Contacto Principal</label>
+                                                    <input
+                                                        value={formData.supplier?.contacto || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, contacto: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm"
+                                                        placeholder="Nombre del responsable"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Teléfono / WhatsApp</label>
+                                                    <input
+                                                        value={formData.supplier?.telefono || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, telefono: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm font-mono"
+                                                        placeholder="+57 300 000 0000"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Email de Facturación</label>
+                                                    <input
+                                                        type="email"
+                                                        value={formData.supplier?.email || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, email: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm"
+                                                        placeholder="facturacion@proveedor.com"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Fila 3: Costo + Condiciones + Ref interna */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Costo Unitario (COP)</label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400/40 text-sm font-mono">$</span>
+                                                        <input
+                                                            type="number"
+                                                            value={formData.supplier?.costo_unitario || ''}
+                                                            onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, costo_unitario: parseFloat(e.target.value) || 0 } }))}
+                                                            className="w-full bg-black/30 border border-amber-600/15 rounded-xl pl-8 pr-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm font-mono"
+                                                            placeholder="25000"
+                                                        />
+                                                    </div>
+                                                    {formData.supplier?.costo_unitario && formData.price ? (
+                                                        <p className="text-[10px] text-amber-400/50">
+                                                            Margen: {(((formData.price - formData.supplier.costo_unitario) / formData.price) * 100).toFixed(1)}%
+                                                        </p>
+                                                    ) : null}
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Condiciones de Pago</label>
+                                                    <select
+                                                        value={formData.supplier?.condiciones_pago || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, condiciones_pago: e.target.value } }))}
+                                                        className="w-full bg-[#1A1200] border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm"
+                                                    >
+                                                        <option value="" className="bg-[#1A1200]">— Seleccionar —</option>
+                                                        {['Contra entrega', '30 días', '60 días', '50% anticipo', 'Mensual', 'Crédito rotativo', 'Otro'].map(o => (
+                                                            <option key={o} value={o} className="bg-[#1A1200]">{o}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Referencia Interna / SKU</label>
+                                                    <input
+                                                        value={formData.supplier?.referencia_interna || ''}
+                                                        onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, referencia_interna: e.target.value } }))}
+                                                        className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none transition-all text-sm font-mono"
+                                                        placeholder="SKU-0024-A"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Notas */}
+                                            <div className="space-y-1.5">
+                                                <label className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold">Notas de Negociación / Logística</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={formData.supplier?.notas_proveedor || ''}
+                                                    onChange={e => setFormData(prev => ({ ...prev, supplier: { ...EMPTY_SUPPLIER, ...prev.supplier, notas_proveedor: e.target.value } }))}
+                                                    className="w-full bg-black/30 border border-amber-600/15 rounded-xl px-4 py-3 text-white/80 focus:border-amber-500/50 focus:outline-none resize-none transition-all text-sm"
+                                                    placeholder="Condiciones especiales, tiempos de entrega, acuerdos de exclusividad..."
+                                                />
                                             </div>
                                         </div>
                                     </div>

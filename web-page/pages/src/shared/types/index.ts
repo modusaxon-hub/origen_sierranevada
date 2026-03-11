@@ -37,6 +37,9 @@ export interface ProductVariant {
     name: string; // e.g. "250g", "500g", "1kg" or "Small", "Large"
     price: number;
     stock: number;
+    grind?: string;           // Para Cafetal: Tipo de molienda específica
+    units_per_package?: number; // Para Antojitos: cantidad de unidades en el empaque
+    weight_per_unit?: number;  // Para Antojitos: peso de cada unidad
 }
 
 // Campos intrínsecos de personalidad del producto
@@ -69,11 +72,28 @@ export interface Product {
     origin: string; // Origen del café
     available: boolean; // Disponible para venta
     brand?: string; // Marca del producto
-    provider_id?: string; // ID del proveedor (referencia a profiles.id)
+    provider_id?: string; // ID del proveedor (referencia a profiles.id) — legacy
     grain_type?: string; // Tipo de grano (ej: Arábica, Honey, etc.)
+
+    // Datos del proveedor (uso interno — dashboard y cruce de cuentas)
+    supplier?: SupplierInfo;
 
     // Campos de personalidad y carácter
     intrinsics?: ProductPersonality;
+}
+
+/** Datos del proveedor — solo visibles en el panel admin.
+ *  Se usan para cruzar con el dashboard del proveedor y el reporte de ventas (SalesReports). */
+export interface SupplierInfo {
+    nombre: string;           // Razón social o nombre del proveedor
+    nit: string;              // NIT o cédula fiscal
+    contacto: string;         // Nombre del contacto principal
+    telefono: string;         // Teléfono o WhatsApp
+    email: string;            // Correo de facturación / contacto
+    costo_unitario: number;   // Precio de compra por unidad base (COP)
+    condiciones_pago: string; // Ej: "30 días", "Contra entrega", "50% anticipo"
+    referencia_interna: string; // Código interno o referencia SKU del proveedor
+    notas_proveedor: string;  // Notas adicionales de negociación / logística
 }
 
 export interface ProductInput {
