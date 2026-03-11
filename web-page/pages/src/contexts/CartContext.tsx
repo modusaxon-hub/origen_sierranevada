@@ -87,10 +87,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const addToCart = async (newItem: CartItem) => {
         // Validación inmediata ante click
-        let stockToEnforce = newItem.maxStock ?? 0;
+        let stockToEnforce = newItem.maxStock;
 
         // Si no tenemos stock, intentamos buscarlo una vez más antes de insertar
-        if (newItem.maxStock === undefined) {
+        if (stockToEnforce === undefined) {
             const compositeParts = newItem.id.split(':');
             const productId = compositeParts[0];
             const variantId = compositeParts.length > 1 ? compositeParts[1] : null;
@@ -107,7 +107,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCartItems(prev => {
             const existing = prev.find(item => item.id === newItem.id);
             if (existing) {
-                const maxAllowed = stockToEnforce || existing.maxStock || Infinity;
+                const maxAllowed = stockToEnforce ?? existing.maxStock ?? Infinity;
                 const newQty = Math.min(existing.qty + newItem.qty, maxAllowed);
                 return prev.map(item =>
                     item.id === newItem.id
@@ -115,7 +115,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                         : item
                 );
             }
-            const clampedQty = Math.min(newItem.qty, stockToEnforce || Infinity);
+            const clampedQty = Math.min(newItem.qty, stockToEnforce ?? Infinity);
             return [...prev, { ...newItem, qty: clampedQty, maxStock: stockToEnforce }];
         });
         setIsCartOpen(true);
