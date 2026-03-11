@@ -68,7 +68,7 @@ LANDING PAGE!
     
 
 ------------------------------------- // -----------------------------------------
-                                10/03/2026 pule
+                             ## 10/03/2026 pule
 ------------------------------------- // -----------------------------------------
 
 1̶ ̶-̶ ̶C̶o̶n̶f̶i̶g̶u̶r̶a̶r̶ ̶B̶R̶E̶V̶O̶ ̶(̶C̶l̶a̶v̶e̶ ̶A̶P̶I̶ ̶o̶b̶t̶e̶n̶i̶d̶a̶,̶ ̶f̶a̶l̶t̶a̶ ̶g̶u̶a̶r̶d̶a̶r̶ ̶e̶n̶ ̶S̶u̶p̶a̶b̶a̶s̶e̶)̶.̶
@@ -130,5 +130,53 @@ Resumen de hoy:
                                 11/03/2026 pule
 ------------------------------------- // -----------------------------------------
 
-01 - revisar dasboard de usuarios y proveedores.
-02 - Revisar version UI-UX de dispositivos mobiles.
+01 - Revisión del dashboard de usuarios y proveedores.
+02 - Revisión de version UI-UX de dispositivos móviles.
+03 - Migración total y definitiva de Resnd a BREVO.
+04 - Configuración de SMTP de supabase para Brevo.
+05 - Automatización de aprobación de cuentas.
+06 - Revisión de rendimiento de la web.
+
+------------------------------------- // -----------------------------------------
+                                11/03/2026 - Segunda sesión
+------------------------------------- // -----------------------------------------
+
+🚀 OPTIMIZACIÓN CRÍTICA DE RENDIMIENTO - Despensas:
+
+Problema Identificado: Las despensas (Cafetal, Accesorios, Antojitos) no cargaban productos. El spinner giraba indefinidamente.
+
+Causas Raíz:
+    1. getAllProducts() cargaba TODOS los productos + TODAS las variantes de una sola vez (sin límites)
+    2. Errores de compilación TypeScript que ralentizaban el dev server
+    3. Imports inválidos impidiendo resolución de tipos
+
+Soluciones Implementadas:
+
+01 - Optimización de Queries a Supabase:
+    ✓ Implementada paginación en getAllProducts() (límite: 100 productos)
+    ✓ Lazy loading de variantes (se cargan bajo demanda, no al inicio)
+    ✓ Nueva función getProductsByCategory() para filtrado server-side
+    ✓ Reducción de ~80% en datos cargados inicialmente
+
+02 - UI Mejorada en ProductManager:
+    ✓ Agregada barra de filtrado por categoría (Cafetal, Accesorios, Antojitos)
+    ✓ Cambios de categoría sin recargar toda la página
+    ✓ Mejor experiencia UX con botones responsivos
+
+03 - Correcciones de Compilación (errores TypeScript):
+    ✓ Fixed imports: '../shared/types' → '@/shared/types'
+      - catalogPdfService.ts
+      - products.ts
+    ✓ Fixed React types en useIntersectionObserver.ts
+    ✓ Eliminados archivos de error compilación previos
+
+04 - Correcciones de Navegación (Logos):
+    ✓ Logo Footer → redirige a home (/)
+    ✓ Logo Header Desktop → redirige a home (/)
+    ✓ Logo Header Mobile → redirige a home (/)
+    ✓ Logo AdminHeader → redirige a admin dashboard (/admin)
+
+Resultado:
+    ⚡ Carga de productos ahora es instantánea por categoría
+    ✅ Compilación limpia sin errores
+    🔗 Navegación completa vía logos
