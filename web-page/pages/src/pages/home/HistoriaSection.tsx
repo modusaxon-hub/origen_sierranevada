@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/services/supabaseClient';
+import { Product } from '@/shared/types';
 
 // ── Tipos ──────────────────────────────────────
 interface Stat { value: string; label: string; icon: string; }
@@ -35,11 +36,16 @@ const DEFAULT: HistoriaData = {
     ],
 };
 
-const HistoriaSection: React.FC = () => {
-    const sectionRef = useRef<HTMLElement>(null);
-    const [data, setData] = useState<HistoriaData>(DEFAULT);
+interface HistoriaSectionProps {
+    product: Product;
+}
 
-    // ── Cargar desde Supabase ──────────────────
+const HistoriaSection: React.FC<HistoriaSectionProps> = ({ product }) => {
+    const sectionRef = useRef<HTMLElement>(null);
+    const [baseData, setBaseData] = useState<HistoriaData>(DEFAULT);
+    const lang = 'es'; // Se puede conectar al contexto de idioma si es necesario
+
+    // ── Cargar configuración base desde Supabase (una sola vez) ──────────────
     useEffect(() => {
         const fetchConfig = async () => {
             try {
@@ -50,7 +56,7 @@ const HistoriaSection: React.FC = () => {
                     .single();
 
                 if (!error && rows?.data) {
-                    setData({ ...DEFAULT, ...rows.data });
+                    setBaseData({ ...DEFAULT, ...rows.data });
                 }
             } catch (e) {
                 // silencio — usa DEFAULT
@@ -58,6 +64,22 @@ const HistoriaSection: React.FC = () => {
         };
         fetchConfig();
     }, []);
+
+    // ── Derivar párrafos del producto activo (si tiene historia) ──
+    const productStory = product?.story?.[lang];
+    const productName = product?.name?.[lang];
+
+    const displayData: HistoriaData = {
+        ...baseData,
+        // Si el producto tiene su propia historia, la usamos como primer párrafo
+        ...(productStory ? {
+            paragraph1: productStory,
+            paragraph2: baseData.paragraph2,
+        } : {}),
+        // Altitud e imagen provenientes del producto si está disponible
+        badgeDesc: product?.origin || baseData.badgeDesc,
+        bgUrl: product?.image_url || baseData.bgUrl,
+    };
 
     // ── IntersectionObserver para animaciones ──
     useEffect(() => {
@@ -70,9 +92,9 @@ const HistoriaSection: React.FC = () => {
         const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
         targets?.forEach(el => observer.observe(el));
         return () => observer.disconnect();
-    }, [data]); // re-run cuando cambia data para registrar nuevos nodos
+    }, [displayData]);
 
-    const bgStyle = `linear-gradient(to right, rgba(20,30,22,0.97) 0%, rgba(20,30,22,0.80) 50%, rgba(20,30,22,0.40) 100%), url('${data.bgUrl}')`;
+    const bgStyle = `linear-gradient(to right, rgba(20,30,22,0.97) 0%, rgba(20,30,22,0.80) 50%, rgba(20,30,22,0.40) 100%), url('${displayData.bgUrl}')`;
 
     return (
         <section ref={sectionRef} className="relative py-24 md:py-36 overflow-hidden">
@@ -94,23 +116,25 @@ const HistoriaSection: React.FC = () => {
                     <div className="space-y-8">
                         {/* Eyebrow */}
                         <div className="animate-on-scroll">
-                            <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-2">Nuestra Historia</p>
+                            <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-2">
+                                {productName ? `Historia · ${productName}` : 'Nuestra Historia'}
+                            </p>
                             <div className="w-8 h-px bg-[#C8AA6E]/40" />
                         </div>
 
                         {/* Title */}
                         <h2 className="font-serif text-5xl md:text-6xl xl:text-7xl text-white leading-[0.95] tracking-tight animate-on-scroll">
-                            {data.title1}<br />
-                            <span className="text-[#C8AA6E] italic">{data.title2}</span>
+                            {displayData.title1}<br />
+                            <span className="text-[#C8AA6E] italic">{displayData.title2}</span>
                         </h2>
 
                         {/* Body */}
                         <div className="space-y-4 animate-on-scroll">
                             <p className="text-white/60 text-base md:text-lg leading-relaxed font-light">
-                                {data.paragraph1}
+                                {displayData.paragraph1}
                             </p>
                             <p className="text-white/40 text-sm md:text-base leading-relaxed font-light">
-                                {data.paragraph2}
+                                {displayData.paragraph2}
                             </p>
                         </div>
 
@@ -119,7 +143,7 @@ const HistoriaSection: React.FC = () => {
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-2 gap-6 animate-on-scroll">
-                            {data.stats.map((stat, i) => (
+                            {displayData.stats.map((stat, i) => (
                                 <div key={i} className="group">
                                     <div className="flex items-center gap-3 mb-1">
                                         <span className="material-icons-outlined text-[#C8AA6E]/60 text-base">{stat.icon}</span>
@@ -138,7 +162,7 @@ const HistoriaSection: React.FC = () => {
                             <div className="rounded-2xl overflow-hidden border border-[#C8AA6E]/20 shadow-2xl shadow-black/50">
                                 <div
                                     className="h-[480px] bg-cover bg-center animate-ken-burns"
-                                    style={{ backgroundImage: `url('${data.bgUrl}')` }}
+                                    style={{ backgroundImage: `url('${displayData.bgUrl}')` }}
                                 />
                                 {/* Overlay bottom */}
                                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#141E16] to-transparent" />
@@ -147,13 +171,13 @@ const HistoriaSection: React.FC = () => {
                             {/* Floating badge */}
                             <div className="absolute -bottom-6 -left-6 bg-[#141E16]/90 backdrop-blur-xl border border-[#C8AA6E]/30 rounded-xl p-5 shadow-2xl">
                                 <p className="text-[9px] text-[#C8AA6E]/60 uppercase tracking-widest font-bold mb-1">
-                                    {data.badgeTitle}
+                                    {displayData.badgeTitle}
                                 </p>
                                 <p className="font-serif text-3xl text-white">
-                                    {data.badgeValue}{' '}
-                                    <span className="text-[#C8AA6E] text-lg">{data.badgeUnit}</span>
+                                    {displayData.badgeValue}{' '}
+                                    <span className="text-[#C8AA6E] text-lg">{displayData.badgeUnit}</span>
                                 </p>
-                                <p className="text-white/30 text-[9px] mt-1">{data.badgeDesc}</p>
+                                <p className="text-white/30 text-[9px] mt-1">{displayData.badgeDesc}</p>
                             </div>
 
                             {/* Decorative corner */}

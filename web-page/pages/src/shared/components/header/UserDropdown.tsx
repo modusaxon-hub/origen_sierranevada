@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import TrackOrderModal from './TrackOrderModal';
 
 const UserDropdown: React.FC = () => {
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, signOut } = useAuth();
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isTrackModalOpen, setIsTrackModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -20,6 +21,12 @@ const UserDropdown: React.FC = () => {
     }, []);
 
     if (!user) return null;
+
+    const handleLogout = async () => {
+        setIsOpen(false);
+        await signOut();
+        navigate('/');
+    };
 
     return (
         <div ref={dropdownRef} className="relative">
@@ -87,11 +94,7 @@ const UserDropdown: React.FC = () => {
 
                     <div className="border-t border-white/10 p-2">
                         <button
-                            onClick={async () => {
-                                setIsOpen(false);
-                                await import('@/services/authService').then(m => m.authService.signOut());
-                                window.location.href = '/';
-                            }}
+                            onClick={handleLogout}
                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors rounded-lg group/item"
                         >
                             <span className="material-icons-outlined text-red-400 group-hover/item:scale-110 transition-transform">logout</span>

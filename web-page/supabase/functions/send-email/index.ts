@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -9,7 +9,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-    // Handle CORS preflight requests
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
     }
@@ -18,32 +17,32 @@ serve(async (req) => {
         const body = await req.json();
         const { to, subject, html } = body;
 
-        console.log(`Intentando enviar email a: ${to} con asunto: ${subject}`);
+        console.log(`Intentando enviar email vía Brevo a: ${to}`);
 
-        if (!RESEND_API_KEY) {
-            console.error("CRITICAL: RESEND_API_KEY is not set in environment variables");
-            throw new Error("RESEND_API_KEY is not set");
+        if (!BREVO_API_KEY) {
+            console.error("CRITICAL: BREVO_API_KEY is not set");
+            throw new Error("BREVO_API_KEY is not set");
         }
 
-        const res = await fetch("https://api.resend.com/emails", {
+        const res = await fetch("https://api.brevo.com/v3/smtp/email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${RESEND_API_KEY}`,
+                "api-key": BREVO_API_KEY,
             },
             body: JSON.stringify({
-                from: "Origen Sierra Nevada <hola@cafemalu.com>",
-                to: [to],
+                sender: { name: "Origen Sierra Nevada", email: "hola@cafemalu.com" },
+                to: [{ email: to }],
                 subject: subject,
-                html: html,
+                htmlContent: html,
             }),
         });
 
         const data = await res.json();
-        console.log("Respuesta de Resend:", JSON.stringify(data));
+        console.log("Respuesta de Brevo:", JSON.stringify(data));
 
         if (!res.ok) {
-            throw new Error(`Resend API error: ${JSON.stringify(data)}`);
+            throw new Error(`Brevo API error: ${JSON.stringify(data)}`);
         }
 
         return new Response(JSON.stringify(data), {

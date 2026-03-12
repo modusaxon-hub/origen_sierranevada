@@ -108,7 +108,7 @@ const RegisterPage: React.FC = () => {
 
                     <button
                         onClick={() => navigate('/')}
-                        className="w-full bg-[#C8AA6E] text-black font-display font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-[10px] hover:shadow-[0_0_25px_rgba(200,170,110,0.3)] transition-all flex items-center justify-center gap-3 group active:scale-95"
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-[10px] hover:brightness-110 hover:shadow-[0_0_25px_rgba(200,170,110,0.4)] transition-all flex items-center justify-center gap-3 group active:scale-95"
                     >
                         Volver al Inicio
                         <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
@@ -119,14 +119,17 @@ const RegisterPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#050806] pt-20 px-4 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-[#050806] pt-20 md:pt-24 px-4 pb-8 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-[#C8AA6E]/5 to-transparent pointer-events-none"></div>
 
             <div className="w-full max-w-md bg-white/[0.01] backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-3xl shadow-2xl relative z-10">
-                <div className="text-center mb-10">
-                    <Logo className="w-[320px] h-auto mx-auto mb-6 drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
+                <div className="text-center mb-8">
+                    {/* Logo solo visible en desktop — en mobile/tablet el header ya lo muestra */}
+                    <div className="hidden lg:block mb-6">
+                        <Logo className="w-[280px] h-auto mx-auto drop-shadow-[0_0_20px_rgba(200,170,110,0.2)]" />
+                    </div>
                     <h2 className="text-2xl font-serif text-white italic uppercase tracking-widest mb-2">Únete a Nosotros</h2>
-                    <p className="text-gray-500 text-sm font-light">Accede a tuestes exclusivos y herramientas de IA.</p>
+                    <p className="text-gray-500 text-sm font-light">Accede a experiencias exclusivas y herramientas de IA.</p>
                 </div>
 
                 {error && (
@@ -177,7 +180,7 @@ const RegisterPage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid sm:grid-cols-2 gap-4">
                             <div className="group">
                                 <label className="block text-gray-500 text-[10px] uppercase tracking-[0.2em] mb-2 font-bold group-focus-within:text-[#C8AA6E] transition-colors">Contraseña</label>
                                 <div className="relative">
@@ -262,7 +265,7 @@ const RegisterPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading || throttleBlocked}
-                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] py-4 rounded-xl hover:shadow-[0_0_20px_rgba(200,170,110,0.3)] transition-all transform hover:-translate-y-1 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] py-4 rounded-xl hover:brightness-110 transition-all transform hover:-translate-y-1 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95 shadow-lg shadow-[#C8AA6E]/20"
                     >
                         {loading ? 'Registrando Usuario...' : throttleBlocked ? 'Espera un momento' : <><UserPlus size={18} /> Crear Cuenta</>}
                     </button>

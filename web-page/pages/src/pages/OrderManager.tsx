@@ -8,7 +8,7 @@ import InstitutionalModal from '@/shared/components/InstitutionalModal';
 import ConfirmModal from '@/shared/components/ConfirmModal';
 
 // Estilo compartido para selects en modo oscuro
-const selectClassName = "appearance-none bg-[#0B120D] border border-white/10 rounded-xl px-4 py-2 text-xs font-bold text-[#C5A065] uppercase tracking-widest outline-none focus:border-[#C5A065] transition-all cursor-pointer hover:bg-white/5";
+const selectClassName = "appearance-none bg-[#0B120D] border border-white/10 rounded-xl px-4 py-2 text-xs font-bold text-[#C8AA6E] uppercase tracking-widest outline-none focus:border-[#C8AA6E] transition-all cursor-pointer hover:bg-white/5";
 
 interface Order {
     id: string;
@@ -348,15 +348,15 @@ const OrderManager: React.FC = () => {
                 {/* MODAL DE DESPACHO (DETALLES DE ENVÍO) */}
                 {shippingModalOrder && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in">
-                        <div className="bg-[#0B120D] border border-[#C5A065]/30 w-full max-w-md rounded-3xl p-8 shadow-[0_0_50px_rgba(197,160,101,0.1)]">
-                            <h2 className="text-2xl font-serif text-[#C5A065] mb-2 italic">Evidencia de Despacho</h2>
+                        <div className="bg-[#0B120D] border border-[#C8AA6E]/30 w-full max-w-md rounded-3xl p-8 shadow-[0_0_50px_rgba(200,170,110,0.1)]">
+                            <h2 className="text-2xl font-serif text-[#C8AA6E] mb-2 italic">Evidencia de Despacho</h2>
                             <p className="text-gray-400 text-xs mb-8 uppercase tracking-widest">Pedido #{shippingModalOrder.id.slice(0, 8)}</p>
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Número de Guía / Nota de Envío</label>
                                     <textarea
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:border-[#C5A065] outline-none transition-all resize-none"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:border-[#C8AA6E] outline-none transition-all resize-none"
                                         rows={3}
                                         placeholder="Ej: Transportadora X - Guía 123456789"
                                         value={shippingNote}
@@ -397,7 +397,7 @@ const OrderManager: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={handleShippingSubmit}
-                                    className="flex-[2] py-4 bg-[#C5A065] text-black rounded-xl font-black uppercase text-[10px] tracking-[.2em] shadow-lg shadow-[#C5A065]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-[2] py-4 bg-[#C8AA6E] text-black rounded-xl font-black uppercase text-[10px] tracking-[.2em] shadow-lg shadow-[#C8AA6E]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={isShippingRunning}
                                 >
                                     {isShippingRunning ? 'Procesando...' : 'Enviar y Notificar'}
@@ -417,7 +417,7 @@ const OrderManager: React.FC = () => {
                             <a
                                 href={selectedProof}
                                 download
-                                className="bg-white/10 hover:bg-[#C5A065] text-white hover:text-black p-3 rounded-xl transition-all flex items-center gap-2 font-bold text-xs uppercase tracking-widest"
+                                className="bg-white/10 hover:bg-[#C8AA6E] text-white hover:text-black p-3 rounded-xl transition-all flex items-center gap-2 font-bold text-xs uppercase tracking-widest"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <span className="material-icons-outlined">download</span>
@@ -434,7 +434,7 @@ const OrderManager: React.FC = () => {
                         <img
                             src={selectedProof}
                             alt="Comprobante de Pago"
-                            className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-[0_0_50px_rgba(197,160,101,0.2)] border border-white/10 animate-scale-up"
+                            className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-[0_0_50px_rgba(200,170,110,0.2)] border border-white/10 animate-scale-up"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </div>
@@ -450,20 +450,20 @@ const OrderManager: React.FC = () => {
                                 <span className="material-icons-outlined">arrow_back</span>
                             </button>
                             <div>
-                                <h1 className="text-3xl font-serif text-[#C5A065]">Bitácora de Pedidos</h1>
+                                <h1 className="text-3xl font-serif text-[#C8AA6E]">Bitácora de Pedidos</h1>
                                 <p className="text-gray-400 text-sm">Registro de transacciones y procesos de compra</p>
                             </div>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                             <div className="relative group">
-                                <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm group-focus-within:text-[#C5A065]">search</span>
+                                <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm group-focus-within:text-[#C8AA6E]">search</span>
                                 <input
                                     type="text"
                                     placeholder="ID, Cliente o Email..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-[#C5A065] transition-all w-full md:w-64"
+                                    className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-[#C8AA6E] transition-all w-full md:w-64"
                                 />
                             </div>
                             <div className="relative">
@@ -481,7 +481,7 @@ const OrderManager: React.FC = () => {
                                     <option value="delivered" className="bg-[#0B120D]">🏠 Entregado</option>
                                     <option value="cancelled" className="bg-[#0B120D]">❌ Cancelado</option>
                                 </select>
-                                <span className="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A065] pointer-events-none text-sm">unfold_more</span>
+                                <span className="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#C8AA6E] pointer-events-none text-sm">unfold_more</span>
                             </div>
                         </div>
                     </div>
@@ -494,7 +494,7 @@ const OrderManager: React.FC = () => {
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C5A065] transition-all"
+                                className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C8AA6E] transition-all"
                             />
                         </div>
                         <div className="space-y-2">
@@ -503,7 +503,7 @@ const OrderManager: React.FC = () => {
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C5A065] transition-all"
+                                className="bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-300 outline-none focus:border-[#C8AA6E] transition-all"
                             />
                         </div>
                         <button
@@ -513,27 +513,27 @@ const OrderManager: React.FC = () => {
                                 setStartDate('');
                                 setEndDate('');
                             }}
-                            className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#C5A065] hover:bg-[#C5A065]/10 rounded-lg transition-all"
+                            className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E] hover:bg-[#C8AA6E]/10 rounded-lg transition-all"
                         >
                             Limpiar Filtros
                         </button>
                         <div className="ml-auto text-right">
                             <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Mostrando</p>
-                            <p className="text-[#C5A065] font-serif text-xl">{filteredOrders.length} <span className="text-sm font-sans text-gray-400 font-normal">pedidos</span></p>
+                            <p className="text-[#C8AA6E] font-serif text-xl">{filteredOrders.length} <span className="text-sm font-sans text-gray-400 font-normal">pedidos</span></p>
                         </div>
                     </div>
 
 
                     {loading ? (
                         <div className="flex justify-center items-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#C5A065]"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#C8AA6E]"></div>
                         </div>
                     ) : (
                         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse table-auto">
                                     <thead>
-                                        <tr className="border-b border-white/10 bg-black/20 text-[10px] uppercase tracking-[0.2em] text-[#C5A065] font-black">
+                                        <tr className="border-b border-white/10 bg-black/20 text-[10px] uppercase tracking-[0.2em] text-[#C8AA6E] font-black">
                                             <th className="px-6 py-4">Pedido / Fecha</th>
                                             <th className="px-6 py-4">Cliente</th>
                                             <th className="px-6 py-4">Productos</th>
@@ -565,13 +565,13 @@ const OrderManager: React.FC = () => {
                                                     <div className="space-y-0.5">
                                                         {order.order_items?.map((item, i) => (
                                                             <div key={i} className="whitespace-nowrap">
-                                                                <span className="text-[#C5A065] font-black">{item.quantity}x</span> {typeof (item.products?.name) === 'object' ? (item.products?.name?.es || item.products?.name?.en) : (item.products?.name || 'Producto')}
+                                                                <span className="text-[#C8AA6E] font-black">{item.quantity}x</span> {typeof (item.products?.name) === 'object' ? (item.products?.name?.es || item.products?.name?.en) : (item.products?.name || 'Producto')}
                                                             </div>
                                                         ))}
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="font-serif text-base text-[#C5A065] font-bold whitespace-nowrap">${order.total_amount.toLocaleString()}</p>
+                                                    <p className="font-serif text-base text-[#C8AA6E] font-bold whitespace-nowrap">${order.total_amount.toLocaleString()}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <p className="text-gray-300 text-[11px] font-bold">{order.shipping_address?.city}</p>
@@ -629,7 +629,7 @@ const OrderManager: React.FC = () => {
                                                                     return (
                                                                         <button
                                                                             onClick={() => setSelectedProof(proofUrl)}
-                                                                            className="h-8 w-8 flex items-center justify-center bg-[#C5A065]/10 text-[#C5A065] rounded-lg border border-[#C5A065]/20 hover:bg-[#C5A065] hover:text-black transition-all"
+                                                                            className="h-8 w-8 flex items-center justify-center bg-[#C8AA6E]/10 text-[#C8AA6E] rounded-lg border border-[#C8AA6E]/20 hover:bg-[#C8AA6E] hover:text-black transition-all"
                                                                             title="Ver Recibo"
                                                                         >
                                                                             <span className="material-icons-outlined text-sm">receipt_long</span>
@@ -654,7 +654,7 @@ const OrderManager: React.FC = () => {
                                                                                     });
                                                                                 }
                                                                             }}
-                                                                            className="h-8 w-8 flex items-center justify-center bg-white/5 text-gray-500 rounded-lg border border-white/10 hover:text-[#C5A065] transition-all"
+                                                                            className="h-8 w-8 flex items-center justify-center bg-white/5 text-gray-500 rounded-lg border border-white/10 hover:text-[#C8AA6E] transition-all"
                                                                             title="Ver Documento de Pago"
                                                                         >
                                                                             <span className="material-icons-outlined text-sm">description</span>
@@ -668,7 +668,7 @@ const OrderManager: React.FC = () => {
                                                             {order.status === 'pending' || order.status === 'pending_payment' ? (
                                                                 <button
                                                                     onClick={() => handleConfirmOrder(order.id)}
-                                                                    className="flex-1 px-3 py-2 bg-[#C5A065] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C5A065]/20 flex items-center justify-center gap-1.5"
+                                                                    className="flex-1 px-3 py-2 bg-[#C8AA6E] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C8AA6E]/20 flex items-center justify-center gap-1.5"
                                                                 >
                                                                     {(() => {
                                                                         const paymentsArr = (order as any).payments as any[] | undefined;
@@ -684,7 +684,7 @@ const OrderManager: React.FC = () => {
                                                             ) : order.status === 'paid' ? (
                                                                 <button
                                                                     onClick={() => updateOrderStatus(order.id, 'processing')}
-                                                                    className="flex-1 px-3 py-2 bg-[#C5A065] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C5A065]/20 flex items-center justify-center gap-1.5"
+                                                                    className="flex-1 px-3 py-2 bg-[#C8AA6E] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C8AA6E]/20 flex items-center justify-center gap-1.5"
                                                                 >
                                                                     <span className="material-icons-outlined text-xs">inventory_2</span>
                                                                     Preparar
@@ -692,7 +692,7 @@ const OrderManager: React.FC = () => {
                                                             ) : order.status === 'processing' ? (
                                                                 <button
                                                                     onClick={() => updateOrderStatus(order.id, 'shipped')}
-                                                                    className="flex-1 px-3 py-2 bg-[#C5A065] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C5A065]/20 flex items-center justify-center gap-1.5"
+                                                                    className="flex-1 px-3 py-2 bg-[#C8AA6E] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C8AA6E]/20 flex items-center justify-center gap-1.5"
                                                                 >
                                                                     <span className="material-icons-outlined text-xs">local_shipping</span>
                                                                     Despachar
@@ -700,7 +700,7 @@ const OrderManager: React.FC = () => {
                                                             ) : order.status === 'shipped' ? (
                                                                 <button
                                                                     onClick={() => updateOrderStatus(order.id, 'delivered')}
-                                                                    className="flex-1 px-3 py-2 bg-[#C5A065] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C5A065]/20 flex items-center justify-center gap-1.5"
+                                                                    className="flex-1 px-3 py-2 bg-[#C8AA6E] text-black rounded-lg hover:bg-[#D4B483] transform active:scale-95 transition-all font-black text-[9px] uppercase shadow-lg shadow-[#C8AA6E]/20 flex items-center justify-center gap-1.5"
                                                                 >
                                                                     <span className="material-icons-outlined text-xs">task_alt</span>
                                                                     Entregar
@@ -741,7 +741,6 @@ const OrderManager: React.FC = () => {
                                                                             }
                                                                             const { data: orderData } = await supabase.from('orders').select('*, order_items(*), profiles(full_name, email)').eq('id', order.id).single();
                                                                             if (!orderData) throw new Error('No se encontraron los datos del pedido para la factura.');
-
                                                                             const customer = {
                                                                                 name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
                                                                                 docType: orderData.shipping_address?.docType || 'CC',
@@ -752,7 +751,6 @@ const OrderManager: React.FC = () => {
                                                                                 email: orderData.shipping_address?.email || orderData.profiles?.email || '',
                                                                                 phone: orderData.shipping_address?.phone || ''
                                                                             };
-
                                                                             await invoiceService.generateInvoice(order.id, orderData as any, customer);
                                                                             window.open(`/#/invoice/${order.id}`, '_blank');
                                                                         } catch (err: any) {
@@ -763,7 +761,7 @@ const OrderManager: React.FC = () => {
                                                                             });
                                                                         }
                                                                     }}
-                                                                    className="h-8 w-8 flex items-center justify-center bg-white/5 text-[#C5A065] rounded-lg border border-white/10 hover:bg-white/10 transition-all"
+                                                                    className="h-8 w-8 flex items-center justify-center bg-white/5 text-[#C8AA6E] rounded-lg border border-white/10 hover:bg-white/10 transition-all"
                                                                     title="Factura"
                                                                 >
                                                                     <span className="material-icons-outlined text-sm">receipt_long</span>

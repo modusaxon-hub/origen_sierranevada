@@ -41,8 +41,8 @@ const ProveedorDashboard = lazy(() => import('./pages/ProveedorDashboard'));
 // Loading Placeholder
 const PageLoader = () => (
     <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
-        <Logo className="w-[240px] h-auto opacity-70" />
+        <div className="w-12 h-12 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin mb-4"></div>
+        <Logo className="w-[240px] h-auto opacity-70 animate-pulse" />
     </div>
 );
 

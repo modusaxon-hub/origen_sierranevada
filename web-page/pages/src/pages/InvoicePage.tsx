@@ -127,7 +127,7 @@ const InvoicePage: React.FC = () => {
         return (
             <div className="min-h-screen bg-[#0B120D] flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin h-12 w-12 border-4 border-[#C5A065] border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <div className="animate-spin h-12 w-12 border-4 border-[#C8AA6E] border-t-transparent rounded-full mx-auto mb-4"></div>
                     <p className="text-gray-400">Cargando factura...</p>
                 </div>
             </div>
@@ -167,11 +167,11 @@ const InvoicePage: React.FC = () => {
             <div className="max-w-4xl mx-auto">
                 {/* Header con botones */}
                 <div className="mb-8 flex justify-between items-center">
-                    <h1 className="text-3xl font-serif text-[#C5A065]">Factura Electrónica</h1>
+                    <h1 className="text-3xl font-serif text-[#C8AA6E]">Factura Electrónica</h1>
                     <div className="flex gap-4">
                         <button
                             onClick={() => window.print()}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#C5A065] text-black font-bold rounded-lg hover:bg-[#D4B075] transition-colors"
+                            className="flex items-center gap-2 px-6 py-3 bg-[#C8AA6E] text-black font-bold rounded-lg hover:bg-[#D4B075] transition-colors"
                         >
                             <span className="material-icons-outlined">print</span>
                             Imprimir
@@ -184,7 +184,7 @@ const InvoicePage: React.FC = () => {
                                     window.close();
                                 }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 border border-[#C5A065] text-[#C5A065] font-bold rounded-lg hover:bg-[#C5A065]/10 transition-colors"
+                            className="flex items-center gap-2 px-6 py-3 border border-[#C8AA6E] text-[#C8AA6E] font-bold rounded-lg hover:bg-[#C8AA6E]/10 transition-colors"
                         >
                             <span className="material-icons-outlined">arrow_back</span>
                             Atrás

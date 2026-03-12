@@ -379,9 +379,9 @@ const CheckoutPage: React.FC = () => {
                         }}
                     />
 
-                    <div id="upload-comprobante" className="mt-8 bg-white/5 border border-[#C5A065]/30 rounded-2xl p-8 animate-slide-up">
+                    <div id="upload-comprobante" className="mt-8 bg-white/5 border border-[#C8AA6E]/30 rounded-2xl p-8 animate-slide-up">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-[#C5A065]/10 rounded-xl flex items-center justify-center text-[#C5A065]">
+                            <div className="w-12 h-12 bg-[#C8AA6E]/10 rounded-xl flex items-center justify-center text-[#C8AA6E]">
                                 <span className="material-icons-outlined">receipt_long</span>
                             </div>
                             <div>
@@ -431,7 +431,7 @@ const CheckoutPage: React.FC = () => {
                                 }}
                                 className={`absolute inset-0 w-full h-full opacity-0 z-10 ${proofSuccess ? 'cursor-default' : 'cursor-pointer'}`}
                             />
-                            <div className="bg-black/40 border-2 border-dashed border-white/10 rounded-xl p-10 flex flex-col items-center justify-center gap-3 group-hover:bg-white/5 group-hover:border-[#C5A065]/50 transition-all">
+                            <div className="bg-black/40 border-2 border-dashed border-white/10 rounded-xl p-10 flex flex-col items-center justify-center gap-3 group-hover:bg-white/5 group-hover:border-[#C8AA6E]/50 transition-all">
                                 {proofSuccess ? (
                                     <>
                                         <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mb-2 animate-bounce">
@@ -442,12 +442,12 @@ const CheckoutPage: React.FC = () => {
                                     </>
                                 ) : loading ? (
                                     <>
-                                        <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-2"></div>
+                                        <div className="w-12 h-12 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin mb-2"></div>
                                         <span className="text-sm text-white font-bold uppercase tracking-widest">Subiendo...</span>
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-icons-outlined text-[#C5A065] text-4xl mb-2">cloud_upload</span>
+                                        <span className="material-icons-outlined text-[#C8AA6E] text-4xl mb-2">cloud_upload</span>
                                         <span className="text-sm text-white font-bold">Seleccionar archivo</span>
                                         <span className="text-[10px] text-gray-500 uppercase tracking-widest text-center">Formatos aceptados: JPG, PNG, PDF (Máx 5MB)</span>
                                     </>
@@ -458,7 +458,7 @@ const CheckoutPage: React.FC = () => {
 
                     <div className="mt-8 text-center flex justify-center gap-8">
                         <button onClick={() => navigate('/account')} className="text-gray-500 hover:text-white underline transition-colors text-xs uppercase tracking-widest">Ver mis pedidos</button>
-                        <button onClick={() => navigate('/')} className="text-[#C5A065] hover:text-white underline transition-colors text-xs uppercase tracking-widest">Volver al inicio</button>
+                        <button onClick={() => navigate('/')} className="text-[#C8AA6E] hover:text-white underline transition-colors text-xs uppercase tracking-widest">Volver al inicio</button>
                     </div>
                 </div>
                 <InstitutionalModal
@@ -475,19 +475,19 @@ const CheckoutPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#0B120D] text-white pt-32 pb-20 px-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="font-serif text-4xl md:text-5xl text-[#C5A065] mb-12 text-center">Finalizar Pedido</h1>
+                <h1 className="font-serif text-4xl md:text-5xl text-[#C8AA6E] mb-12 text-center">Finalizar Pedido</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-7 space-y-8">
                         <form ref={formRef} onSubmit={handleSubmit} id="checkout-form" className="space-y-6 bg-white/5 border border-white/10 p-8 rounded-2xl">
                             <h2 className="font-serif text-2xl text-white mb-6 border-b border-white/10 pb-4">Información de Envío</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Nombre Completo' : 'Full Name'} *</label>
-                                    <input required name="fullName" value={form.fullName} onChange={handleInputChange} type="text" placeholder="Juan Pérez" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors" />
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Nombre Completo' : 'Full Name'} *</label>
+                                    <input required name="fullName" value={form.fullName} onChange={handleInputChange} type="text" placeholder="Juan Pérez" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Correo Electrónico' : 'Email'} *</label>
-                                    <input required name="email" value={form.email} onChange={handleInputChange} type="email" placeholder="correo@ejemplo.com" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors" />
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Correo Electrónico' : 'Email'} *</label>
+                                    <input required name="email" value={form.email} onChange={handleInputChange} type="email" placeholder="correo@ejemplo.com" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors" />
                                     <p className="text-[9px] text-gray-500 italic mt-1 leading-tight">
                                         {lang === 'es'
                                             ? 'Recibirás actualizaciones de tu pedido en este correo. Asegúrate de que sea válido.'
@@ -497,59 +497,59 @@ const CheckoutPage: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Tipo Documento' : 'Doc Type'} *</label>
-                                    <select required name="docType" value={form.docType} onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none appearance-none">
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Tipo Documento' : 'Doc Type'} *</label>
+                                    <select required name="docType" value={form.docType} onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none appearance-none">
                                         {TIPOS_DOCUMENTO.map(tipo => <option key={tipo.value} value={tipo.value} className="bg-[#1a1a1a]">{tipo.label}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Número Documento' : 'Doc Number'} *</label>
-                                    <input required name="docNumber" value={form.docNumber} onChange={handleInputChange} type="text" placeholder="1234567890" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors" />
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Número Documento' : 'Doc Number'} *</label>
+                                    <input required name="docNumber" value={form.docNumber} onChange={handleInputChange} type="text" placeholder="1234567890" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Teléfono' : 'Phone'} *</label>
-                                    <input required name="phone" value={form.phone} onChange={handleInputChange} type="tel" placeholder="+57 300 123 4567" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors" />
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Teléfono' : 'Phone'} *</label>
+                                    <input required name="phone" value={form.phone} onChange={handleInputChange} type="tel" placeholder="+57 300 123 4567" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors" />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Dirección Completa</label>
-                                <input required name="address" value={form.address} onChange={handleInputChange} type="text" placeholder="Calle, número, apto/oficina" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors" />
+                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Dirección Completa</label>
+                                <input required name="address" value={form.address} onChange={handleInputChange} type="text" placeholder="Calle, número, apto/oficina" className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Departamento' : 'State/Province'} *</label>
-                                    <select required name="department" value={form.department} onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none appearance-none">
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Departamento' : 'State/Province'} *</label>
+                                    <select required name="department" value={form.department} onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none appearance-none">
                                         <option value="" className="bg-[#1a1a1a]">{lang === 'es' ? 'Seleccionar...' : 'Select...'}</option>
                                         {DEPARTAMENTOS_COLOMBIA.map(dpto => <option key={dpto} value={dpto} className="bg-[#1a1a1a]">{dpto}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">{lang === 'es' ? 'Ciudad' : 'City'} *</label>
-                                    <select required name="city" value={form.city} onChange={handleInputChange} disabled={!form.department} className={`w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none appearance-none transition-colors ${!form.department ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">{lang === 'es' ? 'Ciudad' : 'City'} *</label>
+                                    <select required name="city" value={form.city} onChange={handleInputChange} disabled={!form.department} className={`w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none appearance-none transition-colors ${!form.department ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         <option value="" className="bg-[#1a1a1a]">{form.department ? (lang === 'es' ? 'Seleccionar Ciudad...' : 'Select City...') : (lang === 'es' ? 'Elija Depto primero' : 'Choose Dept first')}</option>
                                         {form.department && CITIES_BY_DEPARTMENT[form.department]?.map(city => <option key={city} value={city} className="bg-[#1a1a1a]">{city}</option>)}
                                     </select>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] text-[#C5A065] uppercase tracking-widest font-bold">Notas del Pedido (Opcional)</label>
-                                <textarea name="notes" value={form.notes} onChange={handleInputChange} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C5A065] outline-none transition-colors resize-none"></textarea>
+                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Notas del Pedido (Opcional)</label>
+                                <textarea name="notes" value={form.notes} onChange={handleInputChange} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 focus:border-[#C8AA6E] outline-none transition-colors resize-none"></textarea>
                             </div>
                         </form>
 
-                        <div className="bg-[#C5A065]/5 border border-[#C5A065]/20 p-8 rounded-2xl">
+                        <div className="bg-[#C8AA6E]/5 border border-[#C8AA6E]/20 p-8 rounded-2xl">
                             <h2 className="font-serif text-2xl text-white mb-6">Método de Pago</h2>
                             <div className="space-y-4">
-                                <div className="flex items-center gap-4 p-4 border border-[#C5A065] bg-[#C5A065]/10 rounded-xl">
-                                    <div className="w-6 h-6 rounded-full border-4 border-[#C5A065] bg-black"></div>
+                                <div className="flex items-center gap-4 p-4 border border-[#C8AA6E] bg-[#C8AA6E]/10 rounded-xl">
+                                    <div className="w-6 h-6 rounded-full border-4 border-[#C8AA6E] bg-black"></div>
                                     <div className="flex-1">
                                         <p className="font-bold text-sm">Transferencia Manual / Nequi</p>
                                         <p className="text-[10px] text-gray-400 uppercase">Paga a Nequi: 310 740 5154</p>
                                     </div>
-                                    <span className="material-icons-outlined text-[#C5A065]">account_balance_wallet</span>
+                                    <span className="material-icons-outlined text-[#C8AA6E]">account_balance_wallet</span>
                                 </div>
-                                <div className="p-4 rounded-xl bg-[#C5A065]/5 border-l-2 border-[#C5A065]/40 flex gap-3 items-start animate-fade-in shadow-[inset_0_0_20px_rgba(197,160,101,0.05)]">
-                                    <span className="material-icons-outlined text-[#C5A065] text-lg shrink-0 mt-0.5">info</span>
+                                <div className="p-4 rounded-xl bg-[#C8AA6E]/5 border-l-2 border-[#C8AA6E]/40 flex gap-3 items-start animate-fade-in shadow-[inset_0_0_20px_rgba(200,170,110,0.05)]">
+                                    <span className="material-icons-outlined text-[#C8AA6E] text-lg shrink-0 mt-0.5">info</span>
                                     <p className="text-xs text-white/80 leading-relaxed font-medium italic">
                                         {lang === 'es'
                                             ? 'Al completar el pedido, verás las instrucciones detalladas para realizar la transferencia y subir tu comprobante de pago.'
@@ -581,13 +581,13 @@ const CheckoutPage: React.FC = () => {
                                                                 {item.sub && (
                                                                     <>
                                                                         <span className="text-[10px] text-gray-700">•</span>
-                                                                        <p className="text-[10px] text-[#C5A065] font-bold uppercase tracking-tighter">{item.sub}</p>
+                                                                        <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-tighter">{item.sub}</p>
                                                                     </>
                                                                 )}
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <p className="text-sm font-bold text-[#C5A065]">{formatPrice(item.price * item.qty)}</p>
+                                                    <p className="text-sm font-bold text-[#C8AA6E]">{formatPrice(item.price * item.qty)}</p>
                                                 </div>
                                                 {isOverStock && (
                                                     <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2 flex items-center gap-2 animate-pulse">
@@ -623,7 +623,7 @@ const CheckoutPage: React.FC = () => {
                                     </div>
                                     <div className="flex justify-between text-xl font-serif pt-4 border-t border-white/10">
                                         <span className="text-white">{lang === 'es' ? 'Total a Pagar' : 'Total to Pay'}</span>
-                                        <span className="text-[#C5A065]">{formatPrice(finalTotal)}</span>
+                                        <span className="text-[#C8AA6E]">{formatPrice(finalTotal)}</span>
                                     </div>
                                     <p className="text-[10px] text-gray-500 text-center italic">{lang === 'es' ? 'Los precios exhibidos ya incluyen IVA' : 'Displayed prices already include VAT'}</p>
                                 </div>
@@ -635,7 +635,7 @@ const CheckoutPage: React.FC = () => {
                                     }}
                                     type="button"
                                     disabled={loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock)}
-                                    className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C5A065] text-black hover:bg-[#D4B075] shadow-[#C5A065]/20 hover:scale-[1.02]'}`}
+                                    className={`w-full mt-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg ${loading || cartItems.length === 0 || cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-[#C8AA6E] text-black hover:bg-[#D4B075] shadow-[#C8AA6E]/20 hover:scale-[1.02]'}`}
                                 >
                                     {loading ? <span className="flex items-center justify-center gap-2"><span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>Procesando...</span> :
                                         cartItems.some(item => item.maxStock !== undefined && item.qty > item.maxStock) ? 'Corregir Stock' : 'Pagar y Finalizar'}

@@ -19,36 +19,35 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMobileMenuOpen, setIsMobileMenu
 
     return (
         <div className="w-full lg:hidden flex flex-col bg-background-dark/95 backdrop-blur-md border-b border-white/10 shadow-xl overflow-hidden">
-            {/* Tier 1: Logo Throne (Centered) */}
-            <div className="w-full flex justify-center py-8 border-b border-[#C8AA6E]/20">
-                <Link to="/" className="hover:opacity-80 transition-opacity duration-300 cursor-pointer">
-                    <Logo className="h-[34px] sm:h-[46px] md:h-[56px] w-auto" />
-                </Link>
-            </div>
+            {/* Single compact bar: Logo + Icons */}
+            <div className="w-full flex justify-between items-center px-4 py-3">
 
-            {/* Tier 2: Icons & Actions */}
-            <div className="w-full flex justify-between items-center px-4 py-2 bg-white/[0.02]">
-                {/* Left: Menu & Search */}
+                {/* Left: Logo + Menu + Search */}
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="text-white hover:text-primary transition-colors p-2"
+                        className="text-white hover:text-primary transition-colors p-2 mr-1"
+                        aria-label="Toggle menu"
                     >
                         <span className="material-icons-outlined text-2xl">{isMobileMenuOpen ? 'close' : 'menu'}</span>
                     </button>
+
+                    <Link to="/" className="hover:opacity-75 transition-opacity duration-300" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Logo className="h-[30px] sm:h-[36px] w-auto" />
+                    </Link>
+                </div>
+
+                {/* Right: Search + Track + Language + Cart */}
+                <div className="flex items-center gap-1">
                     <button onClick={onSearchOpen} className="text-white hover:text-primary transition-colors p-2">
                         <span className="material-icons-outlined text-xl">search</span>
                     </button>
-                    <button onClick={() => setIsTrackModalOpen(true)} className="text-white hover:text-primary transition-colors p-2">
+                    <button onClick={() => setIsTrackModalOpen(true)} className="text-white hover:text-primary transition-colors p-2 hidden sm:flex">
                         <span className="material-icons-outlined text-xl">radar</span>
                     </button>
-                </div>
-
-                {/* Right: Language & Cart */}
-                <div className="flex items-center gap-1">
                     <button
                         onClick={toggleLanguage}
-                        className="text-white text-[10px] font-accent border border-white/10 rounded-full px-2.5 py-1 hover:border-primary hover:text-primary transition-colors mr-1"
+                        className="text-white text-[10px] font-accent border border-white/10 rounded-full px-2 py-0.5 hover:border-primary hover:text-primary transition-colors hidden xs:flex"
                     >
                         {language.toUpperCase()}
                     </button>

@@ -179,4 +179,37 @@ Soluciones Implementadas:
 Resultado:
     ⚡ Carga de productos ahora es instantánea por categoría
     ✅ Compilación limpia sin errores
-    🔗 Navegación completa vía logos
+    🔗 Navegación completa vía logos.
+
+    
+
+------------------------------------- // -----------------------------------------
+                                11/03/2026 - Tercera sesión
+------------------------------------- // -----------------------------------------
+
+~~01 - Las secciones de "nuestra historia" y "trazabilidad" que solo sean visibles si el usuario selecciona la despensa de "cafetal" y éstas mostrarán información deacuerdo al café que se encuentre activo en el viwer. por lo tanto, la información de "nuestra historia" y "trazabilidad", debe integrarse en la sección donde el administrador maneja la información de dicho producto~~
+
+02 - Recuperación de contraseña tras 5 intentos fallidos debe enviar correo de restablecimiento (ver ítem 10 del 09/03).
+03 - Correo de bienvenida al registrarse (pendiente: configurar Site URL a puerto 5000 + BREVO_API_KEY en Supabase).
+04 - Filtro en ProductManager por proveedor, marca, peso, tipo de grano / molido.
+05 - Catálogo de suscripción activo solo para usuarios registrados (candado para no autenticados).
+06 - Panel de proveedores: indicador de tipo de pago (inventario vs. comisión por venta).
+07 - Imagen de accesorios con tamaño ajustado a su tarjeta contenedora.
+
+------------------------------------- // -----------------------------------------
+                            SESIÓN III — Resumen de Implementación
+------------------------------------- // -----------------------------------------
+
+✅ Historia & Trazabilidad dinámicas por café activo:
+   - Nueva columna `traceability JSONB` en tabla `products` (Supabase MCP).
+   - `HistoriaSection` y `MapaOrigenSection` ahora reciben el producto activo vía props.
+   - Solo se renderizan cuando la categoría activa en el viewer es "Cafetal".
+   - El contenido cambia automáticamente al navegar entre cafés.
+   - ProductManager: nuevos campos Historia y Trazabilidad solo visibles para categoría `cafetal`.
+   - Eliminada la opción "Todas" del selector de despensa en el formulario de creación de productos.
+
+✅ Documentación técnica MODUS AXON:
+   - Project Vision v2.0 · Technical Spec v2.1 · AI Compliance v3.2 · Manual Local v2.0
+   - Bitácora actualizada con entradas 012–020 (sesiones II y III del 11-03-2026).
+
+

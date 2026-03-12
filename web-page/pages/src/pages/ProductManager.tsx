@@ -52,6 +52,7 @@ const ProductManager: React.FC = () => {
         name: { es: '', en: '' },
         description: { es: '', en: '' },
         story: { es: '', en: '' },
+        traceability: { es: '', en: '' },
         tags: { es: [], en: [] },
         price: 0,
         stock: 100,
@@ -120,6 +121,7 @@ const ProductManager: React.FC = () => {
             name: { es: '', en: '' },
             description: { es: '', en: '' },
             story: { es: '', en: '' },
+            traceability: { es: '', en: '' },
             tags: { es: [], en: [] },
             price: 0,
             stock: 100,
@@ -272,7 +274,6 @@ const ProductManager: React.FC = () => {
     };
 
     const categoryNames = {
-        all: { label: 'Todas', icon: '🌟', color: '#C8AA6E' },
         cafetal: { label: 'Cafetal', icon: '☕', color: '#C8AA6E' },
         accesorios: { label: 'Accesorios', icon: '🎨', color: '#8B7355' },
         antojitos: { label: 'Antojitos', icon: '🍫', color: '#6F4E37' }
@@ -444,7 +445,8 @@ const ProductManager: React.FC = () => {
 
                                             <div className="space-y-2">
                                                 <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                    Historia del Producto ({activeLangTab.toUpperCase()})
+                                                    Historia del Café ({activeLangTab.toUpperCase()})
+                                                    {formData.category !== 'cafetal' && <span className="text-white/30 normal-case ml-2">(solo para Cafetal)</span>}
                                                 </label>
                                                 <textarea
                                                     rows={4}
@@ -454,9 +456,32 @@ const ProductManager: React.FC = () => {
                                                         story: { ...prev.story!, [activeLangTab]: e.target.value }
                                                     }))}
                                                     className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none"
-                                                    placeholder="Cuenta la historia única de este producto..."
+                                                    placeholder="Cuenta la historia única de este café..."
                                                 />
                                             </div>
+
+                                            {/* Trazabilidad — solo para Cafetal */}
+                                            {formData.category === 'cafetal' && (
+                                                <div className="space-y-2 border border-[#C8AA6E]/20 bg-[#C8AA6E]/5 rounded-xl p-4">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="material-icons-outlined text-[#C8AA6E] text-sm">travel_explore</span>
+                                                        <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
+                                                            Trazabilidad ({activeLangTab.toUpperCase()})
+                                                        </label>
+                                                    </div>
+                                                    <p className="text-white/30 text-[10px] mb-2">Describe la finca, altitud, proceso y perfil de taza. Esta información aparecerá en la sección de Trazabilidad del Home cuando este café esté activo en el visor.</p>
+                                                    <textarea
+                                                        rows={5}
+                                                        value={(formData as any).traceability?.[activeLangTab] || ''}
+                                                        onChange={(e) => setFormData(prev => ({
+                                                            ...prev,
+                                                            traceability: { ...(prev as any).traceability, [activeLangTab]: e.target.value }
+                                                        }))}
+                                                        className="w-full bg-black/40 border border-[#C8AA6E]/20 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none text-sm"
+                                                        placeholder="Ej: Finca La Jagua · San Pedro de la Sierra · 2.200 msnm · Proceso Honey · Notas: Mora, Maracuyá, Panela..."
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Columna derecha */}

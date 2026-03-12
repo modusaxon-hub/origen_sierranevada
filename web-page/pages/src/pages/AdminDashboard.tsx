@@ -116,7 +116,7 @@ const AdminDashboard: React.FC = () => {
     const pendingOrdersCount = (metrics.ordersByStatus.pending || 0) + (metrics.ordersByStatus.pending_payment || 0);
 
     return (
-        <div className="min-h-screen bg-[#0B120D] text-white font-sans selection:bg-[#C5A065] selection:text-black">
+        <div className="min-h-screen bg-[#0B120D] text-white font-sans selection:bg-[#C8AA6E] selection:text-black">
             <AdminHeader
                 title="ORIGEN ADMIN"
                 pendingOrdersCount={pendingOrdersCount}
@@ -126,7 +126,7 @@ const AdminDashboard: React.FC = () => {
             <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                     <div>
-                        <h1 className="text-4xl font-serif text-[#C5A065] mb-2 uppercase tracking-tight">
+                        <h1 className="text-4xl font-serif text-[#C8AA6E] mb-2 uppercase tracking-tight">
                             Bienvenido, {user?.user_metadata?.full_name?.split(' ')[0] || 'Administrador'}
                         </h1>
                         <p className="text-gray-400 max-w-2xl font-light">
@@ -136,12 +136,12 @@ const AdminDashboard: React.FC = () => {
 
                     <div className="flex flex-col gap-4">
                         {pendingCount > 0 && (
-                            <div onClick={() => navigate('/admin/users')} className="bg-[#C5A065]/10 border border-[#C5A065]/30 p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-[#C5A065]/20 transition-all animate-pulse">
-                                <div className="w-10 h-10 rounded-full bg-[#C5A065] flex items-center justify-center text-black shadow-[0_0_15px_rgba(197,160,101,0.5)]">
+                            <div onClick={() => navigate('/admin/users')} className="bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-[#C8AA6E]/20 transition-all animate-pulse">
+                                <div className="w-10 h-10 rounded-full bg-[#C8AA6E] flex items-center justify-center text-black shadow-[0_0_15px_rgba(200,170,110,0.5)]">
                                     <span className="material-icons-outlined">person_add</span>
                                 </div>
                                 <div>
-                                    <p className="text-[#C5A065] text-[10px] font-bold uppercase tracking-widest">Autorización Pendiente</p>
+                                    <p className="text-[#C8AA6E] text-[10px] font-bold uppercase tracking-widest">Autorización Pendiente</p>
                                     <p className="text-white text-sm font-medium">Hay {pendingCount} {pendingCount === 1 ? 'solicitud' : 'solicitudes'} en espera</p>
                                 </div>
                             </div>
@@ -165,35 +165,35 @@ const AdminDashboard: React.FC = () => {
                 <section className="mb-16">
                     <div className="flex items-center justify-between mb-8">
                         <h2 className="text-2xl font-serif text-white uppercase tracking-tight">Métricas de Ventas</h2>
-                        <button onClick={fetchMetrics} disabled={metrics.metricsLoading} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-[#C5A065]/30 rounded-lg text-[#C5A065] hover:bg-[#C5A065]/10 transition-all disabled:opacity-50">
+                        <button onClick={fetchMetrics} disabled={metrics.metricsLoading} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-[#C8AA6E]/30 rounded-lg text-[#C8AA6E] hover:bg-[#C8AA6E]/10 transition-all disabled:opacity-50">
                             <span className={`material-icons-outlined text-sm ${metrics.metricsLoading ? 'animate-spin' : ''}`}>refresh</span>
                             Actualizar
                         </button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-white/5 border border-[#C5A065]/20 rounded-2xl p-6 hover:border-[#C5A065]/40 transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-[#C5A065]/10 flex items-center justify-center text-[#C5A065] mb-4">
+                        <div className="bg-white/5 border border-[#C8AA6E]/20 rounded-2xl p-6 hover:border-[#C8AA6E]/40 transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-[#C8AA6E]/10 flex items-center justify-center text-[#C8AA6E] mb-4">
                                 <span className="material-icons-outlined text-lg">trending_up</span>
                             </div>
-                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C5A065] mb-2">${(metrics.ventasHoy / 1000).toFixed(1)}K</p>}
+                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C8AA6E] mb-2">${(metrics.ventasHoy / 1000).toFixed(1)}K</p>}
                             <p className="text-xs text-white/40 font-light">Ventas Hoy</p>
                         </div>
-                        <div className="bg-white/5 border border-[#C5A065]/20 rounded-2xl p-6 hover:border-[#C5A065]/40 transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-[#C5A065]/10 flex items-center justify-center text-[#C5A065] mb-4">
+                        <div className="bg-white/5 border border-[#C8AA6E]/20 rounded-2xl p-6 hover:border-[#C8AA6E]/40 transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-[#C8AA6E]/10 flex items-center justify-center text-[#C8AA6E] mb-4">
                                 <span className="material-icons-outlined text-lg">calendar_month</span>
                             </div>
-                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C5A065] mb-2">${(metrics.ventasMes / 1000).toFixed(1)}K</p>}
+                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C8AA6E] mb-2">${(metrics.ventasMes / 1000).toFixed(1)}K</p>}
                             <p className="text-xs text-white/40 font-light">Ventas Este Mes</p>
                         </div>
-                        <div className="bg-white/5 border border-[#C5A065]/20 rounded-2xl p-6 hover:border-[#C5A065]/40 transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-[#C5A065]/10 flex items-center justify-center text-[#C5A065] mb-4">
+                        <div className="bg-white/5 border border-[#C8AA6E]/20 rounded-2xl p-6 hover:border-[#C8AA6E]/40 transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-[#C8AA6E]/10 flex items-center justify-center text-[#C8AA6E] mb-4">
                                 <span className="material-icons-outlined text-lg">person_add</span>
                             </div>
-                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C5A065] mb-2">{pendingCount}</p>}
+                            {metrics.metricsLoading ? <div className="h-8 bg-white/5 rounded animate-pulse mb-2"></div> : <p className="text-3xl font-serif text-[#C8AA6E] mb-2">{pendingCount}</p>}
                             <p className="text-xs text-white/40 font-light">Usuarios Pendientes</p>
                         </div>
-                        <div className="bg-white/5 border border-[#C5A065]/20 rounded-2xl p-6 hover:border-[#C5A065]/40 transition-all">
+                        <div className="bg-white/5 border border-[#C8AA6E]/20 rounded-2xl p-6 hover:border-[#C8AA6E]/40 transition-all">
                             <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 mb-4">
                                 <span className="material-icons-outlined text-lg">warning</span>
                             </div>
@@ -202,7 +202,7 @@ const AdminDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white/5 border border-[#C5A065]/20 rounded-2xl p-6">
+                    <div className="bg-white/5 border border-[#C8AA6E]/20 rounded-2xl p-6">
                         <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white/60 mb-6">Pedidos por Estado</h3>
                         <div className="space-y-4">
                             {(['pending_payment', 'pending', 'paid', 'shipped', 'delivered'] as const).map(status => {
@@ -221,10 +221,10 @@ const AdminDashboard: React.FC = () => {
                                     <div key={status}>
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="text-xs font-bold uppercase tracking-widest text-white/60">{statusLabels[status]}</span>
-                                            <span className="text-xs text-[#C5A065] font-bold">{count}</span>
+                                            <span className="text-xs text-[#C8AA6E] font-bold">{count}</span>
                                         </div>
                                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-[#C5A065] transition-all duration-500" style={{ width: `${pct}%` }}></div>
+                                            <div className="h-full bg-[#C8AA6E] transition-all duration-500" style={{ width: `${pct}%` }}></div>
                                         </div>
                                     </div>
                                 );
@@ -234,46 +234,46 @@ const AdminDashboard: React.FC = () => {
                 </section>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div onClick={() => navigate('/admin/products')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065]">inventory_2</span></div>
+                    <div onClick={() => navigate('/admin/products')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E]">inventory_2</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Productos</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Gestiona el catálogo, precios y stock.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
-                    <div onClick={() => navigate('/admin/orders')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065] font-bold">shopping_bag</span></div>
+                    <div onClick={() => navigate('/admin/orders')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E] font-bold">shopping_bag</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Pedidos</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Monitorea transacciones y envíos.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Bitácora <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Bitácora <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
-                    <div onClick={() => navigate('/admin/reports')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065] font-bold">query_stats</span></div>
+                    <div onClick={() => navigate('/admin/reports')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E] font-bold">query_stats</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Cruce de Ventas</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Liquidación de pagos a proveedores.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Reporte <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Reporte <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
-                    <div onClick={() => navigate('/admin/users')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065]">group</span></div>
+                    <div onClick={() => navigate('/admin/users')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E]">group</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Usuarios</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Administra roles y clientes.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Equipo <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Equipo <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
-                    <div onClick={() => navigate('/admin/content')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065]">article</span></div>
+                    <div onClick={() => navigate('/admin/content')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E]">article</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Contenido del Sitio</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Edita Historia, Fincas y Testimonios.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
-                    <div onClick={() => navigate('/brandbook')} className="group relative bg-white/5 border border-[#C5A065]/20 hover:border-[#C5A065] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C5A065]">style</span></div>
+                    <div onClick={() => navigate('/brandbook')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
+                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E]">style</span></div>
                         <h3 className="text-2xl font-serif text-white mb-4">Brandbook</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Guías de marca y diseño.</p>
-                        <button className="flex items-center gap-2 text-[#C5A065] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Guías <span className="material-icons-outlined text-sm">arrow_forward</span></button>
+                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Guías <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
                 </div>
             </main>

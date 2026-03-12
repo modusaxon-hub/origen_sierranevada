@@ -108,7 +108,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                                             {detail?.sub && (
                                                 <>
                                                     <span className="text-white/10">•</span>
-                                                    <span className="text-[#C5A065] font-bold uppercase tracking-widest">
+                                                    <span className="text-[#C8AA6E] font-bold uppercase tracking-widest">
                                                         {detail.sub}
                                                     </span>
                                                 </>

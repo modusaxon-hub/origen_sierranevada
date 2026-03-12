@@ -44,13 +44,13 @@ const TransferInstructions: React.FC<TransferInstructionsProps> = ({
     };
 
     return (
-        <div className="bg-[#1A261D] border border-[#C5A065]/30 rounded-2xl overflow-hidden max-w-2xl mx-auto">
+        <div className="bg-[#1A261D] border border-[#C8AA6E]/30 rounded-2xl overflow-hidden max-w-2xl mx-auto">
 
             {/* Header */}
-            <div className="bg-[#C5A065]/10 border-b border-[#C5A065]/20 px-6 py-4 flex items-center justify-between">
+            <div className="bg-[#C8AA6E]/10 border-b border-[#C8AA6E]/20 px-6 py-4 flex items-center justify-between">
                 <div>
                     <p className="text-xs text-gray-400 uppercase tracking-widest">Orden #{ref}</p>
-                    <p className="text-2xl font-serif text-[#C5A065]">{formatPrice(total)}</p>
+                    <p className="text-2xl font-serif text-[#C8AA6E]">{formatPrice(total)}</p>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#8B5CF6] bg-[#8B5CF6]/10 border border-[#8B5CF6]/30 px-3 py-1.5 rounded-full">
                     <span>💜</span>
@@ -87,14 +87,14 @@ const TransferInstructions: React.FC<TransferInstructionsProps> = ({
                     </div>
                     <div>
                         <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Referencia</p>
-                        <p className="text-lg font-bold text-[#C5A065]">ORD-{ref}</p>
+                        <p className="text-lg font-bold text-[#C8AA6E]">ORD-{ref}</p>
                     </div>
                 </div>
 
                 {/* Acciones */}
                 <button
                     onClick={onReadyToUpload}
-                    className="w-full bg-[#C5A065] hover:bg-[#D4AF74] text-black font-bold py-4 px-6 rounded-xl uppercase tracking-widest text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-[#C5A065]/20"
+                    className="w-full bg-[#C8AA6E] hover:bg-[#D4AF74] text-black font-bold py-4 px-6 rounded-xl uppercase tracking-widest text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-[#C8AA6E]/20"
                 >
                     <span className="material-icons-outlined text-sm">cloud_upload</span>
                     Ya Pagué — Subir Comprobante

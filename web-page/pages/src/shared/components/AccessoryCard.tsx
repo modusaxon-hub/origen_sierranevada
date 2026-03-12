@@ -27,7 +27,7 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
             <div className="absolute inset-0 z-0 bg-[#080A09]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-10"></div>
                 {/* Subtle spotlight effect */}
-                <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-[#C5A065]/10 blur-[100px] rounded-full"></div>
+                <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-[#C8AA6E]/10 blur-[100px] rounded-full"></div>
             </div>
 
             {/* Content Overlay */}
@@ -79,7 +79,7 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
                         disabled={(product.stock ?? 0) <= 0}
                         className={`px-8 py-3 rounded text-xs font-bold uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 w-full md:w-auto min-w-[140px] ${(product.stock ?? 0) <= 0
                             ? 'bg-gray-500/20 text-white/20 cursor-not-allowed'
-                            : 'bg-[#C5A065] text-black hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)]'
+                            : 'bg-[#C8AA6E] text-black hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(200,170,110,0.3)]'
                             }`}
                     >
                         {(product.stock ?? 0) <= 0

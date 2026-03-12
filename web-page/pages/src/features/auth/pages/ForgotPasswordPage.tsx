@@ -67,7 +67,7 @@ const ForgotPasswordPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#050806] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-[#050806] flex items-center justify-center p-4 pt-24 md:pt-28 pb-8">
             <div className="w-full max-w-md rounded-2xl border border-[#C8AA6E]/20 bg-[#0A0C0B]/95 backdrop-blur-2xl p-8 md:p-10">
                 {/* Top accent line */}
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C8AA6E] to-transparent" />

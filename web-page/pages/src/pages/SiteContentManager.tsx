@@ -59,10 +59,10 @@ const MATERIAL_ICONS = ['spa', 'local_florist', 'eco', 'terrain', 'coffee', 'wat
 const PROCESO_OPTIONS = ['Lavado', 'Honey', 'Natural', 'Anaeróbico', 'Carbónico', 'Doble Fermentación'];
 
 function InputRow({ label, value, onChange, multiline = false, placeholder = '' }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string }) {
-    const cls = 'w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#C5A065] focus:bg-[#1E2E21] focus:outline-none transition-all text-sm';
+    const cls = 'w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#C8AA6E] focus:bg-[#1E2E21] focus:outline-none transition-all text-sm';
     return (
         <div>
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">{label}</label>
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]/90 mb-1.5 block">{label}</label>
             {multiline
                 ? <textarea className={cls + ' resize-none h-24'} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
                 : <input className={cls} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />}
@@ -72,7 +72,7 @@ function InputRow({ label, value, onChange, multiline = false, placeholder = '' 
 
 function Badge({ text }: { text: string }) {
     return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#C5A065]/30 text-[#C5A065] text-[9px] font-bold uppercase tracking-widest">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#C8AA6E]/30 text-[#C8AA6E] text-[9px] font-bold uppercase tracking-widest">
             {text}
         </span>
     );
@@ -220,11 +220,11 @@ const SiteContentManager: React.FC = () => {
 
                 {/* Page Header */}
                 <div className="mb-10">
-                    <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-white/30 hover:text-[#C5A065] transition-colors text-xs font-bold uppercase tracking-widest mb-4">
+                    <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-white/30 hover:text-[#C8AA6E] transition-colors text-xs font-bold uppercase tracking-widest mb-4">
                         <span className="material-icons-outlined text-base">arrow_back</span>
                         Volver al dashboard
                     </button>
-                    <h1 className="text-4xl font-serif text-[#C5A065] mb-2">Gestión de Contenido</h1>
+                    <h1 className="text-4xl font-serif text-[#C8AA6E] mb-2">Gestión de Contenido</h1>
                     <p className="text-white/40 font-light">Edita y publica en tiempo real las secciones narrativas del sitio web.</p>
                 </div>
 
@@ -236,7 +236,7 @@ const SiteContentManager: React.FC = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => { setActiveTab(tab.id); setEditingFincaIdx(null); setEditingTestIdx(null); }}
-                                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left border ${activeTab === tab.id ? 'bg-[#C5A065]/15 border-[#C5A065]/40 text-[#C5A065]' : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:border-white/20'}`}
+                                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left border ${activeTab === tab.id ? 'bg-[#C8AA6E]/15 border-[#C8AA6E]/40 text-[#C8AA6E]' : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:border-white/20'}`}
                             >
                                 <span className="material-icons-outlined">{tab.icon}</span>
                                 <span className="text-[11px] font-bold uppercase tracking-widest">{tab.label}</span>
@@ -274,7 +274,7 @@ const SiteContentManager: React.FC = () => {
                                     <button
                                         onClick={() => upsert('historia', historia)}
                                         disabled={saving}
-                                        className="flex items-center gap-2 px-6 py-3 bg-[#C5A065] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
+                                        className="flex items-center gap-2 px-6 py-3 bg-[#C8AA6E] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
                                     >
                                         {saving ? <span className="material-icons-outlined text-sm animate-spin">refresh</span> : <span className="material-icons-outlined text-sm">cloud_upload</span>}
                                         Publicar Cambios
@@ -322,11 +322,11 @@ const SiteContentManager: React.FC = () => {
                                             <InputRow label={`Valor ${i + 1}`} value={stat.value} onChange={v => updateStat(i, 'value', v)} />
                                             <InputRow label="Etiqueta" value={stat.label} onChange={v => updateStat(i, 'label', v)} />
                                             <div>
-                                                <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-1 block">Ícono Material</label>
+                                                <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-1 block">Ícono Material</label>
                                                 <select
                                                     value={stat.icon}
                                                     onChange={e => updateStat(i, 'icon', e.target.value)}
-                                                    className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm"
+                                                    className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C8AA6E] focus:outline-none transition-all text-sm"
                                                 >
                                                     {MATERIAL_ICONS.map(ic => <option key={ic} value={ic} className="bg-[#1A261D] text-white">{ic}</option>)}
                                                 </select>
@@ -357,7 +357,7 @@ const SiteContentManager: React.FC = () => {
                                         <button
                                             onClick={() => upsert('fincas', { list: fincas })}
                                             disabled={saving}
-                                            className="flex items-center gap-2 px-6 py-2.5 bg-[#C5A065] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
+                                            className="flex items-center gap-2 px-6 py-2.5 bg-[#C8AA6E] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
                                         >
                                             {saving ? <span className="material-icons-outlined text-sm animate-spin">refresh</span> : <span className="material-icons-outlined text-sm">cloud_upload</span>}
                                             Publicar
@@ -370,12 +370,12 @@ const SiteContentManager: React.FC = () => {
                                     {fincas.map((finca, idx) => (
                                         <div
                                             key={idx}
-                                            className={`relative rounded-2xl border p-5 transition-all ${editingFincaIdx === idx ? 'border-[#C5A065]/60 bg-[#141E16]/60' : 'border-white/10 bg-white/[0.03] hover:border-white/20'}`}
+                                            className={`relative rounded-2xl border p-5 transition-all ${editingFincaIdx === idx ? 'border-[#C8AA6E]/60 bg-[#141E16]/60' : 'border-white/10 bg-white/[0.03] hover:border-white/20'}`}
                                         >
                                             {editingFincaIdx === idx && fincaForm ? (
                                                 // ── EDIT FORM ──
                                                 <div className="space-y-3">
-                                                    <p className="text-[10px] font-bold text-[#C5A065] uppercase tracking-widest mb-2">Editando finca #{idx + 1}</p>
+                                                    <p className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-widest mb-2">Editando finca #{idx + 1}</p>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <InputRow label="Nombre" value={fincaForm.nombre} onChange={v => setFincaForm(p => p && ({ ...p, nombre: v }))} />
                                                         <InputRow label="Municipio" value={fincaForm.municipio} onChange={v => setFincaForm(p => p && ({ ...p, municipio: v }))} />
@@ -385,8 +385,8 @@ const SiteContentManager: React.FC = () => {
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <InputRow label="Perfil de taza" value={fincaForm.perfil} onChange={v => setFincaForm(p => p && ({ ...p, perfil: v }))} />
                                                         <div>
-                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">Proceso</label>
-                                                            <select value={fincaForm.proceso} onChange={e => setFincaForm(p => p && ({ ...p, proceso: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
+                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]/90 mb-1.5 block">Proceso</label>
+                                                            <select value={fincaForm.proceso} onChange={e => setFincaForm(p => p && ({ ...p, proceso: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C8AA6E] focus:outline-none transition-all text-sm">
                                                                 {PROCESO_OPTIONS.map(o => <option key={o} value={o} className="bg-[#1A261D] text-white">{o}</option>)}
                                                             </select>
                                                         </div>
@@ -394,15 +394,15 @@ const SiteContentManager: React.FC = () => {
                                                     <InputRow label="Notas de cata (separadas por · )" value={fincaForm.notas} onChange={v => setFincaForm(p => p && ({ ...p, notas: v }))} />
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div>
-                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]/90 mb-1.5 block">Ícono</label>
-                                                            <select value={fincaForm.icon} onChange={e => setFincaForm(p => p && ({ ...p, icon: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C5A065] focus:outline-none transition-all text-sm">
+                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]/90 mb-1.5 block">Ícono</label>
+                                                            <select value={fincaForm.icon} onChange={e => setFincaForm(p => p && ({ ...p, icon: e.target.value }))} className="w-full bg-[#1A261D] border border-white/15 rounded-xl px-4 py-3 text-white focus:border-[#C8AA6E] focus:outline-none transition-all text-sm">
                                                                 {MATERIAL_ICONS.map(ic => <option key={ic} value={ic} className="bg-[#1A261D] text-white">{ic}</option>)}
                                                             </select>
                                                         </div>
                                                         <InputRow label="Color (hex)" value={fincaForm.color} onChange={v => setFincaForm(p => p && ({ ...p, color: v }))} />
                                                     </div>
                                                     <div className="flex gap-2 pt-2">
-                                                        <button onClick={saveFinca} className="flex-1 py-2.5 bg-[#C5A065] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all">Guardar</button>
+                                                        <button onClick={saveFinca} className="flex-1 py-2.5 bg-[#C8AA6E] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all">Guardar</button>
                                                         <button onClick={() => { setEditingFincaIdx(null); setFincaForm(null); }} className="px-4 py-2.5 bg-white/5 border border-white/10 text-white/60 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all">Cancelar</button>
                                                         <button onClick={() => deleteFinca(idx)} className="px-4 py-2.5 bg-red-900/40 border border-red-700/30 text-red-400 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-red-900/70 transition-all">
                                                             <span className="material-icons-outlined text-sm">delete</span>
@@ -420,7 +420,7 @@ const SiteContentManager: React.FC = () => {
                                                         <p className="text-white/50 text-xs">{finca.municipio} · {finca.altitud} msnm</p>
                                                         <p className="text-white/50 text-xs mt-1">{finca.proceso} · {finca.perfil}</p>
                                                     </div>
-                                                    <button onClick={() => startEditFinca(idx)} className="p-2 rounded-lg bg-white/5 hover:bg-[#C5A065]/20 text-white/40 hover:text-[#C5A065] transition-all">
+                                                    <button onClick={() => startEditFinca(idx)} className="p-2 rounded-lg bg-white/5 hover:bg-[#C8AA6E]/20 text-white/40 hover:text-[#C8AA6E] transition-all">
                                                         <span className="material-icons-outlined text-sm">edit</span>
                                                     </button>
                                                 </div>
@@ -451,7 +451,7 @@ const SiteContentManager: React.FC = () => {
                                         <button
                                             onClick={() => upsert('testimonios', { list: testimonios })}
                                             disabled={saving}
-                                            className="flex items-center gap-2 px-6 py-2.5 bg-[#C5A065] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
+                                            className="flex items-center gap-2 px-6 py-2.5 bg-[#C8AA6E] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all disabled:opacity-50"
                                         >
                                             {saving ? <span className="material-icons-outlined text-sm animate-spin">refresh</span> : <span className="material-icons-outlined text-sm">cloud_upload</span>}
                                             Publicar
@@ -463,11 +463,11 @@ const SiteContentManager: React.FC = () => {
                                     {testimonios.map((t, idx) => (
                                         <div
                                             key={idx}
-                                            className={`rounded-2xl border p-5 transition-all ${editingTestIdx === idx ? 'border-[#C5A065]/60 bg-[#141E16]/60' : 'border-white/10 bg-white/[0.03] hover:border-white/20'}`}
+                                            className={`rounded-2xl border p-5 transition-all ${editingTestIdx === idx ? 'border-[#C8AA6E]/60 bg-[#141E16]/60' : 'border-white/10 bg-white/[0.03] hover:border-white/20'}`}
                                         >
                                             {editingTestIdx === idx && testForm ? (
                                                 <div className="space-y-3">
-                                                    <p className="text-[10px] font-bold text-[#C5A065] uppercase tracking-widest">Editando reseña</p>
+                                                    <p className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-widest">Editando reseña</p>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <InputRow label="Nombre del cliente" value={testForm.nombre} onChange={v => setTestForm(p => p && ({ ...p, nombre: v }))} />
                                                         <InputRow label="Ciudad" value={testForm.ciudad} onChange={v => setTestForm(p => p && ({ ...p, ciudad: v }))} />
@@ -476,16 +476,16 @@ const SiteContentManager: React.FC = () => {
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <InputRow label="Producto comprado" value={testForm.compra} onChange={v => setTestForm(p => p && ({ ...p, compra: v }))} />
                                                         <div>
-                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-1 block">Puntuación</label>
+                                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-1 block">Puntuación</label>
                                                             <div className="flex gap-1 mt-2">
                                                                 {[1, 2, 3, 4, 5].map(n => (
-                                                                    <button key={n} onClick={() => setTestForm(p => p && ({ ...p, rating: n }))} className={`material-icons-outlined text-2xl transition-colors ${testForm.rating >= n ? 'text-[#C5A065]' : 'text-white/20 hover:text-[#C5A065]/50'}`}>star</button>
+                                                                    <button key={n} onClick={() => setTestForm(p => p && ({ ...p, rating: n }))} className={`material-icons-outlined text-2xl transition-colors ${testForm.rating >= n ? 'text-[#C8AA6E]' : 'text-white/20 hover:text-[#C8AA6E]/50'}`}>star</button>
                                                                 ))}
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-2 pt-2">
-                                                        <button onClick={saveTest} className="flex-1 py-2.5 bg-[#C5A065] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all">Guardar</button>
+                                                        <button onClick={saveTest} className="flex-1 py-2.5 bg-[#C8AA6E] text-black font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#D4B075] transition-all">Guardar</button>
                                                         <button onClick={() => { setEditingTestIdx(null); setTestForm(null); }} className="px-4 py-2.5 bg-white/5 border border-white/10 text-white/60 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all">Cancelar</button>
                                                         <button onClick={() => deleteTest(idx)} className="px-4 py-2.5 bg-red-900/40 border border-red-700/30 text-red-400 font-bold text-xs rounded-xl hover:bg-red-900/70 transition-all">
                                                             <span className="material-icons-outlined text-sm">delete</span>
@@ -497,14 +497,14 @@ const SiteContentManager: React.FC = () => {
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex gap-0.5 mb-2">
                                                             {Array.from({ length: 5 }).map((_, i) => (
-                                                                <span key={i} className={`material-icons-outlined text-xs ${i < t.rating ? 'text-[#C5A065]' : 'text-white/10'}`}>star</span>
+                                                                <span key={i} className={`material-icons-outlined text-xs ${i < t.rating ? 'text-[#C8AA6E]' : 'text-white/10'}`}>star</span>
                                                             ))}
                                                         </div>
                                                         <p className="text-white/60 text-xs italic mb-2 line-clamp-2">"{t.texto}"</p>
                                                         <p className="text-white font-bold text-sm">{t.nombre || 'Sin nombre'}</p>
                                                         <p className="text-white/50 text-[10px]">{t.ciudad} · {t.compra}</p>
                                                     </div>
-                                                    <button onClick={() => startEditTest(idx)} className="shrink-0 p-2 rounded-lg bg-white/5 hover:bg-[#C5A065]/20 text-white/40 hover:text-[#C5A065] transition-all">
+                                                    <button onClick={() => startEditTest(idx)} className="shrink-0 p-2 rounded-lg bg-white/5 hover:bg-[#C8AA6E]/20 text-white/40 hover:text-[#C8AA6E] transition-all">
                                                         <span className="material-icons-outlined text-sm">edit</span>
                                                     </button>
                                                 </div>

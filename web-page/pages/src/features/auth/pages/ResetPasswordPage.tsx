@@ -119,7 +119,7 @@ const ResetPasswordPage: React.FC = () => {
     // Token expirado o inválido
     if (!isRecoveryMode) {
         return (
-            <div className="min-h-screen bg-[#050806] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-[#050806] flex items-center justify-center p-4 pt-24 md:pt-28 pb-8">
                 <div className="w-full max-w-md rounded-2xl border border-red-500/20 bg-[#0A0C0B]/95 backdrop-blur-2xl p-8 md:p-10 text-center">
                     <div className="w-20 h-20 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
                         <span className="material-icons-outlined text-red-500 text-3xl">lock_clock</span>

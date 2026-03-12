@@ -23,10 +23,10 @@ export const emailService = {
                                 .hero { position: relative; width: 100%; height: 350px; background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1200'); background-size: cover; background-position: center; border-bottom: 2px solid #C8AA6E; }
                                 .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, #050806 100%); }
                                 .content { padding: 48px; text-align: center; }
-                                .logo { width: 120px; margin-bottom: 32px; filter: drop-shadow(0 0 10px rgba(197,160,101,0.5)); }
+                                .logo { width: 120px; margin-bottom: 32px; filter: drop-shadow(0 0 10px rgba(200, 170, 110, 0.5)); }
                                 h1 { color: #FBF5B7; font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px; letter-spacing: -0.02em; font-weight: normal; font-style: italic; }
                                 p { color: #ffffffb3; line-height: 1.8; font-size: 15px; margin-bottom: 24px; }
-                                .status-card { background: rgba(197, 160, 101, 0.05); border: 1px solid rgba(197, 160, 101, 0.2); border-radius: 16px; padding: 24px; margin: 32px 0; }
+                                .status-card { background: rgba(200, 170, 110, 0.05); border: 1px solid rgba(200, 170, 110, 0.2); border-radius: 16px; padding: 24px; margin: 32px 0; }
                                 .status-label { color: #C8AA6E; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 12px; display: block; }
                                 .status-text { color: #ffffff; font-size: 16px; font-weight: 500; }
                                 .footer { padding: 32px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -93,7 +93,7 @@ export const emailService = {
                                 .hero { position: relative; width: 100%; height: 350px; background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1200'); background-size: cover; background-position: center; border-bottom: 2px solid #C8AA6E; }
                                 .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, #050806 100%); }
                                 .content { padding: 48px; text-align: center; }
-                                .logo { width: 120px; margin-bottom: 24px; filter: drop-shadow(0 0 10px rgba(197,160,101,0.5)); }
+                                .logo { width: 120px; margin-bottom: 24px; filter: drop-shadow(0 0 10px rgba(200, 170, 110, 0.5)); }
                                 h1 { color: #C8AA6E; font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 16px; font-weight: normal; }
                                 p { color: #ffffffb3; line-height: 1.8; font-size: 15px; margin-bottom: 24px; }
                                 .btn { display: inline-block; background: #C8AA6E; color: #000; font-weight: bold; text-decoration: none; padding: 18px 40px; border-radius: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.25em; transition: all 0.3s; }
@@ -120,7 +120,7 @@ export const emailService = {
 
                                     <p style="font-size: 13px; color: rgba(255,255,255,0.4);">Prepárate para redescubrir lo que significa una verdadera taza de café.</p>
 
-                                    <div style="margin: 40px 0; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 24px;">
+                                    <div style="margin: 40px 0; text-align: center; border-top: 1px solid rgba(200, 170, 110, 0.2); padding-top: 24px;">
                                         <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">
                                             ¿Preguntas sobre tu acceso?
                                         </p>
@@ -158,7 +158,7 @@ export const emailService = {
                         <div style="font-family: sans-serif; color: #ffffff; background: #050806; padding: 40px; border-radius: 20px; border: 1px solid #C8AA6E;">
                             <h2 style="color: #C8AA6E;">Nueva Alerta de Sistema</h2>
                             <p style="color: rgba(255,255,255,0.6);">Se ha detectado una nueva acción que requiere su supervisión:</p>
-                            <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(197,160,101,0.2);">
+                            <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(200, 170, 110, 0.2);">
                                 <pre style="margin: 0; color: #FBF5B7; font-size: 14px;">${JSON.stringify(details, null, 2)}</pre>
                             </div>
                             <div style="margin-top: 32px; text-align: center;">
@@ -195,7 +195,7 @@ export const emailService = {
                                 h1 { color: #C8AA6E; font-size: 28px; margin-bottom: 20px; }
                                 .order-card { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: left; margin: 24px 0; }
                                 .item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-                                .total { border-top: 1px solid rgba(197,160,101,0.3); margin-top: 16px; padding-top: 16px; font-weight: bold; color: #C8AA6E; font-size: 18px; }
+                                .total { border-top: 1px solid rgba(200, 170, 110, 0.3); margin-top: 16px; padding-top: 16px; font-weight: bold; color: #C8AA6E; font-size: 18px; }
                                 .footer { padding: 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); font-size: 10px; color: rgba(255,255,255,0.3); }
                             </style>
                         </head>
@@ -220,7 +220,7 @@ export const emailService = {
                                     <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Recibirás una notificación cuando tu pedido sea despachado.</p>
                                     <a href="${BASE_URL}/#/account" style="display: inline-block; background: #C8AA6E; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 24px; font-size: 12px; text-transform: uppercase;">Rastrear mi pedido</a>
 
-                                    <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 20px;">
+                                    <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(200, 170, 110, 0.2); padding-top: 20px;">
                                         <p style="color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">
                                             ¿Necesitas confirmar tu pago o tienes preguntas?
                                         </p>
@@ -347,7 +347,7 @@ export const emailService = {
                                 <a href="${BASE_URL}/#/track/${orderId}" style="background: #C8AA6E; color: black; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Ver Detalles del Pedido</a>
                             </div>
 
-                            <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(197,160,101,0.2); padding-top: 20px;">
+                            <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(200, 170, 110, 0.2); padding-top: 20px;">
                                 <p style="color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">
                                     ¿Preguntas sobre tu envío?
                                 </p>

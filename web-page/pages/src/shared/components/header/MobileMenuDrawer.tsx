@@ -10,16 +10,22 @@ interface MobileMenuDrawerProps {
 
 const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, signOut } = useAuth();
     const { t } = useLanguage();
 
+    const handleLogout = async () => {
+        onClose();
+        await signOut();
+        navigate('/');
+    };
+
     return (
-        <div className={`fixed inset-0 z-40 bg-background-light dark:bg-background-dark pt-[140px] px-6 transition-transform duration-500 transform lg:hidden shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full invisible'}`}>
+        <div className={`fixed inset-0 z-40 bg-background-light dark:bg-background-dark pt-[64px] sm:pt-[68px] px-6 transition-transform duration-500 transform lg:hidden shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full invisible'}`}>
             <div className="flex flex-col gap-6 animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
                 {user ? (
                     <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-3" onClick={() => { navigate('/account'); onClose(); }}>
-                            <div className="w-10 h-10 rounded-full bg-[#C5A065]/20 flex items-center justify-center text-[#C5A065] font-bold">
+                            <div className="w-10 h-10 rounded-full bg-[#C8AA6E]/20 flex items-center justify-center text-[#C8AA6E] font-bold">
                                 {user.email?.charAt(0).toUpperCase()}
                             </div>
                             <div className="overflow-hidden">
@@ -28,11 +34,8 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
                             </div>
                         </div>
                         <button
-                            onClick={async () => {
-                                await import('@/services/authService').then(m => m.authService.signOut());
-                                window.location.href = '/';
-                            }}
-                            className="p-2 text-red-400 hover:bg-white/5 rounded-full"
+                            onClick={handleLogout}
+                            className="p-2 text-red-400 hover:bg-white/5 rounded-full transition-all active:scale-95"
                         >
                             <span className="material-icons-outlined">logout</span>
                         </button>
@@ -40,7 +43,7 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
                 ) : (
                     <button
                         onClick={() => { navigate('/login'); onClose(); }}
-                        className="bg-[#C5A065] text-black font-bold uppercase tracking-widest py-3 rounded-lg mb-4 hover:bg-[#D4B075]"
+                        className="bg-[#C8AA6E] text-black font-bold uppercase tracking-widest py-3 rounded-lg mb-4 hover:brightness-110 transition-all active:scale-95"
                     >
                         Iniciar Sesión
                     </button>
@@ -50,12 +53,12 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
                 {user && !isAdmin && (
                     <Link to="/my-orders" onClick={onClose} className="text-xl font-display font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-3 flex items-center justify-between">
                         Mis Pedidos
-                        <span className="material-icons-outlined text-[#C5A065]">receipt_long</span>
+                        <span className="material-icons-outlined text-[#C8AA6E]">receipt_long</span>
                     </Link>
                 )}
 
                 {isAdmin && (
-                    <Link to="/admin" onClick={onClose} className="text-xl font-display font-bold text-[#C5A065] border-b border-[#C5A065]/20 pb-3 flex items-center justify-between">
+                    <Link to="/admin" onClick={onClose} className="text-xl font-display font-bold text-[#C8AA6E] border-b border-[#C8AA6E]/20 pb-3 flex items-center justify-between">
                         PANEL ADMINISTRATIVO
                         <span className="material-icons-outlined">security</span>
                     </Link>

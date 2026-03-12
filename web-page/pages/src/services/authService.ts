@@ -95,19 +95,10 @@ export const authService = {
                 }
 
                 if (profile.status !== 'active') {
-                    await supabase.auth.signOut();
-                    let message = `Tu cuenta está en estado: ${profile.status}.`;
-
-                    if (profile.status === 'pending') {
-                        message = "Tu acceso está en proceso. Tu cuenta está en espera de autorización por parte de nuestros sumilleres.";
-                    } else if (profile.status === 'banned') {
-                        message = "Esta cuenta ha sido restringida por motivos de seguridad.";
-                    }
-
-                    return {
-                        data: { user: null, session: null },
-                        error: { message } as any
-                    };
+                    // Eliminamos el signOut forzado. 
+                    // Ahora permitimos que el usuario inicie sesión pero ProtectedRoute lo bloqueará.
+                    // Esto permite que el Listener de Tiempo Real funcione.
+                    console.log(`[AuthService] Usuario logueado pero inactivo: ${profile.status}`);
                 }
             }
         }

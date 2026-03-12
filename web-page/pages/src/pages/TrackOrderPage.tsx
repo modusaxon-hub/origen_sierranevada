@@ -47,8 +47,8 @@ const TrackOrderPage: React.FC = () => {
     if (loading) {
         return (
             <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center">
-                <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
-                <p className="text-[#C5A065] font-accent text-[10px] uppercase tracking-[0.3em] animate-pulse">Sintonizando el Origen...</p>
+                <div className="w-12 h-12 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin mb-4"></div>
+                <p className="text-[#C8AA6E] font-accent text-[10px] uppercase tracking-[0.3em] animate-pulse">Sintonizando el Origen...</p>
             </div>
         );
     }
@@ -63,7 +63,7 @@ const TrackOrderPage: React.FC = () => {
                 </p>
                 <button
                     onClick={() => navigate('/')}
-                    className="px-8 py-3 bg-[#C5A065] text-black rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-white transition-all shadow-xl"
+                    className="px-8 py-3 bg-[#C8AA6E] text-black rounded-xl font-bold uppercase text-[10px] tracking-widest hover:brightness-110 transition-all shadow-xl"
                 >
                     Volver al Inicio
                 </button>
@@ -86,21 +86,21 @@ const TrackOrderPage: React.FC = () => {
         <div className="min-h-screen bg-[#050806] pt-32 pb-20 px-6">
             <div className="max-w-4xl mx-auto">
                 <header className="text-center mb-16 animate-fade-in">
-                    <div className="inline-block px-4 py-1 rounded-full bg-[#C5A065]/10 border border-[#C5A065]/20 mb-4">
-                        <span className="text-[10px] font-bold text-[#C5A065] uppercase tracking-widest">Seguimiento de Pedido</span>
+                    <div className="inline-block px-4 py-1 rounded-full bg-[#C8AA6E]/10 border border-[#C8AA6E]/20 mb-4">
+                        <span className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-widest">Seguimiento de Pedido</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-serif text-white mb-2 italic">Pedido #{order.id.slice(0, 8)}</h1>
                     <p className="text-white/40 font-light uppercase tracking-[0.2em] text-[10px]">Iniciado el {new Date(order.created_at).toLocaleDateString()}</p>
                 </header>
 
                 <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 md:p-12 mb-12 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A065]/5 blur-[100px] pointer-events-none"></div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#C8AA6E]/5 blur-[100px] pointer-events-none"></div>
 
                     {/* PROGRESS BAR */}
                     <div className="relative mb-16">
                         <div className="absolute top-6 left-0 w-full h-1 bg-white/5 rounded-full overflow-hidden">
                             <div
-                                className="h-full bg-gradient-to-r from-[#C5A065] to-[#D4B075] transition-all duration-1000 ease-out"
+                                className="h-full bg-gradient-to-r from-[#C8AA6E] to-[#D4B075] transition-all duration-1000 ease-out"
                                 style={{ width: `${(effectiveStepIndex / (steps.length - 1)) * 100}%` }}
                             ></div>
                         </div>
@@ -113,12 +113,12 @@ const TrackOrderPage: React.FC = () => {
                                 return (
                                     <div key={idx} className="flex flex-col items-center gap-4 z-10">
                                         <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 border-2 ${isCompleted
-                                            ? 'bg-[#C5A065] border-[#C5A065] text-black shadow-[0_0_20px_rgba(197,160,101,0.4)]'
+                                            ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_20px_rgba(200,170,110,0.4)]'
                                             : 'bg-[#050806] border-white/10 text-white/20'
                                             }`}>
                                             <span className="material-icons-outlined text-xl">{step.icon}</span>
                                         </div>
-                                        <span className={`text-[9px] font-bold uppercase tracking-widest text-center max-w-[80px] ${isCurrent ? 'text-[#C5A065]' : isCompleted ? 'text-white/60' : 'text-white/20'
+                                        <span className={`text-[9px] font-bold uppercase tracking-widest text-center max-w-[80px] ${isCurrent ? 'text-[#C8AA6E]' : isCompleted ? 'text-white/60' : 'text-white/20'
                                             }`}>
                                             {step.label}
                                         </span>
@@ -130,9 +130,9 @@ const TrackOrderPage: React.FC = () => {
 
                     {/* MOSTRAR INFORMACIÓN DE DESPACHO SI EXISTE */}
                     {(order.shipping_details?.note || order.shipping_details?.receipt_url) && (
-                        <div className="mb-12 p-8 bg-[#C5A065]/5 border border-[#C5A065]/20 rounded-2xl animate-fade-in relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#C5A065]/5 blur-3xl pointer-events-none"></div>
-                            <h3 className="text-xs font-bold text-[#C5A065] uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                        <div className="mb-12 p-8 bg-[#C8AA6E]/5 border border-[#C8AA6E]/20 rounded-2xl animate-fade-in relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#C8AA6E]/5 blur-3xl pointer-events-none"></div>
+                            <h3 className="text-xs font-bold text-[#C8AA6E] uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
                                 <span className="material-icons-outlined text-sm">local_shipping</span>
                                 Información de Envío
                             </h3>
@@ -144,7 +144,7 @@ const TrackOrderPage: React.FC = () => {
                                         </p>
                                     )}
                                     {order.shipping_details?.shipped_at && (
-                                        <p className="text-[9px] text-[#C5A065]/60 uppercase tracking-widest">
+                                        <p className="text-[9px] text-[#C8AA6E]/60 uppercase tracking-widest">
                                             Despachado el {new Date(order.shipping_details.shipped_at).toLocaleDateString()}
                                         </p>
                                     )}
@@ -154,7 +154,7 @@ const TrackOrderPage: React.FC = () => {
                                         href={order.shipping_details.receipt_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex-shrink-0 px-6 py-3 bg-[#C5A065]/20 hover:bg-[#C5A065] text-[#C5A065] hover:text-black border border-[#C5A065]/30 rounded-xl transition-all duration-300 flex items-center gap-3 group/btn shadow-xl shadow-[#C5A065]/5"
+                                        className="flex-shrink-0 px-6 py-3 bg-[#C8AA6E]/20 hover:bg-[#C8AA6E] text-[#C8AA6E] hover:text-black border border-[#C8AA6E]/30 rounded-xl transition-all duration-300 flex items-center gap-3 group/btn shadow-xl shadow-[#C8AA6E]/5"
                                     >
                                         <span className="text-[10px] font-bold uppercase tracking-widest">Ver Guía de Envío</span>
                                         <span className="material-icons-outlined text-sm group-hover/btn:translate-x-1 transition-transform">open_in_new</span>
@@ -166,7 +166,7 @@ const TrackOrderPage: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8 border-t border-white/5">
                         <section>
-                            <h3 className="text-xs font-bold text-[#C5A065] uppercase tracking-widest mb-6 border-b border-[#C5A065]/20 pb-2">Destino del Aroma</h3>
+                            <h3 className="text-xs font-bold text-[#C8AA6E] uppercase tracking-widest mb-6 border-b border-[#C8AA6E]/20 pb-2">Destino del Aroma</h3>
                             <div className="space-y-4">
                                 <div>
                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Entregar a</p>
@@ -181,7 +181,7 @@ const TrackOrderPage: React.FC = () => {
                         </section>
 
                         <section>
-                            <h3 className="text-xs font-bold text-[#C5A065] uppercase tracking-widest mb-6 border-b border-[#C5A065]/20 pb-2">Resumen</h3>
+                            <h3 className="text-xs font-bold text-[#C8AA6E] uppercase tracking-widest mb-6 border-b border-[#C8AA6E]/20 pb-2">Resumen</h3>
                             <div className="space-y-3">
                                 {order.order_items?.map((item, i) => (
                                     <div key={i} className="flex justify-between text-sm">
@@ -191,7 +191,7 @@ const TrackOrderPage: React.FC = () => {
                                 ))}
                                 <div className="flex justify-between pt-4 border-t border-white/5 text-lg font-serif">
                                     <span className="text-white italic">Total Pedido</span>
-                                    <span className="text-[#C5A065] font-bold">{formatPrice(order.total_amount)}</span>
+                                    <span className="text-[#C8AA6E] font-bold">{formatPrice(order.total_amount)}</span>
                                 </div>
                             </div>
                         </section>
@@ -201,7 +201,7 @@ const TrackOrderPage: React.FC = () => {
                 <div className="text-center">
                     <p className="text-[10px] text-gray-600 uppercase tracking-widest mb-6 leading-relaxed">
                         Cualquier inquietud, nuestro equipo está a tu disposición en <br />
-                        <span className="text-[#C5A065]">origensierranevadasm@gmail.com</span>
+                        <span className="text-[#C8AA6E]">origensierranevadasm@gmail.com</span>
                     </p>
                     <button
                         onClick={() => navigate('/')}

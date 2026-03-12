@@ -65,11 +65,14 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 pt-20 px-4">
-            <div className="w-full max-w-md bg-zinc-900/50 backdrop-blur-md border border-[#C5A065]/20 p-8 rounded-2xl shadow-[0_0_50px_rgba(197,160,101,0.1)]">
+        <div className="min-h-screen flex items-center justify-center bg-zinc-950 pt-20 md:pt-24 px-4 pb-8">
+            <div className="w-full max-w-md bg-zinc-900/50 backdrop-blur-md border border-[#C8AA6E]/20 p-8 rounded-2xl shadow-[0_0_50px_rgba(200,170,110,0.1)]">
 
                 <div className="text-center mb-10">
-                    <Logo className="w-[320px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(197,160,101,0.3)]" />
+                    {/* Logo solo visible en desktop — en mobile/tablet el header ya lo muestra */}
+                    <div className="hidden lg:block mb-6">
+                        <Logo className="w-[280px] h-auto mx-auto drop-shadow-[0_0_30px_rgba(200,170,110,0.3)]" />
+                    </div>
 
                     <h2 className="font-display text-3xl text-white mb-2 tracking-wide">Bienvenido</h2>
                     <p className="text-white/60 text-sm font-light">Ingresa y vive la mejor Experiencia.</p>
@@ -83,12 +86,12 @@ const LoginPage: React.FC = () => {
 
                 <form onSubmit={handleLogin} className="space-y-6">
                     <div>
-                        <label className="block text-[#C5A065] text-xs uppercase tracking-widest font-bold mb-2 ml-1">Email</label>
+                        <label className="block text-[#C8AA6E] text-xs uppercase tracking-widest font-bold mb-2 ml-1">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#C5A065] focus:ring-1 focus:ring-[#C5A065] transition-all"
+                            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#C8AA6E] focus:ring-1 focus:ring-[#C8AA6E] transition-all"
                             placeholder="tu@correo.com"
                             required
                         />
@@ -96,15 +99,15 @@ const LoginPage: React.FC = () => {
 
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <label className="block text-[#C5A065] text-xs uppercase tracking-widest font-bold ml-1">Contraseña</label>
-                            <Link to="/forgot-password" className="text-xs text-white/40 hover:text-[#C5A065] transition-colors underline decoration-white/20 hover:decoration-[#C5A065]">¿Olvidaste tu contraseña?</Link>
+                            <label className="block text-[#C8AA6E] text-xs uppercase tracking-widest font-bold ml-1">Contraseña</label>
+                            <Link to="/forgot-password" className="text-xs text-white/40 hover:text-[#C8AA6E] transition-colors underline decoration-white/20 hover:decoration-[#C8AA6E]">¿Olvidaste tu contraseña?</Link>
                         </div>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A065] focus:ring-1 focus:ring-[#C5A065] transition-all pr-12"
+                                className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C8AA6E] focus:ring-1 focus:ring-[#C8AA6E] transition-all pr-12"
                                 required
                             />
                             <button
@@ -122,7 +125,7 @@ const LoginPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading || throttleBlocked}
-                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] text-xs py-4 rounded-xl hover:shadow-[0_0_30px_rgba(200,170,110,0.3)] transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed mt-2 active:scale-95"
+                        className="w-full bg-[#C8AA6E] text-black font-display font-bold uppercase tracking-[0.2em] text-xs py-4 rounded-xl hover:brightness-110 transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed mt-2 active:scale-95 shadow-lg shadow-[#C8AA6E]/20"
                     >
                         {loading ? 'Verificando...' : throttleBlocked ? 'Espera 3 segundos' : 'Iniciar Sesión'}
                     </button>

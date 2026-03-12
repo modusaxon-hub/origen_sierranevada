@@ -64,8 +64,8 @@ const ContactPage: React.FC = () => {
             <div className="max-w-6xl mx-auto px-6">
                 {/* Hero Section */}
                 <section className="text-center mb-20">
-                    <div className="inline-block py-1 px-3 border border-[#C5A065]/30 rounded-full bg-[#C5A065]/5 mb-6">
-                        <span className="text-[9px] text-[#C5A065] font-bold uppercase tracking-[0.2em]">Estamos Aquí Para Ti</span>
+                    <div className="inline-block py-1 px-3 border border-[#C8AA6E]/30 rounded-full bg-[#C8AA6E]/5 mb-6">
+                        <span className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-[0.2em]">Estamos Aquí Para Ti</span>
                     </div>
                     <h1 className="text-5xl md:text-6xl font-serif tracking-tight mb-6">
                         Contáctanos
@@ -96,15 +96,15 @@ const ContactPage: React.FC = () => {
 
                     {/* Email Card */}
                     <a href={`mailto:${CONTACTS.email.support}`}
-                        className="group relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/20 hover:border-[#C5A065] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,101,0.1)]">
+                        className="group relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/20 hover:border-[#C8AA6E] p-8 rounded-3xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)]">
                         <div className="absolute top-0 right-0 p-6 opacity-30 group-hover:opacity-100 transition-opacity">
                             <span className="text-5xl">📧</span>
                         </div>
-                        <h3 className="text-2xl font-serif text-white mb-3 group-hover:text-[#C5A065] transition-colors">Email</h3>
+                        <h3 className="text-2xl font-serif text-white mb-3 group-hover:text-[#C8AA6E] transition-colors">Email</h3>
                         <p className="text-gray-400 font-light mb-6 leading-relaxed">
                             Respuesta en 24-48 horas. Ideal para consultas detalladas sobre pedidos corporativos o partnerships.
                         </p>
-                        <div className="flex items-center gap-2 text-[#C5A065] font-bold text-sm uppercase tracking-widest group-hover:gap-4 transition-all">
+                        <div className="flex items-center gap-2 text-[#C8AA6E] font-bold text-sm uppercase tracking-widest group-hover:gap-4 transition-all">
                             Enviar Email
                             <span className="material-icons-outlined text-sm">arrow_forward</span>
                         </div>
@@ -129,7 +129,7 @@ const ContactPage: React.FC = () => {
                 {/* Contact Form Section */}
                 <section className="max-w-2xl mx-auto mb-20">
                     <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-10 md:p-14">
-                        <h2 className="text-3xl font-serif text-[#C5A065] mb-2 text-center">Envía tu Mensaje</h2>
+                        <h2 className="text-3xl font-serif text-[#C8AA6E] mb-2 text-center">Envía tu Mensaje</h2>
                         <p className="text-gray-400 text-center mb-10 font-light">
                             Completa el formulario y nos pondremos en contacto a la brevedad.
                         </p>
@@ -148,21 +148,18 @@ const ContactPage: React.FC = () => {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-3">
-                                            Nombre Completo
-                                        </label>
                                         <input
                                             type="text"
                                             name="nombre"
                                             value={formData.nombre}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C5A065] focus:outline-none transition-all"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C8AA6E] focus:outline-none transition-all"
                                             placeholder="Tu nombre"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-3">
+                                        <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-3">
                                             Correo Electrónico
                                         </label>
                                         <input
@@ -171,14 +168,14 @@ const ContactPage: React.FC = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C5A065] focus:outline-none transition-all"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C8AA6E] focus:outline-none transition-all"
                                             placeholder="tu@email.com"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-3">
+                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-3">
                                         Teléfono (Opcional)
                                     </label>
                                     <input
@@ -186,13 +183,13 @@ const ContactPage: React.FC = () => {
                                         name="telefono"
                                         value={formData.telefono}
                                         onChange={handleChange}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C5A065] focus:outline-none transition-all"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C8AA6E] focus:outline-none transition-all"
                                         placeholder="+57 300 000 0000"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-3">
+                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-3">
                                         Asunto
                                     </label>
                                     <select
@@ -200,7 +197,7 @@ const ContactPage: React.FC = () => {
                                         value={formData.asunto}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all cursor-pointer"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C8AA6E] focus:outline-none transition-all cursor-pointer"
                                     >
                                         <option value="">Selecciona un tema</option>
                                         <option value="pedido">Pregunta sobre un pedido</option>
@@ -212,7 +209,7 @@ const ContactPage: React.FC = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065] mb-3">
+                                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E] mb-3">
                                         Mensaje
                                     </label>
                                     <textarea
@@ -221,7 +218,7 @@ const ContactPage: React.FC = () => {
                                         onChange={handleChange}
                                         required
                                         rows={6}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C5A065] focus:outline-none transition-all resize-none"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-500 focus:border-[#C8AA6E] focus:outline-none transition-all resize-none"
                                         placeholder="Cuéntanos más sobre tu consulta..."
                                     />
                                 </div>
@@ -251,7 +248,7 @@ const ContactPage: React.FC = () => {
                 {/* Info Cards */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                     <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8">
-                        <h3 className="text-xl font-serif text-[#C5A065] mb-4">Horario de Atención</h3>
+                        <h3 className="text-xl font-serif text-[#C8AA6E] mb-4">Horario de Atención</h3>
                         <ul className="space-y-2 text-gray-400 text-sm">
                             <li>📅 <strong>Lunes a Viernes:</strong> 9:00 AM - 6:00 PM (Hora Colombiana)</li>
                             <li>📅 <strong>Sábados:</strong> 10:00 AM - 4:00 PM</li>
@@ -261,7 +258,7 @@ const ContactPage: React.FC = () => {
                     </div>
 
                     <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8">
-                        <h3 className="text-xl font-serif text-[#C5A065] mb-4">Ubicación</h3>
+                        <h3 className="text-xl font-serif text-[#C8AA6E] mb-4">Ubicación</h3>
                         <ul className="space-y-2 text-gray-400 text-sm">
                             <li>📍 <strong>Origen Sierra Nevada SM</strong></li>
                             <li>Santa Marta, Magdalena</li>

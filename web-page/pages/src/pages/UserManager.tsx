@@ -191,8 +191,8 @@ const UserManager: React.FC = () => {
                         <button
                             onClick={() => setShowHidden(!showHidden)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-xs font-bold uppercase tracking-wider ${showHidden
-                                ? 'bg-[#C5A065]/20 border-[#C5A065] text-[#C5A065]'
-                                : 'bg-white/5 border-white/10 text-white/60 hover:border-[#C5A065]/50 hover:text-white'}`}
+                                ? 'bg-[#C8AA6E]/20 border-[#C8AA6E] text-[#C8AA6E]'
+                                : 'bg-white/5 border-white/10 text-white/60 hover:border-[#C8AA6E]/50 hover:text-white'}`}
                         >
                             <span className="material-icons-outlined text-sm">{showHidden ? 'visibility' : 'visibility_off'}</span>
                             {showHidden ? 'Mostrando Todo' : 'Ver Archivos'}
@@ -202,7 +202,7 @@ const UserManager: React.FC = () => {
                             className="p-2 rounded-full hover:bg-white/5 transition-colors"
                             title="Recargar lista"
                         >
-                            <span className="material-icons-outlined text-[#C5A065]">refresh</span>
+                            <span className="material-icons-outlined text-[#C8AA6E]">refresh</span>
                         </button>
                     </div>
                 </div>
@@ -224,22 +224,22 @@ const UserManager: React.FC = () => {
                         <div className="overflow-x-auto">
                             {/* Pendientes Table Section (Conditional) */}
                             {filteredProfiles.some(p => p.status === 'pending') && (
-                                <div className="overflow-x-auto border-b-4 border-[#C5A065]/20">
-                                    <div className="bg-[#C5A065]/5 p-4 flex items-center gap-3">
-                                        <span className="material-icons-outlined text-[#C5A065]">pending_actions</span>
-                                        <h3 className="text-[#C5A065] text-xs font-bold uppercase tracking-[0.2em]">Prioridad: Solicitudes por Autorizar</h3>
+                                <div className="overflow-x-auto border-b-4 border-[#C8AA6E]/20">
+                                    <div className="bg-[#C8AA6E]/5 p-4 flex items-center gap-3">
+                                        <span className="material-icons-outlined text-[#C8AA6E]">pending_actions</span>
+                                        <h3 className="text-[#C8AA6E] text-xs font-bold uppercase tracking-[0.2em]">Prioridad: Solicitudes por Autorizar</h3>
                                     </div>
                                     <div className="min-w-[800px]">
                                         <table className="w-full text-left border-collapse">
-                                            <tbody className="bg-[#C5A065]/5 divide-y divide-[#C5A065]/10">
+                                            <tbody className="bg-[#C8AA6E]/5 divide-y divide-[#C8AA6E]/10">
                                                 {filteredProfiles.filter(p => p.status === 'pending').map((profile) => (
-                                                    <tr key={profile.id} className="hover:bg-[#C5A065]/10 transition-colors">
+                                                    <tr key={profile.id} className="hover:bg-[#C8AA6E]/10 transition-colors">
                                                         <td className="p-6">
                                                             <div className="font-bold text-white mb-1">{profile.full_name || 'Nuevo Miembro'}</div>
-                                                            <div className="text-[#C5A065] text-xs">{profile.email}</div>
+                                                            <div className="text-[#C8AA6E] text-xs">{profile.email}</div>
                                                         </td>
                                                         <td className="p-6">
-                                                            <span className="px-3 py-1 rounded-full bg-[#C5A065] text-black text-[10px] font-bold tracking-wider uppercase">
+                                                            <span className="px-3 py-1 rounded-full bg-[#C8AA6E] text-black text-[10px] font-bold tracking-wider uppercase">
                                                                 ⏳ ESPERANDO APROBACIÓN
                                                             </span>
                                                         </td>
@@ -249,7 +249,7 @@ const UserManager: React.FC = () => {
                                                         <td className="p-6 text-right">
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleActivateUser(profile.id); }}
-                                                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C5A065] text-black hover:bg-[#D4B483] transform active:scale-95 shadow-lg shadow-[#C5A065]/20"
+                                                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-[#C8AA6E] text-black hover:brightness-110 transform active:scale-95 shadow-lg shadow-[#C8AA6E]/20"
                                                             >
                                                                 <span className="material-icons-outlined text-sm">how_to_reg</span>
                                                                 Conceder Acceso
@@ -298,7 +298,7 @@ const UserManager: React.FC = () => {
                                                     <td className="p-6">
                                                         <div className="flex flex-col gap-1">
                                                             <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${profile.role_name === 'Administrador'
-                                                                ? 'bg-[#C5A065]/20 text-[#C5A065] border border-[#C5A065]/30'
+                                                                ? 'bg-[#C8AA6E]/20 text-[#C8AA6E] border border-[#C8AA6E]/30'
                                                                 : profile.role_name === 'Colaborador'
                                                                     ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
                                                                     : profile.role_name === 'Proveedor'
@@ -340,7 +340,7 @@ const UserManager: React.FC = () => {
                                                             )}
                                                             <button
                                                                 onClick={() => handleRoleChange(profile.id, profile.role_name, profile.full_name)}
-                                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C5A065] hover:text-black hover:border-transparent border border-white/10"
+                                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white/5 text-white hover:bg-[#C8AA6E] hover:text-black hover:border-transparent border border-white/10"
                                                             >
                                                                 <span className="material-icons-outlined text-sm">manage_accounts</span>
                                                                 Gestionar
@@ -391,10 +391,10 @@ const UserManager: React.FC = () => {
                         className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in"
                         onClick={() => setConfirmModal(null)}
                     />
-                    <div className="relative bg-[#0F1611] border border-[#C5A065]/30 rounded-2xl w-full max-w-md p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-scale-up">
+                    <div className="relative bg-[#0F1611] border border-[#C8AA6E]/30 rounded-2xl w-full max-w-md p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-scale-up">
                         <div className="text-center space-y-6">
-                            <div className="w-16 h-16 bg-[#C5A065]/10 rounded-full flex items-center justify-center mx-auto border border-[#C5A065]/20">
-                                <span className="material-icons-outlined text-[#C5A065] text-3xl">admin_panel_settings</span>
+                            <div className="w-16 h-16 bg-[#C8AA6E]/10 rounded-full flex items-center justify-center mx-auto border border-[#C8AA6E]/20">
+                                <span className="material-icons-outlined text-[#C8AA6E] text-3xl">admin_panel_settings</span>
                             </div>
 
                             <div className="space-y-4">
@@ -412,14 +412,14 @@ const UserManager: React.FC = () => {
                                             key={r.id}
                                             onClick={() => setSelectedRole(r.id as UserRole)}
                                             className={`flex items-start gap-4 p-4 rounded-xl border transition-all text-left ${selectedRole === r.id
-                                                ? 'bg-[#C5A065]/20 border-[#C5A065] ring-1 ring-[#C5A065]'
+                                                ? 'bg-[#C8AA6E]/20 border-[#C8AA6E] ring-1 ring-[#C8AA6E]'
                                                 : 'bg-white/5 border-white/10 hover:border-white/30'}`}
                                         >
-                                            <span className={`material-icons-outlined mt-1 ${selectedRole === r.id ? 'text-[#C5A065]' : 'text-gray-500'}`}>
+                                            <span className={`material-icons-outlined mt-1 ${selectedRole === r.id ? 'text-[#C8AA6E]' : 'text-gray-500'}`}>
                                                 {r.icon}
                                             </span>
                                             <div>
-                                                <p className={`font-bold text-sm ${selectedRole === r.id ? 'text-[#C5A065]' : 'text-white'}`}>{r.label}</p>
+                                                <p className={`font-bold text-sm ${selectedRole === r.id ? 'text-[#C8AA6E]' : 'text-white'}`}>{r.label}</p>
                                                 <p className="text-[11px] text-gray-400">{r.desc}</p>
                                             </div>
                                         </button>
@@ -436,7 +436,7 @@ const UserManager: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={confirmRoleChange}
-                                    className="flex-1 px-6 py-3 rounded-xl bg-[#C5A065] text-black hover:bg-[#D4B075] transform active:scale-95 transition-all text-sm font-bold uppercase tracking-widest shadow-lg shadow-[#C5A065]/20"
+                                    className="flex-1 px-6 py-3 rounded-xl bg-[#C8AA6E] text-black hover:brightness-110 transform active:scale-95 transition-all text-sm font-bold uppercase tracking-widest shadow-lg shadow-[#C8AA6E]/20"
                                 >
                                     Guardar
                                 </button>

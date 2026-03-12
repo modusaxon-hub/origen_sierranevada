@@ -161,7 +161,7 @@ const ProveedorDashboard: React.FC = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B120D]">
-                <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin mb-4"></div>
+                <div className="w-12 h-12 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin mb-4"></div>
                 <p className="text-white/40 text-sm">Cargando portal de proveedor...</p>
             </div>
         );
@@ -170,20 +170,20 @@ const ProveedorDashboard: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#0B120D] text-white font-sans">
             {/* Fixed Proveedor Header */}
-            <header className="fixed top-0 w-full z-[100] bg-[#0B120D]/95 backdrop-blur-xl border-b border-[#C5A065]/20">
+            <header className="fixed top-0 w-full z-[100] bg-[#0B120D]/95 backdrop-blur-xl border-b border-[#C8AA6E]/20">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <Logo className="w-[140px] h-auto" to="/" />
-                        <span className="text-[#C5A065] text-xl font-serif tracking-wide border-l border-[#C5A065]/30 pl-4 uppercase hidden sm:inline">
+                        <span className="text-[#C8AA6E] text-xl font-serif tracking-wide border-l border-[#C8AA6E]/30 pl-4 uppercase hidden sm:inline">
                             Portal Proveedor
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="p-2 text-white/40 hover:text-[#C5A065] transition-colors" title="Ir a la tienda">
+                        <button onClick={() => navigate('/')} className="p-2 text-white/40 hover:text-[#C8AA6E] transition-colors" title="Ir a la tienda">
                             <span className="material-icons-outlined text-2xl">storefront</span>
                         </button>
                         <div className="text-right hidden sm:block">
-                            <p className="text-[10px] text-[#C5A065] uppercase tracking-widest font-black">PROVEEDOR</p>
+                            <p className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-black">PROVEEDOR</p>
                             <p className="text-xs text-white/60">{providerName}</p>
                         </div>
                         <button onClick={handleLogout} className="p-2 text-white/40 hover:text-red-400 transition-colors" title="Cerrar sesión">
@@ -202,7 +202,7 @@ const ProveedorDashboard: React.FC = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-4 p-5 rounded-2xl transition-all duration-500 border ${activeTab === tab.id
-                                    ? 'bg-[#C5A065] text-black border-[#C5A065] shadow-[0_10px_30px_rgba(197,160,101,0.2)]'
+                                    ? 'bg-[#C8AA6E] text-black border-[#C8AA6E] shadow-[0_10px_30px_rgba(200,170,110,0.2)]'
                                     : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:border-white/20'
                                     }`}
                             >
@@ -224,7 +224,7 @@ const ProveedorDashboard: React.FC = () => {
                                     {[
                                         { label: 'Ventas Totales (Bruto)', value: formatPrice(stats.totalSales), icon: 'payments', color: 'text-white' },
                                         { label: 'Tu Pago Neto (85%)', value: formatPrice(stats.payout), icon: 'account_balance_wallet', color: 'text-emerald-400' },
-                                        { label: 'Productos Activos', value: stats.activeProducts, icon: 'inventory_2', color: 'text-[#C5A065]' },
+                                        { label: 'Productos Activos', value: stats.activeProducts, icon: 'inventory_2', color: 'text-[#C8AA6E]' },
                                         { label: 'Stock Crítico', value: stats.lowStockProducts, icon: 'warning_amber', color: stats.lowStockProducts > 0 ? 'text-orange-400' : 'text-white/30' },
                                     ].map((kpi, i) => (
                                         <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
@@ -237,9 +237,9 @@ const ProveedorDashboard: React.FC = () => {
                                     ))}
                                 </div>
 
-                                <div className="bg-[#C5A065]/5 border border-[#C5A065]/20 rounded-2xl p-6 text-sm text-white/60 flex items-start gap-4">
-                                    <span className="material-icons-outlined text-[#C5A065] text-2xl flex-shrink-0">info</span>
-                                    <p>La plataforma retiene una comisión del <strong className="text-[#C5A065]">15%</strong> sobre las ventas brutas. El <strong className="text-emerald-400">85%</strong> restante es tu pago neto.</p>
+                                <div className="bg-[#C8AA6E]/5 border border-[#C8AA6E]/20 rounded-2xl p-6 text-sm text-white/60 flex items-start gap-4">
+                                    <span className="material-icons-outlined text-[#C8AA6E] text-2xl flex-shrink-0">info</span>
+                                    <p>La plataforma retiene una comisión del <strong className="text-[#C8AA6E]">15%</strong> sobre las ventas brutas. El <strong className="text-emerald-400">85%</strong> restante es tu pago neto.</p>
                                 </div>
 
                                 {/* Low stock alerts */}
@@ -271,43 +271,66 @@ const ProveedorDashboard: React.FC = () => {
                                         <p className="text-white/40">No tienes productos asignados aún.</p>
                                     </div>
                                 ) : (
-                                    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-left min-w-[600px]">
-                                                <thead>
-                                                    <tr className="bg-[#C5A065]/10 text-[#C5A065] text-[10px] uppercase tracking-widest font-bold">
-                                                        <th className="px-6 py-4">Producto</th>
-                                                        <th className="px-6 py-4">Categoría</th>
-                                                        <th className="px-6 py-4 text-center">Stock</th>
-                                                        <th className="px-6 py-4">Precio</th>
-                                                        <th className="px-6 py-4 text-center">Estado</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-white/5 text-sm">
-                                                    {products.map(p => (
-                                                        <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
-                                                            <td className="px-6 py-5 font-medium text-white">
-                                                                {getProductName(p.name)}
-                                                            </td>
-                                                            <td className="px-6 py-5 text-white/60 capitalize">{p.category}</td>
-                                                            <td className={`px-6 py-5 text-center font-mono font-bold ${p.stock <= 5 ? 'text-orange-400' : 'text-white/80'}`}>
-                                                                {p.stock}
-                                                                {p.stock <= 5 && <span className="material-icons-outlined text-xs ml-1">warning</span>}
-                                                            </td>
-                                                            <td className="px-6 py-5 font-mono text-[#C5A065]">{formatPrice(p.price)}</td>
-                                                            <td className="px-6 py-5 text-center">
-                                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${p.available
-                                                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                                                    : 'bg-white/10 text-white/30 border border-white/10'
-                                                                    }`}>
-                                                                    {p.available ? 'Activo' : 'Inactivo'}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div className="space-y-8">
+                                        {Object.entries(
+                                            products.reduce((acc, p) => {
+                                                const cat = p.category || 'Otros';
+                                                if (!acc[cat]) acc[cat] = [];
+                                                acc[cat].push(p);
+                                                return acc;
+                                            }, {} as Record<string, ProveedorProduct[]>)
+                                        )
+                                            .sort(([catA], [catB]) => catA.localeCompare(catB))
+                                            .map(([category, catProducts]) => {
+                                                const items = catProducts as ProveedorProduct[];
+                                                return (
+                                                    <div key={category} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-lg relative">
+                                                        <div className="bg-[#C8AA6E]/10 border-b border-white/5 px-6 py-4 flex items-center justify-between">
+                                                            <h3 className="text-[#C8AA6E] font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                                                                <span className="material-icons-outlined text-base">category</span>
+                                                                {category}
+                                                            </h3>
+                                                            <span className="bg-[#C8AA6E]/20 text-[#C8AA6E] text-[10px] font-bold px-2 py-1 rounded-full">
+                                                                {items.length} item{items.length !== 1 ? 's' : ''}
+                                                            </span>
+                                                        </div>
+                                                        <div className="overflow-x-auto">
+                                                            <table className="w-full text-left min-w-[600px]">
+                                                                <thead>
+                                                                    <tr className="bg-white/[0.02] text-white/40 text-[9px] uppercase tracking-widest font-bold">
+                                                                        <th className="px-6 py-3">Producto</th>
+                                                                        <th className="px-6 py-3 text-center">Stock</th>
+                                                                        <th className="px-6 py-3">Precio</th>
+                                                                        <th className="px-6 py-3 text-center">Estado</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody className="divide-y divide-white/5 text-sm">
+                                                                    {items.map(p => (
+                                                                        <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                                                                            <td className="px-6 py-4 font-medium text-white">
+                                                                                {getProductName(p.name)}
+                                                                            </td>
+                                                                            <td className={`px-6 py-4 text-center font-mono font-bold ${p.stock <= 5 ? 'text-orange-400' : 'text-white/80'}`}>
+                                                                                {p.stock}
+                                                                                {p.stock <= 5 && <span className="material-icons-outlined text-xs ml-1">warning</span>}
+                                                                            </td>
+                                                                            <td className="px-6 py-4 font-mono text-[#C8AA6E]">{formatPrice(p.price)}</td>
+                                                                            <td className="px-6 py-4 text-center">
+                                                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${p.available
+                                                                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                                                    : 'bg-white/10 text-white/30 border border-white/10'
+                                                                                    }`}>
+                                                                                    {p.available ? 'Activo' : 'Inactivo'}
+                                                                                </span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                     </div>
                                 )}
                             </div>
@@ -328,7 +351,7 @@ const ProveedorDashboard: React.FC = () => {
                                         {/* Chart */}
                                         {chartData.length > 1 && (
                                             <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                                                <h4 className="text-[10px] text-[#C5A065] font-black uppercase tracking-[.2em] mb-6 flex items-center gap-2">
+                                                <h4 className="text-[10px] text-[#C8AA6E] font-black uppercase tracking-[.2em] mb-6 flex items-center gap-2">
                                                     <span className="material-icons-outlined text-sm">trending_up</span>
                                                     Comportamiento de Ventas
                                                 </h4>
@@ -347,18 +370,18 @@ const ProveedorDashboard: React.FC = () => {
                                                         <polyline
                                                             points={chartData.map((d, i) => `${i * 80 + 40},${200 - (d[1] / chartMax) * 170}`).join(' ')}
                                                             fill="none"
-                                                            stroke="#C5A065"
+                                                            stroke="#C8AA6E"
                                                             strokeWidth="2.5"
                                                             strokeLinejoin="round"
                                                         />
                                                         {/* Dots */}
                                                         {chartData.map((d, i) => (
-                                                            <circle key={i} cx={i * 80 + 40} cy={200 - (d[1] / chartMax) * 170} r="4" fill="#C5A065" />
+                                                            <circle key={i} cx={i * 80 + 40} cy={200 - (d[1] / chartMax) * 170} r="4" fill="#C8AA6E" />
                                                         ))}
                                                         <defs>
                                                             <linearGradient id="provGradient" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="0%" stopColor="#C5A065" stopOpacity="0.3" />
-                                                                <stop offset="100%" stopColor="#C5A065" stopOpacity="0" />
+                                                                <stop offset="0%" stopColor="#C8AA6E" stopOpacity="0.3" />
+                                                                <stop offset="100%" stopColor="#C8AA6E" stopOpacity="0" />
                                                             </linearGradient>
                                                         </defs>
                                                     </svg>
@@ -388,7 +411,7 @@ const ProveedorDashboard: React.FC = () => {
                                                         {salesDetails.map((d, i) => (
                                                             <tr key={i} className="hover:bg-white/[0.02] transition-colors">
                                                                 <td className="px-5 py-4 text-white/60">{new Date(d.date).toLocaleDateString('es-ES')}</td>
-                                                                <td className="px-5 py-4 font-mono text-[10px] text-[#C5A065]">#{d.order_id.slice(0, 8)}</td>
+                                                                <td className="px-5 py-4 font-mono text-[10px] text-[#C8AA6E]">#{d.order_id.slice(0, 8)}</td>
                                                                 <td className="px-5 py-4 text-white">{getProductName(d.product_name)}</td>
                                                                 <td className="px-5 py-4 text-center text-white/60">{d.quantity}</td>
                                                                 <td className="px-5 py-4 text-right font-mono text-white/80">{formatPrice(d.total)}</td>
@@ -410,7 +433,7 @@ const ProveedorDashboard: React.FC = () => {
 
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {[
-                                        { label: 'Ventas Brutas', value: formatPrice(stats.totalSales), color: 'text-[#C5A065]' },
+                                        { label: 'Ventas Brutas', value: formatPrice(stats.totalSales), color: 'text-[#C8AA6E]' },
                                         { label: 'Comisión (15%)', value: `-${formatPrice(stats.commission)}`, color: 'text-red-400' },
                                         { label: 'Tu Pago Neto', value: formatPrice(stats.payout), color: 'text-emerald-400' },
                                         { label: 'Items Vendidos', value: stats.totalItems, color: 'text-white' },
@@ -434,7 +457,7 @@ const ProveedorDashboard: React.FC = () => {
                                 {/* Breakdown per product */}
                                 {salesDetails.length > 0 && (
                                     <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                                        <h4 className="text-[10px] text-[#C5A065] font-black uppercase tracking-[.2em] mb-4 flex items-center gap-2">
+                                        <h4 className="text-[10px] text-[#C8AA6E] font-black uppercase tracking-[.2em] mb-4 flex items-center gap-2">
                                             <span className="material-icons-outlined text-sm">receipt_long</span>
                                             Desglose por Producto
                                         </h4>
@@ -455,7 +478,7 @@ const ProveedorDashboard: React.FC = () => {
                                                             <p className="text-[10px] text-white/40">{prod.items} unidades vendidas</p>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="text-sm font-mono text-[#C5A065]">{formatPrice(prod.total)}</p>
+                                                            <p className="text-sm font-mono text-[#C8AA6E]">{formatPrice(prod.total)}</p>
                                                             <p className="text-[10px] text-emerald-400">Neto: {formatPrice(prod.total * (1 - COMMISSION_RATE))}</p>
                                                         </div>
                                                     </div>
@@ -464,12 +487,95 @@ const ProveedorDashboard: React.FC = () => {
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Historial de Pagos y Liquidaciones */}
+                                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mt-8">
+                                    <h4 className="text-[10px] text-[#C8AA6E] font-black uppercase tracking-[.2em] mb-4 flex items-center gap-2">
+                                        <span className="material-icons-outlined text-sm">history</span>
+                                        Historial de Pagos y Próximas Fechas
+                                    </h4>
+
+                                    {salesDetails.length === 0 ? (
+                                        <p className="text-white/40 text-sm text-center py-8">No hay historial de pagos disponible aún.</p>
+                                    ) : (
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-left min-w-[600px]">
+                                                <thead>
+                                                    <tr className="bg-white/[0.02] text-white/40 text-[9px] uppercase tracking-widest font-bold">
+                                                        <th className="px-5 py-3">Período</th>
+                                                        <th className="px-5 py-3 text-right">Ventas Brutas</th>
+                                                        <th className="px-5 py-3 text-right">Comisión</th>
+                                                        <th className="px-5 py-3 text-right">Pago Neto</th>
+                                                        <th className="px-5 py-3 text-center">Estado</th>
+                                                        <th className="px-5 py-3 text-center">Fecha Estimada</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-white/5 text-sm">
+                                                    {(() => {
+                                                        const periodMap = new Map<string, { bruto: number; neto: number; date: Date }>();
+                                                        salesDetails.forEach(d => {
+                                                            const date = new Date(d.date);
+                                                            const periodKey = date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                                                            const existing = periodMap.get(periodKey) || { bruto: 0, neto: 0, date };
+                                                            existing.bruto += d.total;
+                                                            existing.neto += d.total * (1 - COMMISSION_RATE);
+                                                            if (date > existing.date) existing.date = date; // keep latest
+                                                            periodMap.set(periodKey, existing);
+                                                        });
+
+                                                        const now = new Date();
+                                                        return Array.from(periodMap.entries())
+                                                            .sort((a, b) => b[1].date.getTime() - a[1].date.getTime())
+                                                            .map(([period, data], i) => {
+                                                                const isCurrentMonth = data.date.getMonth() === now.getMonth() && data.date.getFullYear() === now.getFullYear();
+                                                                const paymentDate = new Date(data.date.getFullYear(), data.date.getMonth() + 1, 5); // Pagos el 5 de cada mes
+
+                                                                return (
+                                                                    <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                                                                        <td className="px-5 py-4 font-medium text-white capitalize">{period}</td>
+                                                                        <td className="px-5 py-4 text-right font-mono text-white/60">{formatPrice(data.bruto)}</td>
+                                                                        <td className="px-5 py-4 text-right font-mono text-red-400">-{formatPrice(data.bruto - data.neto)}</td>
+                                                                        <td className="px-5 py-4 text-right font-mono text-[#C8AA6E] font-bold">{formatPrice(data.neto)}</td>
+                                                                        <td className="px-5 py-4 text-center">
+                                                                            <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider ${isCurrentMonth ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}`}>
+                                                                                {isCurrentMonth ? 'Pendiente' : 'Pagado'}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-5 py-4 text-center text-white/40 text-[11px] font-mono">
+                                                                            {isCurrentMonth ? paymentDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Completado'}
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            });
+                                                    })()}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
 
                     </main>
                 </div>
             </div>
+
+            {/* Float WhatsApp Admin Button */}
+            <a
+                href={`https://wa.me/573004457788?text=Hola%20Admin,%20soy%20el%20proveedor%20${encodeURIComponent(providerName || 'registrado')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-[0_4px_14px_rgba(37,211,102,0.4)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 z-50 group"
+                title="Contactar al Administrador"
+            >
+                <span className="absolute right-16 bg-[#0B120D] text-[#C8AA6E] border border-[#C8AA6E]/30 px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
+                    Chat con Admin
+                </span>
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.005-3.825 3.116-6.937 6.94-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.005 3.825-3.116 6.938-6.94 6.938z" />
+                </svg>
+            </a>
         </div>
     );
 };

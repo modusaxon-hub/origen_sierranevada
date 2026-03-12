@@ -39,20 +39,20 @@ const OrderTimeline: React.FC<{ status: string }> = ({ status }) => {
                         <div className="flex flex-col items-center gap-1 flex-shrink-0">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all
                                 ${isCompleted
-                                    ? 'bg-[#C5A065] border-[#C5A065] text-black shadow-[0_0_10px_rgba(197,160,101,0.4)]'
+                                    ? 'bg-[#C8AA6E] border-[#C8AA6E] text-black shadow-[0_0_10px_rgba(200, 170, 110, 0.4)]'
                                     : 'bg-white/5 border-white/10 text-white/20'
-                                } ${isActive ? 'ring-2 ring-[#C5A065]/40 ring-offset-1 ring-offset-[#050806]' : ''}`}
+                                } ${isActive ? 'ring-2 ring-[#C8AA6E]/40 ring-offset-1 ring-offset-[#050806]' : ''}`}
                             >
                                 <span className="material-icons-outlined text-sm">{step.icon}</span>
                             </div>
                             <span className={`text-[8px] font-bold uppercase tracking-[0.1em] text-center leading-tight
-                                ${isCompleted ? 'text-[#C5A065]' : 'text-white/20'}`}>
+                                ${isCompleted ? 'text-[#C8AA6E]' : 'text-white/20'}`}>
                                 {step.label}
                             </span>
                         </div>
                         {idx < ORDER_STEPS.length - 1 && (
                             <div className={`flex-1 h-px mx-1 transition-all
-                                ${idx < currentIdx ? 'bg-[#C5A065]' : 'bg-white/10'}`} />
+                                ${idx < currentIdx ? 'bg-[#C8AA6E]' : 'bg-white/10'}`} />
                         )}
                     </React.Fragment>
                 );
@@ -182,8 +182,8 @@ const UserDashboard: React.FC = () => {
                 {/* Header Section */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
                     <div className="space-y-2">
-                        <div className="inline-block py-1 px-3 border border-[#C5A065]/30 rounded-full bg-[#C5A065]/5">
-                            <span className="text-[9px] text-[#C5A065] font-bold uppercase tracking-[0.2em]">Círculo de Origen</span>
+                        <div className="inline-block py-1 px-3 border border-[#C8AA6E]/30 rounded-full bg-[#C8AA6E]/5">
+                            <span className="text-[9px] text-[#C8AA6E] font-bold uppercase tracking-[0.2em]">Círculo de Origen</span>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-serif tracking-tight">
                             {t('dash.welcome')}{user?.user_metadata?.full_name || user?.email?.split('@')[0]}
@@ -197,7 +197,7 @@ const UserDashboard: React.FC = () => {
                         {isAdmin && (
                             <button
                                 onClick={() => navigate('/admin')}
-                                className="bg-[#C5A065]/10 border border-[#C5A065]/50 px-5 py-2 rounded-xl flex items-center gap-3 hover:bg-[#C5A065]/20 transition-all text-[#C5A065]"
+                                className="bg-[#C8AA6E]/10 border border-[#C8AA6E]/50 px-5 py-2 rounded-xl flex items-center gap-3 hover:bg-[#C8AA6E]/20 transition-all text-[#C8AA6E]"
                             >
                                 <span className="material-icons-outlined text-sm">admin_panel_settings</span>
                                 <span className="text-[10px] font-bold uppercase tracking-widest">Admin Panel</span>
@@ -227,7 +227,7 @@ const UserDashboard: React.FC = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={`w-full flex items-center gap-4 p-5 rounded-2xl transition-all duration-500 border ${activeTab === tab.id
-                                    ? 'bg-[#C5A065] text-black border-[#C5A065] shadow-[0_10px_30px_rgba(197,160,101,0.2)]'
+                                    ? 'bg-[#C8AA6E] text-black border-[#C8AA6E] shadow-[0_10px_30px_rgba(200, 170, 110, 0.2)]'
                                     : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:border-white/20'
                                     }`}
                             >
@@ -243,16 +243,16 @@ const UserDashboard: React.FC = () => {
                         {activeTab === 'overview' && (
                             <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
                                 {/* Exclusive Benefit Card */}
-                                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1A261D] to-[#0B120D] border border-[#C5A065]/30 p-10 group">
-                                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#C5A065] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-1000"></div>
+                                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1A261D] to-[#0B120D] border border-[#C8AA6E]/30 p-10 group">
+                                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#C8AA6E] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-1000"></div>
                                     <div className="relative z-10 max-w-xl">
-                                        <h2 className="text-3xl font-serif mb-4 text-[#C5A065]">{t('dash.benefit.title')}</h2>
+                                        <h2 className="text-3xl font-serif mb-4 text-[#C8AA6E]">{t('dash.benefit.title')}</h2>
                                         <p className="text-white/60 leading-relaxed mb-8">
                                             {t('dash.benefit.desc')}
                                         </p>
                                         <button
                                             onClick={() => navigate('/')}
-                                            className="bg-[#C5A065] text-black px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white transition-all shadow-xl shadow-black/40"
+                                            className="bg-[#C8AA6E] text-black px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:brightness-110 transition-all shadow-xl shadow-black/40"
                                         >
                                             {t('dash.benefit.cta')}
                                         </button>
@@ -265,7 +265,7 @@ const UserDashboard: React.FC = () => {
                                         { label: 'Total Pedidos', value: orders.length, icon: 'inventory_2', color: 'text-white' },
                                         { label: 'Completados', value: orders.filter(o => o.status === 'delivered').length, icon: 'home', color: 'text-purple-400' },
                                         { label: 'En Tránsito', value: orders.filter(o => o.status === 'shipped').length, icon: 'local_shipping', color: 'text-sky-400' },
-                                        { label: 'Gasto Total', value: formatPrice(orders.reduce((s, o) => s + o.total_amount, 0)), icon: 'payments', color: 'text-[#C5A065]' },
+                                        { label: 'Gasto Total', value: formatPrice(orders.reduce((s, o) => s + o.total_amount, 0)), icon: 'payments', color: 'text-[#C8AA6E]' },
                                     ].map((stat, i) => (
                                         <div key={i} className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all">
                                             <span className={`material-icons-outlined text-2xl mb-3 block ${stat.color}`}>{stat.icon}</span>
@@ -277,13 +277,13 @@ const UserDashboard: React.FC = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:border-white/20 transition-all">
-                                        <div className="w-12 h-12 rounded-2xl bg-[#C5A065]/10 flex items-center justify-center text-[#C5A065] mb-6">
+                                        <div className="w-12 h-12 rounded-2xl bg-[#C8AA6E]/10 flex items-center justify-center text-[#C8AA6E] mb-6">
                                             <span className="material-icons-outlined">stars</span>
                                         </div>
                                         <h3 className="text-xl font-serif mb-2">Mi Nivel de Socio</h3>
                                         <p className="text-white/40 text-sm mb-6">Estás en el nivel <strong>Semilla</strong>. Realiza 2 pedidos más para subir a <strong>Brote</strong>.</p>
                                         <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-[#C5A065] w-1/3 shadow-[0_0_10px_#C5A065]"></div>
+                                            <div className="h-full bg-[#C8AA6E] w-1/3 shadow-[0_0_10px_#C8AA6E]"></div>
                                         </div>
                                     </div>
 
@@ -297,7 +297,7 @@ const UserDashboard: React.FC = () => {
                                         </div>
                                         <button
                                             onClick={() => setActiveTab('settings')}
-                                            className="mt-6 text-[10px] font-bold uppercase tracking-widest text-[#C5A065] hover:text-white transition-colors text-left"
+                                            className="mt-6 text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E] hover:text-white transition-colors text-left"
                                         >
                                             Actualizar Perfil
                                         </button>
@@ -309,7 +309,7 @@ const UserDashboard: React.FC = () => {
                                     <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
                                         <div className="flex justify-between items-center mb-6">
                                             <h3 className="text-lg font-serif">Últimos Pedidos</h3>
-                                            <button onClick={() => setActiveTab('orders')} className="text-[10px] font-bold uppercase tracking-widest text-[#C5A065] hover:text-white transition-colors">
+                                            <button onClick={() => setActiveTab('orders')} className="text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E] hover:text-white transition-colors">
                                                 Ver todos
                                             </button>
                                         </div>
@@ -325,7 +325,7 @@ const UserDashboard: React.FC = () => {
                                                                 <p className="text-[10px] text-white/40">{new Date(order.created_at).toLocaleDateString('es-ES')}</p>
                                                             </div>
                                                         </div>
-                                                        <p className="text-sm font-serif text-[#C5A065]">{formatPrice(order.total_amount)}</p>
+                                                        <p className="text-sm font-serif text-[#C8AA6E]">{formatPrice(order.total_amount)}</p>
                                                     </div>
                                                 );
                                             })}
@@ -346,14 +346,14 @@ const UserDashboard: React.FC = () => {
 
                                 {loading ? (
                                     <div className="flex flex-col items-center justify-center py-20 gap-4">
-                                        <div className="w-10 h-10 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin"></div>
+                                        <div className="w-10 h-10 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin"></div>
                                     </div>
                                 ) : orders.length > 0 ? (
                                     <div className="grid gap-6">
                                         {orders.map(order => {
                                             const status = getStatusConfig(order.status);
                                             return (
-                                                <div key={order.id} className="group bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden hover:border-[#C5A065]/30 transition-all duration-500">
+                                                <div key={order.id} className="group bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden hover:border-[#C8AA6E]/30 transition-all duration-500">
                                                     <div className="p-8 flex flex-col md:flex-row gap-8 items-center">
                                                         {/* Status Icon Area */}
                                                         <div className={`w-20 h-20 rounded-2xl ${status.bgColor} border border-white/5 flex flex-col items-center justify-center ${status.color}`}>
@@ -363,7 +363,7 @@ const UserDashboard: React.FC = () => {
 
                                                         {/* Info Area */}
                                                         <div className="flex-1 text-center md:text-left">
-                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C5A065] mb-1">
+                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C8AA6E] mb-1">
                                                                 #{order.id.slice(0, 8).toUpperCase()}
                                                             </p>
                                                             <h4 className="text-xl font-serif mb-2">
@@ -378,7 +378,7 @@ const UserDashboard: React.FC = () => {
                                                         {/* Total Area */}
                                                         <div className="text-center md:text-right px-8 border-l border-white/5 hidden md:block">
                                                             <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Total del Pedido</p>
-                                                            <p className="text-2xl font-serif text-[#C5A065]">{formatPrice(order.total_amount)}</p>
+                                                            <p className="text-2xl font-serif text-[#C8AA6E]">{formatPrice(order.total_amount)}</p>
                                                         </div>
 
                                                         {/* Action & Proof */}
@@ -388,7 +388,7 @@ const UserDashboard: React.FC = () => {
                                                                     href={order.metadata.payment_proof_url}
                                                                     target="_blank"
                                                                     rel="noreferrer"
-                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-white/40 font-bold uppercase tracking-widest hover:bg-[#C5A065]/10 hover:text-[#C5A065] transition-all"
+                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-white/40 font-bold uppercase tracking-widest hover:bg-[#C8AA6E]/10 hover:text-[#C8AA6E] transition-all"
                                                                 >
                                                                     <span className="material-icons-outlined text-xs">receipt</span>
                                                                     Comprobante
@@ -397,7 +397,7 @@ const UserDashboard: React.FC = () => {
                                                             {['paid', 'shipped', 'delivered'].includes(order.status) && (
                                                                 <button
                                                                     onClick={() => navigate(`/invoice/${order.id}`)}
-                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-[#C5A065] font-bold uppercase tracking-widest hover:bg-[#C5A065]/10 hover:border-[#C5A065]/30 transition-all"
+                                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8px] text-[#C8AA6E] font-bold uppercase tracking-widest hover:bg-[#C8AA6E]/10 hover:border-[#C8AA6E]/30 transition-all"
                                                                 >
                                                                     <span className="material-icons-outlined text-xs">receipt_long</span>
                                                                     Factura
@@ -405,7 +405,7 @@ const UserDashboard: React.FC = () => {
                                                             )}
                                                             <button
                                                                 onClick={() => navigate(`/invoice/${order.id}`)}
-                                                                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all"
+                                                                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:bg-[#C8AA6E] hover:text-black hover:border-[#C8AA6E] transition-all"
                                                             >
                                                                 <span className="material-icons-outlined">chevron_right</span>
                                                             </button>
@@ -430,7 +430,7 @@ const UserDashboard: React.FC = () => {
                                         </p>
                                         <button
                                             onClick={() => navigate('/')}
-                                            className="border border-[#C5A065] text-[#C5A065] px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-[#C5A065] hover:text-black transition-all"
+                                            className="border border-[#C8AA6E] text-[#C8AA6E] px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-[#C8AA6E] hover:text-black transition-all"
                                         >
                                             {t('dash.orders.cta')}
                                         </button>
@@ -446,7 +446,7 @@ const UserDashboard: React.FC = () => {
                                 {/* Avatar Upload Section */}
                                 <div className="flex items-center gap-8 mb-10 p-6 bg-white/[0.03] border border-white/10 rounded-2xl">
                                     <div className="relative flex-shrink-0">
-                                        <div className="w-24 h-24 rounded-full border-2 border-[#C5A065]/30 overflow-hidden bg-white/5 flex items-center justify-center">
+                                        <div className="w-24 h-24 rounded-full border-2 border-[#C8AA6E]/30 overflow-hidden bg-white/5 flex items-center justify-center">
                                             {avatarUrl ? (
                                                 <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                                             ) : (
@@ -455,14 +455,14 @@ const UserDashboard: React.FC = () => {
                                         </div>
                                         {uploadingAvatar && (
                                             <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center">
-                                                <div className="w-6 h-6 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin"></div>
+                                                <div className="w-6 h-6 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin"></div>
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex-1 space-y-3">
                                         <h3 className="font-bold text-sm uppercase tracking-widest text-white">Foto de Perfil</h3>
                                         <p className="text-[11px] text-white/40">JPG, PNG o WebP · máx 2MB</p>
-                                        <label className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-[#C5A065]/10 hover:border-[#C5A065]/30 transition-all text-[10px] font-bold uppercase tracking-widest text-[#C5A065]">
+                                        <label className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-[#C8AA6E]/10 hover:border-[#C8AA6E]/30 transition-all text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E]">
                                             <span className="material-icons-outlined text-sm">upload</span>
                                             Cambiar Foto
                                             <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
@@ -478,11 +478,11 @@ const UserDashboard: React.FC = () => {
                                                 type="text"
                                                 value={profileForm.nombre}
                                                 onChange={(e) => setProfileForm(prev => ({ ...prev, nombre: e.target.value }))}
-                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
+                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C8AA6E] focus:outline-none transition-all"
                                             />
                                         </div>
                                         <div className="space-y-3">
-                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Identidad (Email)</label>
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Identidad (Email)</label>
                                             <input
                                                 type="email"
                                                 value={user?.email || ''}
@@ -493,24 +493,24 @@ const UserDashboard: React.FC = () => {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Teléfono</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Teléfono</label>
                                         <input
                                             type="tel"
                                             placeholder="+57 300 000 0000"
                                             value={profileForm.telefono}
                                             onChange={(e) => setProfileForm(prev => ({ ...prev, telefono: e.target.value }))}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C8AA6E] focus:outline-none transition-all"
                                         />
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A065]">Dirección de Origen</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Dirección de Origen</label>
                                         <input
                                             type="text"
                                             placeholder="Ciudad, Calle, Edificio..."
                                             value={profileForm.direccion}
                                             onChange={(e) => setProfileForm(prev => ({ ...prev, direccion: e.target.value }))}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C5A065] focus:outline-none transition-all"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-[#C8AA6E] focus:outline-none transition-all"
                                         />
                                     </div>
 
@@ -518,7 +518,7 @@ const UserDashboard: React.FC = () => {
                                         <button
                                             type="submit"
                                             disabled={savingProfile}
-                                            className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em] hover:bg-[#C5A065] hover:text-black hover:border-[#C5A065] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                            className="bg-[#C8AA6E] border border-[#C8AA6E] text-black px-10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em] hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                         >
                                             {savingProfile ? (
                                                 <>
@@ -552,7 +552,7 @@ const UserDashboard: React.FC = () => {
                                             <button
                                                 onClick={() => handleNotifToggle(key)}
                                                 className={`w-12 h-6 rounded-full transition-all relative flex-shrink-0 border ${notifPrefs[key]
-                                                    ? 'bg-[#C5A065] border-[#C5A065]'
+                                                    ? 'bg-[#C8AA6E] border-[#C8AA6E]'
                                                     : 'bg-white/5 border-white/20'
                                                     }`}
                                             >
@@ -576,7 +576,7 @@ const UserDashboard: React.FC = () => {
                                     ].map((doc, i) => (
                                         <div key={i} className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-white/20 transition-all cursor-pointer group">
                                             <div className="flex items-center gap-6">
-                                                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-[#C5A065] group-hover:bg-[#C5A065] group-hover:text-black transition-all">
+                                                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-[#C8AA6E] group-hover:bg-[#C8AA6E] group-hover:text-black transition-all">
                                                     <span className="material-icons-outlined">{doc.icon}</span>
                                                 </div>
                                                 <div>

@@ -75,7 +75,7 @@ const SubscriptionPage: React.FC = () => {
             description: { es: selectedFrequency.desc, en: selectedFrequency.desc },
             story: { es: '', en: '' },
             tags: { es: [], en: [] },
-            color: '#C5A065',
+            color: '#C8AA6E',
             mask_type: 'static' as any,
             weight: 340,
             origin: 'Sierra Nevada',

@@ -148,12 +148,12 @@ const SalesReports: React.FC = () => {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => navigate('/admin')}
-                            className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-[#C5A065] hover:text-black transition-all group"
+                            className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-[#C8AA6E] hover:text-black transition-all group"
                         >
                             <span className="material-icons-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-3xl font-serif text-[#C5A065]">Cruce de Ventas</h1>
+                            <h1 className="text-3xl font-serif text-[#C8AA6E]">Cruce de Ventas</h1>
                             <p className="text-gray-400 text-sm">Cálculo de pagos y comisiones por proveedor</p>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ const SalesReports: React.FC = () => {
                         </div>
                         <button
                             onClick={fetchReports}
-                            className="bg-[#C5A065] text-black px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(197,160,101,0.3)]"
+                            className="bg-[#C8AA6E] text-black px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_0_20px_rgba(200,170,110,0.3)]"
                         >
                             Filtrar
                         </button>
@@ -185,8 +185,8 @@ const SalesReports: React.FC = () => {
 
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-32 gap-6">
-                        <div className="w-12 h-12 border-2 border-[#C5A065]/20 border-t-[#C5A065] rounded-full animate-spin"></div>
-                        <p className="text-[#C5A065] text-[10px] font-bold uppercase tracking-[.3em] animate-pulse">Calculando métricas financieras...</p>
+                        <div className="w-12 h-12 border-2 border-[#C8AA6E]/20 border-t-[#C8AA6E] rounded-full animate-spin"></div>
+                        <p className="text-[#C8AA6E] text-[10px] font-bold uppercase tracking-[.3em] animate-pulse">Calculando métricas financieras...</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -201,8 +201,8 @@ const SalesReports: React.FC = () => {
                             </div>
                             <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
                                 <span className="material-icons-outlined absolute -right-4 -bottom-4 text-8xl text-white/[0.03] group-hover:text-white/[0.07] transition-all">percent</span>
-                                <p className="text-[10px] text-[#C5A065] uppercase tracking-[.2em] font-bold mb-2">Comisión Plataforma (15%)</p>
-                                <p className="text-3xl font-serif text-[#C5A065]">
+                                <p className="text-[10px] text-[#C8AA6E] uppercase tracking-[.2em] font-bold mb-2">Comisión Plataforma (15%)</p>
+                                <p className="text-3xl font-serif text-[#C8AA6E]">
                                     {formatPrice(reports.reduce((acc, r) => acc + r.commission, 0))}
                                 </p>
                             </div>
@@ -220,7 +220,7 @@ const SalesReports: React.FC = () => {
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-[#C5A065]/10 text-[#C5A065] text-[10px] uppercase tracking-widest font-bold">
+                                        <tr className="bg-[#C8AA6E]/10 text-[#C8AA6E] text-[10px] uppercase tracking-widest font-bold">
                                             <th className="px-6 py-4">Proveedor / Marca</th>
                                             <th className="px-6 py-4 text-center">Items Vendidos</th>
                                             <th className="px-6 py-4">Total Bruto</th>
@@ -240,7 +240,7 @@ const SalesReports: React.FC = () => {
                                                 <td className="px-6 py-6 text-center">
                                                     <button
                                                         onClick={() => setSelectedReport(report)}
-                                                        className="h-8 px-3 bg-white/5 text-[#C5A065] text-[10px] uppercase tracking-widest font-bold rounded-lg border border-white/10 hover:bg-[#C5A065] hover:text-black transition-all"
+                                                        className="h-8 px-3 bg-white/5 text-[#C8AA6E] text-[10px] uppercase tracking-widest font-bold rounded-lg border border-white/10 hover:bg-[#C8AA6E] hover:text-black transition-all"
                                                     >
                                                         Detalles
                                                     </button>
@@ -264,11 +264,11 @@ const SalesReports: React.FC = () => {
             {/* MODAL DE DETALLES POR PROVEEDOR */}
             {selectedReport && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in overflow-hidden">
-                    <div className="bg-[#0B120D] border border-[#C5A065]/20 w-full max-w-4xl max-h-[85vh] rounded-3xl overflow-hidden shadow-[0_0_100px_rgba(197,160,101,0.1)] flex flex-col animate-scale-up">
+                    <div className="bg-[#0B120D] border border-[#C8AA6E]/20 w-full max-w-4xl max-h-[85vh] rounded-3xl overflow-hidden shadow-[0_0_100px_rgba(200,170,110,0.1)] flex flex-col animate-scale-up">
                         {/* Modal Header */}
-                        <div className="p-8 border-b border-white/10 bg-[#C5A065]/5 flex items-center justify-between">
+                        <div className="p-8 border-b border-white/10 bg-[#C8AA6E]/5 flex items-center justify-between">
                             <div>
-                                <h3 className="text-2xl font-serif text-[#C5A065] italic">{selectedReport.provider_name}</h3>
+                                <h3 className="text-2xl font-serif text-[#C8AA6E] italic">{selectedReport.provider_name}</h3>
                                 <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mt-1">Desglose detallado de ventas</p>
                             </div>
                             <button
@@ -285,7 +285,7 @@ const SalesReports: React.FC = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                 {/* Sales Over Time Chart (Line Chart) */}
                                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                                    <h4 className="text-[10px] text-[#C5A065] font-black uppercase tracking-[.2em] mb-6 flex items-center gap-2">
+                                    <h4 className="text-[10px] text-[#C8AA6E] font-black uppercase tracking-[.2em] mb-6 flex items-center gap-2">
                                         <span className="material-icons-outlined text-sm">trending_up</span>
                                         Comportamiento de Ventas (Tiempo)
                                     </h4>
@@ -313,17 +313,17 @@ const SalesReports: React.FC = () => {
                                                 <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
                                                     <defs>
                                                         <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                            <stop offset="0%" style={{ stopColor: '#C5A065', stopOpacity: 0.3 }} />
-                                                            <stop offset="100%" style={{ stopColor: '#C5A065', stopOpacity: 0 }} />
+                                                            <stop offset="0%" style={{ stopColor: '#C8AA6E', stopOpacity: 0.3 }} />
+                                                            <stop offset="100%" style={{ stopColor: '#C8AA6E', stopOpacity: 0 }} />
                                                         </linearGradient>
                                                     </defs>
                                                     <path d={`M 0 100 L ${points} L 100 100 Z`} fill="url(#grad)" />
                                                     <polyline
                                                         fill="none"
-                                                        stroke="#C5A065"
+                                                        stroke="#C8AA6E"
                                                         strokeWidth="1.5"
                                                         points={points}
-                                                        className="drop-shadow-[0_0_8px_rgba(197,160,101,0.5)]"
+                                                        className="drop-shadow-[0_0_8px_rgba(200,170,110,0.5)]"
                                                     />
                                                     {values.map((v, i) => (
                                                         <circle
@@ -332,7 +332,7 @@ const SalesReports: React.FC = () => {
                                                             cy={100 - (v / max) * 100}
                                                             r="1.5"
                                                             fill="#0B120D"
-                                                            stroke="#C5A065"
+                                                            stroke="#C8AA6E"
                                                             strokeWidth="1"
                                                         />
                                                     ))}
@@ -384,7 +384,7 @@ const SalesReports: React.FC = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                                 <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                                    <p className="text-[9px] text-[#C5A065] font-black uppercase tracking-widest mb-1">Ventas</p>
+                                    <p className="text-[9px] text-[#C8AA6E] font-black uppercase tracking-widest mb-1">Ventas</p>
                                     <p className="text-xl font-serif">{formatPrice(selectedReport.total_sales)}</p>
                                 </div>
                                 <div className="bg-white/5 p-4 rounded-xl border border-white/5">
@@ -418,7 +418,7 @@ const SalesReports: React.FC = () => {
                                                 <td className="px-5 py-4 text-white/60">
                                                     {new Date(detail.date).toLocaleDateString()}
                                                 </td>
-                                                <td className="px-5 py-4 font-mono text-[10px] text-[#C5A065]">
+                                                <td className="px-5 py-4 font-mono text-[10px] text-[#C8AA6E]">
                                                     #{detail.order_id.slice(0, 8)}
                                                 </td>
                                                 <td className="px-5 py-4 text-white font-medium">
@@ -441,7 +441,7 @@ const SalesReports: React.FC = () => {
                         <div className="p-8 border-t border-white/10 bg-black/40 text-center">
                             <button
                                 onClick={() => setSelectedReport(null)}
-                                className="px-8 py-3 bg-white/5 text-[#C5A065] border border-[#C5A065]/30 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-[#C5A065] hover:text-black transition-all shadow-xl shadow-[#C5A065]/5"
+                                className="px-8 py-3 bg-white/5 text-[#C8AA6E] border border-[#C8AA6E]/30 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-[#C8AA6E] hover:text-black transition-all shadow-xl shadow-[#C8AA6E]/5"
                             >
                                 CERRAR DETALLES
                             </button>

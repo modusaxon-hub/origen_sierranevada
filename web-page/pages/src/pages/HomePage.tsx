@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
             description: { es: 'Notas a chocolate y frutos rojos.', en: 'Notes of chocolate and red fruits.' },
             story: { es: 'Trazabilidad desde las montañas...', en: 'Traceability from the mountains...' },
             tags: { es: ['Chocolate'], en: ['Chocolate'] },
-            color: '#C5A065',
+            color: '#C8AA6E',
             mask_type: 'pop',
             variants: [{ id: 'v1', name: '500g', price: 35000, stock: 100 }],
             weight: 500,
@@ -253,7 +253,7 @@ const HomePage: React.FC = () => {
                                 <button
                                     key={cat.id}
                                     onClick={() => setActiveViewerCat(cat.id as any)}
-                                    className={`flex items-center gap-1.5 md:gap-3 px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.25em] transition-all duration-500 ${activeViewerCat === cat.id ? 'bg-[#C8AA6E] text-black shadow-[0_0_20px_rgba(197,160,101,0.3)]' : 'text-white/30 hover:text-white hover:bg-white/5'}`}
+                                    className={`flex items-center gap-1.5 md:gap-3 px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.25em] transition-all duration-500 ${activeViewerCat === cat.id ? 'bg-[#C8AA6E] text-black shadow-[0_0_20px_rgba(200,170,110,0.3)]' : 'text-white/30 hover:text-white hover:bg-white/5'}`}
                                 >
                                     <span className="material-icons-outlined text-xs md:text-base">{cat.icon}</span>
                                     <span className="whitespace-nowrap">{cat.label}</span>
@@ -603,7 +603,7 @@ const HomePage: React.FC = () => {
                                                         !currentProduct?.available ||
                                                         (currentProduct?.variants && currentProduct.variants.length > 0 ? (selectedVariant && selectedVariant.stock <= 0) : (currentProduct && (currentProduct.stock ?? 0) <= 0))
                                                     }
-                                                    className="px-12 py-5 rounded bg-[#C5A065] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(197,160,101,0.3)] transition-all duration-300 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:border-gray-700 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
+                                                    className="px-12 py-5 rounded bg-[#C8AA6E] text-black text-sm font-bold uppercase tracking-widest hover:bg-[#D4B075] hover:shadow-[0_0_20px_rgba(200,170,110,0.3)] transition-all duration-300 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:border-gray-700 disabled:cursor-not-allowed btn-shine-container btn-shine-effect"
                                                 >
                                                     {(
                                                         !currentProduct?.available ||
@@ -665,8 +665,13 @@ const HomePage: React.FC = () => {
                 />
             )}
 
-            <HistoriaSection />
-            <MapaOrigenSection />
+            {/* Secciones de Historia y Trazabilidad — solo visibles en la Despensa de Cafetal */}
+            {activeViewerCat === 'coffee' && currentProduct && (
+                <>
+                    <HistoriaSection product={currentProduct} />
+                    <MapaOrigenSection product={currentProduct} />
+                </>
+            )}
             <TestimoniosSection />
 
             <Footer />

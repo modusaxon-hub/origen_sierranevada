@@ -50,7 +50,7 @@ const CookieBanner: React.FC = () => {
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl z-[100] animate-fade-in-up">
             <div className="bg-[#050806]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
                 {/* DECORATIVE ELEMENT */}
-                <div className="absolute top-0 left-0 w-1 h-full bg-[#C5A065]"></div>
+                <div className="absolute top-0 left-0 w-1 h-full bg-[#C8AA6E]"></div>
 
                 <button
                     onClick={() => setIsVisible(false)}
@@ -59,14 +59,14 @@ const CookieBanner: React.FC = () => {
                     <X size={18} />
                 </button>
 
-                <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-[#C5A065]/10 text-[#C5A065] shrink-0">
+                <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-[#C8AA6E]/10 text-[#C8AA6E] shrink-0">
                     <Cookie size={32} />
                 </div>
 
                 <div className="flex-1 space-y-4 text-center md:text-left">
                     <div>
                         <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-                            <ShieldCheck size={14} className="text-[#C5A065]" />
+                            <ShieldCheck size={14} className="text-[#C8AA6E]" />
                             <h3 className="text-white font-bold uppercase tracking-widest text-sm">{t.title}</h3>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed">
@@ -77,7 +77,7 @@ const CookieBanner: React.FC = () => {
                     <Link
                         to="/privacy"
                         onClick={() => setIsVisible(false)}
-                        className="inline-flex items-center gap-2 text-[#C5A065] text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors group"
+                        className="inline-flex items-center gap-2 text-[#C8AA6E] text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors group"
                     >
                         {t.policy}
                         <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -93,7 +93,7 @@ const CookieBanner: React.FC = () => {
                     </button>
                     <button
                         onClick={handleAccept}
-                        className="px-8 py-3 rounded-full bg-[#C5A065] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#D4B483] transform active:scale-95 transition-all shadow-lg shadow-[#C5A065]/20 order-1 sm:order-2"
+                        className="px-8 py-3 rounded-full bg-[#C8AA6E] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#D4B483] transform active:scale-95 transition-all shadow-lg shadow-[#C8AA6E]/20 order-1 sm:order-2"
                     >
                         {t.accept}
                     </button>

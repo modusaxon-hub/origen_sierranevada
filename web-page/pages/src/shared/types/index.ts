@@ -80,6 +80,9 @@ export interface Product {
 
     // Campos de personalidad y carácter
     intrinsics?: ProductPersonality;
+
+    // Historia y Trazabilidad — solo para la categoría 'cafetal'
+    traceability?: Multilingual; // Datos de origen, proceso, finca y altitud
 }
 
 /** Datos del proveedor — solo visibles en el panel admin.

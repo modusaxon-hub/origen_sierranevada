@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/services/supabaseClient';
+import { Product } from '@/shared/types';
 
 // ── Tipos ──────────────────────────────────────
 interface Finca {
@@ -20,10 +21,24 @@ const DEFAULT_FINCAS: Finca[] = [
     { nombre: 'Minca', municipio: 'Santa Marta · Minca', departamento: 'Magdalena', altitud: '1.600', perfil: 'Cacao · Especiado · Denso', proceso: 'Natural', notas: 'Chocolate · Canela · Uva pasa', icon: 'eco', color: '#A07840' },
 ];
 
-const MapaOrigenSection: React.FC = () => {
+interface MapaOrigenSectionProps {
+    product: Product;
+}
+
+/**
+ * Si el producto tiene `traceability` en texto libre, lo mostramos como bloque
+ * destacado encima del selector de fincas genéricas.
+ * Si no tiene traceability, se muestra solo el panel de fincas de la base de datos.
+ */
+const MapaOrigenSection: React.FC<MapaOrigenSectionProps> = ({ product }) => {
     const sectionRef = useRef<HTMLElement>(null);
     const [activeIdx, setActiveIdx] = useState(0);
     const [fincas, setFincas] = useState<Finca[]>(DEFAULT_FINCAS);
+    const lang = 'es';
+
+    const productName = product?.name?.[lang];
+    const productTraceability = (product as any)?.traceability?.[lang] || '';
+    const productOrigin = product?.origin || '';
 
     // ── Cargar fincas desde Supabase ──────────────
     useEffect(() => {
@@ -42,6 +57,11 @@ const MapaOrigenSection: React.FC = () => {
         fetch();
     }, []);
 
+    // Reset de finca activa al cambiar de producto
+    useEffect(() => {
+        setActiveIdx(0);
+    }, [product?.id]);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => entries.forEach(e => {
@@ -52,7 +72,7 @@ const MapaOrigenSection: React.FC = () => {
         const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
         targets?.forEach(el => observer.observe(el));
         return () => observer.disconnect();
-    }, [fincas]);
+    }, [fincas, productTraceability]);
 
     const activeFinca = fincas[activeIdx] ?? fincas[0];
 
@@ -65,7 +85,9 @@ const MapaOrigenSection: React.FC = () => {
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16 animate-on-scroll">
-                    <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-4">Trazabilidad</p>
+                    <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-4">
+                        {productName ? `Trazabilidad · ${productName}` : 'Trazabilidad'}
+                    </p>
                     <h2 className="font-serif text-5xl md:text-6xl text-white mb-4">
                         Nuestro <span className="text-[#C8AA6E] italic">Terroir</span>
                     </h2>
@@ -74,6 +96,25 @@ const MapaOrigenSection: React.FC = () => {
                     </p>
                 </div>
 
+                {/* ── Bloque de trazabilidad específica del producto ── */}
+                {productTraceability ? (
+                    <div className="animate-on-scroll mb-12 rounded-2xl border border-[#C8AA6E]/30 bg-[#141E16]/60 backdrop-blur-xl p-8">
+                        <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 flex-shrink-0 rounded-full bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 flex items-center justify-center">
+                                <span className="material-icons-outlined text-[#C8AA6E] text-lg">travel_explore</span>
+                            </div>
+                            <div>
+                                <p className="text-[9px] text-[#C8AA6E]/60 uppercase tracking-[0.5em] font-bold mb-2">Ficha de Trazabilidad</p>
+                                {productOrigin && (
+                                    <p className="text-[#C8AA6E] text-xs uppercase tracking-widest font-bold mb-3">{productOrigin}</p>
+                                )}
+                                <p className="text-white/70 text-sm leading-relaxed">{productTraceability}</p>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
+                {/* ── Selector de Fincas ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
                     {fincas.map((finca, idx) => (
                         <button
@@ -152,7 +193,7 @@ const MapaOrigenSection: React.FC = () => {
                                 <div
                                     className="w-full h-full bg-cover bg-center animate-ken-burns opacity-60"
                                     style={{
-                                        backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDThTiqynQIa-ilci3zIhgZChfLRM4f1wVfnxQes6Pgbt0fiENkSzRaEZqeH4DzTvfxMFSudxYZ8J23n4DcT2DVwzwcO1Dx_V3l9HhmRxJ2ko0IXGCyQHBgTyhraGqBG9UOv1uCuRxnQduF8GWIZs4CUyl_cSMpUCI99JCX-1juZTytNwl3HJeatheVPkxiyN2uUtqT8XJ_0H8BTnQfmUQWp2rhFuQES4wiAYO54PSXRxb8KFLJjI2B-VL6R3b51Yp8mPPyvhxZqCM')`
+                                        backgroundImage: `url('${product?.image_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDThTiqynQIa-ilci3zIhgZChfLRM4f1wVfnxQes6Pgbt0fiENkSzRaEZqeH4DzTvfxMFSudxYZ8J23n4DcT2DVwzwcO1Dx_V3l9HhmRxJ2ko0IXGCyQHBgTyhraGqBG9UOv1uCuRxnQduF8GWIZs4CUyl_cSMpUCI99JCX-1juZTytNwl3HJeatheVPkxiyN2uUtqT8XJ_0H8BTnQfmUQWp2rhFuQES4wiAYO54PSXRxb8KFLJjI2B-VL6R3b51Yp8mPPyvhxZqCM'}')`
                                     }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#141E16] via-transparent to-transparent" />

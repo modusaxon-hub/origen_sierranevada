@@ -193,7 +193,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, isOp
                     <button
                         onClick={handleAddToCart}
                         disabled={!product.available || (product.variants && product.variants.length > 0 && !selectedVariantId) || (selectedVariant && selectedVariant.stock <= 0)}
-                        className="w-full sm:w-auto bg-[#C5A065] text-black px-10 py-3 text-[10px] font-bold uppercase tracking-widest rounded transition-all hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(197,160,101,0.3)] transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed disabled:transform-none"
+                        className="w-full sm:w-auto bg-[#C8AA6E] text-black px-10 py-3 text-[10px] font-bold uppercase tracking-widest rounded transition-all hover:bg-[#D4B075] hover:shadow-[0_0_15px_rgba(200,170,110,0.3)] transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed disabled:transform-none"
                     >
                         {!product.available || (selectedVariant && selectedVariant.stock <= 0)
                             ? (lang === 'es' ? 'AGOTADO' : 'OUT OF STOCK')
