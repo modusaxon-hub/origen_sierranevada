@@ -146,14 +146,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     useEffect(() => {
-        // Fail-safe: Asegurar que el spinner desaparezca pase lo que pase tras 2s
+        // Fail-safe: Asegurar que el spinner desaparezca pase lo que pase tras 5s
         const loadingTimeout = setTimeout(() => {
-            if (loading) {
-                setLoading(false);
-                setRoleChecked(true);
-                console.warn("[Auth] Timeout de carga - marcando como completado");
-            }
-        }, 2000);
+            setLoading(false);
+            setRoleChecked(true);
+            console.warn("[Auth] Fail-safe timeout - forzando completado");
+        }, 5000);
 
         const setupProfileSubscription = (userId: string) => {
             if (profileSubscriptionRef.current) {
