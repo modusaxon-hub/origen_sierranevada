@@ -153,18 +153,27 @@ export const authService = {
                     }
                 });
 
-                // PASO 5: Invalidar IndexedDB de Supabase (si existe)
-                console.log("[AuthService] Limpiando IndexedDB...");
+                // PASO 5: Limpiar IndexedDB de Supabase (solo key de sesión, no borrar toda la DB)
+                // NOTA: No borramos toda la DB para evitar race conditions con Supabase
+                // La sesión ya fue invalidada en el servidor (PASO 1)
+                console.log("[AuthService] Limpiando cache de sesión en IndexedDB...");
                 try {
-                    const dbs = await window.indexedDB.databases?.() || [];
-                    for (const db of dbs) {
-                        if (db.name.includes('supabase') || db.name.includes('sb-')) {
-                            window.indexedDB.deleteDatabase(db.name);
-                            console.log(`[AuthService] ✓ DB eliminada: ${db.name}`);
+                    // Intentar limpiar específicamente el cache de sesión de Supabase
+                    const dbRequest = window.indexedDB.open('sbCache');
+                    dbRequest.onsuccess = () => {
+                        const db = dbRequest.result;
+                        try {
+                            const transaction = db.transaction(['sessions'], 'readwrite');
+                            const store = transaction.objectStore('sessions');
+                            store.clear();
+                            console.log("[AuthService] ✓ Cache de sesión limpiado");
+                        } catch (e) {
+                            console.log("[AuthService] No se pudo limpiar cache específico");
                         }
-                    }
+                    };
                 } catch (e) {
-                    console.log("[AuthService] No se pudo limpiar IndexedDB (normal en navegadores antiguos)");
+                    // Si falla IndexedDB, no es crítico - localStorage/sessionStorage ya fue limpiado
+                    console.log("[AuthService] IndexedDB no disponible (normal en algunos navegadores)");
                 }
             }
 

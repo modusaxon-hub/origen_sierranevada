@@ -25,23 +25,16 @@ const UserDropdown: React.FC = () => {
         setIsOpen(false);
         try {
             await signOut();
-            // Esperar 400ms para asegurar que signOut() se completó totalmente
-            // y que todos los listeners fueron detenidos
-            await new Promise(resolve => setTimeout(resolve, 400));
-
-            // IMPORTANTE: NO LIMPIAR window.__signingOut
-            // El flag persiste para bloquear cualquier restauración de sesión
-            // La página se recargará completamente, destruyendo el contexto y el flag
-
-            // Usar window.location.href para recarga COMPLETA de página
-            // Esto destruye el AuthContext y cualquier listener residual
+            // Esperar 200ms para que se complete la limpieza
+            await new Promise(resolve => setTimeout(resolve, 200));
+            // Redirigir a inicio con recarga de página
             window.location.href = '/#/';
         } catch (err) {
             console.error("[UserDropdown] Error al cerrar sesión:", err);
-            // Aun así intenta redirigir después de delay
+            // Aun así intenta redirigir
             setTimeout(() => {
                 window.location.href = '/#/';
-            }, 400);
+            }, 200);
         }
     };
 
