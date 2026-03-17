@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/services/supabaseClient';
 import { orderService } from '@/services/orderService';
 import { invoiceService } from '@/services/invoiceService';
@@ -41,10 +42,27 @@ interface OrderData {
 const InvoicePage: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
     const navigate = useNavigate();
+    const { user, isAdmin, roleChecked } = useAuth();
     const [invoice, setInvoice] = useState<InvoiceData | null>(null);
     const [order, setOrder] = useState<OrderData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Validar permisos: admin o dueño de la orden
+    useEffect(() => {
+        if (!roleChecked) {
+            // Aún está cargando el rol
+            return;
+        }
+
+        if (!user) {
+            // No hay usuario logueado - redirigir a login
+            navigate('/login', { replace: true });
+            return;
+        }
+
+        // Si no es admin pero intenta ver factura, la validación ocurre en loadInvoiceData
+    }, [user, roleChecked, navigate]);
 
     useEffect(() => {
         const loadInvoiceData = async () => {

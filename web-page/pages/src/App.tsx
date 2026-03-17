@@ -78,11 +78,7 @@ const AppContent: React.FC = () => {
                     <Route path="/track/:orderId" element={<TrackOrderPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/preview/invoice" element={<InvoicePrototype />} />
-                    <Route path="/invoice/:orderId" element={
-                        <ProtectedRoute requireAdmin={false}>
-                            <InvoicePage />
-                        </ProtectedRoute>
-                    } />
+                    <Route path="/invoice/:orderId" element={<InvoicePage />} />
 
                     {/* Proveedor Route */}
                     <Route path="/proveedor" element={
