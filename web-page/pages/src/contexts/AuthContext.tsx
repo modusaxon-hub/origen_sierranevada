@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/services/supabaseClient';
 import { authService } from '@/services/authService';
@@ -33,6 +33,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [userStatus, setUserStatus] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [roleChecked, setRoleChecked] = useState(false);
+    const profileSubscriptionRef = useRef<any>(null);
+    const authListenerRef = useRef<any>(null);
 
     const checkUserRole = async (currentUser: User | null) => {
         if (!currentUser) {
@@ -90,12 +92,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("[Auth] Iniciando cierre de sesión...");
         setLoading(true);
         try {
+            // 1. Limpiar suscripciones de realtime PRIMERO
+            if (profileSubscriptionRef.current) {
+                console.log("[Auth] Removiendo suscripción de perfil...");
+                supabase.removeChannel(profileSubscriptionRef.current);
+                profileSubscriptionRef.current = null;
+            }
+
+            if (authListenerRef.current) {
+                console.log("[Auth] Removiendo listener de auth...");
+                authListenerRef.current.subscription?.unsubscribe();
+                authListenerRef.current = null;
+            }
+
+            // 2. LUEGO limpiar la sesión en Supabase y localStorage
             await authService.signOut();
+
+            // 3. Finalmente, limpiar el estado React
             setUser(null);
             setIsAdmin(false);
             setUserRole(null);
             setUserStatus(null);
             setRoleChecked(true);
+
+            console.log("[Auth] Cierre de sesión completado.");
         } catch (err) {
             console.error("[Auth] Error al cerrar sesión:", err);
         } finally {
@@ -131,15 +151,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         }, 2000);
 
-        let profileSubscription: any = null;
-
         const setupProfileSubscription = (userId: string) => {
-            if (profileSubscription) {
-                supabase.removeChannel(profileSubscription);
+            if (profileSubscriptionRef.current) {
+                supabase.removeChannel(profileSubscriptionRef.current);
             }
 
             console.log('[Auth] Configurando canal de tiempo real para perfil:', userId);
-            profileSubscription = supabase
+            profileSubscriptionRef.current = supabase
                 .channel(`public:profiles:${userId}`)
                 .on('postgres_changes', {
                     event: 'UPDATE',
@@ -182,7 +200,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         initAuth();
 
         // 2. Escuchar cambios futuros en la sesión de Auth
-        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+        authListenerRef.current = supabase.auth.onAuthStateChange(async (event, session) => {
             console.log(`[Auth] Evento de Sesión: ${event}`);
 
             if (event === 'INITIAL_SESSION') return; // Ya manejado por initAuth
@@ -194,9 +212,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUserStatus(null);
                 setRoleChecked(true);
                 setLoading(false);
-                if (profileSubscription) {
-                    supabase.removeChannel(profileSubscription);
-                    profileSubscription = null;
+                if (profileSubscriptionRef.current) {
+                    supabase.removeChannel(profileSubscriptionRef.current);
+                    profileSubscriptionRef.current = null;
                 }
                 return;
             }
@@ -222,8 +240,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         return () => {
             clearTimeout(loadingTimeout);
-            authListener?.subscription?.unsubscribe();
-            if (profileSubscription) supabase.removeChannel(profileSubscription);
+            authListenerRef.current?.subscription?.unsubscribe();
+            if (profileSubscriptionRef.current) supabase.removeChannel(profileSubscriptionRef.current);
         };
     }, []);
 

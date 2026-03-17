@@ -107,13 +107,40 @@ export const authService = {
     },
 
     signOut: async () => {
-        // Limpiamos local storage por si acaso hay residuos que impidan el cambio de estado
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('supabase.auth.token');
-            // Opcionalmente podemos limpiar todo si es necesario, pero el token es lo principal
+        try {
+            // CRITICAL: Supabase signOut debe ser lo primero
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error("[AuthService] Error en supabase.auth.signOut():", error);
+            }
+
+            // Limpieza exhaustiva de localStorage/sessionStorage de Supabase
+            // Supabase 2.0+ usa claves como 'sb-[project-id]-auth-token'
+            if (typeof window !== 'undefined') {
+                // Remover todas las claves que comiencen con 'sb-' (Supabase auth storage)
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth')) {
+                        localStorage.removeItem(key);
+                        console.log(`[AuthService] Removido localStorage: ${key}`);
+                    }
+                });
+
+                // También limpiar sessionStorage
+                const sessionKeys = Object.keys(sessionStorage);
+                sessionKeys.forEach(key => {
+                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth')) {
+                        sessionStorage.removeItem(key);
+                        console.log(`[AuthService] Removido sessionStorage: ${key}`);
+                    }
+                });
+            }
+
+            return { error };
+        } catch (err) {
+            console.error("[AuthService] Error crítico en signOut:", err);
+            return { error: err };
         }
-        const { error } = await supabase.auth.signOut();
-        return { error };
     },
 
     getUser: async () => {
