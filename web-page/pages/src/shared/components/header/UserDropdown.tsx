@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import TrackOrderModal from './TrackOrderModal';
 
 const UserDropdown: React.FC = () => {
     const { user, isAdmin, signOut } = useAuth();
-    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isTrackModalOpen, setIsTrackModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,8 +23,17 @@ const UserDropdown: React.FC = () => {
 
     const handleLogout = async () => {
         setIsOpen(false);
-        await signOut();
-        navigate('/');
+        try {
+            await signOut();
+            // IMPORTANTE: Usar window.location.href en lugar de navigate()
+            // Esto asegura que se recarga la página completamente, destruyendo el AuthContext
+            // y previniendo que la sesión se recupere automáticamente
+            window.location.href = '/#/';
+        } catch (err) {
+            console.error("[UserDropdown] Error al cerrar sesión:", err);
+            // Aun así intenta redirigir
+            window.location.href = '/#/';
+        }
     };
 
     const effectiveIsAdmin = isAdmin || user?.user_metadata?.role_name === 'Administrador';

@@ -19,6 +19,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
         window.location.reload();
     };
 
+    const handleLogout = async () => {
+        try {
+            await signOut();
+            // IMPORTANTE: Usar window.location.href en lugar de navigate()
+            // Esto asegura que se recarga la página completamente
+            window.location.href = '/#/';
+        } catch (err) {
+            console.error("[ProtectedRoute] Error al cerrar sesión:", err);
+            window.location.href = '/#/';
+        }
+    };
+
     // Siempre esperar a que el rol sea verificado antes de tomar decisiones de acceso.
     // Esto previene el race condition donde el admin es bloqueado antes de que su rol cargue.
     if (loading || !roleChecked) {
@@ -63,7 +75,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                         Volver al Inicio
                     </button>
                     <button
-                        onClick={() => signOut()}
+                        onClick={handleLogout}
                         className="w-full py-4 border border-white/10 text-white/40 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all active:scale-95"
                     >
                         Cerrar Sesión
@@ -93,7 +105,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                         Volver al Inicio
                     </button>
                     <button
-                        onClick={() => signOut()}
+                        onClick={handleLogout}
                         className="w-full py-4 border border-white/10 text-white/40 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all active:scale-95"
                     >
                         Cerrar Sesión
@@ -127,7 +139,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                         Volver al Inicio
                     </button>
                     <button
-                        onClick={() => signOut()}
+                        onClick={handleLogout}
                         className="w-full py-4 border border-white/10 text-white/40 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all active:scale-95"
                     >
                         Cerrar Sesión

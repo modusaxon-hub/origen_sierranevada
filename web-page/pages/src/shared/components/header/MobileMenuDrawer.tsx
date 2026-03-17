@@ -15,8 +15,15 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
 
     const handleLogout = async () => {
         onClose();
-        await signOut();
-        navigate('/');
+        try {
+            await signOut();
+            // IMPORTANTE: Usar window.location.href en lugar de navigate()
+            // Esto asegura que se recarga la página completamente
+            window.location.href = '/#/';
+        } catch (err) {
+            console.error("[MobileMenuDrawer] Error al cerrar sesión:", err);
+            window.location.href = '/#/';
+        }
     };
 
     return (

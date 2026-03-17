@@ -15,8 +15,15 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        await signOut();
-        navigate('/login');
+        try {
+            await signOut();
+            // IMPORTANTE: Usar window.location.href en lugar de navigate()
+            // Esto asegura que se recarga la página completamente
+            window.location.href = '/#/login';
+        } catch (err) {
+            console.error("[AdminHeader] Error al cerrar sesión:", err);
+            window.location.href = '/#/login';
+        }
     };
 
     return (
