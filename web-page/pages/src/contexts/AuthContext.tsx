@@ -89,35 +89,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signOut = async () => {
-        console.log("[Auth] Iniciando cierre de sesión...");
+        console.log("[Auth] ⚠️ INICIANDO CIERRE DE SESIÓN COMPLETO...");
+
+        // PASO 1: Marcar que estamos desconectando para prevenir que se restaure la sesión
+        if (typeof window !== 'undefined') {
+            // @ts-ignore
+            window.__signingOut = true;
+            console.log("[Auth] ✓ Flag de desconexión establecida");
+        }
+
         setLoading(true);
         try {
-            // 1. Limpiar suscripciones de realtime PRIMERO
+            // PASO 2: PARAR INMEDIATAMENTE TODOS LOS LISTENERS
+            console.log("[Auth] PAUSANDO listeners de Supabase...");
+
             if (profileSubscriptionRef.current) {
-                console.log("[Auth] Removiendo suscripción de perfil...");
+                console.log("[Auth] ✓ Removiendo suscripción de perfil...");
                 supabase.removeChannel(profileSubscriptionRef.current);
                 profileSubscriptionRef.current = null;
             }
 
             if (authListenerRef.current) {
-                console.log("[Auth] Removiendo listener de auth...");
+                console.log("[Auth] ✓ Deteniendo listener de sesión de auth...");
+                // Unsubscribe del listener para PARAR su ejecución
                 authListenerRef.current.subscription?.unsubscribe();
                 authListenerRef.current = null;
             }
 
-            // 2. LUEGO limpiar la sesión en Supabase y localStorage
+            console.log("[Auth] ✓ Todos los listeners pausados");
+
+            // PASO 3: Esperar un poco para que los listeners se detengan
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            // PASO 4: LIMPIAR LA SESIÓN
+            console.log("[Auth] Limpiando sesión en Supabase y almacenamiento...");
             await authService.signOut();
 
-            // 3. Finalmente, limpiar el estado React
+            // PASO 5: Esperar a que se complete la limpieza
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // PASO 6: LIMPIAR EL ESTADO REACT DEFINITIVAMENTE
+            console.log("[Auth] Limpiando estado React...");
             setUser(null);
             setIsAdmin(false);
             setUserRole(null);
             setUserStatus(null);
             setRoleChecked(true);
 
-            console.log("[Auth] Cierre de sesión completado.");
+            console.log("[Auth] ✅ CIERRE DE SESIÓN COMPLETADO - Usuario completamente desconectado");
         } catch (err) {
-            console.error("[Auth] Error al cerrar sesión:", err);
+            console.error("[Auth] ❌ Error al cerrar sesión:", err);
         } finally {
             setLoading(false);
         }
@@ -180,6 +201,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 1. Verificación inicial explícita para evitar depender solo del listener que puede tardar
         const initAuth = async () => {
             try {
+                // Verificar si estamos en proceso de desconexión
+                // @ts-ignore
+                if (window.__signingOut) {
+                    console.log("[Auth] ⚠️ En proceso de desconexión - saltando initAuth");
+                    return;
+                }
+
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session?.user) {
                     setUser(session.user);
@@ -202,6 +230,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 2. Escuchar cambios futuros en la sesión de Auth
         authListenerRef.current = supabase.auth.onAuthStateChange(async (event, session) => {
             console.log(`[Auth] Evento de Sesión: ${event}`);
+
+            // Verificar si estamos desconectando - si es así, ignorar el evento
+            // @ts-ignore
+            if (window.__signingOut) {
+                console.log("[Auth] ⚠️ En proceso de desconexión - ignorando evento de sesión:", event);
+                return;
+            }
 
             if (event === 'INITIAL_SESSION') return; // Ya manejado por initAuth
 

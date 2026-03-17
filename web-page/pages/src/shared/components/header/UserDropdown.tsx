@@ -29,12 +29,19 @@ const UserDropdown: React.FC = () => {
             // (limpieza de localStorage, sessionStorage, cookies, etc.)
             await new Promise(resolve => setTimeout(resolve, 200));
 
+            // Limpiar la bandera de desconexión
+            // @ts-ignore
+            window.__signingOut = false;
+
             // IMPORTANTE: Usar window.location.href en lugar de navigate()
             // Esto asegura que se recarga la página completamente, destruyendo el AuthContext
             // y previniendo que la sesión se recupere automáticamente
             window.location.href = '/#/';
         } catch (err) {
             console.error("[UserDropdown] Error al cerrar sesión:", err);
+            // Limpiar la bandera incluso en caso de error
+            // @ts-ignore
+            window.__signingOut = false;
             // Aun así intenta redirigir después de delay
             setTimeout(() => {
                 window.location.href = '/#/';
