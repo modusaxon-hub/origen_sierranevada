@@ -91,7 +91,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signOut = async () => {
         console.log("[Auth] ⚠️ INICIANDO CIERRE DE SESIÓN COMPLETO...");
 
-        // PASO 1: Marcar que estamos desconectando para prevenir que se restaure la sesión
+        // PASO 1: Marcar INMEDIATAMENTE que estamos desconectando para prevenir que se restaure la sesión
+        // Este flag se verifica en el listener de onAuthStateChange ANTES de procesar cualquier evento
         if (typeof window !== 'undefined') {
             // @ts-ignore
             window.__signingOut = true;
@@ -100,46 +101,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         setLoading(true);
         try {
-            // PASO 2: PARAR INMEDIATAMENTE TODOS LOS LISTENERS
-            console.log("[Auth] PAUSANDO listeners de Supabase...");
+            // PASO 2: UNSUBSCRIBE DEL LISTENER DE AUTH INMEDIATAMENTE
+            // Esto es CRÍTICO - detener el listener antes de hacer nada más
+            if (authListenerRef.current) {
+                console.log("[Auth] ✓ Deteniendo listener de sesión de auth INMEDIATAMENTE...");
+                authListenerRef.current.unsubscribe?.();
+                authListenerRef.current = null;
+            }
 
+            // PASO 3: Remover suscripción de perfil
             if (profileSubscriptionRef.current) {
                 console.log("[Auth] ✓ Removiendo suscripción de perfil...");
                 supabase.removeChannel(profileSubscriptionRef.current);
                 profileSubscriptionRef.current = null;
             }
 
-            if (authListenerRef.current) {
-                console.log("[Auth] ✓ Deteniendo listener de sesión de auth...");
-                // Unsubscribe del listener para PARAR su ejecución
-                authListenerRef.current.subscription?.unsubscribe();
-                authListenerRef.current = null;
-            }
+            console.log("[Auth] ✓ Todos los listeners detenidos");
 
-            console.log("[Auth] ✓ Todos los listeners pausados");
+            // PASO 4: Esperar un poco para que se procesen las desuscripciones
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // PASO 3: Esperar un poco para que los listeners se detengan
-            await new Promise(resolve => setTimeout(resolve, 50));
-
-            // PASO 4: LIMPIAR LA SESIÓN
+            // PASO 5: LIMPIAR LA SESIÓN EN SUPABASE
             console.log("[Auth] Limpiando sesión en Supabase y almacenamiento...");
             await authService.signOut();
 
-            // PASO 5: Esperar a que se complete la limpieza
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // PASO 6: Esperar a que se complete la limpieza de almacenamiento
+            await new Promise(resolve => setTimeout(resolve, 150));
 
-            // PASO 6: LIMPIAR EL ESTADO REACT DEFINITIVAMENTE
+            // PASO 7: LIMPIAR EL ESTADO REACT DEFINITIVAMENTE
             console.log("[Auth] Limpiando estado React...");
             setUser(null);
             setIsAdmin(false);
             setUserRole(null);
             setUserStatus(null);
             setRoleChecked(true);
+            setLoading(false);
 
             console.log("[Auth] ✅ CIERRE DE SESIÓN COMPLETADO - Usuario completamente desconectado");
+            // NOTE: NO LIMPIAMOS window.__signingOut - esto persiste hasta que la página se recargue
         } catch (err) {
             console.error("[Auth] ❌ Error al cerrar sesión:", err);
-        } finally {
             setLoading(false);
         }
     };

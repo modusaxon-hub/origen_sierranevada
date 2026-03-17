@@ -17,12 +17,18 @@ const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) 
         onClose();
         try {
             await signOut();
-            // IMPORTANTE: Usar window.location.href en lugar de navigate()
-            // Esto asegura que se recarga la página completamente
+            // Esperar 400ms para asegurar que signOut() se completó totalmente
+            // y que todos los listeners fueron detenidos
+            await new Promise(resolve => setTimeout(resolve, 400));
+
+            // IMPORTANTE: Usar window.location.href para recarga COMPLETA de página
+            // Esto destruye el AuthContext y cualquier listener residual
             window.location.href = '/#/';
         } catch (err) {
             console.error("[MobileMenuDrawer] Error al cerrar sesión:", err);
-            window.location.href = '/#/';
+            setTimeout(() => {
+                window.location.href = '/#/';
+            }, 400);
         }
     };
 

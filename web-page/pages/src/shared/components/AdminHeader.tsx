@@ -17,12 +17,15 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
     const handleLogout = async () => {
         try {
             await signOut();
-            // IMPORTANTE: Usar window.location.href en lugar de navigate()
-            // Esto asegura que se recarga la página completamente
+            // Esperar 400ms para asegurar que signOut() se completó totalmente
+            await new Promise(resolve => setTimeout(resolve, 400));
+            // Usar window.location.href para recarga COMPLETA de página
             window.location.href = '/#/login';
         } catch (err) {
             console.error("[AdminHeader] Error al cerrar sesión:", err);
-            window.location.href = '/#/login';
+            setTimeout(() => {
+                window.location.href = '/#/login';
+            }, 400);
         }
     };
 

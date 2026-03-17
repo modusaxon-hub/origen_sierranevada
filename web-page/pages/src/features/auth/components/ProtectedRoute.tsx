@@ -22,12 +22,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
     const handleLogout = async () => {
         try {
             await signOut();
-            // IMPORTANTE: Usar window.location.href en lugar de navigate()
-            // Esto asegura que se recarga la página completamente
+            // Esperar 400ms para asegurar que signOut() se completó totalmente
+            await new Promise(resolve => setTimeout(resolve, 400));
+            // Usar window.location.href para recarga COMPLETA de página
             window.location.href = '/#/';
         } catch (err) {
             console.error("[ProtectedRoute] Error al cerrar sesión:", err);
-            window.location.href = '/#/';
+            setTimeout(() => {
+                window.location.href = '/#/';
+            }, 400);
         }
     };
 
