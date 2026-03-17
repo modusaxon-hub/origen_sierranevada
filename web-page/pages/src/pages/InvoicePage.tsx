@@ -47,24 +47,35 @@ const InvoicePage: React.FC = () => {
     const [order, setOrder] = useState<OrderData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [authChecked, setAuthChecked] = useState(false);
 
-    // Validar permisos: admin o dueño de la orden
+    // Validar permisos SOLO UNA VEZ al montar el componente
     useEffect(() => {
         if (!roleChecked) {
-            // Aún está cargando el rol
+            // Aún está cargando el rol - esperar
             return;
         }
 
+        if (authChecked) {
+            // Ya se hizo la validación
+            return;
+        }
+
+        // Hacer la validación
         if (!user) {
             // No hay usuario logueado - redirigir a login
             navigate('/login', { replace: true });
+        }
+
+        setAuthChecked(true);
+    }, [roleChecked, authChecked, user, navigate]);
+
+    useEffect(() => {
+        // Solo cargar datos después de validar autenticación
+        if (!authChecked || !user) {
             return;
         }
 
-        // Si no es admin pero intenta ver factura, la validación ocurre en loadInvoiceData
-    }, [user, roleChecked, navigate]);
-
-    useEffect(() => {
         const loadInvoiceData = async () => {
             if (!orderId) {
                 setError('No order ID provided');
@@ -139,7 +150,7 @@ const InvoicePage: React.FC = () => {
         };
 
         loadInvoiceData();
-    }, [orderId]);
+    }, [orderId, authChecked, user]);
 
     if (loading) {
         return (
