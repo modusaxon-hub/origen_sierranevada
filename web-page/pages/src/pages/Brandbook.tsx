@@ -6,7 +6,7 @@ import { LogOut, ArrowLeft, Printer, Sidebar, Columns, Type, Palette, MessageSqu
 import { useNavigate } from 'react-router-dom';
 
 const Brandbook: React.FC = () => {
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [scrolled, setScrolled] = useState(false);
@@ -43,7 +43,7 @@ const Brandbook: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await authService.signOut();
+        await signOut();
         navigate('/login');
     };
 

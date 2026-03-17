@@ -13,7 +13,6 @@ import CookieBanner from './shared/components/CookieBanner';
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const BrewingGuidePage = lazy(() => import('./pages/BrewingGuidePage'));
-const AiLabPage = lazy(() => import('./pages/AiLabPage'));
 const LoginPage = lazy(() => import('./features/auth/pages/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('./features/auth/pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./features/auth/pages/ResetPasswordPage'));
@@ -68,7 +67,6 @@ const AppContent: React.FC = () => {
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/guide" element={<BrewingGuidePage />} />
-                    <Route path="/ai-lab" element={<AiLabPage />} />
                     <Route path="/catalog" element={<Catalog />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />

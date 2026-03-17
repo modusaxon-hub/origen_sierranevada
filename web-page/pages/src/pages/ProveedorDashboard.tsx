@@ -39,7 +39,7 @@ const COMMISSION_RATE = 0.15;
 type TabId = 'resumen' | 'productos' | 'ventas' | 'pagos';
 
 const ProveedorDashboard: React.FC = () => {
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const { formatPrice } = useLanguage();
     const navigate = useNavigate();
 
@@ -130,7 +130,7 @@ const ProveedorDashboard: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await authService.signOut();
+        await signOut();
         navigate('/');
     };
 

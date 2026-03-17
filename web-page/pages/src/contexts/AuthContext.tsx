@@ -64,10 +64,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return;
             }
 
-            const role = data?.role_name || 'Usuario';
+            const dbRole = data?.role_name;
+            const metaRole = currentUser.user_metadata?.role_name;
+            const role = dbRole || metaRole || 'Usuario';
+
             const status = data?.status || 'pending';
 
-            console.log(`[Auth] Perfil detectado: Role=${role}, Status=${status}`);
+            console.log(`[Auth] Perfil detectado: Role=${role} (DB:${dbRole}, Meta:${metaRole}), Status=${status}`);
 
             setUserRole(role);
             setUserStatus(status);
@@ -119,18 +122,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     useEffect(() => {
-        // Fail-safe: Asegurar que el spinner desaparezca pase lo que pase tras 6s
+        // Fail-safe: Asegurar que el spinner desaparezca pase lo que pase tras 2s
         const loadingTimeout = setTimeout(() => {
             if (loading) {
                 setLoading(false);
                 setRoleChecked(true);
                 console.warn("[Auth] Fail-safe de carga ACTIVADO tras timeout.");
             }
-        }, 6000);
+        }, 2000);
 
         let profileSubscription: any = null;
 
-        // 1. Escuchar cambios en la sesión de Auth
         const setupProfileSubscription = (userId: string) => {
             if (profileSubscription) {
                 supabase.removeChannel(profileSubscription);
@@ -157,8 +159,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 });
         };
 
+        // 1. Verificación inicial explícita para evitar depender solo del listener que puede tardar
+        const initAuth = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    setUser(session.user);
+                    await checkUserRole(session.user);
+                    setupProfileSubscription(session.user.id);
+                } else {
+                    console.log("[Auth] No hay sesión inicial.");
+                    setLoading(false);
+                    setRoleChecked(true);
+                }
+            } catch (err) {
+                console.error("[Auth] Error en verificación inicial:", err);
+                setLoading(false);
+                setRoleChecked(true);
+            }
+        };
+
+        initAuth();
+
+        // 2. Escuchar cambios futuros en la sesión de Auth
         const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
             console.log(`[Auth] Evento de Sesión: ${event}`);
+
+            if (event === 'INITIAL_SESSION') return; // Ya manejado por initAuth
 
             if (event === 'SIGNED_OUT') {
                 setUser(null);
@@ -167,6 +194,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUserStatus(null);
                 setRoleChecked(true);
                 setLoading(false);
+                if (profileSubscription) {
+                    supabase.removeChannel(profileSubscription);
+                    profileSubscription = null;
+                }
                 return;
             }
 
@@ -181,10 +212,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setUserRole(null);
                     setUserStatus(null);
                     setRoleChecked(true);
-                    if (profileSubscription) {
-                        supabase.removeChannel(profileSubscription);
-                        profileSubscription = null;
-                    }
                     setLoading(false);
                 }
             } catch (err) {

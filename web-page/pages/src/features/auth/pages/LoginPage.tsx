@@ -26,7 +26,12 @@ const LoginPage: React.FC = () => {
             const { error: signInError } = await authService.signIn(email, password);
 
             if (signInError) {
-                // If Supabase returns an error (like wrong password), throw it to be caught below
+                // Si el error trae 'isLocked' o un mensaje personalizado de intentos, lo mostramos limpio
+                if ((signInError as any).isLocked || signInError.message.includes('Intento')) {
+                    throw new Error(signInError.message);
+                }
+
+                // Si es el error por defecto de Supabase, lo traducimos
                 throw new Error(signInError.message === 'Invalid login credentials'
                     ? 'Credenciales incorrectas. Verifica tu email y contraseña.'
                     : 'Error al iniciar sesión: ' + signInError.message);

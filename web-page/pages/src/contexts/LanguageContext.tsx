@@ -13,10 +13,7 @@ interface LanguageContextType {
 
 const translations: Record<string, Record<Language, string>> = {
     // Navbar
-    'nav.home': { es: 'Inicio', en: 'Home' },
-    'nav.sub': { es: 'Suscripción', en: 'Subscription' },
     'nav.guide': { es: 'Guía', en: 'Brewing Guide' },
-    'nav.ai': { es: 'Laboratorio IA', en: 'AI Lab' },
     'nav.search_placeholder': { es: 'Buscar...', en: 'Type to search...' },
     'nav.cart_title': { es: 'Tu Carrito', en: 'Your Cart' },
     'nav.cart_empty': { es: 'Tu carrito está vacío', en: 'Your cart is empty' },
@@ -89,37 +86,16 @@ const translations: Record<string, Record<Language, string>> = {
     'brew.time': { es: 'Tiempo', en: 'Time' },
     'brew.texture': { es: 'Textura', en: 'Texture' },
 
-    // AI Lab
-    'ai.title': { es: 'El Laboratorio de Innovación', en: 'The Innovation Lab' },
-    'ai.desc': { es: 'Experimenta el futuro del café con nuestras herramientas de Barista IA. Genera arte, analiza granos, crea videos o chatea con nuestro sistema experto.', en: 'Experience the future of coffee with our AI-powered Barista tools. Generate art, analyze beans, create videos, or chat with our expert system.' },
-    'ai.tab.chat': { es: 'Conserje Café', en: 'Coffee Concierge' },
-    'ai.tab.analyze': { es: 'Analizador', en: 'Bean Analyzer' },
-    'ai.tab.generate': { es: 'Estudio Etiqueta', en: 'Label Studio' },
-    'ai.tab.edit': { es: 'Filtro Foto', en: 'Photo Filter' },
-    'ai.tab.video': { es: 'Cine Brew', en: 'Cinematic Brew' },
-    'ai.prompt_label': { es: 'Instrucción', en: 'Prompt' },
-    'ai.res_label': { es: 'Resolución', en: 'Resolution' },
-    'ai.analyze_btn': { es: 'Analizar Calidad', en: 'Analyze Quality' },
-    'ai.generate_btn': { es: 'Generar Arte', en: 'Generate Art' },
-    'ai.edit_btn': { es: 'Aplicar Edición', en: 'Apply Edit' },
-    'ai.video_btn': { es: 'Generar Video', en: 'Generate Video' },
-    'ai.upload_placeholder': { es: 'Subir foto de granos o café', en: 'Upload photo of beans or brew' },
-    'ai.notes_title': { es: 'Notas del Tostador', en: 'Roaster\'s Notes' },
-    'ai.notes_placeholder': { es: 'Los resultados aparecerán aquí', en: 'Analysis results will appear here' },
-    'ai.input_placeholder': { es: 'Pregunta sobre granos, ratios...', en: 'Ask about coffee beans, brewing ratios...' },
-
     // Chat Widget
     'chat.title': { es: 'Barista IA', en: 'AI Barista' },
     'chat.placeholder': { es: 'Pregunta sobre café...', en: 'Ask about coffee...' },
 
     // Footer
-    'footer.explore': { es: 'Explorar', en: 'Explore' },
     'footer.join': { es: 'Únete a Nuestra Comunidad', en: 'Join Our Community' },
-    'footer.desc': { es: 'Suscríbete para recibir consejos de preparación y acceso anticipado a funciones de IA.', en: 'Subscribe to receive brewing tips, exclusive single-origin drops, and early access to our AI features.' },
+    'footer.desc': { es: 'Suscríbete para recibir noticias, eventos exclusivos y promociones especiales.', en: 'Subscribe to receive news, exclusive events, and special promotions.' },
     'footer.rights': { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
     'footer.privacy': { es: 'Política de Privacidad', en: 'Privacy Policy' },
     'footer.terms': { es: 'Términos', en: 'Terms of Service' },
-    'footer.shipping': { es: 'Envíos', en: 'Shipping' },
     'footer.enter_email': { es: 'Ingresa tu correo', en: 'Enter your email address' },
     'footer.sub_btn': { es: 'Suscribirse', en: 'Subscribe' },
     'footer.sub_success': { es: '¡Suscrito!', en: 'Subscribed!' },

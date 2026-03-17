@@ -22,14 +22,14 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ onSearchOpen }) => {
         <div className="hidden lg:flex max-w-7xl mx-auto px-6 xl:px-8 w-full justify-between items-center py-3 border-b border-[#C8AA6E]/20 gap-4">
             {/* Logo */}
             <Link to="/" className="hover:opacity-80 transition-opacity duration-300 cursor-pointer">
-                <Logo className="h-[30px] xl:h-[46px] w-auto" />
+                <Logo className="h-[30px] xl:h-[46px] w-auto" asDiv />
             </Link>
 
             {/* Navigation Links removidos por solicitud de landing page pura */}
 
             {/* Actions */}
             <div className="flex items-center space-x-3 xl:space-x-6 text-white shrink-0">
-                {isAdmin && (
+                {(isAdmin || user?.user_metadata?.role_name === 'Administrador') && (
                     <Link to="/admin" className="text-[#C8AA6E] border-2 border-[#C8AA6E]/50 px-2 xl:px-3 py-1 xl:py-1.5 rounded-lg bg-[#C8AA6E]/10 flex items-center gap-1 xl:gap-2 hover:bg-[#C8AA6E]/20 hover:border-[#C8AA6E] shadow-[0_0_15px_rgba(200,170,110,0.2)] transition-all duration-300 uppercase font-bold text-[8px] xl:text-[9px]">
                         <span className="material-icons-outlined text-xs">admin_panel_settings</span>
                         <span className="hidden xl:inline">Admin</span>

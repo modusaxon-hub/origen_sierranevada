@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/shared/components/Footer';
 import { useAuth } from '../contexts/AuthContext';
@@ -70,10 +70,16 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const fetchAll = async () => {
+            const timeout = setTimeout(() => {
+                if (loading) {
+                    console.warn('[Products] Carga lenta, activando fallbacks por seguridad');
+                    setAllProducts(FALLBACK_PRODUCTS);
+                    setLoading(false);
+                }
+            }, 5000);
+
             try {
-                const minWait = new Promise(resolve => setTimeout(resolve, 800));
                 const { data, error } = await productService.getAllProducts();
-                await minWait;
 
                 if (!error && data && data.length > 0) {
                     setAllProducts(data);
@@ -85,6 +91,7 @@ const HomePage: React.FC = () => {
                 console.error('Fetch Crash, using fallbacks:', err);
                 setAllProducts(FALLBACK_PRODUCTS);
             } finally {
+                clearTimeout(timeout);
                 setLoading(false);
             }
         };
@@ -93,12 +100,12 @@ const HomePage: React.FC = () => {
 
 
 
-    const viewerProducts = allProducts.filter(p => {
+    const viewerProducts = useMemo(() => allProducts.filter(p => {
         if (activeViewerCat === 'coffee') return p.category === 'cafetal' || p.category === 'coffee';
         if (activeViewerCat === 'accessories') return p.category === 'accesorios' || p.category === 'accessories';
         if (activeViewerCat === 'antojitos') return p.category === 'antojitos';
         return p.category === activeViewerCat;
-    });
+    }), [allProducts, activeViewerCat]);
     const currentProduct = viewerProducts[viewerIdx];
 
     const nextProduct = () => setViewerIdx(prev => (prev + 1) % viewerProducts.length);
@@ -130,18 +137,39 @@ const HomePage: React.FC = () => {
     }, [currentProduct?.id]);
 
     // Obtener variante seleccionada y precio actual
-    const selectedVariant = currentProduct?.variants?.find(v => v.id === selectedVariantId);
-    const currentPrice = selectedVariant?.price ?? currentProduct?.price ?? 0;
+    const selectedVariant = useMemo(
+        () => currentProduct?.variants?.find(v => v.id === selectedVariantId),
+        [currentProduct, selectedVariantId]
+    );
+
+    const isCafetal = useMemo(
+        () => currentProduct?.category === 'cafetal' || currentProduct?.category === 'coffee',
+        [currentProduct?.category]
+    );
+
+    const currentPrice = useMemo(
+        () => selectedVariant?.price ?? currentProduct?.price ?? 0,
+        [selectedVariant, currentProduct?.price]
+    );
+
     // Aplicar descuento solo en Cafetal para usuarios registrados
-    const isCafetal = currentProduct?.category === 'cafetal' || currentProduct?.category === 'coffee';
-    const finalPrice = (user && isCafetal) ? currentPrice * 0.9 : currentPrice;
+    const finalPrice = useMemo(
+        () => (user && isCafetal) ? currentPrice * 0.9 : currentPrice,
+        [user, isCafetal, currentPrice]
+    );
 
     // Obtener todas las variantes (sin filtrar por stock para que sean visibles en selectores)
-    const availableVariants = currentProduct?.variants || [];
+    const availableVariants = useMemo(
+        () => currentProduct?.variants || [],
+        [currentProduct?.variants]
+    );
 
     // Calcular sub-moliendas disponibles
-    const availableSubGrinds = ['Fina', 'Media', 'Gruesa'].filter(grosor =>
-        availableVariants.some(v => v.grind === `Molido ${grosor}`)
+    const availableSubGrinds = useMemo(
+        () => ['Fina', 'Media', 'Gruesa'].filter(grosor =>
+            availableVariants.some(v => v.grind === `Molido ${grosor}`)
+        ),
+        [availableVariants]
     );
 
     // Mantener sincronizado selectedVariantId al cambiar el tipo de molienda
@@ -269,7 +297,7 @@ const HomePage: React.FC = () => {
                                 {currentProduct.badge?.[lang] || (currentProduct.score ? `SCA Score: ${currentProduct.score}` : 'Edición de Colección')}
                             </span>
                             {currentProduct.name['es']?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('malu') ? (
-                                <img src="/logocafemalu-himalaya.png" alt={currentProduct.name[lang]} className="w-full max-w-[220px] h-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]" />
+                                <img src="/logocafemalu-himalaya.png" alt={currentProduct.name[lang]} className="w-full max-w-[220px] h-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]" loading="lazy" decoding="async" />
                             ) : (
                                 <h1 className="text-3xl font-serif text-white italic drop-shadow-lg leading-tight uppercase tracking-tighter">
                                     {currentProduct.name[lang]}
@@ -430,6 +458,8 @@ const HomePage: React.FC = () => {
                                                                 src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
                                                                 alt={currentProduct.name[lang]}
                                                                 className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float-hero-pop"
+                                                                loading="eager"
+                                                                decoding="sync"
                                                             />
                                                         </div>
                                                     </div>
@@ -456,7 +486,7 @@ const HomePage: React.FC = () => {
                                                     </span>
                                                     {currentProduct.name['es']?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('malu') ? (
                                                         <div className="relative w-full max-w-[400px] xl:max-w-[500px] h-auto my-2">
-                                                            <img src="/logocafemalu-himalaya.svg" alt={currentProduct.name[lang]} className="w-full h-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]" />
+                                                            <img src="/logocafemalu-himalaya.svg" alt={currentProduct.name[lang]} className="w-full h-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]" loading="lazy" decoding="async" />
                                                         </div>
                                                     ) : (
                                                         <h1 className="text-4xl lg:text-6xl xl:text-7xl font-serif text-white tracking-tighter leading-[0.8] italic drop-shadow-lg uppercase">

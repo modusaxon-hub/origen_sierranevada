@@ -33,7 +33,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMobileMenuOpen, setIsMobileMenu
                     </button>
 
                     <Link to="/" className="hover:opacity-75 transition-opacity duration-300" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Logo className="h-[30px] sm:h-[36px] w-auto" />
+                        <Logo className="h-[30px] sm:h-[36px] w-auto" asDiv />
                     </Link>
                 </div>
 

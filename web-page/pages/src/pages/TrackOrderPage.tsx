@@ -184,9 +184,21 @@ const TrackOrderPage: React.FC = () => {
                             <h3 className="text-xs font-bold text-[#C8AA6E] uppercase tracking-widest mb-6 border-b border-[#C8AA6E]/20 pb-2">Resumen</h3>
                             <div className="space-y-3">
                                 {order.order_items?.map((item, i) => (
-                                    <div key={i} className="flex justify-between text-sm">
-                                        <span className="text-white/60 font-light">{item.quantity}x {typeof item.products?.name === 'object' ? (item.products?.name[lang] || item.products?.name.es) : (item.products?.name || 'Producto')}</span>
-                                        <span className="text-white font-mono">{formatPrice(item.unit_price * item.quantity)}</span>
+                                    <div key={i} className="flex justify-between items-start text-sm gap-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-white font-medium">
+                                                {item.quantity}x {typeof item.products?.name === 'object' ? (item.products?.name[lang] || item.products?.name.es) : (item.products?.name || 'Producto')}
+                                            </span>
+                                            <div className="flex gap-2 mt-0.5">
+                                                {(item as any).variant?.name && (
+                                                    <span className="text-[8px] text-[#C8AA6E] font-bold uppercase tracking-widest">{(item as any).variant.name}</span>
+                                                )}
+                                                {(item as any).variant?.grind && (
+                                                    <span className="text-[8px] text-white/30 font-bold uppercase tracking-widest">| {(item as any).variant.grind}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-white font-mono whitespace-nowrap">{formatPrice(item.unit_price * item.quantity)}</span>
                                     </div>
                                 ))}
                                 <div className="flex justify-between pt-4 border-t border-white/5 text-lg font-serif">

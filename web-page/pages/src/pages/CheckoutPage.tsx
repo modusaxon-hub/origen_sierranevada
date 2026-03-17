@@ -170,10 +170,14 @@ const CheckoutPage: React.FC = () => {
         setLoading(true);
 
         try {
-            // 1. VALIDACIÓN EN TIEMPO REAL: Antes de insertar, verificar stock fresco en DB
-            const stockChecks = await Promise.all(cartItems.map(async item => {
-                // El ID puede ser un UUID simple o un compuesto PRODUCT_ID:VARIANT_ID
-                // Usamos : como delimitador para no chocar con los guiones de los UUID
+            // 1. VALIDACIÓN EN TIEMPO REAL: Antes de insertar, verificar stock fresco en DB - OPTIMIZED: batch queries
+
+            // Parse all IDs and separate variant from product IDs
+            const variantIds: string[] = [];
+            const productIds: string[] = [];
+            const parsedItems: Array<{ item: typeof cartItems[0]; productId: string; variantId: string | null }> = [];
+
+            cartItems.forEach(item => {
                 const compositeParts = item.id.split(':');
                 let productId = compositeParts[0];
                 let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
@@ -181,17 +185,47 @@ const CheckoutPage: React.FC = () => {
                 // Fallback para IDs antiguos que usaban '-' como separador (UUIDs miden 36 chars)
                 if (compositeParts.length === 1 && item.id.length > 36) {
                     productId = item.id.substring(0, 36);
-                    variantId = item.id.substring(37); // Saltar el '-' original
+                    variantId = item.id.substring(37);
                 }
 
+                parsedItems.push({ item, productId, variantId: variantId && variantId !== 'base' ? variantId : null });
+
                 if (variantId && variantId !== 'base') {
-                    const { data: v } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                    return { ...item, dbStock: v?.stock ?? 0, productId, variantId };
+                    variantIds.push(variantId);
                 } else {
-                    const { data: p } = await supabase.from('products').select('stock').eq('id', productId).single();
-                    return { ...item, dbStock: p?.stock ?? 0, productId, variantId: null };
+                    productIds.push(productId);
                 }
-            }));
+            });
+
+            // Batch queries: fetch all stocks
+            const stockMap = new Map<string, number>();
+
+            if (variantIds.length > 0) {
+                const { data: variantData } = await supabase
+                    .from('product_variants')
+                    .select('id, stock')
+                    .in('id', variantIds);
+                if (variantData) {
+                    variantData.forEach(v => stockMap.set(v.id, v.stock));
+                }
+            }
+
+            if (productIds.length > 0) {
+                const { data: productData } = await supabase
+                    .from('products')
+                    .select('id, stock')
+                    .in('id', productIds);
+                if (productData) {
+                    productData.forEach(p => stockMap.set(p.id, p.stock));
+                }
+            }
+
+            // Build stockChecks from the maps
+            const stockChecks = parsedItems.map(({ item, productId, variantId }) => {
+                const lookupId = variantId ?? productId;
+                const dbStock = stockMap.get(lookupId) ?? 0;
+                return { ...item, dbStock, productId, variantId };
+            });
 
             const stockErrors = stockChecks.filter(check => check.qty > check.dbStock);
             if (stockErrors.length > 0) {

@@ -40,6 +40,10 @@ export const orderService = {
                     products (
                         name,
                         image_url
+                    ),
+                    variant:variant_id (
+                        name,
+                        grind
                     )
                 )
             `)
@@ -60,7 +64,8 @@ export const orderService = {
                 profiles:user_id (email),
                 order_items (
                     *,
-                    products (*)
+                    products (*),
+                    variant:variant_id (*)
                 )
             `)
             .eq('id', orderId)

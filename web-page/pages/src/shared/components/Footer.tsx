@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
                 <div className="lg:col-span-1 text-center md:text-left group">
                     <span className="font-accent text-[10px] tracking-[0.4em] text-[#C8AA6E] mb-6 block uppercase font-bold">Desde 2025</span>
                     <Link to="/" className="mb-8 block hover:opacity-80 transition-opacity duration-300 cursor-pointer">
-                        <Logo className="w-full max-w-[255px] h-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)]" />
+                        <Logo className="w-full max-w-[255px] h-auto mx-auto md:mx-0 filter brightness-110 drop-shadow-[0_0_30px_rgba(200,170,110,0.4)]" asDiv />
                     </Link>
                     <p className="text-[#F5F5F5]/70 text-sm leading-relaxed mb-8 font-light">
                         Café de altura, cultivado en las montañas más puras de Colombia. Origen, sabor, propósito.
@@ -84,18 +84,8 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Navigation - Premium */}
-                <div className="lg:col-span-1 text-center md:text-left">
-                    <h3 className="font-display font-bold text-xs text-[#C8AA6E] uppercase tracking-[0.3em] mb-8 font-bold">Explorar</h3>
-                    <ul className="space-y-4 text-sm">
-                        <li><Link to="/" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.home')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></Link></li>
-                        {/* Enlaces de Suscripción y Guía removidos por solicitud de landing page pura */}
-                        <li><Link to="/ai-lab" className="text-[#F5F5F5]/70 hover:text-[#C8AA6E] transition-all duration-300 hover:translate-x-1 inline-block relative group">{t('nav.ai')} <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span></Link></li>
-                    </ul>
-                </div>
-
                 {/* Newsletter - Premium */}
-                <div className="md:col-span-2 lg:col-span-2 bg-[#C8AA6E]/5 backdrop-blur-md border border-[#C8AA6E]/20 rounded-xl p-8 hover:border-[#C8AA6E]/40 transition-all duration-300">
+                <div className="md:col-span-2 lg:col-span-3 bg-[#C8AA6E]/5 backdrop-blur-md border border-[#C8AA6E]/20 rounded-xl p-8 hover:border-[#C8AA6E]/40 transition-all duration-300">
                     <h3 className="font-display font-bold text-xs text-[#C8AA6E] uppercase tracking-[0.3em] mb-4">{t('footer.join')}</h3>
                     <p className="text-[#F5F5F5]/70 text-sm mb-8 leading-relaxed">
                         Recibe noticias sobre nuevas colecciones, eventos exclusivos y promociones especiales directo a tu email.

@@ -42,6 +42,7 @@ const OrderManager: React.FC = () => {
     const [shippingNote, setShippingNote] = useState('');
     const [shippingFile, setShippingFile] = useState<File | null>(null);
     const [isShippingRunning, setIsShippingRunning] = useState(false);
+    const [selectedOrderDetails, setSelectedOrderDetails] = useState<Order | null>(null);
 
     // Estado para Modales Institucionales (Sustituye a alert)
     const [institutionalModal, setInstitutionalModal] = useState<{
@@ -440,6 +441,133 @@ const OrderManager: React.FC = () => {
                     </div>
                 )}
 
+                {/* MODAL DE DETALLES DEL PEDIDO (VISTA COMPLETA) */}
+                {selectedOrderDetails && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in">
+                        <div className="bg-[#0B120D] border border-[#C8AA6E]/30 w-full max-w-2xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(200,170,110,0.2)]">
+                            <div className="p-8 border-b border-white/5 flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-2xl font-serif text-[#C8AA6E] italic">Detalles del Pedido</h2>
+                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest">ID: {selectedOrderDetails.id}</p>
+                                </div>
+                                <button onClick={() => setSelectedOrderDetails(null)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                                    <span className="material-icons-outlined">close</span>
+                                </button>
+                            </div>
+
+                            <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    {/* Cliente & Envío */}
+                                    <div className="space-y-8">
+                                        <div>
+                                            <h3 className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+                                                <span className="material-icons-outlined text-xs">person</span> Información del Cliente
+                                            </h3>
+                                            <div className="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                                <p className="text-sm font-bold text-white">{selectedOrderDetails.shipping_address?.fullName || selectedOrderDetails.profiles?.full_name}</p>
+                                                <p className="text-xs text-gray-400">{selectedOrderDetails.profiles?.email || selectedOrderDetails.shipping_address?.email}</p>
+                                                <p className="text-xs text-gray-400">Tlf: {selectedOrderDetails.shipping_address?.phone || 'No registrado'}</p>
+                                                <p className="text-xs text-gray-400">{selectedOrderDetails.shipping_address?.docType}: {selectedOrderDetails.shipping_address?.docNumber}</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+                                                <span className="material-icons-outlined text-xs">location_on</span> Dirección de Envío
+                                            </h3>
+                                            <div className="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                                <p className="text-sm text-gray-200">{selectedOrderDetails.shipping_address?.address}</p>
+                                                <p className="text-xs text-gray-400">{selectedOrderDetails.shipping_address?.city}, {selectedOrderDetails.shipping_address?.department}</p>
+                                                {selectedOrderDetails.shipping_address?.zipCode && (
+                                                    <p className="text-xs text-gray-500">ZIP: {selectedOrderDetails.shipping_address.zipCode}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Productos & Resumen */}
+                                    <div className="space-y-8">
+                                        <div>
+                                            <h3 className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+                                                <span className="material-icons-outlined text-xs">shopping_bag</span> Productos
+                                            </h3>
+                                            <div className="space-y-3">
+                                                {selectedOrderDetails.order_items?.map((item, i) => (
+                                                    <div key={i} className="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                                                        <div>
+                                                            <p className="text-xs font-bold text-white">
+                                                                {typeof (item.products?.name) === 'object' ? (item.products?.name?.es || item.products?.name?.en) : (item.products?.name || 'Producto')}
+                                                            </p>
+                                                            <div className="flex gap-2 mt-1">
+                                                                {(item as any).variant?.name && (
+                                                                    <span className="text-[9px] bg-[#C8AA6E]/20 text-[#C8AA6E] px-2 py-0.5 rounded-md font-bold uppercase tracking-widest">
+                                                                        {(item as any).variant.name}
+                                                                    </span>
+                                                                )}
+                                                                {(item as any).variant?.grind && (
+                                                                    <span className="text-[9px] bg-white/5 text-gray-400 px-2 py-0.5 rounded-md font-bold uppercase tracking-widest">
+                                                                        {(item as any).variant.grind}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <p className="text-[10px] text-gray-500 mt-1">Cantidad: {item.quantity}</p>
+                                                        </div>
+                                                        <p className="text-xs font-serif text-[#C8AA6E]">${(item as any).subtotal?.toLocaleString() || (item as any).unit_price * item.quantity}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-[#C8AA6E]/5 p-6 rounded-2xl border border-[#C8AA6E]/20">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-[10px] text-gray-400 uppercase tracking-widest">Subtotal</span>
+                                                <span className="text-sm text-gray-300">${selectedOrderDetails.total_amount.toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center mb-4 pb-4 border-b border-white/5">
+                                                <span className="text-[10px] text-gray-400 uppercase tracking-widest">Envío</span>
+                                                <span className="text-xs text-green-400 uppercase font-black tracking-widest italic">GRATIS</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs text-[#C8AA6E] uppercase tracking-[0.2em] font-black">Total</span>
+                                                <span className="text-2xl font-serif text-[#C8AA6E] font-bold">${selectedOrderDetails.total_amount.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Shipping Details if Shipped */}
+                                {selectedOrderDetails.status === 'shipped' && (selectedOrderDetails as any).shipping_details && (
+                                    <div className="mt-8 p-6 bg-sky-500/5 border border-sky-500/20 rounded-2xl">
+                                        <h3 className="text-[10px] text-sky-400 uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+                                            <span className="material-icons-outlined text-xs">local_shipping</span> Información de Despacho
+                                        </h3>
+                                        <p className="text-xs text-gray-300 italic mb-4">"{(selectedOrderDetails as any).shipping_details.note}"</p>
+                                        {(selectedOrderDetails as any).shipping_details.receipt_url && (
+                                            <a
+                                                href={(selectedOrderDetails as any).shipping_details.receipt_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-flex items-center gap-2 text-[10px] text-sky-400 font-bold uppercase tracking-widest hover:underline"
+                                            >
+                                                <span className="material-icons-outlined text-sm">visibility</span> Ver Guía de Envío
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="p-8 bg-black/40 flex justify-end">
+                                <button
+                                    onClick={() => setSelectedOrderDetails(null)}
+                                    className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all"
+                                >
+                                    Cerrar Vista
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4 mb-12">
                         <div className="flex items-center gap-4">
@@ -618,8 +746,17 @@ const OrderManager: React.FC = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <div className="flex flex-col gap-2 min-w-[180px]">
+                                                    <div className="flex flex-col gap-2 min-w-[220px]">
                                                         <div className="flex items-center justify-center gap-2">
+                                                            {/* 0. Detalle Completo */}
+                                                            <button
+                                                                onClick={() => setSelectedOrderDetails(order)}
+                                                                className="h-8 w-8 flex items-center justify-center bg-white/5 text-white/40 rounded-lg border border-white/10 hover:bg-white/10 hover:text-white transition-all"
+                                                                title="Ver Detalles"
+                                                            >
+                                                                <span className="material-icons-outlined text-sm">visibility</span>
+                                                            </button>
+
                                                             {/* 1. Comprobante de Pago */}
                                                             {(() => {
                                                                 const paymentsArr = (order as any).payments as Array<{ payment_evidence_url?: string }> | undefined;

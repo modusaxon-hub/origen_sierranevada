@@ -11,11 +11,11 @@ interface AdminHeaderProps {
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0, pendingUsersCount = 0 }) => {
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        await authService.signOut();
+        await signOut();
         navigate('/login');
     };
 
@@ -24,7 +24,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
             <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                 <div className="flex items-center gap-4 group">
                     <Link to="/admin" className="hover:opacity-80 transition-opacity duration-300">
-                        <Logo className="w-[140px] md:w-[170px] h-auto group-hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0" />
+                        <Logo className="w-[140px] md:w-[170px] h-auto group-hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0" asDiv />
                     </Link>
                     <span
                         onClick={() => navigate('/admin')}

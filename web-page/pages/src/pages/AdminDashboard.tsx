@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminHeader from '@/shared/components/AdminHeader';
 
 const AdminDashboard: React.FC = () => {
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const navigate = useNavigate();
     const [pendingCount, setPendingCount] = React.useState(0);
     const [metrics, setMetrics] = React.useState({
@@ -24,7 +24,7 @@ const AdminDashboard: React.FC = () => {
     });
 
     const handleLogout = async () => {
-        await authService.signOut();
+        await signOut();
         navigate('/login');
     };
 

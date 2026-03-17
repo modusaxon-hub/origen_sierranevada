@@ -107,6 +107,11 @@ export const authService = {
     },
 
     signOut: async () => {
+        // Limpiamos local storage por si acaso hay residuos que impidan el cambio de estado
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('supabase.auth.token');
+            // Opcionalmente podemos limpiar todo si es necesario, pero el token es lo principal
+        }
         const { error } = await supabase.auth.signOut();
         return { error };
     },
@@ -138,7 +143,7 @@ export const authService = {
     getAllProfiles: async () => {
         const { data, error } = await supabase
             .from('profiles')
-            .select('*')
+            .select('id, email, role_name, status, full_name, phone, avatar_url, created_at')
             .order('created_at', { ascending: false });
 
         return { data, error };

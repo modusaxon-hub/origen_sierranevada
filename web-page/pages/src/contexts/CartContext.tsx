@@ -36,12 +36,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const [isCartOpen, setIsCartOpen] = useState(false);
 
-    // Sync Fresh Stock from Supabase
+    // Sync Fresh Stock from Supabase - OPTIMIZED: batch queries instead of N+1
     const syncStock = async (items: CartItem[]) => {
         if (items.length === 0) return items;
 
         try {
-            const updatedItems = await Promise.all(items.map(async item => {
+            // Parse all IDs and separate variant from product IDs
+            const variantIds: string[] = [];
+            const productIds: string[] = [];
+            const itemIdMap = new Map<string, { type: 'variant' | 'product'; id: string }>();
+
+            items.forEach(item => {
                 const compositeParts = item.id.split(':');
                 let productId = compositeParts[0];
                 let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
@@ -52,23 +57,58 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     variantId = item.id.substring(37);
                 }
 
-                let freshStock = item.maxStock || 0; // Initialize with existing maxStock or 0
-                try {
-                    if (variantId && variantId !== 'base' && variantId.length === 36) {
-                        const { data, error } = await supabase.from('product_variants').select('stock').eq('id', variantId).single();
-                        if (!error && data) freshStock = data.stock; // Only update if no error and data exists
-                    } else {
-                        const { data, error } = await supabase.from('products').select('stock').eq('id', productId).single();
-                        if (!error && data) freshStock = data.stock; // Only update if no error and data exists
-                    }
-                } catch (e) {
-                    console.error("Stock sync error:", e);
+                if (variantId && variantId !== 'base' && variantId.length === 36) {
+                    variantIds.push(variantId);
+                    itemIdMap.set(variantId, { type: 'variant', id: variantId });
+                } else if (productId && productId.length === 36) {
+                    productIds.push(productId);
+                    itemIdMap.set(productId, { type: 'product', id: productId });
+                }
+            });
+
+            // Batch queries: fetch all variant stocks in one query, all product stocks in another
+            const stockMap = new Map<string, number>();
+
+            if (variantIds.length > 0) {
+                const { data: variantData, error: variantError } = await supabase
+                    .from('product_variants')
+                    .select('id, stock')
+                    .in('id', variantIds);
+                if (!variantError && variantData) {
+                    variantData.forEach(v => stockMap.set(v.id, v.stock));
+                }
+            }
+
+            if (productIds.length > 0) {
+                const { data: productData, error: productError } = await supabase
+                    .from('products')
+                    .select('id, stock')
+                    .in('id', productIds);
+                if (!productError && productData) {
+                    productData.forEach(p => stockMap.set(p.id, p.stock));
+                }
+            }
+
+            // Update items with fresh stock from the maps
+            const updatedItems = items.map(item => {
+                const compositeParts = item.id.split(':');
+                let productId = compositeParts[0];
+                let variantId = compositeParts.length > 1 ? compositeParts[1] : null;
+
+                if (compositeParts.length === 1 && item.id.length > 36) {
+                    productId = item.id.substring(0, 36);
+                    variantId = item.id.substring(37);
                 }
 
+                const lookupId = (variantId && variantId !== 'base' && variantId.length === 36) ? variantId : productId;
+                const freshStock = stockMap.get(lookupId) ?? item.maxStock ?? 0;
+
                 return { ...item, maxStock: freshStock, qty: Math.min(item.qty, freshStock) };
-            }));
+            });
+
             return updatedItems;
         } catch (e) {
+            console.error("Stock sync error:", e);
             return items;
         }
     };

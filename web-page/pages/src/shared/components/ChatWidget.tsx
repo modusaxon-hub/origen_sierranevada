@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { sendChatMessage } from '@/services/geminiService';
 import { Message } from '@/shared/types';
 
 const ChatWidget: React.FC = () => {
@@ -13,10 +12,17 @@ const ChatWidget: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const hasInitialized = useRef(false);
 
-    // Show scroll top button logic
+    // Show scroll top button logic with throttle using requestAnimationFrame
     useEffect(() => {
+        let ticking = false;
         const handleScroll = () => {
-            setShowScrollTop(window.scrollY > 400);
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setShowScrollTop(window.scrollY > 400);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -69,6 +75,8 @@ const ChatWidget: React.FC = () => {
                 parts: [{ text: m.content }]
             }));
 
+            // Dynamic import of Gemini service to keep @google/genai out of initial bundle
+            const { sendChatMessage } = await import('@/services/geminiService');
             const responseText = await sendChatMessage(history, userMsg.content, language);
 
             const modelMsg: Message = {

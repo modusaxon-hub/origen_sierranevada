@@ -4,75 +4,50 @@ import { Product, ProductVariant } from '../shared/types';
 
 export const productService = {
     getAllProducts: async (limit: number = 100, offset: number = 0) => {
-        // Optimized: Load products WITHOUT variants first
+        // Optimized: Load products WITH variants in a single query
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('*, variants:product_variants(*)')
             .order('created_at', { ascending: false })
             .range(offset, offset + limit - 1);
 
         if (error || !data) {
+            console.error('Error fetching products with variants:', error);
             return { data: [] as Product[], error };
         }
 
-        // Then fetch variants only if needed (lazy loading)
-        const productsWithVariants = await Promise.all(
-            (data as any[]).map(async (p) => {
-                const { data: variants } = await supabase
-                    .from('product_variants')
-                    .select('*')
-                    .eq('product_id', p.id);
-                return { ...p, variants: variants || [] };
-            })
-        );
-
-        return { data: productsWithVariants as Product[], error: null };
+        return { data: data as Product[], error: null };
     },
 
     getProductsByCategory: async (category: string, limit: number = 100) => {
-        // Optimized: Filter by category server-side
+        // Optimized: Filter by category server-side AND load variants
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('*, variants:product_variants(*)')
             .eq('category', category)
             .order('created_at', { ascending: false })
             .limit(limit);
 
         if (error || !data) {
+            console.error(`Error fetching products for category ${category}:`, error);
             return { data: [] as Product[], error };
         }
 
-        // Lazy load variants
-        const productsWithVariants = await Promise.all(
-            (data as any[]).map(async (p) => {
-                const { data: variants } = await supabase
-                    .from('product_variants')
-                    .select('*')
-                    .eq('product_id', p.id);
-                return { ...p, variants: variants || [] };
-            })
-        );
-
-        return { data: productsWithVariants as Product[], error: null };
+        return { data: data as Product[], error: null };
     },
 
     getProductById: async (id: string) => {
+        // Optimized: Load product WITH variants in a single query using join
         const { data, error } = await supabase
             .from('products')
-            .select('id, name, description, category, price, stock, image_url, available, created_at, color, mask_type, badge, score, origin, story, tags, intrinsics')
+            .select('*, variants:product_variants(*)')
             .eq('id', id)
             .single();
 
         if (!data) return { data: null, error };
 
-        // Load variants for this product
-        const { data: variants } = await supabase
-            .from('product_variants')
-            .select('*')
-            .eq('product_id', id);
-
         return {
-            data: { ...data, variants: variants || [] } as Product | null,
+            data: data as Product | null,
             error
         };
     },
@@ -116,12 +91,42 @@ export const productService = {
             .single();
 
         if (!error && variants !== undefined) {
-            const { error: delError } = await supabase.from('product_variants').delete().eq('product_id', id);
-            if (delError) return { data: null, error: delError };
+            // Sincronización inteligente de variantes
+            // 1. Obtener IDs actuales para saber cuáles eliminar
+            const { data: currentVariants } = await supabase
+                .from('product_variants')
+                .select('id')
+                .eq('product_id', id);
 
+            const currentIds = currentVariants?.map(v => v.id) || [];
+
+            // Filtramos los IDs que vienen del form. 
+            // Las variantes nuevas tienen IDs temporales (cortos) generados por JS, 
+            // las existentes tienen UUIDs reales (36 caracteres).
+            const newIds = variants
+                .map(v => v.id)
+                .filter(vid => vid && vid.length > 20);
+
+            // 2. Eliminar las que ya no están en la lista
+            const idsToDelete = currentIds.filter(cid => !newIds.includes(cid));
+            if (idsToDelete.length > 0) {
+                const { error: delError } = await supabase
+                    .from('product_variants')
+                    .delete()
+                    .in('id', idsToDelete);
+
+                if (delError) {
+                    console.warn("[ProductService] Algunas variantes no se eliminaron (posiblemente vinculadas a pedidos):", delError.message);
+                    // No bloqueamos el proceso, preferimos que queden huérfanas a que falle toda la actualización
+                }
+            }
+
+            // 3. Upsert (Actualizar existentes y Crear nuevas)
             if (variants.length > 0) {
-                const { error: insError } = await supabase.from('product_variants').insert(
-                    variants.map((v: ProductVariant) => ({
+                const variantsToUpsert = variants.map((v: ProductVariant) => {
+                    const isExisting = v.id && v.id.length > 20;
+                    return {
+                        ...(isExisting ? { id: v.id } : {}), // Solo incluimos ID si es real de DB
                         product_id: id,
                         name: v.name,
                         price: v.price,
@@ -129,9 +134,17 @@ export const productService = {
                         grind: v.grind || null,
                         units_per_package: v.units_per_package || null,
                         weight_per_unit: v.weight_per_unit || null
-                    }))
-                );
-                if (insError) return { data: null, error: insError };
+                    };
+                });
+
+                const { error: upsError } = await supabase
+                    .from('product_variants')
+                    .upsert(variantsToUpsert);
+
+                if (upsError) {
+                    console.error("[ProductService] Error al sincronizar variantes:", upsError);
+                    return { data: null, error: upsError };
+                }
             }
         } else if (error && error.message.includes('multiple (or no) rows returned')) {
             // Handle case where updating a fallback product that doesn't exist in DB

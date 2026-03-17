@@ -62,7 +62,7 @@ const OrderTimeline: React.FC<{ status: string }> = ({ status }) => {
 };
 
 const UserDashboard: React.FC = () => {
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, signOut } = useAuth();
     const { t, formatPrice, language } = useLanguage();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'settings' | 'legal'>('overview');
@@ -114,7 +114,7 @@ const UserDashboard: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await authService.signOut();
+        await signOut();
         navigate('/');
     };
 
@@ -194,7 +194,8 @@ const UserDashboard: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        {isAdmin && (
+                        {/* Admin Entry - Emergency Shortcut */}
+                        {(isAdmin || user?.user_metadata?.role_name === 'Administrador') && (
                             <button
                                 onClick={() => navigate('/admin')}
                                 className="bg-[#C8AA6E]/10 border border-[#C8AA6E]/50 px-5 py-2 rounded-xl flex items-center gap-3 hover:bg-[#C8AA6E]/20 transition-all text-[#C8AA6E]"
@@ -366,10 +367,19 @@ const UserDashboard: React.FC = () => {
                                                             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C8AA6E] mb-1">
                                                                 #{order.id.slice(0, 8).toUpperCase()}
                                                             </p>
-                                                            <h4 className="text-xl font-serif mb-2">
+                                                            <h4 className="text-xl font-serif mb-1">
                                                                 {order.order_items[0]?.products?.name[language] || 'Café Extraordinario'}
-                                                                {order.order_items.length > 1 && ` + ${order.order_items.length - 1} items`}
+                                                                {order.order_items[0]?.variant?.name && (
+                                                                    <span className="text-xs text-[#C8AA6E]/60 ml-2 italic">
+                                                                        — {order.order_items[0].variant.name}
+                                                                    </span>
+                                                                )}
                                                             </h4>
+                                                            {order.order_items.length > 1 && (
+                                                                <p className="text-[10px] text-[#C8AA6E] font-bold uppercase tracking-widest mb-2">
+                                                                    + {order.order_items.length - 1} {language === 'es' ? 'productos adicionales' : 'more items'}
+                                                                </p>
+                                                            )}
                                                             <p className="text-white/40 text-sm">
                                                                 Realizado el {new Date(order.created_at).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
                                                             </p>
