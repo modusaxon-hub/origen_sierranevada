@@ -108,37 +108,72 @@ export const authService = {
 
     signOut: async () => {
         try {
-            // CRITICAL: Supabase signOut debe ser lo primero
-            const { error } = await supabase.auth.signOut();
+            console.log("[AuthService] INICIANDO signOut COMPLETO...");
+
+            // PASO 1: Llamar signOut de Supabase (esto invalida la sesión en el servidor)
+            console.log("[AuthService] Llamando supabase.auth.signOut()...");
+            const { error } = await supabase.auth.signOut({ scope: 'local' });
             if (error) {
                 console.error("[AuthService] Error en supabase.auth.signOut():", error);
             }
 
-            // Limpieza exhaustiva de localStorage/sessionStorage de Supabase
-            // Supabase 2.0+ usa claves como 'sb-[project-id]-auth-token'
+            // PASO 2: Esperar un poco para asegurar que Supabase procese
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // PASO 3: Limpieza TOTAL y AGRESIVA del almacenamiento
             if (typeof window !== 'undefined') {
-                // Remover todas las claves que comiencen con 'sb-' (Supabase auth storage)
-                const keys = Object.keys(localStorage);
-                keys.forEach(key => {
-                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth')) {
+                console.log("[AuthService] Limpiando localStorage...");
+                // Remover TODO de localStorage que sea de Supabase
+                const localKeys = [...Object.keys(localStorage)];
+                localKeys.forEach(key => {
+                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth') || key.includes('session')) {
                         localStorage.removeItem(key);
-                        console.log(`[AuthService] Removido localStorage: ${key}`);
+                        console.log(`[AuthService] ✓ Removido localStorage: ${key}`);
                     }
                 });
 
-                // También limpiar sessionStorage
-                const sessionKeys = Object.keys(sessionStorage);
+                console.log("[AuthService] Limpiando sessionStorage...");
+                // Remover TODO de sessionStorage
+                const sessionKeys = [...Object.keys(sessionStorage)];
                 sessionKeys.forEach(key => {
-                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth')) {
+                    if (key.includes('sb-') || key.includes('supabase') || key.includes('auth') || key.includes('session')) {
                         sessionStorage.removeItem(key);
-                        console.log(`[AuthService] Removido sessionStorage: ${key}`);
+                        console.log(`[AuthService] ✓ Removido sessionStorage: ${key}`);
                     }
                 });
+
+                // PASO 4: Limpiar cookies de Supabase si existen
+                console.log("[AuthService] Limpiando cookies...");
+                document.cookie.split(";").forEach(c => {
+                    const eqPos = c.indexOf("=");
+                    const name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim();
+                    if (name.includes('sb-') || name.includes('supabase') || name.includes('auth')) {
+                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+                        console.log(`[AuthService] ✓ Cookie eliminada: ${name}`);
+                    }
+                });
+
+                // PASO 5: Invalidar IndexedDB de Supabase (si existe)
+                console.log("[AuthService] Limpiando IndexedDB...");
+                try {
+                    const dbs = await window.indexedDB.databases?.() || [];
+                    for (const db of dbs) {
+                        if (db.name.includes('supabase') || db.name.includes('sb-')) {
+                            window.indexedDB.deleteDatabase(db.name);
+                            console.log(`[AuthService] ✓ DB eliminada: ${db.name}`);
+                        }
+                    }
+                } catch (e) {
+                    console.log("[AuthService] No se pudo limpiar IndexedDB (normal en navegadores antiguos)");
+                }
             }
 
+            console.log("[AuthService] ✓ SignOut COMPLETO - almacenamiento totalmente limpiado");
             return { error };
         } catch (err) {
             console.error("[AuthService] Error crítico en signOut:", err);
+            // Aun así intentar redirigir
+            console.log("[AuthService] Redirigiendo a home a pesar del error...");
             return { error: err };
         }
     },
