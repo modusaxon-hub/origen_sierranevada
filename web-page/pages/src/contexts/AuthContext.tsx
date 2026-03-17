@@ -91,9 +91,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signOut = async () => {
         console.log("[Auth] ⚠️ INICIANDO CIERRE DE SESIÓN COMPLETO...");
 
-        // PASO 1: Marcar INMEDIATAMENTE que estamos desconectando para prevenir que se restaure la sesión
-        // Este flag se verifica en el listener de onAuthStateChange ANTES de procesar cualquier evento
+        // PASO 1: Usar sessionStorage para el flag (se limpia automáticamente al recargarse)
         if (typeof window !== 'undefined') {
+            sessionStorage.setItem('__signingOut', 'true');
             // @ts-ignore
             window.__signingOut = true;
             console.log("[Auth] ✓ Flag de desconexión establecida");
@@ -138,9 +138,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
 
             console.log("[Auth] ✅ CIERRE DE SESIÓN COMPLETADO - Usuario completamente desconectado");
-            // NOTE: NO LIMPIAMOS window.__signingOut - esto persiste hasta que la página se recargue
         } catch (err) {
             console.error("[Auth] ❌ Error al cerrar sesión:", err);
+            // Limpiar flag en caso de error
+            if (typeof window !== 'undefined') {
+                sessionStorage.removeItem('__signingOut');
+                // @ts-ignore
+                window.__signingOut = false;
+            }
             setLoading(false);
         }
     };
@@ -164,6 +169,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     useEffect(() => {
+        // Fail-safe: Limpiar flag de desconexión si lleva más de 3 segundos
+        const signOutTimeout = setTimeout(() => {
+            const isSigningOut = sessionStorage.getItem('__signingOut') === 'true';
+            if (isSigningOut) {
+                console.warn("[Auth] Flag __signingOut llevaba más de 3s - limpiando automáticamente");
+                sessionStorage.removeItem('__signingOut');
+                // @ts-ignore
+                window.__signingOut = false;
+            }
+        }, 3000);
+
         // Fail-safe: Asegurar que el spinner desaparezca pase lo que pase tras 2s
         const loadingTimeout = setTimeout(() => {
             if (loading) {
@@ -202,9 +218,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 1. Verificación inicial explícita para evitar depender solo del listener que puede tardar
         const initAuth = async () => {
             try {
-                // Verificar si estamos en proceso de desconexión
+                // Verificar si estamos en proceso de desconexión (checkear sessionStorage + window flag)
+                const isSigningOut = sessionStorage.getItem('__signingOut') === 'true';
                 // @ts-ignore
-                if (window.__signingOut) {
+                if (isSigningOut || window.__signingOut) {
                     console.log("[Auth] ⚠️ En proceso de desconexión - saltando initAuth");
                     return;
                 }
@@ -215,7 +232,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     await checkUserRole(session.user);
                     setupProfileSubscription(session.user.id);
                 } else {
-                    console.log("[Auth] No hay sesión inicial.");
+                    // No hay sesión - limpiar flag de desconexión si existe
+                    sessionStorage.removeItem('__signingOut');
+                    // @ts-ignore
+                    window.__signingOut = false;
+                    console.log("[Auth] No hay sesión inicial - flag limpiado.");
                     setLoading(false);
                     setRoleChecked(true);
                 }
@@ -233,8 +254,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.log(`[Auth] Evento de Sesión: ${event}`);
 
             // Verificar si estamos desconectando - si es así, ignorar el evento
+            const isSigningOut = sessionStorage.getItem('__signingOut') === 'true';
             // @ts-ignore
-            if (window.__signingOut) {
+            if (isSigningOut || window.__signingOut) {
                 console.log("[Auth] ⚠️ En proceso de desconexión - ignorando evento de sesión:", event);
                 return;
             }
@@ -242,6 +264,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (event === 'INITIAL_SESSION') return; // Ya manejado por initAuth
 
             if (event === 'SIGNED_OUT') {
+                console.log("[Auth] Evento SIGNED_OUT detectado - limpiando flag de desconexión");
+                // Limpiar flag cuando se reciba evento de desconexión
+                sessionStorage.removeItem('__signingOut');
+                // @ts-ignore
+                window.__signingOut = false;
+
                 setUser(null);
                 setIsAdmin(false);
                 setUserRole(null);
@@ -275,6 +303,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         return () => {
+            clearTimeout(signOutTimeout);
             clearTimeout(loadingTimeout);
             authListenerRef.current?.subscription?.unsubscribe();
             if (profileSubscriptionRef.current) supabase.removeChannel(profileSubscriptionRef.current);
