@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { authService } from '@/services/authService';
 import Logo from '@/shared/components/Logo';
 
 interface AdminHeaderProps {
@@ -17,22 +16,19 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, pendingOrdersCount = 0
     const handleLogout = async () => {
         try {
             await signOut();
-            // Esperar 200ms para que se complete la limpieza
-            await new Promise(resolve => setTimeout(resolve, 200));
-            window.location.href = '/#/login';
-        } catch (err) {
-            console.error("[AdminHeader] Error al cerrar sesión:", err);
-            setTimeout(() => {
-                window.location.href = '/#/login';
-            }, 200);
+        } catch (_) {
+            // Continuar con redirect aunque signOut falle
         }
+        // Cambiar hash y forzar recarga completa para destruir toda la app
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     return (
         <header className="fixed top-0 w-full z-[100] bg-[#0B120D]/95 backdrop-blur-xl border-b border-[#C8AA6E]/20">
             <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                 <div className="flex items-center gap-4 group">
-                    <Link to="/admin" className="hover:opacity-80 transition-opacity duration-300">
+                    <Link to="/" className="hover:opacity-80 transition-opacity duration-300">
                         <Logo className="w-[140px] md:w-[170px] h-auto group-hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0" asDiv />
                     </Link>
                     <span

@@ -6,6 +6,7 @@ import AdminHeader from '@/shared/components/AdminHeader';
 import { authService } from '@/services/authService';
 import InstitutionalModal from '@/shared/components/InstitutionalModal';
 import ConfirmModal from '@/shared/components/ConfirmModal';
+import InvoicePrototype from '@/components/Invoice/InvoicePrototype';
 
 // Estilo compartido para selects en modo oscuro
 const selectClassName = "appearance-none bg-[#0B120D] border border-white/10 rounded-xl px-4 py-2 text-xs font-bold text-[#C8AA6E] uppercase tracking-widest outline-none focus:border-[#C8AA6E] transition-all cursor-pointer hover:bg-white/5";
@@ -57,6 +58,12 @@ const OrderManager: React.FC = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
+    // Estado para Modal de Factura
+    const [invoiceModal, setInvoiceModal] = useState<{
+        order: any;
+        invoice: { invoiceNumber: string; cufe: string; issueDate: string };
+    } | null>(null);
+
     // Estado para Ventanas de Confirmación Institucionales (Sustituye a window.confirm)
     const [confirmModal, setConfirmModal] = useState<{
         title: string;
@@ -69,33 +76,41 @@ const OrderManager: React.FC = () => {
 
     const fetchOrders = async () => {
         setLoading(true);
-        const { data, error } = await supabase
-            .from('orders')
-            .select(`
-                *,
-                profiles (
-                    full_name,
-                    email
-                ),
-                order_items (
-                    product_id,
-                    quantity,
-                    products (
-                        name
+        try {
+            const { data, error } = await supabase
+                .from('orders')
+                .select(`
+                    *,
+                    profiles (
+                        full_name,
+                        email
+                    ),
+                    order_items (
+                        product_id,
+                        quantity,
+                        products (
+                            name
+                        )
+                    ),
+                    payments (
+                        payment_evidence_url,
+                        method,
+                        status
                     )
-                ),
-                payments (
-                    payment_evidence_url,
-                    method,
-                    status
-                )
-            `)
-            .order('created_at', { ascending: false });
+                `)
+                .order('created_at', { ascending: false });
 
-        if (!error && data) {
-            setOrders(data as any);
+            if (error) {
+                console.error('Error fetching orders:', error);
+            }
+            if (data) {
+                setOrders(data as any);
+            }
+        } catch (err) {
+            console.error('Exception fetching orders:', err);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const fetchPendingUsers = async () => {
@@ -157,12 +172,15 @@ const OrderManager: React.FC = () => {
             const customerName = orderRef?.shipping_address?.fullName || orderRef?.profiles?.full_name;
 
             if (customerEmail && customerName) {
-                try {
-                    const { emailService } = await import('@/services/emailService');
-                    await emailService.sendStatusUpdateEmail(customerEmail, customerName, orderId, newStatus);
-                } catch (emailErr) {
-                    console.warn("Email warning:", emailErr);
-                }
+                // Notificación en background para no bloquear la interfaz
+                (async () => {
+                    try {
+                        const { emailService } = await import('@/services/emailService');
+                        await emailService.sendStatusUpdateEmail(customerEmail, customerName, orderId, newStatus);
+                    } catch (emailErr) {
+                        console.warn("Status email notification failed (non-blocking):", emailErr);
+                    }
+                })();
             }
 
             // 5. Alerta de confirmación detallada
@@ -201,7 +219,7 @@ const OrderManager: React.FC = () => {
         try {
             let shippingReceiptUrl = '';
 
-            // 1. Subir comprobante si existe
+            // 1. Subir comprobante si existe (Opcional)
             if (shippingFile) {
                 const fileExt = shippingFile.name.split('.').pop();
                 const fileName = `shipping_${shippingModalOrder.id}_${Date.now()}.${fileExt}`;
@@ -211,7 +229,10 @@ const OrderManager: React.FC = () => {
                     .from('payments')
                     .upload(filePath, shippingFile);
 
-                if (uploadError) throw uploadError;
+                if (uploadError) {
+                    console.error("Storage Error:", uploadError);
+                    throw new Error(`Error al subir imagen: ${uploadError.message}`);
+                }
 
                 const { data: { publicUrl } } = supabase.storage
                     .from('payments')
@@ -220,13 +241,14 @@ const OrderManager: React.FC = () => {
                 shippingReceiptUrl = publicUrl;
             }
 
-            // 2. Actualizar la Orden (Usando columna específica shipping_details para persistencia atómica)
+            // 2. Preparar el objeto de detalles
             const shippingDetails = {
                 note: shippingNote,
                 receipt_url: shippingReceiptUrl,
                 shipped_at: new Date().toISOString()
             };
 
+            // 3. Actualizar la Orden en BD
             const { error: updateError } = await supabase
                 .from('orders')
                 .update({
@@ -235,42 +257,56 @@ const OrderManager: React.FC = () => {
                 })
                 .eq('id', shippingModalOrder.id);
 
-            if (updateError) throw updateError;
+            if (updateError) {
+                console.error("Database Update Error:", updateError);
+                throw new Error(`Error al actualizar la orden: ${updateError.message}`);
+            }
 
-            // 3. Actualización local inmediata del estado
+            // 4. Actualización local inmediata (Para que el admin vea el cambio sin recargar)
             setOrders(prev => prev.map(o => o.id === shippingModalOrder.id
                 ? { ...o, status: 'shipped', shipping_details: shippingDetails }
                 : o
             ));
 
-            // 3. Notificar al Cliente con los detalles específicos
+            // 5. NOTIFICACIÓN POR EMAIL (Proceso secundario: No debe bloquear la UI si es lento)
+            // No usamos 'await' aquí para que el modal se cierre inmediatamente y el admin pueda seguir trabajando
             const customerEmail = shippingModalOrder.shipping_address?.email || shippingModalOrder.profiles?.email;
             const customerName = shippingModalOrder.shipping_address?.fullName || shippingModalOrder.profiles?.full_name;
 
             if (customerEmail && customerName) {
-                const { emailService } = await import('@/services/emailService');
-                await emailService.sendStatusUpdateEmail(
-                    customerEmail,
-                    customerName,
-                    shippingModalOrder.id,
-                    'shipped',
-                    { note: shippingNote, receiptUrl: shippingReceiptUrl }
-                );
+                (async () => {
+                    try {
+                        const { emailService } = await import('@/services/emailService');
+                        await emailService.sendStatusUpdateEmail(
+                            customerEmail,
+                            customerName,
+                            shippingModalOrder.id,
+                            'shipped',
+                            { note: shippingNote, receiptUrl: shippingReceiptUrl }
+                        );
+                        console.log("Email de despacho enviado con éxito.");
+                    } catch (emailErr) {
+                        console.warn("Email Notification failed (non-blocking):", emailErr);
+                    }
+                })();
             }
 
-            setInstitutionalModal({
-                title: "¡Despachado!",
-                message: "El pedido ha sido marcado como ENVIADO y se ha notificado al cliente con los detalles de la guía.",
-                type: 'success'
-            });
+            // 6. Limpiar estados y cerrar modal
             setShippingModalOrder(null);
             setShippingNote('');
             setShippingFile(null);
 
+            setInstitutionalModal({
+                title: "¡Pedido Despachado!",
+                message: "La orden ha sido marcada como ENVIADA. Los detalles de la guía ya están disponibles en el sistema y se está enviando el correo al cliente.",
+                type: 'success'
+            });
+
         } catch (error: any) {
+            console.error("Final dispatch error:", error);
             setInstitutionalModal({
                 title: "Error de Despacho",
-                message: error.message || "No se pudo actualizar la información de envío.",
+                message: error.message || "No se pudo actualizar la información de envío. Por favor, verifique su conexión.",
                 type: 'error'
             });
         } finally {
@@ -329,6 +365,58 @@ const OrderManager: React.FC = () => {
                 message={confirmModal?.message || ''}
                 type={confirmModal?.type}
             />
+
+            {/* MODAL DE FACTURA */}
+            {invoiceModal && (() => {
+                const od = invoiceModal.order;
+                const inv = invoiceModal.invoice;
+                const items = (od.order_items || []).map((item: any) => ({
+                    name: typeof item.products?.name === 'string' ? item.products.name : item.products?.name?.es || 'Producto',
+                    quantity: item.quantity,
+                    unitPrice: item.unit_price,
+                    subtotal: item.quantity * item.unit_price
+                }));
+                const subtotal = items.reduce((a: number, i: any) => a + i.subtotal, 0);
+                const meta = typeof od.metadata === 'string' ? JSON.parse(od.metadata) : od.metadata || {};
+                const discount = meta.discount_applied ? Math.round(subtotal * 0.1) : 0;
+                const shipping = od.total_amount - subtotal + discount;
+
+                return (
+                    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl" onClick={() => setInvoiceModal(null)}>
+                        <div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
+                            {/* Barra de acciones */}
+                            <div className="sticky top-0 z-10 bg-[#141E16] flex justify-between items-center px-6 py-3 rounded-t-2xl">
+                                <span className="text-[#C8AA6E] font-serif text-sm uppercase tracking-widest">Factura #{inv.invoiceNumber}</span>
+                                <div className="flex gap-3">
+                                    <button onClick={() => window.print()} className="px-4 py-1.5 bg-[#C8AA6E] text-black text-xs font-bold rounded-lg hover:bg-[#D4B075] transition-colors">
+                                        Imprimir
+                                    </button>
+                                    <button onClick={() => setInvoiceModal(null)} className="px-4 py-1.5 border border-white/20 text-white/60 text-xs font-bold rounded-lg hover:bg-white/10 transition-colors">
+                                        Cerrar
+                                    </button>
+                                </div>
+                            </div>
+                            <InvoicePrototype
+                                invoiceNumber={inv.invoiceNumber}
+                                cufe={inv.cufe}
+                                date={inv.issueDate.split('T')[0]}
+                                customerName={od.shipping_address?.fullName || od.profiles?.full_name || 'Cliente'}
+                                customerDocType={od.shipping_address?.docType || 'CC'}
+                                customerDocNumber={od.shipping_address?.docNumber || '0'}
+                                customerAddress={od.shipping_address?.address || ''}
+                                customerCity={od.shipping_address?.city || ''}
+                                customerEmail={od.profiles?.email || ''}
+                                items={items}
+                                subtotal={subtotal}
+                                shipping={shipping}
+                                discount={discount}
+                                total={od.total_amount}
+                                orderId={od.id}
+                            />
+                        </div>
+                    </div>
+                );
+            })()}
 
             <AdminHeader
                 title="BITÁCORA DE PEDIDOS"
@@ -871,29 +959,47 @@ const OrderManager: React.FC = () => {
                                                                 <button
                                                                     onClick={async () => {
                                                                         try {
-                                                                            const { data: existingInvoice } = await invoiceService.getInvoiceByOrderId(order.id);
-                                                                            if (existingInvoice) {
-                                                                                window.open(`/#/invoice/${order.id}`, '_blank');
-                                                                                return;
+                                                                            // Obtener datos completos de la orden
+                                                                            const { data: orderData } = await supabase
+                                                                                .from('orders')
+                                                                                .select('*, order_items(*, products(*)), profiles(full_name, email)')
+                                                                                .eq('id', order.id)
+                                                                                .single();
+                                                                            if (!orderData) throw new Error('No se encontraron los datos del pedido.');
+
+                                                                            // Obtener o generar factura
+                                                                            let invoiceData;
+                                                                            const { data: existing } = await invoiceService.getInvoiceByOrderId(order.id);
+                                                                            if (existing) {
+                                                                                invoiceData = existing;
+                                                                            } else {
+                                                                                const customer = {
+                                                                                    name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
+                                                                                    docType: orderData.shipping_address?.docType || 'CC',
+                                                                                    docNumber: orderData.shipping_address?.docNumber || '0',
+                                                                                    address: orderData.shipping_address?.address || '',
+                                                                                    city: orderData.shipping_address?.city || '',
+                                                                                    department: orderData.shipping_address?.department || '',
+                                                                                    email: orderData.shipping_address?.email || orderData.profiles?.email || '',
+                                                                                    phone: orderData.shipping_address?.phone || ''
+                                                                                };
+                                                                                const { data: newInv, error: genErr } = await invoiceService.generateInvoice(order.id, orderData as any, customer);
+                                                                                if (genErr || !newInv) throw new Error('Error al generar factura.');
+                                                                                invoiceData = newInv;
                                                                             }
-                                                                            const { data: orderData } = await supabase.from('orders').select('*, order_items(*), profiles(full_name, email)').eq('id', order.id).single();
-                                                                            if (!orderData) throw new Error('No se encontraron los datos del pedido para la factura.');
-                                                                            const customer = {
-                                                                                name: orderData.shipping_address?.fullName || orderData.profiles?.full_name || 'Cliente',
-                                                                                docType: orderData.shipping_address?.docType || 'CC',
-                                                                                docNumber: orderData.shipping_address?.docNumber || '0',
-                                                                                address: orderData.shipping_address?.address || '',
-                                                                                city: orderData.shipping_address?.city || '',
-                                                                                department: orderData.shipping_address?.department || '',
-                                                                                email: orderData.shipping_address?.email || orderData.profiles?.email || '',
-                                                                                phone: orderData.shipping_address?.phone || ''
-                                                                            };
-                                                                            await invoiceService.generateInvoice(order.id, orderData as any, customer);
-                                                                            window.open(`/#/invoice/${order.id}`, '_blank');
+
+                                                                            setInvoiceModal({
+                                                                                order: orderData,
+                                                                                invoice: {
+                                                                                    invoiceNumber: invoiceData.invoice_number,
+                                                                                    cufe: invoiceData.cufe,
+                                                                                    issueDate: invoiceData.issue_date
+                                                                                }
+                                                                            });
                                                                         } catch (err: any) {
                                                                             setInstitutionalModal({
                                                                                 title: "Error de Facturación",
-                                                                                message: err.message || "Hubo un problema al generar o abrir la factura.",
+                                                                                message: err.message || "Hubo un problema al generar la factura.",
                                                                                 type: 'error'
                                                                             });
                                                                         }

@@ -312,20 +312,29 @@ const CheckoutPage: React.FC = () => {
                 console.warn('Payment record error (non-fatal):', paymentError.message);
             }
 
-            await emailService.sendOrderNotification('origensierranevadasm@gmail.com', {
-                type: 'NUEVO_PEDIDO',
-                orderId: order.id,
-                transactionId: 'PENDIENTE_TRANSFERENCIA',
-                customer: form.fullName,
-                total: finalTotal,
-                items: cartItems.map(i => `${i.qty}x ${i.name}`).join(', ')
-            });
+            // 4. NOTIFICACIONES (Proceso secundario: No debe bloquear la UI si es lento)
+            // No usamos 'await' aquí para que el cliente pase a la pantalla de éxito inmediatamente
+            (async () => {
+                try {
+                    await emailService.sendOrderNotification('origensierranevadasm@gmail.com', {
+                        type: 'NUEVO_PEDIDO',
+                        orderId: order.id,
+                        transactionId: 'PENDIENTE_TRANSFERENCIA',
+                        customer: form.fullName,
+                        total: finalTotal,
+                        items: cartItems.map(i => `${i.qty}x ${i.name}`).join(', ')
+                    });
 
-            await emailService.sendCustomerOrderEmail(form.email, form.fullName, {
-                orderId: order.id,
-                total: finalTotal,
-                itemsSummary: cartItems.map(i => `<div class="item"><span>${i.qty}x ${i.name}</span> <span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('')
-            });
+                    await emailService.sendCustomerOrderEmail(form.email, form.fullName, {
+                        orderId: order.id,
+                        total: finalTotal,
+                        itemsSummary: cartItems.map(i => `<div class="item"><span>${i.qty}x ${i.name}</span> <span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('')
+                    });
+                    console.log("Notificaciones de pedido disparadas.");
+                } catch (notiErr) {
+                    console.warn("Falla en notificaciones background (no crítico):", notiErr);
+                }
+            })();
 
             setLastOrderId(order.id);
             setLastOrderTotal(finalTotal);
@@ -448,11 +457,11 @@ const CheckoutPage: React.FC = () => {
 
                                             // Pequeña pausa para que el usuario vea el éxito antes de redirigir
                                             setTimeout(() => {
-                                                window.open(waLink, '_blank');
-                                                navigate('/account');
+                                                if (waLink) window.open(waLink, '_blank');
+                                                navigate(user ? '/account' : `/track/${lastOrderId}`);
                                             }, 1500);
                                         } else {
-                                            setTimeout(() => navigate('/account'), 3000);
+                                            setTimeout(() => navigate(user ? '/account' : `/track/${lastOrderId}`), 3000);
                                         }
                                     } else {
                                         setInstitutionalModal({
@@ -491,7 +500,12 @@ const CheckoutPage: React.FC = () => {
                     </div>
 
                     <div className="mt-8 text-center flex justify-center gap-8">
-                        <button onClick={() => navigate('/account')} className="text-gray-500 hover:text-white underline transition-colors text-xs uppercase tracking-widest">Ver mis pedidos</button>
+                        <button
+                            onClick={() => navigate(user ? '/account' : `/track/${lastOrderId}`)}
+                            className="text-gray-500 hover:text-white underline transition-colors text-xs uppercase tracking-widest"
+                        >
+                            {user ? (lang === 'es' ? 'Ver mis pedidos' : 'My Orders') : (lang === 'es' ? 'Rastrear este pedido' : 'Track current order')}
+                        </button>
                         <button onClick={() => navigate('/')} className="text-[#C8AA6E] hover:text-white underline transition-colors text-xs uppercase tracking-widest">Volver al inicio</button>
                     </div>
                 </div>

@@ -43,8 +43,9 @@ const Brandbook: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await signOut();
-        navigate('/login');
+        try { await signOut(); } catch (_) {}
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     const navLinks = [

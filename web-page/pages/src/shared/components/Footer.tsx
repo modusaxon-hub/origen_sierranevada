@@ -75,8 +75,8 @@ const Footer: React.FC = () => {
                         <a href="#" className="text-[#C8AA6E]/60 hover:text-[#C8AA6E] transition-all duration-300 transform hover:scale-125 hover:-translate-y-1" title="Instagram">
                             <i className="fa-brands fa-instagram text-2xl"></i>
                         </a>
-                        <a href="#" className="text-[#C8AA6E]/60 hover:text-[#C8AA6E] transition-all duration-300 transform hover:scale-125 hover:-translate-y-1" title="Twitter">
-                            <i className="fa-brands fa-twitter text-2xl"></i>
+                        <a href="#" className="text-[#C8AA6E]/60 hover:text-[#C8AA6E] transition-all duration-300 transform hover:scale-125 hover:-translate-y-1" title="X">
+                            <svg viewBox="0 0 30 30" fill="currentColor" className="w-6 h-6"><path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z"/></svg>
                         </a>
                         <a href="#" className="text-[#C8AA6E]/60 hover:text-[#C8AA6E] transition-all duration-300 transform hover:scale-125 hover:-translate-y-1" title="WhatsApp">
                             <i className="fa-brands fa-whatsapp text-2xl"></i>
@@ -158,6 +158,10 @@ const Footer: React.FC = () => {
                         </Link>
                         <Link className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" to="/contact">
                             Contacto
+                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span>
+                        </Link>
+                        <Link className="hover:text-[#C8AA6E] transition-all duration-300 hover:translate-y-[-2px] relative group" to="/track">
+                            Rastrear Pedido
                             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#C8AA6E] group-hover:w-full transition-all duration-300"></span>
                         </Link>
                     </div>

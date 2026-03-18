@@ -4,11 +4,17 @@ import { productService } from '@/services/productService';
 import { supabase } from '@/services/supabaseClient';
 import { Product, ProductVariant } from '@/shared/types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Package, Palette, Sparkles, Heart, Zap, Wand2, X, RotateCcw, Box } from 'lucide-react';
+import {
+    Package, Palette, Sparkles, Heart, Zap, Wand2, X, RotateCcw, Box,
+    History, Map, Star, Plus, Trash2, Globe, MapPin, MessageSquare, ListMusic,
+    Store,
+    LayoutDashboard
+} from 'lucide-react';
 import AdminHeader from '@/shared/components/AdminHeader';
 import SystemFeedback from '@/shared/components/SystemFeedback';
 import ImageAIAssistant from '@/shared/components/ImageAIAssistant';
 import { authService } from '@/services/authService';
+import { Stat, ProductStory, Finca, ProductTraceability, Testimonial } from '@/shared/types';
 
 // Constantes de configuración
 const CATEGORY_WEIGHTS: Record<string, string[]> = {
@@ -30,6 +36,32 @@ const EMPTY_SUPPLIER = {
     costo_unitario: 0, condiciones_pago: '', referencia_interna: '', notas_proveedor: ''
 };
 
+const MATERIAL_ICONS = ['spa', 'local_florist', 'eco', 'terrain', 'coffee', 'water_drop', 'nature', 'grass', 'park', 'cloud', 'bolt', 'star', 'favorite'];
+const PROCESO_OPTIONS = ['Lavado', 'Honey', 'Natural', 'Anaeróbico', 'Carbónico', 'Doble Fermentación'];
+
+const DEFAULT_STORY = (imgUrl: string = ''): ProductStory => ({
+    title1: { es: 'Nace en', en: 'Born in' },
+    title2: { es: 'las nubes', en: 'the clouds' },
+    paragraph1: { es: '', en: '' },
+    paragraph2: { es: '', en: '' },
+    badgeTitle: { es: 'Altitud promedio', en: 'Average altitude' },
+    badgeValue: { es: '2.100', en: '2,100' },
+    badgeUnit: { es: 'msnm', en: 'masl' },
+    badgeDesc: { es: 'Sierra Nevada · Magdalena', en: 'Sierra Nevada · Magdalena' },
+    bgUrl: imgUrl,
+    stats: [
+        { value: '98', label: 'Familias cafeteras', icon: 'groups' },
+        { value: '+40', label: 'Años de tradición', icon: 'history_edu' },
+        { value: '3', label: 'Generaciones', icon: 'family_restroom' },
+        { value: '3.000', label: 'msnm máx', icon: 'terrain' },
+    ]
+});
+
+const DEFAULT_TRACEABILITY: ProductTraceability = {
+    fincas: [],
+    notes: { es: '', en: '' }
+};
+
 const ProductManager: React.FC = () => {
     const { formatPrice } = useLanguage();
     const navigate = useNavigate();
@@ -40,7 +72,7 @@ const ProductManager: React.FC = () => {
     const [activeLangTab, setActiveLangTab] = useState<'es' | 'en'>('es');
     const [saving, setSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    const [activeSection, setActiveSection] = useState<'basic' | 'personality' | 'variants'>('basic');
+    const [activeSection, setActiveSection] = useState<'basic' | 'personality' | 'variants' | 'story' | 'terroir' | 'testimonials'>('basic');
     const [showAIAssistant, setShowAIAssistant] = useState(false);
     const [pendingUsersCount, setPendingUsersCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
@@ -57,8 +89,9 @@ const ProductManager: React.FC = () => {
         category: 'cafetal',
         name: { es: '', en: '' },
         description: { es: '', en: '' },
-        story: { es: '', en: '' },
-        traceability: { es: '', en: '' },
+        story: DEFAULT_STORY(),
+        traceability: DEFAULT_TRACEABILITY,
+        testimonials: [],
         tags: { es: [], en: [] },
         price: 0,
         stock: 100,
@@ -126,8 +159,9 @@ const ProductManager: React.FC = () => {
             category: 'cafetal',
             name: { es: '', en: '' },
             description: { es: '', en: '' },
-            story: { es: '', en: '' },
-            traceability: { es: '', en: '' },
+            story: DEFAULT_STORY(),
+            traceability: DEFAULT_TRACEABILITY,
+            testimonials: [],
             tags: { es: [], en: [] },
             price: 0,
             stock: 100,
@@ -157,6 +191,9 @@ const ProductManager: React.FC = () => {
         setFormData({
             ...p,
             origin: p.origin || 'Sierra Nevada de Santa Marta, Colombia',
+            story: p.story || DEFAULT_STORY(p.image_url),
+            traceability: p.traceability || DEFAULT_TRACEABILITY,
+            testimonials: p.testimonials || [],
             intrinsics: p.intrinsics || {
                 character: { es: '', en: '' },
                 personality: { es: '', en: '' },
@@ -406,6 +443,31 @@ const ProductManager: React.FC = () => {
                                     <Palette size={14} />
                                     Presentaciones
                                 </button>
+                                {formData.category === 'cafetal' && (
+                                    <>
+                                        <button
+                                            onClick={() => setActiveSection('story')}
+                                            className={`flex-1 px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeSection === 'story' ? 'bg-[#C8AA6E] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                                        >
+                                            <History size={14} />
+                                            Narrativa
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveSection('terroir')}
+                                            className={`flex-1 px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeSection === 'terroir' ? 'bg-[#C8AA6E] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                                        >
+                                            <MapPin size={14} />
+                                            Terroir
+                                        </button>
+                                    </>
+                                )}
+                                <button
+                                    onClick={() => setActiveSection('testimonials')}
+                                    className={`flex-1 px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeSection === 'testimonials' ? 'bg-[#C8AA6E] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                                >
+                                    <MessageSquare size={14} />
+                                    Testimonios
+                                </button>
                             </div>
                         </div>
 
@@ -449,45 +511,6 @@ const ProductManager: React.FC = () => {
                                                 />
                                             </div>
 
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                    Historia del Café ({activeLangTab.toUpperCase()})
-                                                    {formData.category !== 'cafetal' && <span className="text-white/30 normal-case ml-2">(solo para Cafetal)</span>}
-                                                </label>
-                                                <textarea
-                                                    rows={4}
-                                                    value={formData.story?.[activeLangTab] || ''}
-                                                    onChange={(e) => setFormData(prev => ({
-                                                        ...prev,
-                                                        story: { ...prev.story!, [activeLangTab]: e.target.value }
-                                                    }))}
-                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none"
-                                                    placeholder="Cuenta la historia única de este café..."
-                                                />
-                                            </div>
-
-                                            {/* Trazabilidad — solo para Cafetal */}
-                                            {formData.category === 'cafetal' && (
-                                                <div className="space-y-2 border border-[#C8AA6E]/20 bg-[#C8AA6E]/5 rounded-xl p-4">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className="material-icons-outlined text-[#C8AA6E] text-sm">travel_explore</span>
-                                                        <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">
-                                                            Trazabilidad ({activeLangTab.toUpperCase()})
-                                                        </label>
-                                                    </div>
-                                                    <p className="text-white/30 text-[10px] mb-2">Describe la finca, altitud, proceso y perfil de taza. Esta información aparecerá en la sección de Trazabilidad del Home cuando este café esté activo en el visor.</p>
-                                                    <textarea
-                                                        rows={5}
-                                                        value={(formData as any).traceability?.[activeLangTab] || ''}
-                                                        onChange={(e) => setFormData(prev => ({
-                                                            ...prev,
-                                                            traceability: { ...(prev as any).traceability, [activeLangTab]: e.target.value }
-                                                        }))}
-                                                        className="w-full bg-black/40 border border-[#C8AA6E]/20 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none text-sm"
-                                                        placeholder="Ej: Finca La Jagua · San Pedro de la Sierra · 2.200 msnm · Proceso Honey · Notas: Mora, Maracuyá, Panela..."
-                                                    />
-                                                </div>
-                                            )}
                                         </div>
 
                                         {/* Columna derecha */}
@@ -770,6 +793,316 @@ const ProductManager: React.FC = () => {
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* SECTION: Story Narrative */}
+                            {activeSection === 'story' && formData.story && (
+                                <div className="space-y-8 animate-fade-in">
+                                    <div className="bg-gradient-to-br from-[#C8AA6E]/10 to-transparent border border-[#C8AA6E]/30 rounded-2xl p-6">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <History className="text-[#C8AA6E]" size={24} />
+                                            <h3 className="text-xl font-serif text-[#C8AA6E]">Narrativa del Producto</h3>
+                                        </div>
+                                        <p className="text-white/60 text-sm">
+                                            Define la historia que se contará en la sección "Nace en las nubes". Esta configuración es específica para este producto.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                        <div className="space-y-6">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Título Línea 1 ({activeLangTab.toUpperCase()})</label>
+                                                <input
+                                                    value={formData.story.title1?.[activeLangTab] || ''}
+                                                    onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, title1: { ...prev.story?.title1!, [activeLangTab]: e.target.value } } }))}
+                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none"
+                                                    placeholder="Nace en"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Título Línea 2 - Destacado ({activeLangTab.toUpperCase()})</label>
+                                                <input
+                                                    value={formData.story.title2?.[activeLangTab] || ''}
+                                                    onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, title2: { ...prev.story?.title2!, [activeLangTab]: e.target.value } } }))}
+                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none"
+                                                    placeholder="las nubes"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-6">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Párrafo Principal ({activeLangTab.toUpperCase()})</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={formData.story.paragraph1?.[activeLangTab] || ''}
+                                                    onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, paragraph1: { ...prev.story?.paragraph1!, [activeLangTab]: e.target.value } } }))}
+                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none"
+                                                    placeholder="Describe el origen místico de este café..."
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Párrafo Secundario ({activeLangTab.toUpperCase()})</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={formData.story.paragraph2?.[activeLangTab] || ''}
+                                                    onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, paragraph2: { ...prev.story?.paragraph2!, [activeLangTab]: e.target.value } } }))}
+                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none"
+                                                    placeholder="Añade detalles sobre la tradición o el proceso..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Stats and Badge */}
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 border-t border-white/5 pt-8">
+                                        <div className="space-y-4">
+                                            <h4 className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Insignia Flotante</h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Título</label>
+                                                    <input value={formData.story.badgeTitle?.[activeLangTab] || ''} onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, badgeTitle: { ...prev.story?.badgeTitle!, [activeLangTab]: e.target.value } } }))} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Valor</label>
+                                                    <input value={formData.story.badgeValue?.[activeLangTab] || ''} onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, badgeValue: { ...prev.story?.badgeValue!, [activeLangTab]: e.target.value } } }))} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Unidad</label>
+                                                    <input value={formData.story.badgeUnit?.[activeLangTab] || ''} onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, badgeUnit: { ...prev.story?.badgeUnit!, [activeLangTab]: e.target.value } } }))} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Desc.</label>
+                                                    <input value={formData.story.badgeDesc?.[activeLangTab] || ''} onChange={e => setFormData(prev => ({ ...prev, story: { ...prev.story!, badgeDesc: { ...prev.story?.badgeDesc!, [activeLangTab]: e.target.value } } }))} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="lg:col-span-2 space-y-4">
+                                            <h4 className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Estadísticas Clave</h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                {formData.story.stats?.map((s, idx) => (
+                                                    <div key={idx} className="flex gap-2 p-3 bg-black/40 border border-white/5 rounded-xl">
+                                                        <div className="flex-1 space-y-2">
+                                                            <input value={s.value} onChange={e => {
+                                                                const stats = [...formData.story!.stats!];
+                                                                stats[idx].value = e.target.value;
+                                                                setFormData(prev => ({ ...prev, story: { ...prev.story!, stats } }));
+                                                            }} className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs font-bold" placeholder="Valor" />
+                                                            <input value={s.label} onChange={e => {
+                                                                const stats = [...formData.story!.stats!];
+                                                                stats[idx].label = e.target.value;
+                                                                setFormData(prev => ({ ...prev, story: { ...prev.story!, stats } }));
+                                                            }} className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-[10px]" placeholder="Etiqueta" />
+                                                        </div>
+                                                        <select value={s.icon} onChange={e => {
+                                                            const stats = [...formData.story!.stats!];
+                                                            stats[idx].icon = e.target.value;
+                                                            setFormData(prev => ({ ...prev, story: { ...prev.story!, stats } }));
+                                                        }} className="bg-black/40 border border-white/10 rounded-lg text-xs p-1 focus:ring-1 focus:ring-[#C8AA6E] outline-none">
+                                                            {MATERIAL_ICONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
+                                                        </select>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* SECTION: Terroir / Fincas */}
+                            {activeSection === 'terroir' && formData.traceability && (
+                                <div className="space-y-8 animate-fade-in">
+                                    <div className="flex justify-between items-center bg-black/20 p-4 rounded-xl border border-white/5">
+                                        <div className="flex items-center gap-3">
+                                            <MapPin className="text-[#C8AA6E]" size={24} />
+                                            <div>
+                                                <h3 className="text-xl font-serif text-[#C8AA6E]">Origen y Terroir</h3>
+                                                <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">Configuración de Fincas y Trazabilidad</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const blank: Finca = { nombre: '', municipio: '', departamento: 'Magdalena', altitud: '', perfil: '', proceso: 'Natural', notas: '', icon: 'eco', color: '#C8AA6E' };
+                                                setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas: [...(prev.traceability?.fincas || []), blank] } }));
+                                            }}
+                                            className="text-[10px] font-bold uppercase tracking-widest border border-[#C8AA6E]/50 px-4 py-2 rounded-lg hover:bg-[#C8AA6E] hover:text-black transition-all flex items-center gap-2"
+                                        >
+                                            <Plus size={14} />
+                                            Añadir Finca
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] text-[#C8AA6E] uppercase tracking-widest font-bold">Notas Generales de Trazabilidad ({activeLangTab.toUpperCase()})</label>
+                                        <textarea
+                                            rows={3}
+                                            value={formData.traceability.notes?.[activeLangTab] || ''}
+                                            onChange={e => setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, notes: { ...prev.traceability?.notes!, [activeLangTab]: e.target.value } } }))}
+                                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-[#C8AA6E] outline-none resize-none"
+                                            placeholder="Resumen del área geográfica o condiciones particulares..."
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {formData.traceability.fincas?.map((finca, idx) => (
+                                            <div key={idx} className="bg-black/40 border border-white/10 p-6 rounded-2xl relative space-y-4 group hover:border-[#C8AA6E]/30 transition-all">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const fincas = [...formData.traceability!.fincas!];
+                                                        fincas.splice(idx, 1);
+                                                        setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                    }}
+                                                    className="absolute top-4 right-4 text-white/20 hover:text-red-500 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Nombre Finca</label>
+                                                        <input value={finca.nombre} onChange={e => {
+                                                            const fincas = [...formData.traceability!.fincas!];
+                                                            fincas[idx].nombre = e.target.value;
+                                                            setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none" />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Municipio</label>
+                                                        <input value={finca.municipio} onChange={e => {
+                                                            const fincas = [...formData.traceability!.fincas!];
+                                                            fincas[idx].municipio = e.target.value;
+                                                            setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Altitud</label>
+                                                        <input value={finca.altitud} onChange={e => {
+                                                            const fincas = [...formData.traceability!.fincas!];
+                                                            fincas[idx].altitud = e.target.value;
+                                                            setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none" placeholder="Ej: 1.900 msnm" />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Proceso</label>
+                                                        <select value={finca.proceso} onChange={e => {
+                                                            const fincas = [...formData.traceability!.fincas!];
+                                                            fincas[idx].proceso = e.target.value;
+                                                            setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none">
+                                                            {PROCESO_OPTIONS.map(o => <option key={o} value={o} className="bg-black text-white">{o}</option>)}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Perfil / Notas de Cata</label>
+                                                    <textarea value={finca.perfil} onChange={e => {
+                                                        const fincas = [...formData.traceability!.fincas!];
+                                                        fincas[idx].perfil = e.target.value;
+                                                        setFormData(prev => ({ ...prev, traceability: { ...prev.traceability, fincas } }));
+                                                    }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs resize-none focus:border-[#C8AA6E] outline-none" rows={2} placeholder="Notas sensoriales de esta finca..." />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* SECTION: Testimonials */}
+                            {activeSection === 'testimonials' && (
+                                <div className="space-y-8 animate-fade-in">
+                                    <div className="flex justify-between items-center bg-black/20 p-4 rounded-xl border border-white/5">
+                                        <div className="flex items-center gap-3">
+                                            <MessageSquare className="text-[#C8AA6E]" size={24} />
+                                            <div>
+                                                <h3 className="text-xl font-serif text-[#C8AA6E]">Testimonios de Clientes</h3>
+                                                <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">Reseñas específicas para este producto</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const blank: Testimonial = { nombre: '', ciudad: '', rating: 5, texto: '', compra: '' };
+                                                setFormData(prev => ({ ...prev, testimonials: [...(prev.testimonials || []), blank] }));
+                                            }}
+                                            className="text-[10px] font-bold uppercase tracking-widest border border-[#C8AA6E]/50 px-4 py-2 rounded-lg hover:bg-[#C8AA6E] hover:text-black transition-all flex items-center gap-2"
+                                        >
+                                            <Plus size={14} />
+                                            Añadir Testimonio
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {formData.testimonials?.map((t, idx) => (
+                                            <div key={idx} className="bg-black/40 border border-white/10 p-6 rounded-2xl relative space-y-4 group hover:border-[#C8AA6E]/30 transition-all">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const testimonials = [...formData.testimonials!];
+                                                        testimonials.splice(idx, 1);
+                                                        setFormData(prev => ({ ...prev, testimonials }));
+                                                    }}
+                                                    className="absolute top-4 right-4 text-white/20 hover:text-red-500 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Cliente</label>
+                                                        <input value={t.nombre} onChange={e => {
+                                                            const tests = [...formData.testimonials!];
+                                                            tests[idx].nombre = e.target.value;
+                                                            setFormData(prev => ({ ...prev, testimonials: tests }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none" />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[8px] text-white/40 uppercase font-bold">Ciudad</label>
+                                                        <input value={t.ciudad} onChange={e => {
+                                                            const tests = [...formData.testimonials!];
+                                                            tests[idx].ciudad = e.target.value;
+                                                            setFormData(prev => ({ ...prev, testimonials: tests }));
+                                                        }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-[#C8AA6E] outline-none" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Puntuación</label>
+                                                    <div className="flex gap-1">
+                                                        {[1, 2, 3, 4, 5].map(n => (
+                                                            <button
+                                                                key={n}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const tests = [...formData.testimonials!];
+                                                                    tests[idx].rating = n;
+                                                                    setFormData(prev => ({ ...prev, testimonials: tests }));
+                                                                }}
+                                                                className={`transition-colors ${(t.rating || 0) >= n ? 'text-[#C8AA6E]' : 'text-white/10'}`}
+                                                            >
+                                                                <Star size={16} fill={(t.rating || 0) >= n ? 'currentColor' : 'none'} />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] text-white/40 uppercase font-bold">Reseña</label>
+                                                    <textarea value={t.texto} onChange={e => {
+                                                        const tests = [...formData.testimonials!];
+                                                        tests[idx].texto = e.target.value;
+                                                        setFormData(prev => ({ ...prev, testimonials: tests }));
+                                                    }} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs resize-none focus:border-[#C8AA6E] outline-none" rows={3} placeholder="Escribe el testimonio aquí..." />
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             )}

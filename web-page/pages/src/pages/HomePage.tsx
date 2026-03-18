@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/shared/components/Footer';
+import HistoriaSection from './home/HistoriaSection';
+import MapaOrigenSection from './home/MapaOrigenSection';
+import TestimoniosSection from './home/TestimoniosSection';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
 import { productService } from '@/services/productService';
+import { siteService, SiteConfig } from '@/services/siteService';
 import { Product } from '@/shared/types';
 import SEO from '@/shared/components/SEO';
 import ProductDetailsModal from '@/shared/components/ProductDetailsModal';
 import { AccessoryCard } from '@/shared/components/AccessoryCard';
-import HistoriaSection from './home/HistoriaSection';
-import MapaOrigenSection from './home/MapaOrigenSection';
-import TestimoniosSection from './home/TestimoniosSection';
 
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const HomePage: React.FC = () => {
 
     const [allProducts, setAllProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [siteConfigs, setSiteConfigs] = useState<Record<string, any>>({});
 
     // Viewer State (Now in Hero)
     const [activeViewerCat, setActiveViewerCat] = useState<'coffee' | 'accessories' | 'antojitos'>('coffee');
@@ -45,38 +47,62 @@ const HomePage: React.FC = () => {
     // Specific state for modal product (to avoid conflict with viewerIdx)
     const [selectedModalProduct, setSelectedModalProduct] = useState<Product | null>(null);
 
-    const FALLBACK_PRODUCTS: Product[] = [
+    const FALLBACK_PRODUCTS = [
         {
-            id: 'fallback-coffee-1',
+            id: 'fallback-1',
             category: 'cafetal',
-            name: { es: 'Café Malú Reserva Especial', en: 'Malu Coffee Special Reserve' },
-            price: 35000,
-            image_url: '/cafe_malu_full_composition.png',
-            stock: 100,
-            description: { es: 'Notas a chocolate y frutos rojos.', en: 'Notes of chocolate and red fruits.' },
-            story: { es: 'Trazabilidad desde las montañas...', en: 'Traceability from the mountains...' },
-            tags: { es: ['Chocolate'], en: ['Chocolate'] },
+            name: { es: 'Café Malú', en: 'Malu Coffee' },
+            description: { es: 'Perfil equilibrado con notas a chocolate y frutos rojos.', en: 'Balanced profile with chocolate and red fruit notes.' },
+            price: 38000,
+            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/1715874321000-cafe-malu.png',
             color: '#C8AA6E',
             mask_type: 'pop',
-            variants: [{ id: 'v1', name: '500g', price: 35000, stock: 100 }],
-            weight: 500,
-            origin: 'Sierra Nevada',
             available: true,
-            intrinsics: {
-                character: { es: 'Elegante', en: 'Elegant' }
-            }
+            variants: [
+                { id: 'v1', name: '250g', price: 38000, stock: 50 },
+                { id: 'v2', name: '500g', price: 65000, stock: 30 }
+            ]
+        },
+        {
+            id: 'fallback-2',
+            category: 'cafetal',
+            name: { es: 'Sombra Sagrada', en: 'Sacred Shadow' },
+            description: { es: 'Cosechado bajo sombra protectora de árboles nativos.', en: 'Harvested under the protective shade of native trees.' },
+            price: 35000,
+            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/sombra-sagrada.png',
+            color: '#4A5D4E',
+            mask_type: 'drop',
+            available: true,
+            variants: [
+                { id: 'v3', name: '250g', price: 35000, stock: 20 }
+            ]
+        },
+        {
+            id: 'fallback-3',
+            category: 'accesorios',
+            name: { es: 'Molino Manual', en: 'Manual Grinder' },
+            description: { es: 'Acero inoxidable con muelas cerámicas.', en: 'Stainless steel with ceramic burrs.' },
+            price: 85000,
+            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/grinder.png',
+            color: '#8B7355',
+            mask_type: 'flower',
+            available: true,
+            variants: [
+                { id: 'v4', name: 'Único', price: 85000, stock: 10 }
+            ]
         }
     ];
 
     useEffect(() => {
         const fetchAll = async () => {
+            // Fail-safe: Si la DB tarda más de 15s (ej. red lenta), cargar fallbacks para no dejar la pantalla en negro
             const timeout = setTimeout(() => {
                 if (loading) {
-                    console.warn('[Products] Carga lenta, activando fallbacks por seguridad');
-                    setAllProducts(FALLBACK_PRODUCTS);
+                    console.warn("DB Timeout (15s) - Cargando productos de respaldo");
+                    setAllProducts(FALLBACK_PRODUCTS as Product[]);
                     setLoading(false);
                 }
-            }, 5000);
+            }, 15000);
 
             try {
                 const { data, error } = await productService.getAllProducts();
@@ -95,7 +121,24 @@ const HomePage: React.FC = () => {
                 setLoading(false);
             }
         };
+
+        const fetchConfigs = async () => {
+            try {
+                const { data } = await siteService.getAllConfigs();
+                if (data) {
+                    const configMap = data.reduce((acc, curr) => ({
+                        ...acc,
+                        [curr.id]: curr.data
+                    }), {});
+                    setSiteConfigs(configMap);
+                }
+            } catch (err) {
+                console.error("Error fetching site configs:", err);
+            }
+        };
+
         fetchAll();
+        fetchConfigs();
     }, []);
 
 
@@ -107,6 +150,11 @@ const HomePage: React.FC = () => {
         return p.category === activeViewerCat;
     }), [allProducts, activeViewerCat]);
     const currentProduct = viewerProducts[viewerIdx];
+
+    // Main Coffee Product for landing page branding sections fallback
+    const mainCoffeeProduct = useMemo(() => {
+        return allProducts.find(p => p.category === 'cafetal' || p.category === 'coffee');
+    }, [allProducts]);
 
     const nextProduct = () => setViewerIdx(prev => (prev + 1) % viewerProducts.length);
     const prevProduct = () => setViewerIdx(prev => (prev - 1 + viewerProducts.length) % viewerProducts.length);
@@ -695,14 +743,21 @@ const HomePage: React.FC = () => {
                 />
             )}
 
-            {/* Secciones de Historia y Trazabilidad — solo visibles en la Despensa de Cafetal */}
-            {activeViewerCat === 'coffee' && currentProduct && (
-                <>
-                    <HistoriaSection product={currentProduct} />
-                    <MapaOrigenSection product={currentProduct} />
-                </>
-            )}
-            <TestimoniosSection />
+            {/* Dynamic Content Sections */}
+            <HistoriaSection
+                story={currentProduct?.category === 'cafetal' ? currentProduct?.story : mainCoffeeProduct?.story}
+                fallbackStory={siteConfigs.historia}
+            />
+
+            <MapaOrigenSection
+                traceability={currentProduct?.category === 'cafetal' ? currentProduct?.traceability : mainCoffeeProduct?.traceability}
+                fallbackFincas={siteConfigs.fincas?.list}
+            />
+
+            <TestimoniosSection
+                testimonials={currentProduct?.category === 'cafetal' ? currentProduct?.testimonials : mainCoffeeProduct?.testimonials}
+                fallbackTestimonials={siteConfigs.testimonios?.list}
+            />
 
             <Footer />
         </div>

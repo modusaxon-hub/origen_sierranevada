@@ -34,7 +34,6 @@ const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const InvoicePrototype = lazy(() => import('./components/Invoice/InvoicePrototype'));
 const InvoicePage = lazy(() => import('./pages/InvoicePage'));
-const SiteContentManager = lazy(() => import('./pages/SiteContentManager'));
 const ProveedorDashboard = lazy(() => import('./pages/ProveedorDashboard'));
 
 // Loading Placeholder
@@ -75,6 +74,7 @@ const AppContent: React.FC = () => {
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/privacy" element={<PrivacyPolicyPage />} />
                     <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/track" element={<TrackOrderPage />} />
                     <Route path="/track/:orderId" element={<TrackOrderPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/preview/invoice" element={<InvoicePrototype />} />
@@ -137,14 +137,6 @@ const AppContent: React.FC = () => {
                         element={
                             <ProtectedRoute requireAdmin={true}>
                                 <SalesReports />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/content"
-                        element={
-                            <ProtectedRoute requireAdmin={true}>
-                                <SiteContentManager />
                             </ProtectedRoute>
                         }
                     />

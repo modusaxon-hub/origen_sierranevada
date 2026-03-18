@@ -24,8 +24,9 @@ const AdminDashboard: React.FC = () => {
     });
 
     const handleLogout = async () => {
-        await signOut();
-        navigate('/login');
+        try { await signOut(); } catch (_) { }
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     const fetchMetrics = async () => {
@@ -260,13 +261,6 @@ const AdminDashboard: React.FC = () => {
                         <h3 className="text-2xl font-serif text-white mb-4">Usuarios</h3>
                         <p className="text-gray-400 font-light mb-6 text-sm">Administra roles y clientes.</p>
                         <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Ver Equipo <span className="material-icons-outlined text-sm">arrow_forward</span></button>
-                    </div>
-
-                    <div onClick={() => navigate('/admin/content')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">
-                        <div className="absolute top-0 right-0 p-4 opacity-50"><span className="material-icons-outlined text-4xl text-[#C8AA6E]">article</span></div>
-                        <h3 className="text-2xl font-serif text-white mb-4">Contenido del Sitio</h3>
-                        <p className="text-gray-400 font-light mb-6 text-sm">Edita Historia, Fincas y Testimonios.</p>
-                        <button className="flex items-center gap-2 text-[#C8AA6E] text-sm font-bold uppercase group-hover:gap-4 transition-all">Gestionar <span className="material-icons-outlined text-sm">arrow_forward</span></button>
                     </div>
 
                     <div onClick={() => navigate('/brandbook')} className="group relative bg-white/5 border border-[#C8AA6E]/20 hover:border-[#C8AA6E] p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,170,110,0.1)] cursor-pointer">

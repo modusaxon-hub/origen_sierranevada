@@ -13,8 +13,15 @@ const LoginPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { refreshAuth } = useAuth();
+    const { user, isAdmin, loading: authLoading, roleChecked, refreshAuth } = useAuth();
     const { blocked: throttleBlocked, trigger: triggerThrottle } = useSubmitThrottle(3000);
+
+    // Si ya tiene sesión activa, redirigir fuera de login
+    React.useEffect(() => {
+        if (!authLoading && roleChecked && user) {
+            navigate(isAdmin ? '/admin' : '/', { replace: true });
+        }
+    }, [authLoading, roleChecked, user, isAdmin, navigate]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();

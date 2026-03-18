@@ -89,42 +89,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signOut = async () => {
-        console.log("[Auth] 🔓 Iniciando cierre de sesión...");
-
-        setLoading(true);
-        try {
-            // PASO 1: Detener listeners inmediatamente
-            if (authListenerRef.current) {
-                authListenerRef.current.unsubscribe?.();
-                authListenerRef.current = null;
-            }
-            if (profileSubscriptionRef.current) {
-                supabase.removeChannel(profileSubscriptionRef.current);
-                profileSubscriptionRef.current = null;
-            }
-
-            // PASO 2: Limpiar sesión en Supabase
-            await authService.signOut();
-
-            // PASO 3: Limpiar estado React
-            setUser(null);
-            setIsAdmin(false);
-            setUserRole(null);
-            setUserStatus(null);
-            setRoleChecked(true);
-            setLoading(false);
-
-            console.log("[Auth] ✅ Sesión cerrada correctamente");
-        } catch (err) {
-            console.error("[Auth] ❌ Error al cerrar sesión:", err);
-            setLoading(false);
-            // Intentar limpiar estado aunque haya error
-            setUser(null);
-            setIsAdmin(false);
-            setUserRole(null);
-            setUserStatus(null);
-            setRoleChecked(true);
+        // 1. Desuscribir listener PRIMERO para que no restaure la sesión
+        if (authListenerRef.current) {
+            authListenerRef.current.unsubscribe();
+            authListenerRef.current = null;
         }
+
+        // 2. Detener suscripción de perfil
+        if (profileSubscriptionRef.current) {
+            supabase.removeChannel(profileSubscriptionRef.current);
+            profileSubscriptionRef.current = null;
+        }
+
+        // 3. Llamar signOut con timeout de 2s (puede colgarse por Web Lock)
+        try {
+            await Promise.race([
+                supabase.auth.signOut({ scope: 'local' }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
+            ]);
+        } catch (_) {
+            // Timeout o AbortError - continuamos con limpieza manual
+        }
+
+        // 4. Limpiar storage manualmente (siempre, como safety net)
+        try {
+            localStorage.removeItem('osn-auth'); // Limpieza explícita de la clave principal
+            Object.keys(localStorage)
+                .filter(k => k.includes('sb-') || k.includes('supabase') || k.includes('auth'))
+                .forEach(k => localStorage.removeItem(k));
+            Object.keys(sessionStorage)
+                .filter(k => k.includes('sb-') || k.includes('supabase') || k.includes('auth'))
+                .forEach(k => sessionStorage.removeItem(k));
+        } catch (_) { }
+
+        // 5. Limpiar estado React
+        setUser(null);
+        setIsAdmin(false);
+        setUserRole(null);
+        setUserStatus(null);
+        setRoleChecked(true);
+        setLoading(false);
     };
 
     const refreshAuth = async () => {
@@ -158,7 +162,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 supabase.removeChannel(profileSubscriptionRef.current);
             }
 
-            console.log('[Auth] Configurando canal de tiempo real para perfil:', userId);
             profileSubscriptionRef.current = supabase
                 .channel(`public:profiles:${userId}`)
                 .on('postgres_changes', {
@@ -169,43 +172,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }, (payload) => {
                     const newStatus = payload.new.status;
                     const newRole = payload.new.role_name;
-                    console.log(`[Auth] ¡CAMBIO DETECTADO EN PERFIL! Nuevo Status:${newStatus}, Rol:${newRole}`);
                     setUserStatus(newStatus);
                     setUserRole(newRole);
                     setIsAdmin(newRole === 'Administrador');
                 })
-                .subscribe((status) => {
-                    console.log(`[Auth] Estado de suscripción tiempo real: ${status}`);
-                });
+                .subscribe();
         };
 
-        // 1. Verificación inicial de sesión
-        const initAuth = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session?.user) {
-                    setUser(session.user);
-                    await checkUserRole(session.user);
-                    setupProfileSubscription(session.user.id);
-                } else {
-                    console.log("[Auth] No hay sesión activa");
-                    setLoading(false);
-                    setRoleChecked(true);
-                }
-            } catch (err) {
-                console.error("[Auth] Error en verificación inicial:", err);
-                setLoading(false);
-                setRoleChecked(true);
-            }
-        };
-
-        initAuth();
-
-        // 2. Escuchar cambios de sesión
-        authListenerRef.current = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(`[Auth] Evento de sesión: ${event}`);
-
-            if (event === 'INITIAL_SESSION') return;
+        // ÚNICA fuente de verdad para auth: onAuthStateChange
+        // NO usamos getSession() por separado para evitar AbortError por Web Lock contention
+        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log(`[Auth] Evento: ${event}`);
 
             if (event === 'SIGNED_OUT') {
                 setUser(null);
@@ -221,28 +198,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return;
             }
 
-            try {
-                if (session?.user) {
-                    setUser(session.user);
-                    await checkUserRole(session.user);
-                    setupProfileSubscription(session.user.id);
-                } else {
-                    setUser(null);
-                    setIsAdmin(false);
-                    setUserRole(null);
-                    setUserStatus(null);
-                    setRoleChecked(true);
-                    setLoading(false);
-                }
-            } catch (err) {
-                console.error("[Auth] Error en listener de sesión:", err);
+            // INITIAL_SESSION es el primer evento - equivale a getSession()
+            // SIGNED_IN ocurre después de login
+            // TOKEN_REFRESHED ocurre al renovar token
+            if (session?.user) {
+                setUser(session.user);
+                await checkUserRole(session.user);
+                setupProfileSubscription(session.user.id);
+            } else if (event === 'INITIAL_SESSION') {
+                // No hay sesión activa
+                setUser(null);
                 setLoading(false);
+                setRoleChecked(true);
             }
         });
 
+        authListenerRef.current = authSubscription;
+
         return () => {
             clearTimeout(loadingTimeout);
-            authListenerRef.current?.subscription?.unsubscribe();
+            authListenerRef.current?.unsubscribe();
             if (profileSubscriptionRef.current) supabase.removeChannel(profileSubscriptionRef.current);
         };
     }, []);

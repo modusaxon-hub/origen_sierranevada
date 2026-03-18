@@ -8,4 +8,12 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-k
 //     console.warn('⚠️ Missing Supabase credentials in .env file. Using placeholder values for development.');
 // }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        persistSession: true,
+        detectSessionInUrl: false,
+        storageKey: 'osn-auth',
+        storage: localStorage,
+        autoRefreshToken: true,
+    }
+});

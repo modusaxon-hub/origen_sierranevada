@@ -55,21 +55,42 @@ export const orderService = {
 
     /**
      * Obtiene los detalles completos de un pedido específico
+     * Soporta búsqueda por ID corto (8 caracteres) o UUID completo
      */
     getOrderDetails: async (orderId: string) => {
-        const { data, error } = await supabase
-            .from('orders')
-            .select(`
-                *,
-                profiles:user_id (email),
-                order_items (
+        // Si el orderId no es un UUID válido (36 chars), usamos la función RPC de búsqueda parcial
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId);
+
+        let query;
+        if (isUuid) {
+            query = supabase
+                .from('orders')
+                .select(`
                     *,
-                    products (*),
-                    variant:variant_id (*)
-                )
-            `)
-            .eq('id', orderId)
-            .single();
+                    profiles:user_id (email),
+                    order_items (
+                        *,
+                        products (*),
+                        variant:variant_id (*)
+                    )
+                `)
+                .eq('id', orderId);
+        } else {
+            // Usamos RPC para poder realizar el cast de UUID a TEXT en el servidor
+            query = supabase
+                .rpc('find_order_by_short_id', { short_id: orderId })
+                .select(`
+                    *,
+                    profiles:user_id (email),
+                    order_items (
+                        *,
+                        products (*),
+                        variant:variant_id (*)
+                    )
+                `);
+        }
+
+        const { data, error } = await query.maybeSingle();
 
         return { data: data as Order | null, error };
     },

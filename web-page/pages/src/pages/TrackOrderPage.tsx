@@ -10,10 +10,23 @@ const TrackOrderPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const { lang, formatPrice } = useLanguage();
     const navigate = useNavigate();
+    const [searchInput, setSearchInput] = useState('');
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchInput.trim()) {
+            navigate(`/track/${searchInput.trim()}`);
+        }
+    };
 
     useEffect(() => {
+        if (!orderId) {
+            setLoading(false);
+            return;
+        }
+
         const fetchOrder = async () => {
-            if (!orderId) return;
+            setLoading(true);
             const { data, error } = await orderService.getOrderDetails(orderId);
             if (!error && data) {
                 setOrder(data);
@@ -23,6 +36,7 @@ const TrackOrderPage: React.FC = () => {
         fetchOrder();
 
         // Suscripción en tiempo real: Actualiza automáticamente cuando el admin cambia el estado
+        // Solo si tenemos un orderId válido (no necesariamente el UUID completo si el RPC nos trajo el dato)
         const channel = supabase
             .channel(`order-track-${orderId}`)
             .on(
@@ -31,10 +45,12 @@ const TrackOrderPage: React.FC = () => {
                     event: 'UPDATE',
                     schema: 'public',
                     table: 'orders',
-                    filter: `id=eq.${orderId}`
+                    // Importante: No podemos filtrar por ID si no conocemos el UUID exacto aún, 
+                    // pero fetchOrder ya lo habrá traído si el orderId era un código corto.
                 },
                 (payload) => {
-                    setOrder(prev => prev ? { ...prev, ...payload.new } : null);
+                    // Si el componente ya tiene un pedido, verificamos si es el mismo
+                    setOrder(prev => (prev && payload.new.id === prev.id) ? { ...prev, ...payload.new } : prev);
                 }
             )
             .subscribe();
@@ -53,20 +69,51 @@ const TrackOrderPage: React.FC = () => {
         );
     }
 
+
     if (!order) {
         return (
             <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center p-6 text-center">
-                <span className="material-icons-outlined text-6xl text-red-500/20 mb-6">error_outline</span>
-                <h1 className="text-3xl font-serif text-white mb-4 uppercase tracking-tighter">Vínculo Perdido</h1>
-                <p className="text-white/40 max-w-xs mb-8 font-light">
-                    No hemos podido encontrar el pedido asociado a este código. Por favor verifica tu enlace.
-                </p>
-                <button
-                    onClick={() => navigate('/')}
-                    className="px-8 py-3 bg-[#C8AA6E] text-black rounded-xl font-bold uppercase text-[10px] tracking-widest hover:brightness-110 transition-all shadow-xl"
-                >
-                    Volver al Inicio
-                </button>
+                <span className="material-icons-outlined text-6xl text-[#C8AA6E]/20 mb-6 animate-pulse">explore</span>
+                <h1 className="text-3xl font-serif text-white mb-4 uppercase tracking-tighter">Rastreo de Pedido</h1>
+                {orderId && orderId !== '_' ? (
+                    <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl max-w-sm">
+                        <p className="text-red-400 text-xs uppercase tracking-widest font-bold mb-1">Pedido no encontrado</p>
+                        <p className="text-white/40 text-[10px] leading-relaxed">
+                            No logramos localizar el pedido #{orderId.slice(0, 8)}.
+                            Verifica que el código sea correcto.
+                        </p>
+                    </div>
+                ) : (
+                    <p className="text-white/40 max-w-xs mb-8 font-light text-sm">
+                        Ingresa el código que recibiste en tu correo de confirmación para conocer el estado actual de tu café.
+                    </p>
+                )}
+
+                <form onSubmit={handleSearch} className="w-full max-w-sm flex flex-col gap-4 mb-12">
+                    <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        placeholder="Código de pedido (ej: 96E1DD47)"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white text-sm outline-none focus:border-[#C8AA6E] transition-all text-center tracking-[0.2em] uppercase"
+                    />
+                    <button
+                        type="submit"
+                        className="w-full py-4 bg-[#C8AA6E] text-black rounded-xl font-bold uppercase text-[12px] tracking-widest hover:brightness-110 shadow-lg shadow-[#C8AA6E]/10"
+                    >
+                        Rastrear Pedido
+                    </button>
+                </form>
+
+                <div className="flex flex-col gap-6">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="text-[10px] text-white/30 uppercase tracking-[0.3em] hover:text-white transition-all flex items-center justify-center gap-2 group"
+                    >
+                        <span className="material-icons-outlined text-xs group-hover:-translate-x-1 transition-transform">west</span>
+                        Volver al Inicio
+                    </button>
+                </div>
             </div>
         );
     }

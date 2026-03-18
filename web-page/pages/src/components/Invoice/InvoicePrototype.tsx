@@ -68,7 +68,7 @@ const InvoicePrototype: React.FC<InvoicePrototypeProps> = ({
             <div className="grid grid-cols-2 gap-6 mb-8">
                 <div>
                     <div className="text-[10px] font-bold text-[#141E16] uppercase mb-3">Emitido Por</div>
-                    <div className="text-xs mb-1 font-semibold">ORIGEN SIERRA NEVADA S.A.S.</div>
+                    <div className="text-xs mb-1 font-semibold">ORIGEN SIERRA NEVADA</div>
                     <div className="text-[10px] text-gray-600 space-y-1">
                         <div>NIT: [NIT_EMPRESA]</div>
                         <div>Dirección: Sierra Nevada, Magdalena</div>

@@ -20,17 +20,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
     };
 
     const handleLogout = async () => {
-        try {
-            await signOut();
-            // Esperar 200ms para que se complete la limpieza
-            await new Promise(resolve => setTimeout(resolve, 200));
-            window.location.href = '/#/';
-        } catch (err) {
-            console.error("[ProtectedRoute] Error al cerrar sesión:", err);
-            setTimeout(() => {
-                window.location.href = '/#/';
-            }, 200);
-        }
+        try { await signOut(); } catch (_) {}
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     // Siempre esperar a que el rol sea verificado antes de tomar decisiones de acceso.

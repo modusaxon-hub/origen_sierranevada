@@ -130,8 +130,9 @@ const ProveedorDashboard: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await signOut();
-        navigate('/');
+        try { await signOut(); } catch (_) {}
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     // Chart data: group sales by date

@@ -1,129 +1,63 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { supabase } from '@/services/supabaseClient';
 
-// ── Tipos ──────────────────────────────────────
-interface Testimonio {
-    nombre: string;
-    ciudad: string;
-    rating: number;
-    texto: string;
-    compra: string;
+import React from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Testimonial } from '@/shared/types';
+
+interface TestimoniosSectionProps {
+    testimonials?: Testimonial[];
+    fallbackTestimonials?: Testimonial[];
 }
 
-const DEFAULT_TESTIMONIOS: Testimonio[] = [
-    { nombre: 'María Camila R.', ciudad: 'Bogotá', rating: 5, texto: 'Nunca pensé que un café pudiera hacerme sentir que estoy en la montaña. El Café Malú me dejó sin palabras: floral, brillante, con una acidez que se convierte en dulzura.', compra: 'Café Malú Reserva · 500g' },
-    { nombre: 'Carlos A. Méndez', ciudad: 'Medellín', rating: 5, texto: 'Trabajo con varios tostadores y Origen Sierra Nevada tiene algo diferente: la trazabilidad real. Sé exactamente de qué finca viene cada bolsa. Eso no tiene precio.', compra: 'Suscripción Mensual · Canal B2B' },
-    { nombre: 'Valentina Torres', ciudad: 'Cali', rating: 5, texto: 'El proceso de compra fue tan bueno como el café. Llegó en 2 días, empaque impecable y una nota de la finca de origen. Se los recomiendo a todos mis amigos.', compra: 'San Pedro Natural · 250g' },
-    { nombre: 'Santiago López', ciudad: 'Barranquilla', rating: 5, texto: 'El café de Minca es extraordinario para espresso. El perfil de cacao y canela lo convierte en el mejor "después del almuerzo" que he probado en años.', compra: 'Minca Natural · Espresso' },
-    { nombre: 'Laura Jiménez', ciudad: 'Cartagena', rating: 5, texto: 'Pedí el kit con el dripper Chemex y fue amor a primera vista. El café honey de San Pedro en pour over es simplemente transcendente. Gracias Origen.', compra: 'Kit Barista · San Pedro Honey' },
-];
+const TestimoniosSection: React.FC<TestimoniosSectionProps> = ({ testimonials, fallbackTestimonials }) => {
+    const { language } = useLanguage();
+    const lang = (language as 'es' | 'en') || 'es';
 
-const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
-    <div className="flex gap-0.5">
-        {Array.from({ length: 5 }).map((_, i) => (
-            <span
-                key={i}
-                className={`material-icons-outlined text-sm ${i < rating ? 'text-[#C8AA6E]' : 'text-white/10'}`}
-            >
-                star
-            </span>
-        ))}
-    </div>
-);
+    const list = (testimonials && testimonials.length > 0) ? testimonials : (fallbackTestimonials || []);
 
-const TestimoniosSection: React.FC = () => {
-    const sectionRef = useRef<HTMLElement>(null);
-    const [testimonios, setTestimonios] = useState<Testimonio[]>(DEFAULT_TESTIMONIOS);
-
-    // ── Cargar desde Supabase ──────────────────
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('site_configs')
-                    .select('data')
-                    .eq('id', 'testimonios')
-                    .single();
-                if (!error && data?.data?.list?.length > 0) {
-                    setTestimonios(data.data.list);
-                }
-            } catch { /* usa DEFAULT */ }
-        };
-        fetch();
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => entries.forEach(e => {
-                if (e.isIntersecting) e.target.classList.add('visible');
-            }),
-            { threshold: 0.1 }
-        );
-        const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
-        targets?.forEach(el => observer.observe(el));
-        return () => observer.disconnect();
-    }, [testimonios]);
+    if (list.length === 0) return null;
 
     return (
-        <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#141E16]/40 overflow-hidden">
-            <div className="absolute inset-0 bg-[#050806]/60" />
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#C8AA6E]/20 to-transparent" />
-            <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-[#C8AA6E]/3 blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                {/* Header */}
-                <div className="text-center mb-16 animate-on-scroll">
-                    <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-4">Comunidad</p>
-                    <h2 className="font-serif text-5xl md:text-6xl text-white mb-4">
-                        Lo que dicen<br />
-                        <span className="text-[#C8AA6E] italic">nuestros clientes</span>
+        <section className="py-24 bg-[#050806] relative">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16 max-w-2xl mx-auto">
+                    <span className="text-[#C8AA6E] font-medium tracking-[0.2em] text-sm uppercase mb-4 block">
+                        {lang === 'es' ? 'La Experiencia' : 'The Experience'}
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-playfair mb-6 text-white italic">
+                        {lang === 'es' ? 'Testimonios de ' : 'Testimonials of '}
+                        <span className="not-italic text-white opacity-40">Origen</span>
                     </h2>
-                    <p className="text-white/30 text-sm max-w-md mx-auto font-light">
-                        Más de 500 familias ya tienen su café de la Sierra en casa.
-                    </p>
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                    {testimonios.map((t, idx) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {list.map((t, idx) => (
                         <div
                             key={idx}
-                            className="animate-on-scroll group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 md:p-7 flex flex-col hover:border-[#C8AA6E]/20 hover:bg-[#141E16]/40 transition-all duration-500"
-                            style={{ transitionDelay: `${idx * 60}ms` }}
+                            className="bg-white/[0.02] border border-white/5 p-10 rounded-[2.5rem] relative group hover:bg-[#C8AA6E]/5 hover:border-[#C8AA6E]/20 transition-all duration-500"
                         >
-                            {/* Stars */}
-                            <StarRating rating={t.rating} />
+                            <span className="material-icons-outlined text-4xl text-[#C8AA6E] opacity-20 absolute top-8 right-8 group-hover:opacity-40 transition-opacity">
+                                format_quote
+                            </span>
 
-                            {/* Quote */}
-                            <p className="text-white/60 text-sm leading-relaxed font-light italic mt-4 mb-6 flex-1">
+                            <div className="flex gap-1 mb-8">
+                                {[...Array(t.rating)].map((_, rIdx) => (
+                                    <span key={rIdx} className="material-icons-outlined text-[#C8AA6E] text-sm">star</span>
+                                ))}
+                            </div>
+
+                            <p className="text-lg text-white/70 italic mb-10 leading-relaxed font-light">
                                 "{t.texto}"
                             </p>
 
-                            {/* Divider */}
-                            <div className="w-full h-px bg-white/5 mb-5" />
-
-                            {/* Author */}
-                            <div className="flex items-center gap-4">
-                                {/* Avatar */}
-                                <div className="w-10 h-10 rounded-full bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 flex items-center justify-center shrink-0">
-                                    <span className="font-serif text-[#C8AA6E] text-base font-bold">
-                                        {t.nombre.charAt(0)}
-                                    </span>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-white font-bold text-sm truncate">{t.nombre}</p>
-                                    <p className="text-white/30 text-[10px] truncate">{t.ciudad} · {t.compra}</p>
+                            <div className="pt-8 border-t border-white/5">
+                                <h4 className="text-white font-medium mb-1">{t.nombre}</h4>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[10px] uppercase tracking-widest text-[#C8AA6E]">{t.ciudad}</span>
+                                    <span className="text-[10px] text-white/30 uppercase tracking-wider">{t.compra}</span>
                                 </div>
                             </div>
                         </div>
                     ))}
-                </div>
-
-                {/* CTA bottom */}
-                <div className="text-center mt-12 animate-on-scroll">
-                    <p className="text-white/20 text-xs uppercase tracking-[0.4em] font-bold">
-                        ★ 4.9 / 5 · +500 reseñas verificadas
-                    </p>
                 </div>
             </div>
         </section>

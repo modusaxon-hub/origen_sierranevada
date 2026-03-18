@@ -9,12 +9,14 @@ const MyOrdersPage: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { user } = useAuth();
+    const { user, loading: authLoading, roleChecked } = useAuth();
     const navigate = useNavigate();
     const { language } = useLanguage();
     const lang = (language as 'es' | 'en') || 'es';
 
     useEffect(() => {
+        // Esperar a que auth termine antes de decidir
+        if (authLoading || !roleChecked) return;
         if (!user) {
             navigate('/login');
             return;

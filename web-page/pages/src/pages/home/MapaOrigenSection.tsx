@@ -1,209 +1,129 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { supabase } from '@/services/supabaseClient';
-import { Product } from '@/shared/types';
 
-// ── Tipos ──────────────────────────────────────
-interface Finca {
-    nombre: string;
-    municipio: string;
-    departamento: string;
-    altitud: string;
-    perfil: string;
-    proceso: string;
-    notas: string;
-    icon: string;
-    color: string;
-}
-
-const DEFAULT_FINCAS: Finca[] = [
-    { nombre: 'La Jagua', municipio: 'La Jagua de Ibirico', departamento: 'Magdalena', altitud: '1.980', perfil: 'Floral · Cítrico · Té negro', proceso: 'Lavado', notas: 'Jazmín · Bergamota · Durazno', icon: 'spa', color: '#C8AA6E' },
-    { nombre: 'San Pedro', municipio: 'San Pedro de la Sierra', departamento: 'Magdalena', altitud: '2.200', perfil: 'Frutal · Brillante · Dulce', proceso: 'Honey', notas: 'Mora · Maracuyá · Panela', icon: 'local_florist', color: '#E5CF9E' },
-    { nombre: 'Minca', municipio: 'Santa Marta · Minca', departamento: 'Magdalena', altitud: '1.600', perfil: 'Cacao · Especiado · Denso', proceso: 'Natural', notas: 'Chocolate · Canela · Uva pasa', icon: 'eco', color: '#A07840' },
-];
+import React from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ProductTraceability, Finca } from '@/shared/types';
 
 interface MapaOrigenSectionProps {
-    product: Product;
+    traceability?: ProductTraceability;
+    fallbackFincas?: Finca[];
 }
 
-/**
- * Si el producto tiene `traceability` en texto libre, lo mostramos como bloque
- * destacado encima del selector de fincas genéricas.
- * Si no tiene traceability, se muestra solo el panel de fincas de la base de datos.
- */
-const MapaOrigenSection: React.FC<MapaOrigenSectionProps> = ({ product }) => {
-    const sectionRef = useRef<HTMLElement>(null);
-    const [activeIdx, setActiveIdx] = useState(0);
-    const [fincas, setFincas] = useState<Finca[]>(DEFAULT_FINCAS);
-    const lang = 'es';
+const MapaOrigenSection: React.FC<MapaOrigenSectionProps> = ({ traceability, fallbackFincas }) => {
+    const { language } = useLanguage();
+    const lang = (language as 'es' | 'en') || 'es';
 
-    const productName = product?.name?.[lang];
-    const productTraceability = (product as any)?.traceability?.[lang] || '';
-    const productOrigin = product?.origin || '';
+    // Priorize product fincas, then fallback from site_configs
+    const fincas = (traceability?.fincas && traceability.fincas.length > 0)
+        ? traceability.fincas
+        : (fallbackFincas || []);
 
-    // ── Cargar fincas desde Supabase ──────────────
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('site_configs')
-                    .select('data')
-                    .eq('id', 'fincas')
-                    .single();
-                if (!error && data?.data?.list?.length > 0) {
-                    setFincas(data.data.list);
-                }
-            } catch { /* usa DEFAULT */ }
-        };
-        fetch();
-    }, []);
-
-    // Reset de finca activa al cambiar de producto
-    useEffect(() => {
-        setActiveIdx(0);
-    }, [product?.id]);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => entries.forEach(e => {
-                if (e.isIntersecting) e.target.classList.add('visible');
-            }),
-            { threshold: 0.1 }
-        );
-        const targets = sectionRef.current?.querySelectorAll('.animate-on-scroll');
-        targets?.forEach(el => observer.observe(el));
-        return () => observer.disconnect();
-    }, [fincas, productTraceability]);
-
-    const activeFinca = fincas[activeIdx] ?? fincas[0];
+    if (fincas.length === 0) return null;
 
     return (
-        <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#050806] overflow-hidden">
-            {/* Ambient */}
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#C8AA6E]/4 blur-[150px] rounded-full pointer-events-none" />
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#C8AA6E]/20 to-transparent" />
+        <section className="py-24 bg-[#050810] relative overflow-hidden border-t border-white/5">
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C8AA6E]/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#C8AA6E]/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                {/* Header */}
-                <div className="text-center mb-16 animate-on-scroll">
-                    <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.7em] font-bold mb-4">
-                        {productName ? `Trazabilidad · ${productName}` : 'Trazabilidad'}
-                    </p>
-                    <h2 className="font-serif text-5xl md:text-6xl text-white mb-4">
-                        Nuestro <span className="text-[#C8AA6E] italic">Terroir</span>
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="text-center mb-16 max-w-3xl mx-auto">
+                    <span className="text-[#C8AA6E] font-medium tracking-[0.2em] text-sm uppercase mb-4 block">
+                        {lang === 'es' ? 'Trazabilidad y Terroir' : 'Traceability & Terroir'}
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-playfair mb-6 text-white leading-tight">
+                        {lang === 'es' ? 'Nuestro ' : 'Our '}
+                        <span className="italic font-light opacity-80">Terroir</span>
                     </h2>
-                    <p className="text-white/40 text-sm max-w-xl mx-auto font-light">
-                        Cada taza tiene coordenadas. Conoce las fincas donde nació tu café.
+                    <p className="text-white/60 text-lg">
+                        {lang === 'es'
+                            ? 'Cada taza tiene coordenadas. Conoce las fincas donde nació tu café.'
+                            : 'Every cup has coordinates. Discover the farms where your coffee was born.'}
                     </p>
                 </div>
 
-                {/* ── Bloque de trazabilidad específica del producto ── */}
-                {productTraceability ? (
-                    <div className="animate-on-scroll mb-12 rounded-2xl border border-[#C8AA6E]/30 bg-[#141E16]/60 backdrop-blur-xl p-8">
-                        <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 flex-shrink-0 rounded-full bg-[#C8AA6E]/10 border border-[#C8AA6E]/30 flex items-center justify-center">
-                                <span className="material-icons-outlined text-[#C8AA6E] text-lg">travel_explore</span>
-                            </div>
-                            <div>
-                                <p className="text-[9px] text-[#C8AA6E]/60 uppercase tracking-[0.5em] font-bold mb-2">Ficha de Trazabilidad</p>
-                                {productOrigin && (
-                                    <p className="text-[#C8AA6E] text-xs uppercase tracking-widest font-bold mb-3">{productOrigin}</p>
-                                )}
-                                <p className="text-white/70 text-sm leading-relaxed">{productTraceability}</p>
-                            </div>
-                        </div>
-                    </div>
-                ) : null}
-
-                {/* ── Selector de Fincas ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-12">
                     {fincas.map((finca, idx) => (
-                        <button
+                        <div
                             key={idx}
-                            onClick={() => setActiveIdx(idx)}
-                            className={`animate-on-scroll text-left rounded-2xl border p-6 md:p-8 transition-all duration-500 group relative overflow-hidden ${activeIdx === idx
-                                ? 'border-[#C8AA6E]/50 bg-[#141E16]/80 shadow-[0_0_30px_rgba(200,170,110,0.1)]'
-                                : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
-                                }`}
+                            className="group relative bg-white/[0.02] border border-white/10 rounded-3xl p-8 hover:bg-white/[0.04] hover:border-[#C8AA6E]/30 transition-all duration-500 overflow-hidden"
                         >
-                            {/* Active indicator */}
-                            {activeIdx === idx && (
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#C8AA6E]/0 via-[#C8AA6E] to-[#C8AA6E]/0" />
-                            )}
+                            {/* Accent line */}
+                            <div
+                                className="absolute top-0 left-0 w-1 h-full opacity-30 group-hover:opacity-100 transition-opacity"
+                                style={{ backgroundColor: finca.color || '#C8AA6E' }}
+                            />
 
-                            <div className="flex items-start justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${activeIdx === idx ? 'bg-[#C8AA6E]/20' : 'bg-white/5'}`}>
-                                    <span className={`material-icons-outlined text-xl ${activeIdx === idx ? 'text-[#C8AA6E]' : 'text-white/30'}`}>{finca.icon}</span>
+                            <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+                                {/* Farm Icon/Image placeholder */}
+                                <div className="w-24 h-24 rounded-2xl bg-[#C8AA6E]/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+                                    <span
+                                        className="material-icons-outlined text-4xl"
+                                        style={{ color: finca.color || '#C8AA6E' }}
+                                    >
+                                        {finca.icon || 'terrain'}
+                                    </span>
                                 </div>
-                                {/* Pulse marker */}
-                                <div className="relative flex items-center justify-center">
-                                    <div className={`w-3 h-3 rounded-full ${activeIdx === idx ? 'bg-[#C8AA6E]' : 'bg-white/20'}`} />
-                                    {activeIdx === idx && (
-                                        <div className="absolute w-6 h-6 rounded-full bg-[#C8AA6E]/30 animate-ping-slow" />
-                                    )}
-                                </div>
-                            </div>
 
-                            <h3 className={`font-serif text-2xl mb-1 ${activeIdx === idx ? 'text-[#C8AA6E]' : 'text-white/70'}`}>{finca.nombre}</h3>
-                            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-4">{finca.municipio}</p>
-
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="material-icons-outlined text-white/20 text-sm">terrain</span>
-                                    <span className="text-white/50 text-xs">{finca.altitud} msnm</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="material-icons-outlined text-white/20 text-sm">science</span>
-                                    <span className="text-white/50 text-xs">Proceso: {finca.proceso}</span>
-                                </div>
-                            </div>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Detail panel */}
-                {activeFinca && (
-                    <div className="animate-on-scroll rounded-2xl border border-[#C8AA6E]/20 bg-[#141E16]/60 backdrop-blur-xl p-8 md:p-12">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                            {/* Left: Info */}
-                            <div>
-                                <p className="text-[#C8AA6E]/60 text-[9px] uppercase tracking-[0.5em] font-bold mb-2">Finca Activa</p>
-                                <h3 className="font-serif text-4xl text-[#C8AA6E] mb-1">{activeFinca.nombre}</h3>
-                                <p className="text-white/30 text-xs uppercase tracking-widest mb-6">{activeFinca.departamento} · {activeFinca.altitud} msnm</p>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Perfil de Taza</p>
-                                        <p className="text-white/70 text-sm">{activeFinca.perfil}</p>
+                                <div className="flex-grow">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className="text-2xl font-playfair text-white">{finca.nombre}</h3>
+                                        <div className="flex items-center gap-1.5 bg-white/5 py-1 px-3 rounded-full border border-white/5">
+                                            <span className="material-icons-outlined text-sm text-[#C8AA6E]">location_on</span>
+                                            <span className="text-xs text-white/70 font-medium">
+                                                {finca.municipio}, {finca.departamento}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-[9px] text-white/30 uppercase tracking-[0.4em] font-bold mb-2">Notas de Cata</p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {activeFinca.notas.split(' · ').map((nota, i) => (
-                                                <span key={i} className="px-3 py-1 rounded-full border border-[#C8AA6E]/20 text-[#C8AA6E]/80 text-xs font-serif italic">
-                                                    {nota}
-                                                </span>
-                                            ))}
+
+                                    <div className="grid grid-cols-2 gap-y-4 gap-x-6 mt-6">
+                                        <div>
+                                            <span className="text-[10px] text-[#C8AA6E] uppercase tracking-wider block mb-1 opacity-70">
+                                                {lang === 'es' ? 'Altitud' : 'Altitude'}
+                                            </span>
+                                            <span className="text-white font-playfair text-lg flex items-baseline gap-1">
+                                                {finca.altitud} <span className="text-[10px] lowercase opacity-40">msnm</span>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="text-[10px] text-[#C8AA6E] uppercase tracking-wider block mb-1 opacity-70">
+                                                {lang === 'es' ? 'Proceso' : 'Process'}
+                                            </span>
+                                            <span className="text-white font-playfair text-lg">
+                                                {finca.proceso}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right: Visual */}
-                            <div className="relative h-48 md:h-64 rounded-xl overflow-hidden">
-                                <div
-                                    className="w-full h-full bg-cover bg-center animate-ken-burns opacity-60"
-                                    style={{
-                                        backgroundImage: `url('${product?.image_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDThTiqynQIa-ilci3zIhgZChfLRM4f1wVfnxQes6Pgbt0fiENkSzRaEZqeH4DzTvfxMFSudxYZ8J23n4DcT2DVwzwcO1Dx_V3l9HhmRxJ2ko0IXGCyQHBgTyhraGqBG9UOv1uCuRxnQduF8GWIZs4CUyl_cSMpUCI99JCX-1juZTytNwl3HJeatheVPkxiyN2uUtqT8XJ_0H8BTnQfmUQWp2rhFuQES4wiAYO54PSXRxb8KFLJjI2B-VL6R3b51Yp8mPPyvhxZqCM'}')`
-                                    }}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#141E16] via-transparent to-transparent" />
-                                {/* Coordinates badge */}
-                                <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg px-3 py-2">
-                                    <p className="text-[9px] text-[#C8AA6E] uppercase tracking-widest font-bold">Coordenadas</p>
-                                    <p className="text-white/60 font-mono text-xs">10.8° N · 74.0° W</p>
+                            <div className="mt-8 pt-8 border-t border-white/5">
+                                <span className="text-[10px] text-[#C8AA6E] uppercase tracking-wider block mb-3 opacity-70">
+                                    {lang === 'es' ? 'Perfil de Sabor y Notas' : 'Flavor Profile & Notes'}
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                    {finca.perfil.split(' · ').map((note, nIdx) => (
+                                        <span
+                                            key={nIdx}
+                                            className="bg-white/5 text-white/80 py-1 px-3 rounded-lg text-xs border border-white/10"
+                                        >
+                                            {note}
+                                        </span>
+                                    ))}
+                                    {/* Sensory notes */}
+                                    <span className="w-full mt-2 text-sm italic text-white/40">
+                                        "{finca.notas}"
+                                    </span>
                                 </div>
                             </div>
                         </div>
+                    ))}
+                </div>
+
+                {traceability?.notes && (
+                    <div className="mt-16 max-w-2xl mx-auto text-center">
+                        <p className="text-white/40 italic text-sm">
+                            {traceability.notes[lang]}
+                        </p>
                     </div>
                 )}
             </div>

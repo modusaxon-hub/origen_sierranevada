@@ -51,6 +51,46 @@ export interface ProductPersonality {
     grind_options?: string[];      // Opciones de molienda disponibles (ej: ["En Grano", "Molido Medio"])
 }
 
+export interface Stat { value: string; label: string; icon: string; }
+
+export interface ProductStory {
+    title1?: Multilingual;
+    title2?: Multilingual;
+    paragraph1: Multilingual;
+    paragraph2?: Multilingual;
+    badgeTitle?: Multilingual;
+    badgeValue?: Multilingual;
+    badgeUnit?: Multilingual;
+    badgeDesc?: Multilingual;
+    bgUrl?: string;
+    stats?: Stat[];
+}
+
+export interface Finca {
+    nombre: string;
+    municipio: string;
+    departamento: string;
+    altitud: string;
+    perfil: string;
+    proceso: string;
+    notas: string;
+    icon: string;
+    color: string;
+}
+
+export interface ProductTraceability {
+    fincas?: Finca[];
+    notes?: Multilingual;
+}
+
+export interface Testimonial {
+    nombre: string;
+    ciudad: string;
+    rating: number;
+    texto: string;
+    compra: string;
+}
+
 export interface Product {
     id: string;
     category: ProductCategory;
@@ -59,7 +99,7 @@ export interface Product {
     image_url: string;
     stock: number; // General stock or aggregate
     description: Multilingual;
-    story: Multilingual;
+    story: ProductStory; // Updated to rich structure
     tags: MultilingualTags;
     badge?: Multilingual;
     score?: number;
@@ -81,8 +121,9 @@ export interface Product {
     // Campos de personalidad y carácter
     intrinsics?: ProductPersonality;
 
-    // Historia y Trazabilidad — solo para la categoría 'cafetal'
-    traceability?: Multilingual; // Datos de origen, proceso, finca y altitud
+    // Historia y Trazabilidad — detallada
+    traceability?: ProductTraceability;
+    testimonials?: Testimonial[];
 }
 
 /** Datos del proveedor — solo visibles en el panel admin.

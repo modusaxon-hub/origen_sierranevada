@@ -218,7 +218,7 @@ export const emailService = {
                                     </div>
 
                                     <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Recibirás una notificación cuando tu pedido sea despachado.</p>
-                                    <a href="${BASE_URL}/#/account" style="display: inline-block; background: #C8AA6E; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 24px; font-size: 12px; text-transform: uppercase;">Rastrear mi pedido</a>
+                                    <a href="${BASE_URL}/#/track/${orderDetails.orderId}" style="display: inline-block; background: #C8AA6E; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 24px; font-size: 12px; text-transform: uppercase;">Rastrear mi pedido</a>
 
                                     <div style="margin-top: 32px; text-align: center; border-top: 1px solid rgba(200, 170, 110, 0.2); padding-top: 20px;">
                                         <p style="color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">

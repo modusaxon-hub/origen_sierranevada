@@ -114,8 +114,9 @@ const UserDashboard: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        await signOut();
-        navigate('/');
+        try { await signOut(); } catch (_) {}
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     const getStatusConfig = (status: string) => {

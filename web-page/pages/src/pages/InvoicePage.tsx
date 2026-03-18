@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { supabase } from '@/services/supabaseClient';
 import { orderService } from '@/services/orderService';
 import { invoiceService } from '@/services/invoiceService';
@@ -41,55 +40,57 @@ interface OrderData {
 
 const InvoicePage: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
-    const navigate = useNavigate();
-    const { user, isAdmin, roleChecked } = useAuth();
     const [invoice, setInvoice] = useState<InvoiceData | null>(null);
     const [order, setOrder] = useState<OrderData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [authChecked, setAuthChecked] = useState(false);
-
-    // Validar permisos SOLO UNA VEZ al montar el componente
-    useEffect(() => {
-        if (!roleChecked) {
-            // Aún está cargando el rol - esperar
-            return;
-        }
-
-        if (authChecked) {
-            // Ya se hizo la validación
-            return;
-        }
-
-        // Hacer la validación
-        if (!user) {
-            // No hay usuario logueado - redirigir a login
-            navigate('/login', { replace: true });
-        }
-
-        setAuthChecked(true);
-    }, [roleChecked, authChecked, user, navigate]);
+    const hasLoaded = useRef(false);
 
     useEffect(() => {
-        // Solo cargar datos después de validar autenticación
-        if (!authChecked || !user) {
+        if (hasLoaded.current || !orderId) {
+            if (!orderId) { setError('No order ID provided'); setLoading(false); }
             return;
         }
 
+        // Esperar a que Supabase tenga sesión válida antes de consultar
+        // No redirigimos a login - si no hay sesión, RLS rechaza y mostramos error
         const loadInvoiceData = async () => {
-            if (!orderId) {
-                setError('No order ID provided');
-                setLoading(false);
-                return;
-            }
-
             try {
-                setLoading(true);
+                // Esperar hasta 8s a que auth se resuelva (nueva pestaña tarda más)
+                let session = null;
+                for (let i = 0; i < 16; i++) {
+                    const { data: { session: s } } = await supabase.auth.getSession();
+                    if (s) {
+                        session = s;
+                        console.log("[Invoice] Sesión detectada tras reintento");
+                        break;
+                    }
+                    await new Promise(r => setTimeout(r, 500));
+                }
+
+                if (!session) {
+                    // Intento final: forzar lectura de localStorage antes de rendirse
+                    const storedAuth = localStorage.getItem('osn-auth');
+                    if (!storedAuth) {
+                        setError('Sesión expirada. Por favor, inicia sesión en la pestaña principal e inténtalo de nuevo.');
+                        setLoading(false);
+                        return;
+                    }
+                    // Si hay algo en localStorage pero no en getSession, esperamos un poco más
+                    await new Promise(r => setTimeout(r, 2000));
+                    const { data: { session: finalSession } } = await supabase.auth.getSession();
+                    if (!finalSession) {
+                        setError('No se pudo validar tu sesión. Por favor, recarga la página.');
+                        setLoading(false);
+                        return;
+                    }
+                    session = finalSession;
+                }
 
                 // Obtener datos de la orden
                 const { data: orderData, error: orderError } = await orderService.getOrderDetails(orderId);
                 if (orderError || !orderData) {
-                    setError('No se encontró la orden');
+                    setError('No se encontró la orden. Verifica que tengas permisos.');
                     setLoading(false);
                     return;
                 }
@@ -141,6 +142,7 @@ const InvoicePage: React.FC = () => {
                     });
                 }
 
+                hasLoaded.current = true;
                 setLoading(false);
             } catch (err) {
                 console.error('Error loading invoice:', err);
@@ -150,7 +152,7 @@ const InvoicePage: React.FC = () => {
         };
 
         loadInvoiceData();
-    }, [orderId, authChecked, user]);
+    }, [orderId]);
 
     if (loading) {
         return (
@@ -208,7 +210,7 @@ const InvoicePage: React.FC = () => {
                         <button
                             onClick={() => {
                                 if (window.history.length > 1) {
-                                    navigate(-1);
+                                    window.history.back();
                                 } else {
                                     window.close();
                                 }

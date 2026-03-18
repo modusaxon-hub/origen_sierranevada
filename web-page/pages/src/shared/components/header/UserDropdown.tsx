@@ -23,19 +23,9 @@ const UserDropdown: React.FC = () => {
 
     const handleLogout = async () => {
         setIsOpen(false);
-        try {
-            await signOut();
-            // Esperar 200ms para que se complete la limpieza
-            await new Promise(resolve => setTimeout(resolve, 200));
-            // Redirigir a inicio con recarga de página
-            window.location.href = '/#/';
-        } catch (err) {
-            console.error("[UserDropdown] Error al cerrar sesión:", err);
-            // Aun así intenta redirigir
-            setTimeout(() => {
-                window.location.href = '/#/';
-            }, 200);
-        }
+        try { await signOut(); } catch (_) {}
+        window.location.hash = '#/';
+        window.location.reload();
     };
 
     const effectiveIsAdmin = isAdmin || user?.user_metadata?.role_name === 'Administrador';
