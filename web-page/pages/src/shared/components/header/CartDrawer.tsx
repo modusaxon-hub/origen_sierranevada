@@ -33,7 +33,17 @@ const CartDrawer: React.FC = () => {
                         cartItems.map(item => (
                             <div key={item.id} className="flex gap-4 items-center animate-fade-in group">
                                 <div className="w-20 h-20 bg-gray-100 dark:bg-black/20 rounded-lg p-2 flex-shrink-0 border border-gray-200 dark:border-white/5 group-hover:border-primary/30 transition-colors">
-                                    <img src={item.img} className="w-full h-full object-contain filter sepia-[.2]" alt={item.name} />
+                                    <img 
+                                        src={item.img} 
+                                        className="w-full h-full object-contain filter sepia-[.2]" 
+                                        alt={item.name}
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            if (!target.src.includes('cafe_malu_full_composition.png')) {
+                                                target.src = '/cafe_malu_full_composition.png';
+                                            }
+                                        }}
+                                    />
                                 </div>
                                 <div className="flex-1 text-left">
                                     <h3 className="font-display text-gray-900 dark:text-white text-sm leading-tight">{item.name}</h3>

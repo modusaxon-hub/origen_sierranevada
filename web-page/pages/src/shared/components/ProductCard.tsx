@@ -61,9 +61,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 />
 
                 <img
-                    src={product.image_url}
+                    src={product.image_url || '/cafe_malu_full_composition.png'}
                     alt={name}
                     className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 ease-out group-hover:scale-110 group-hover:-rotate-2"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.includes('cafe_malu_full_composition.png')) {
+                            target.src = '/cafe_malu_full_composition.png';
+                        }
+                    }}
                 />
 
                 {/* Overlay secundario si existe (para efecto hover) */}

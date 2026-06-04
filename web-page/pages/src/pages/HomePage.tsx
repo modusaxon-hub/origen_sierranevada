@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
             name: { es: 'Café Malú', en: 'Malu Coffee' },
             description: { es: 'Perfil equilibrado con notas a chocolate y frutos rojos.', en: 'Balanced profile with chocolate and red fruit notes.' },
             price: 38000,
-            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/1715874321000-cafe-malu.png',
+            image_url: '/cafe_malu_full_composition.png',
             color: '#C8AA6E',
             mask_type: 'pop',
             available: true,
@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
             name: { es: 'Sombra Sagrada', en: 'Sacred Shadow' },
             description: { es: 'Cosechado bajo sombra protectora de árboles nativos.', en: 'Harvested under the protective shade of native trees.' },
             price: 35000,
-            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/sombra-sagrada.png',
+            image_url: '/sombra_sagrada_luxury.png',
             color: '#4A5D4E',
             mask_type: 'drop',
             available: true,
@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
             name: { es: 'Molino Manual', en: 'Manual Grinder' },
             description: { es: 'Acero inoxidable con muelas cerámicas.', en: 'Stainless steel with ceramic burrs.' },
             price: 85000,
-            image_url: 'https://itgipylnyligxpxfubut.supabase.co/storage/v1/object/public/product-images/grinder.png',
+            image_url: '/logocafemalu-himalaya.png',
             color: '#8B7355',
             mask_type: 'flower',
             available: true,
@@ -501,13 +501,19 @@ const HomePage: React.FC = () => {
 
                                                     {/* Middle Layer: Product Image with SVG clip-path for bottom-only clipping */}
                                                     <div className="hero-pop-svg-mask absolute inset-0">
-                                                        <div className="absolute inset-x-0 bottom-0 translate-y-[18%]">
+                                                        <div className="absolute inset-x-0 bottom-0 flex justify-center items-end">
                                                             <img
-                                                                src={currentProduct.image_url || '/cafe_malu_full_composition.png'}
+                                                                src={currentProduct.image_url || '/sombra_sagrada_sinfondo.png'}
                                                                 alt={currentProduct.name[lang]}
                                                                 className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float-hero-pop"
                                                                 loading="eager"
                                                                 decoding="sync"
+                                                                onError={(e) => {
+                                                                    const target = e.target as HTMLImageElement;
+                                                                    if (!target.src.includes('sombra_sagrada_sinfondo.png')) {
+                                                                        target.src = '/sombra_sagrada_sinfondo.png';
+                                                                    }
+                                                                }}
                                                             />
                                                         </div>
                                                     </div>

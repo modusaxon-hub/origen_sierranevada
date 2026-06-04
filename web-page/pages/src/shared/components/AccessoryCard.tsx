@@ -48,9 +48,15 @@ export const AccessoryCard: React.FC<AccessoryCardProps> = ({ product, onClick }
                 {/* Product Image (Fills container) */}
                 <div className="flex-1 relative my-4 overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out">
                     <img
-                        src={product.image_url}
+                        src={product.image_url || '/logocafemalu-himalaya.png'}
                         alt={name}
                         className="w-full h-full object-cover filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (!target.src.includes('logocafemalu-himalaya.png')) {
+                                target.src = '/logocafemalu-himalaya.png';
+                            }
+                        }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>

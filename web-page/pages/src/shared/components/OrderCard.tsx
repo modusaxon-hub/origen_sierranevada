@@ -68,9 +68,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                     {order.order_items.slice(0, 5).map((item, idx) => (
                         <div key={idx} className="flex-shrink-0">
                             <img
-                                src={item.products?.image_url || '/placeholder-product.png'}
+                                src={item.products?.image_url || '/cafe_malu_full_composition.png'}
                                 alt=""
                                 className="w-12 h-12 object-contain bg-white/5 rounded border border-white/10"
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    if (!target.src.includes('cafe_malu_full_composition.png')) {
+                                        target.src = '/cafe_malu_full_composition.png';
+                                    }
+                                }}
                             />
                         </div>
                     ))}
@@ -95,9 +101,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                             return (
                                 <div key={idx} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
                                     <img
-                                        src={item.products?.image_url || '/placeholder-product.png'}
+                                        src={item.products?.image_url || '/cafe_malu_full_composition.png'}
                                         alt=""
                                         className="w-16 h-16 object-contain bg-white/10 rounded"
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            if (!target.src.includes('cafe_malu_full_composition.png')) {
+                                                target.src = '/cafe_malu_full_composition.png';
+                                            }
+                                        }}
                                     />
                                     <div className="flex-1">
                                         <div className="text-white font-medium">

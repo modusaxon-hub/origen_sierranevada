@@ -234,6 +234,12 @@ const Catalog: React.FC = () => {
                                                 src={product.image_url || '/cafe_malu_full_composition.png'}
                                                 alt={product.name[lang]}
                                                 className="w-full h-full object-contain filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)]"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    if (!target.src.includes('cafe_malu_full_composition.png')) {
+                                                        target.src = '/cafe_malu_full_composition.png';
+                                                    }
+                                                }}
                                             />
 
                                             {/* Pop-out Overlay (Optional if using clip-path, but standard drop shadow works great here) */}

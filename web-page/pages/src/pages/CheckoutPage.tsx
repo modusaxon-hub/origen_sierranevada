@@ -620,7 +620,17 @@ const CheckoutPage: React.FC = () => {
                                                 <div className="flex justify-between items-center gap-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`w-12 h-12 bg-white/5 rounded-lg border p-1 transition-colors ${isOverStock ? 'border-red-500/50 bg-red-500/10' : 'border-white/10'}`}>
-                                                            <img src={item.img} alt={item.name} className="w-full h-full object-contain" />
+                                                            <img 
+                                                                src={item.img} 
+                                                                alt={item.name} 
+                                                                className="w-full h-full object-contain"
+                                                                onError={(e) => {
+                                                                    const target = e.target as HTMLImageElement;
+                                                                    if (!target.src.includes('cafe_malu_full_composition.png')) {
+                                                                        target.src = '/cafe_malu_full_composition.png';
+                                                                    }
+                                                                }}
+                                                            />
                                                         </div>
                                                         <div>
                                                             <p className={`text-sm font-bold leading-tight transition-colors ${isOverStock ? 'text-red-400' : 'text-white'}`}>{item.name}</p>
